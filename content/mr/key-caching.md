@@ -46,3 +46,8 @@ Every DMA the adapter issues against a memory region -- an incoming RDMA Write r
 | Bandwidth degradation, 18K+ MRs / 96 QPs / 6 threads | 40.1% | Kong et al., NSDI 2023, measured directly on ConnectX-5 |
 
 The next chapter covers what happens before any of this: how a memory region gets into the table -- and, for one entry at a time, into this cache -- in the first place.
+
+## References
+
+- InfiniBand Trade Association, *InfiniBand™ Architecture Specification*, Volume 1 (General Specifications).
+- No IETF or IBTA standard governs on-chip MTT/MPT caching and working-set sizing -- it is implementation-specific silicon design, not a wire-format or software-interface contract any standards body defines. This chapter's treatment is grounded in the sources cited in-text above, not a standards document.

@@ -42,3 +42,7 @@ next: /mr/mid-transaction-deregistration
 | Fencing in-flight lookups against a mass invalidation | Not documented for any real RNIC | Open question shared with [Shared-MR Arbitration](../shared-mr-arbitration) and [Mid-Transaction Deregistration](../mid-transaction-deregistration) |
 
 [Mid-Transaction Deregistration](../mid-transaction-deregistration) closes this Part by taking the fencing question from a cache-wide concern to a single DMA burst's concern: what happens to one transfer, already in progress, when the translation it depends on disappears out from under it mid-burst.
+
+## References
+
+- No IETF or IBTA standard governs which hardware runs an eviction or invalidation policy -- it is implementation-specific silicon design, not a wire-format or software-interface contract any standards body defines. This chapter's treatment is grounded in the sources cited in-text above, not a standards document.

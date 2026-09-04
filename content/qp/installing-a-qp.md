@@ -51,3 +51,7 @@ Supply all four and the QP moves to INIT. Supply fewer, and per [QP State Machin
 | `IBV_QP_STATE` | Confirms the transition itself (RESET→INIT) | -- |
 
 That's every bit RESET→INIT requires, and nothing this table lists is optional -- omit one and the call is refused, per [QP State Machine](/qp/qp-state-machine), which picks up immediately where this chapter stops: INIT→RTR, naming a peer, and RTR→RTS, arming the QP to send.
+
+## References
+
+- InfiniBand Trade Association, *InfiniBand™ Architecture Specification*, Volume 1 (General Specifications).

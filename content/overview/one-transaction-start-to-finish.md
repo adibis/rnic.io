@@ -42,3 +42,11 @@ A Reliable Connection can't leave the sender in the dark. The receiver owes an a
 ## What just happened, seen from above
 
 One operation, and the QP Table/Cache pattern from Part 1 got consulted twice — once on each end. The Key Table from Part 2 got consulted twice as well, once to validate a local read and once to validate a remote write, by two different pieces of hardware on two different machines. The replay buffer from Part 5 held state for the entire round trip and nothing else in this walkthrough held state anywhere near that long. That's not a coincidence specific to RDMA Write — it's the same storage-structure-plus-working-set shape showing up in more than one place in this single transaction, and it shows up again, differently dressed, in several of the Parts this walkthrough only named in passing. The next article names that shape directly, so the rest of this book reads as a pattern applied repeatedly rather than eight unrelated subsystems that happen to sit next to each other on the same die.
+
+## References
+
+- InfiniBand Trade Association, *InfiniBand™ Architecture Specification*, Volume 1 (General Specifications).
+- InfiniBand Trade Association, *Supplement to InfiniBand Architecture Specification Volume 1, Release 1.2.1, Annex A17: RoCEv2* (2014).
+- J. Postel, *Internet Protocol*, RFC 791, IETF (September 1981).
+- J. Postel, *User Datagram Protocol*, RFC 768, IETF (August 1980).
+- Internet Assigned Numbers Authority, *Service Name and Transport Protocol Port Number Registry* (UDP port 4791, "roce").

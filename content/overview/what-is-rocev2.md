@@ -60,3 +60,12 @@ RETH is how a WRITE or READ tells the responder where to touch memory — and, n
 A RoCEv2 packet ends with a 4-byte Invariant CRC (ICRC), sitting after the payload and ahead of the outer Ethernet frame's own FCS trailer. The name is the important part: because a RoCEv2 packet gets routed — the whole point of the "v2" in RoCEv2, covered next — some header bytes are legitimately allowed to change as the packet crosses hops between source and destination. An end-to-end integrity check can't be computed against those bytes' literal in-transit value, or a completely healthy, correctly-routed packet would fail it at the destination. So the ICRC is computed against a synthetic view of the packet instead: every field that's allowed to vary in transit is forced to all 1-bits before the CRC runs, both when the sender generates it and when the receiver checks it, so routing-legal changes never affect the result. Which specific fields count as variant is a fixed list defined by the protocol; enumerating that list precisely belongs to whichever chapter in the TX and RX pipeline Parts ends up owning ICRC generation and checking, not this overview.
 
 That's every structure this book will keep coming back to: an outer UDP/IP shell whose only RDMA-relevant content is a fixed destination port, a BTH on every packet naming the operation and the destination QP, an opcode-specific extended header carrying whatever that operation actually needs, and an integrity trailer computed to survive the routing RoCEv2 was built for. [RoCEv1 → RoCEv2](../rocev1-to-rocev2) explains why that UDP/IP shell exists at all — what RoCEv1 was before it, and specifically what routability demanded of the hardware that a single-broadcast-domain protocol never had to provide.
+
+## References
+
+- InfiniBand Trade Association, *InfiniBand™ Architecture Specification*, Volume 1 (General Specifications).
+- InfiniBand Trade Association, *Supplement to InfiniBand Architecture Specification Volume 1, Release 1.2.1, Annex A17: RoCEv2* (2014).
+- J. Postel, *Internet Protocol*, RFC 791, IETF (September 1981).
+- S. Deering, R. Hinden, *Internet Protocol, Version 6 (IPv6) Specification*, RFC 8200, IETF (July 2017).
+- J. Postel, *User Datagram Protocol*, RFC 768, IETF (August 1980).
+- Internet Assigned Numbers Authority, *Service Name and Transport Protocol Port Number Registry* (UDP port 4791, "roce").

@@ -26,3 +26,11 @@ This is the point worth stating plainly rather than skating past: RoCEv1 silicon
 One more consequence of that real IP header is worth flagging here without unpacking it yet: IP headers carry ECN bits, and RoCEv2's use of a genuine IP header means those bits are available end-to-end for network devices to mark under congestion. That's the entry point DCQCN builds on — a NIC's congestion-control engine reacting to ECN marks it can only see because the packet is carrying a real IP header in the first place. Part 6 covers what a NIC actually does with that signal; the point here is just that RoCEv2's routability fix is also what makes that signal exist on the wire at all.
 
 The next article works through every operation this transport actually carries — the full opcode catalog, and what each one specifically requires the hardware to do.
+
+## References
+
+- InfiniBand Trade Association, *Supplement to InfiniBand Architecture Specification Volume 1, Release 1.2.1, Annex A17: RoCEv2* (2014).
+- J. Postel, *Internet Protocol*, RFC 791, IETF (September 1981).
+- S. Deering, R. Hinden, *Internet Protocol, Version 6 (IPv6) Specification*, RFC 8200, IETF (July 2017).
+- J. Postel, *User Datagram Protocol*, RFC 768, IETF (August 1980).
+- K. Ramakrishnan, S. Floyd, D. Black, *The Addition of Explicit Congestion Notification (ECN) to IP*, RFC 3168, IETF (September 2001).

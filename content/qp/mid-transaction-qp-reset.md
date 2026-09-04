@@ -44,3 +44,8 @@ RESET is legal from every state a QP can be in, including RTS with operations ac
 This is not a new class of problem. chipdv.io's [Mid-Sim Reset](https://chipdv.io/reuse/mid-sim-reset-plumbing/) covers the same shape of hazard -- a resource torn down while something is still actively using it -- from a testbench-verification angle: a reset arriving mid-simulation while a driver, monitor, or sequence still holds state that assumes the DUT hasn't moved. The domain is different, but the question underneath it isn't: what does "reset" actually have to reconcile when it doesn't arrive at a quiet moment.
 
 That closes Part 1. Ten chapters, one Queue Pair, the full checklist [How to Read This Guide](/overview/how-to-read-this-guide) named before any of them: context, storage, caching, installation, state machine, single-instance faults, multi-instance faults, eviction policy, hardware-assisted eviction, and now, mid-operation reset. Part 2 runs the same ten questions against the Memory Region and its Key Table next; Parts 5 and 6 run them again, against a replay buffer and a rate limiter, further into this book.
+
+## References
+
+- InfiniBand Trade Association, *InfiniBand™ Architecture Specification*, Volume 1 (General Specifications).
+- No IETF or IBTA standard governs the exact hardware sequencing of a mid-transaction reset (as opposed to the RESET state transition itself, which IBTA-V1 does define) -- it is implementation-specific silicon design, not a wire-format or software-interface contract any standards body defines. This chapter's treatment is grounded in the sources cited in-text above, not a standards document.

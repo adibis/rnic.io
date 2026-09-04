@@ -46,3 +46,8 @@ A memory region registered once and handed out to many QPs — a shared receive 
 | Relationship to Part 1's multi-QP arbitration | Different shape — many owners, one entry, not many entries, one reporting path |
 
 [Key Cache Eviction Policy](../key-cache-eviction-policy) leaves shared ownership behind and returns to the numbers from Key Caching: what decides which cached translation gets evicted when the working set runs out of room.
+
+## References
+
+- InfiniBand Trade Association, *InfiniBand™ Architecture Specification*, Volume 1 (General Specifications).
+- No IETF or IBTA standard governs concurrent-lookup-vs-invalidation arbitration on one key-table entry -- it is implementation-specific silicon design, not a wire-format or software-interface contract any standards body defines. This chapter's treatment is grounded in the sources cited in-text above, not a standards document.

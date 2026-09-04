@@ -47,3 +47,8 @@ Every QP context described in the previous chapter lives somewhere: one entry in
 | Invalid-index handling | Must fail cleanly and cheaply; specific mechanism not publicly documented |
 
 [QP Caching](/qp/qp-caching) is next: the on-chip working set that makes touching this table on every packet unnecessary, and what a cache miss against it actually costs.
+
+## References
+
+- InfiniBand Trade Association, *InfiniBand™ Architecture Specification*, Volume 1 (General Specifications).
+- No IETF or IBTA standard governs QP table/cache storage and addressing -- it is implementation-specific silicon design, not a wire-format or software-interface contract any standards body defines. This chapter's treatment is grounded in the sources cited in-text above, not a standards document.

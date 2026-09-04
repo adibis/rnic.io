@@ -47,3 +47,8 @@ Beyond the Kong et al. finding, this chapter shares Part 1 chapter 8's epistemic
 | Deregistration — mass invalidation | none — the dereg call itself is the only input; no victim is selected | wholesale flush of the working set, measured to roughly halve victim throughput on at least one real RNIC (Kong et al., ConnectX-5) regardless of which capacity policy governs the ordinary case |
 
 The next chapter turns to what hardware actually runs both of these mechanisms, and asks whether the mass-invalidation trigger just described changes where the answer should sit on the fixed-function/programmable/software-driven spectrum [Hardware-Assisted Key Cache Eviction](../hardware-assisted-key-cache-eviction) opens with.
+
+## References
+
+- InfiniBand Trade Association, *InfiniBand™ Architecture Specification*, Volume 1 (General Specifications).
+- No IETF or IBTA standard governs key-cache eviction policy and mass-invalidation mechanics -- it is implementation-specific silicon design, not a wire-format or software-interface contract any standards body defines. This chapter's treatment is grounded in the sources cited in-text above, not a standards document.

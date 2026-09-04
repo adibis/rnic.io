@@ -56,3 +56,7 @@ Line up RTR→RTS's required set against what UC and UD ask for at the same tran
 | `en_sqd_async_notify` | any, before SQD | all | Enables `IBV_EVENT_SQ_DRAINED` on the draining→drained transition |
 
 That's the state machine's full input surface — the reference to come back to once a later chapter starts asking what happens when one of these fields is wrong at runtime rather than missing at setup. [Single-QP Error Handling](../single-qp-error-handling) is exactly that chapter: what a QP in ERROR actually does to its outstanding work, and the isolation guarantee that keeps one QP's fault from touching any other.
+
+## References
+
+- InfiniBand Trade Association, *InfiniBand™ Architecture Specification*, Volume 1 (General Specifications).

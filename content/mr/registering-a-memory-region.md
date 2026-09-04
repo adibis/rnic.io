@@ -45,3 +45,7 @@ A Queue Pair climbs through a hardware-enforced sequence of states before it can
 | `ibv_dereg_mr` | MPT/MTT entries removed, keys retired | Software must stop using the retired keys itself -- not hardware-enforced (2.5) |
 
 Registration and deregistration are what put keys into circulation and take them back out. What happens when a key that's still in circulation gets presented for an operation it was never granted, or against an address range outside what it covers, is [Permission and Bounds Violations](/mr/permission-and-bounds-violations)'s subject next.
+
+## References
+
+- InfiniBand Trade Association, *InfiniBand™ Architecture Specification*, Volume 1 (General Specifications).

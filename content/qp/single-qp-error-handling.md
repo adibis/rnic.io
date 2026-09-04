@@ -48,3 +48,7 @@ A QP that reaches ERROR does not stop processing — it starts flushing. Every w
 | `IBV_WC_RNR_RETRY_EXC_ERR` | local `rnr_retry` exhausted after repeated RNR NAKs from the peer | this QP |
 
 One QP faulting is a contained, well-defined event. [Multi-QP Error Arbitration](../multi-qp-error-arbitration) asks what happens when the isolation boundary this chapter just described has to hold under many simultaneous faults instead of one.
+
+## References
+
+- InfiniBand Trade Association, *InfiniBand™ Architecture Specification*, Volume 1 (General Specifications).

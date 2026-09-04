@@ -57,3 +57,7 @@ Every field below lives inside one entry of the Key Table the next chapter cover
 | `IBV_ACCESS_ON_DEMAND` | access flags | local | ODP -- see [Registering a Memory Region](/mr/registering-a-memory-region) |
 
 [The Key Table](/mr/the-key-table) is next: the structure that holds one of these entries per registered region, and how a presented `lkey` or `rkey` finds the right one.
+
+## References
+
+- InfiniBand Trade Association, *InfiniBand™ Architecture Specification*, Volume 1 (General Specifications).

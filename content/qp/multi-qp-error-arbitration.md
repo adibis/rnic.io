@@ -43,3 +43,8 @@ The previous chapter's isolation guarantee holds for exactly one fault at a time
 | Shared vs. dedicated fault-reporting path | Open design question this book does not resolve; see Part 7 for the general event-arbitration mechanism |
 
 [Eviction Policy](../eviction-policy) leaves the fault path behind and returns to the QP Cache from [QP Caching](../qp-caching)'s numbers: what decides which cached QP gets evicted when the working set runs out of room.
+
+## References
+
+- InfiniBand Trade Association, *InfiniBand™ Architecture Specification*, Volume 1 (General Specifications).
+- No IETF or IBTA standard governs multi-QP fault servicing/reporting order -- it is implementation-specific silicon design, not a wire-format or software-interface contract any standards body defines. This chapter's treatment is grounded in the sources cited in-text above, not a standards document.

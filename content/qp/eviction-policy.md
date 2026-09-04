@@ -46,3 +46,7 @@ No public source documents which of these a real RNIC actually ships, or whether
 | Error-weighted | live retry/RNR/timeout state from the reliability engine (Part 5) | couples the cache to reliability-engine state, a cross-cutting dependency |
 
 The next chapter asks whether the policy above runs as fixed hardware logic, a programmable engine, or a software-driven trap — a different question from which policy is correct.
+
+## References
+
+- No IETF or IBTA standard governs QP-cache eviction policy -- it is implementation-specific silicon design, not a wire-format or software-interface contract any standards body defines. This chapter's treatment is grounded in the sources cited in-text above, not a standards document.

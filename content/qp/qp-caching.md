@@ -48,3 +48,8 @@ Every packet that touches a QP — building one on transmit, parsing one on rece
 | Miss cost | PCIe round trip to host memory, microseconds-scale | qualitative — no cited cycle count |
 
 The next chapter covers what happens when a QP doesn't yet exist in either the cache or the table at all — the software-to-hardware handoff that creates one.
+
+## References
+
+- InfiniBand Trade Association, *InfiniBand™ Architecture Specification*, Volume 1 (General Specifications).
+- No IETF or IBTA standard governs on-chip QP context caching and working-set sizing -- it is implementation-specific silicon design, not a wire-format or software-interface contract any standards body defines. This chapter's treatment is grounded in the sources cited in-text above, not a standards document.

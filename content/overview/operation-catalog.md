@@ -73,3 +73,7 @@ Atomics are the one family that costs more at the responder than a plain DMA wri
 Current RC opcode sets carry newer additions beyond what's cataloged above — `ATOMIC_WRITE` and `FLUSH` among them, oriented at persistent-memory and extended-atomics use cases. This book's first-pass catalog scopes to the classic eight-family set above deliberately, not by oversight; those extensions may get their own treatment in a future revision pass once the core mechanism this book builds is in place.
 
 That's every operation an RC QP can carry. The next article follows one of them end to end — a single WQE, all the way to the wire and back to an acknowledged completion — and names, block by block, which later chapter in this book owns each piece of hardware it touches along the way.
+
+## References
+
+- InfiniBand Trade Association, *InfiniBand™ Architecture Specification*, Volume 1 (General Specifications).

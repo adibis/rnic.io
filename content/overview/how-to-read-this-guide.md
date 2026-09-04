@@ -34,3 +34,7 @@ Every chapter in Parts 1 and onward — not the Part 0 chapters you've been read
 Six sections, every chapter, whether the chapter is about a table, a state machine, or a pipeline stage. Once you've read one chapter, you know the shape of the next thirty.
 
 Part 1, chapter 1 — *QP Context* — is where that shape starts, and where this book's real depth begins.
+
+## References
+
+This chapter is organizational, not technical -- it names a pattern in how this book is structured, not a wire format or hardware behavior, so no standards document applies. Every other chapter closes with one.

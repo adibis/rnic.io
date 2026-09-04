@@ -49,3 +49,7 @@ Two distinct real-world conditions are this chapter's subject: a bounds violatio
 | Stale rkey after deregistration | application's responsibility per `ibv_dereg_mr()` contract; not hardware-guaranteed-safe | see [Mid-Transaction Deregistration](../mid-transaction-deregistration) |
 
 The two conditions this chapter named are what happens when one QP's access to one MR is rejected. [Shared-MR Arbitration](../shared-mr-arbitration) asks the harder question underneath that: what happens when many QPs are addressing that same MR at once, and one of them is trying to invalidate it while the others are still mid-lookup.
+
+## References
+
+- InfiniBand Trade Association, *InfiniBand™ Architecture Specification*, Volume 1 (General Specifications).

@@ -94,3 +94,7 @@ A smaller set moves continuously, under hardware's own control, with no software
 | `rate_limit` | uint32_t | vendor pacing extension | set once |
 
 [The QP Table](/qp/the-qp-table) picks this context up as a single addressable entry and covers where it actually lives.
+
+## References
+
+- InfiniBand Trade Association, *InfiniBand™ Architecture Specification*, Volume 1 (General Specifications).

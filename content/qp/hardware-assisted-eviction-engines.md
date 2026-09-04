@@ -44,3 +44,7 @@ The workload shape drives the choice. A deployment where eviction pressure is ra
 | Software-driven trap | highest — leaves the chip, waits on firmware/driver | highest — arbitrary policy logic | yes, trivially |
 
 That closes out the caching-and-eviction half of this Part. The last chapter turns to a different kind of hazard entirely: what happens when a QP doesn't just get quietly evicted, but gets reset while an operation against it is still in flight.
+
+## References
+
+- No IETF or IBTA standard governs which hardware runs an eviction policy -- it is implementation-specific silicon design, not a wire-format or software-interface contract any standards body defines. This chapter's treatment is grounded in the sources cited in-text above, not a standards document.
