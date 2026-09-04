@@ -31,7 +31,7 @@ Two fields are worth pulling out before the full table, because they're the most
 
 These are independently negotiated, apply to opposite directions of the same connection, and are very often asymmetric -- a QP that mostly issues reads and rarely serves them might run a high `max_rd_atomic` and a low `max_dest_rd_atomic`. Reading one where the other belongs is the single easiest way to misdiagnose a QP context.
 
-Beyond that pair, the fields split cleanly by transport scope. RC (Reliable Connection) carries every field UD and UC do plus the ones only a connection with hardware-managed reliability needs: `timeout`, `retry_cnt`, `rnr_retry`, `min_rnr_timer`, and the `max_rd_atomic`/`max_dest_rd_atomic` pair above. UD (Unreliable Datagram) carries none of that -- no reliability state to speak of, no `dest_qp_num` even, since a UD QP names its destination per-message rather than once at connection setup. UC (Unreliable Connected) sits between the two: connected like RC, but without the reliability fields, since there's no retry engine reading them.
+Beyond that pair, the fields split cleanly by transport scope. UD (Unreliable Datagram) has no remote-access permission concept at all -- it supports only SEND/RECEIVE, so `qp_access_flags` doesn't apply to it either, alongside the rest of RC/UC's connection-oriented fields below. RC (Reliable Connection) carries every field UC does plus the ones only a connection with hardware-managed reliability needs: `timeout`, `retry_cnt`, `rnr_retry`, `min_rnr_timer`, and the `max_rd_atomic`/`max_dest_rd_atomic` pair above. UD (Unreliable Datagram) carries none of that -- no reliability state to speak of, no `dest_qp_num` even, since a UD QP names its destination per-message rather than once at connection setup. UC (Unreliable Connected) sits between the two: connected like RC, but without the reliability fields, since there's no retry engine reading them.
 
 ## Set once, or updated by hardware on every packet
 
@@ -74,7 +74,7 @@ A smaller set moves continuously, under hardware's own control, with no software
 | `rq_psn` | uint32_t | RC/UC | set once (INIT→RTR), then hardware-advanced |
 | `sq_psn` | uint32_t | all | set once (RTR→RTS), then hardware-advanced |
 | `dest_qp_num` | uint32_t | RC/UC | set once, INIT→RTR |
-| `qp_access_flags` | bitmask | all | set once, RESET→INIT |
+| `qp_access_flags` | bitmask | RC/UC only | set once, RESET→INIT |
 | `cap` | struct | QP-resize-capable HCAs | set once |
 | `ah_attr` | struct | RC/UC | set once, INIT→RTR |
 | `alt_ah_attr` | struct | RC/UC | set once (alternate path) |
