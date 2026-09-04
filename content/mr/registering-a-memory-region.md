@@ -1,0 +1,47 @@
+---
+title: "Registering a Memory Region"
+weight: 4
+date: 2026-09-04
+publishDate: 2026-09-04
+draft: true
+description: "A memory region has none of a QP's five-state richness -- it's usable or it isn't. This chapter covers the one call that makes it usable, the real hardware cost the verbs manual doesn't describe, and the one alternative -- On-Demand Paging -- that defers that cost instead of paying it upfront."
+prev: /mr/key-caching
+next: /mr/permission-and-bounds-violations
+---
+
+## Locator
+
+<!-- IMAGE: Master RNIC block diagram, full canvas, with the "MR/Key Table" block highlighted (full-opacity indigo override treatment per docs/SVG_STYLE.md, overriding its normal amber shared-resource color) and every other block, including Key Cache, at opacity 0.35. Caption: "Registering a memory region writes a new entry into this table for the first time -- there is no further hardware-enforced handshake past it, unlike the QP's multi-state climb to RTS." -->
+
+[The Key Table](/mr/the-key-table) covered the MPT/MTT structure a memory region's entry lives in once it exists. This chapter covers how it gets there.
+
+## Overview
+
+A Queue Pair climbs through a hardware-enforced sequence of states before it can carry a single packet -- RESET, INIT, RTR, RTS, each transition its own gate. A memory region doesn't. It is registered, at which point its `lkey` and `rkey` are immediately usable in a Work Request, or it is deregistered, at which point they are not. There is no INIT-equivalent holding state, no negotiated handshake with a peer, no multi-attribute mask a driver assembles across several calls. This chapter covers the entire lifecycle -- registration, validity, deregistration -- in one place, in place of a separate state-machine chapter, precisely because the underlying lifecycle doesn't have [QP State Machine](/qp/qp-state-machine)'s richness to justify splitting it up the same way.
+
+## Block diagram
+
+<!-- IMAGE: Left-to-right sequence of four boxes. Box 1: "ibv_reg_mr(pd, addr, length, access_flags)" with a small arrow labeled "walks process page tables, pins pages" pointing down into Box 2. Box 2: "MPT entry populated (address, length, permissions) + one or more MTT entries (physical page translations)" drawn in the amber shared-resource color, matching the-key-table.md's block diagram, with a further small arrow labeled "keys assigned" pointing right into Box 3: "MR valid -- lkey/rkey usable in Work Requests" (indigo, full opacity). Below Box 1, a dashed-line branch (per SVG_STYLE.md's inactive-region dasharray) labeled "IBV_ACCESS_ON_DEMAND set" skips the "pins pages" arrow entirely and instead points to a small satellite box: "no upfront pinning -- first touch resolved page-fault-style," rejoining the main flow at Box 3's MPT/MTT population step to show ODP still ends in the same valid state, just by a different path. Box 3 has one further arrow right, labeled "ibv_dereg_mr()," into Box 4: "MR invalid -- MPT/MTT entries removed, lkey/rkey retired." -->
+
+## Deep walkthrough
+
+**What `ibv_reg_mr` actually costs, and why the manual doesn't say.** The call takes a Protection Domain, a virtual address range, and a set of access flags, and returns a populated `struct ibv_mr` carrying an `lkey` and `rkey` (2.1). What it does to get there -- same abstraction-boundary gap this book has already hit at Part 0's doorbell and Part 1's QP table organization -- is not described at the verbs-manual level. The verbs API is deliberately a boundary: software states what it wants registered and gets back keys, and the real cost sits entirely on the driver/hardware side of that boundary. Architecturally, what has to happen is not in serious doubt even without a vendor's exact sequence to cite: the process's page tables get walked to resolve the requested virtual range down to physical pages, those pages get pinned so the OS can no longer swap or relocate them out from under a device that holds direct physical-address translations to them, and the MR/Key Table (2.2) gets populated -- an MPT entry recording address, length, and permissions, plus one or more MTT entries covering however many physical pages the registration spans. None of that is this book asserting a specific implementation's exact op sequence; it's the minimum architectural work a "return a valid, hardware-usable key" contract has to do.
+
+**Valid or invalid -- not a state machine.** Once registration completes, the MR is valid: its keys can appear in a local Work Request or be handed to a remote peer immediately, with no further transition to wait through. [QP State Machine](/qp/qp-state-machine) exists because a QP needs a port bound, a partition key checked, and a peer named before it's safe to use -- three separate hardware-enforced gates. A memory region has none of that to negotiate; the moment its table entry is populated, its keys are live. Deregistration (`ibv_dereg_mr`) is the only other transition this object has: it removes the MPT/MTT entries and retires the keys. That's the entire lifecycle -- two states, not five -- and it's worth saying plainly rather than leaving a reader who just finished Part 1 wondering where this book's version of the QP state machine went. It didn't get skipped; the object underneath it genuinely doesn't have that shape.
+
+**On-Demand Paging: the real alternative to pinning upfront.** Setting `IBV_ACCESS_ON_DEMAND` at registration creates an MR that skips upfront page pinning entirely. `ibv_reg_mr(3)`'s exact recipe for the common *implicit* ODP case -- one MR covering a process's entire address space rather than one fixed range -- is specific and worth quoting directly: `IBV_ACCESS_ON_DEMAND` set, `addr` equal to 0, and `length` equal to `SIZE_MAX`. The tradeoff this makes is real and worth naming precisely: a pinned registration pays its full cost once, upfront, at `ibv_reg_mr` time, and every access after that is guaranteed not to stall on a page fault. An ODP registration pays close to nothing at registration time and instead defers that cost to first touch -- the first access to a given page triggers a page-fault-style resolution, handled cooperatively by hardware and driver against the OS's own page tables, exactly when that page is actually needed rather than speculatively for the whole range up front. That's a genuine latency-shape tradeoff, not a strictly better option: ODP is attractive when a registered range is large relative to what actually gets touched, or when registration-time latency matters more than a possible stall later; pinned registration is attractive when every page will be touched anyway and a predictable, fault-free access pattern matters more than registration speed. This chapter's main treatment stays on the standard pinned path, consistent with this book's current scope -- ODP gets this one paragraph as a real, named alternative, not a second full treatment.
+
+**Deregistration: removing the entry, not the responsibility.** `ibv_dereg_mr` reverses registration -- the MPT/MTT entries are removed from the table (and from the Key Cache, 2.3, if resident there) and the keys are retired. What it does not do is guarantee anything about operations already in flight that reference those keys, or protect against software that keeps using a retired key after the call returns; that's [Permission and Bounds Violations](/mr/permission-and-bounds-violations)'s subject next, not this chapter's.
+
+> **Design rationale.** Pinning pages at registration time rather than defaulting every MR to ODP-style lazy resolution is a deliberate choice about where to put a cost that has to be paid somewhere. Upfront pinning makes every subsequent access to that region fault-free and its latency predictable -- exactly what a performance-sensitive RDMA path wants, since a stall on the data path is precisely what registration exists to move out of the way in the first place. The cost is that registration itself becomes proportional to region size, paid whether or not the whole region ever actually gets touched. ODP inverts that trade: registration is cheap regardless of size, but the first-touch cost is deferred, not eliminated, and lands unpredictably wherever an access pattern first reaches a given page. Neither option is free; the choice is really about which latency a given workload can afford to have -- a known one, paid once, or a smaller, spread-out one, paid on demand.
+
+## Interface / timing reference
+
+| Step | What happens | Cost model |
+|---|---|---|
+| `ibv_reg_mr` (default, pinned) | Walk process page tables, pin pages, populate MPT + MTT entries, assign `lkey`/`rkey` | Upfront, proportional to region size / page count -- exact figure not disclosed at verbs level |
+| `IBV_ACCESS_ON_DEMAND` (explicit ODP) | Upfront pinning skipped for the named range | Deferred to first touch, page-fault-style |
+| Implicit ODP recipe | `addr = 0`, `length = SIZE_MAX`, `IBV_ACCESS_ON_DEMAND` set | Covers the entire process address space lazily, one registration |
+| `ibv_dereg_mr` | MPT/MTT entries removed, keys retired | Software must stop using the retired keys itself -- not hardware-enforced (2.5) |
+
+Registration and deregistration are what put keys into circulation and take them back out. What happens when a key that's still in circulation gets presented for an operation it was never granted, or against an address range outside what it covers, is [Permission and Bounds Violations](/mr/permission-and-bounds-violations)'s subject next.

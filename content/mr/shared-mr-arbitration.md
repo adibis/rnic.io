@@ -1,0 +1,48 @@
+---
+title: "Shared-MR Arbitration"
+weight: 6
+date: 2026-09-04
+publishDate: 2026-09-04
+draft: true
+description: "A shared receive buffer registered once and addressed by a dozen QPs turns one key-table entry into something many owners touch at once -- concurrent reads are presumably free, but no public source says what happens when one of those owners tries to invalidate the entry while the others are still reading it."
+prev: /mr/permission-and-bounds-violations
+next: /mr/key-cache-eviction-policy
+---
+
+## Locator
+
+<!-- IMAGE: Master RNIC block diagram (see docs/MASTER_DIAGRAM_INVENTORY.md), full canvas, all blocks at opacity 0.35 except MR/Key Table and Key Cache, drawn at full opacity with the indigo highlight override (fill #eef2ff, stroke #4338ca at stroke-width 2, label text #312e81) per docs/SVG_STYLE.md. Unlike the funnel framing used elsewhere for shared reporting paths, draw four or five small sky-blue "QP" boxes (per SVG_STYLE.md's actor-color #f0f9ff fill / #0369a1 stroke) arranged around the single highlighted Key Cache box, each with its own short arrow pointing in toward that one box -- not converging into a shared channel downstream of it, but landing on the same single entry from multiple independent directions. Caption underneath: "many owners, one entry -- not many entries, one reporting path." -->
+
+[Permission and Bounds Violations](../permission-and-bounds-violations) covered what happens when one QP's access to one MR entry is rejected. This chapter asks a different question: what happens when more than one QP is addressing that same entry at the same time, none of them necessarily doing anything wrong. This is confirmed thin territory — no source found describes how a real RNIC internally arbitrates simultaneous accesses from multiple QPs against one shared MR/key-table entry, and this chapter says so plainly rather than presenting reasoned analysis as documented fact.
+
+## Overview
+
+A memory region registered once and handed out to many QPs — a shared receive buffer is the natural example — turns one MPT/MTT entry into a piece of state with multiple independent owners, all capable of hitting it concurrently. That's a genuinely different arbitration shape from anything Part 1 covers, worth naming precisely rather than treating as a re-skin of a chapter already written. Reasoning through the shape gets somewhere useful even without a documented hardware answer: concurrent read-only lookups against one entry look, on the face of it, trivial to arbitrate, because a lookup doesn't mutate the entry it reads. The genuinely hard case is a concurrent *invalidation* — an MW rebind, or a partial deregistration touching the same entry — racing against lookups still in flight against the old translation. That race's specific hardware resolution is not documented anywhere public, and this chapter doesn't invent one.
+
+## Block diagram
+
+<!-- IMAGE: Two-panel side-by-side comparison, shared vertical gutter, per docs/SVG_STYLE.md's multi-panel convention. Left panel, labeled "concurrent reads -- no contention": three sky-blue QP boxes each with a solid indigo arrow into one central "MPT/MTT entry" box, entry box stays in its normal state color throughout, no annotation glyph -- captioned "lookups don't mutate the entry; nothing to arbitrate." Right panel, labeled "read racing an invalidation -- undocumented": two sky-blue QP boxes with solid indigo arrows into the same central entry box labeled "in-flight lookup," plus one QP box with a red dashed arrow into the same entry box labeled "MW rebind / partial dereg," with a red-outlined caution glyph (per SVG_STYLE.md fault-role color) placed directly on the entry box where the dashed arrow lands, and a dashed question-mark bracket underneath captioned "resolution mechanics not documented anywhere public." -->
+
+## Deep walkthrough
+
+**Why this isn't Part 1's multi-QP arbitration wearing a different label.** [Multi-QP Error Arbitration](/qp/multi-qp-error-arbitration) is about many QPs, each owning its own separate QP-context entry, all needing to report a fault through one shared *downstream* path at the same moment — many entries, one reporting channel, contention only at the funnel's narrow end. This chapter's shape is upstream of that and structurally different: many QPs are not each touching their own entry, they're all touching the *same* single MPT/MTT entry directly, concurrently, as part of ordinary (non-faulting) operation. Many owners, one entry, not many entries, one reporting path. The two chapters are not answering the same question at different scales — one is about fan-in to a shared reporting structure after the fact, the other is about simultaneous access to one shared piece of state during the fact. Worth stating that distinction precisely rather than letting a reader who's just seen Part 1's chapter assume this one is the same problem restated.
+
+**The easy case: concurrent read-only lookups.** A lookup — resolving an incoming rkey to its address range and permission bits to validate a remote operation — doesn't write anything back into the MPT/MTT entry it consults. Multiple QPs' lookups against the same entry, at the same instant, are each independently reading the same unchanging state; nothing about one lookup can observe or be corrupted by another lookup happening in parallel against the same data. This is the case worth calling genuinely trivial to arbitrate, in the sense that there's no real contention to resolve — whatever hardware mechanism exists for reading a cache line or table entry from multiple requesters at once (replicated read ports, a lookup pipeline that simply serializes reads with no side effects) is adequate by construction, without needing anything specific to the shared-MR case.
+
+**The hard case: a lookup racing an invalidation.** The entry stops being read-only the moment something needs to change it while it's live — a memory window rebind that repoints the same key at a new address range, or a partial deregistration that removes some of the translation entries an in-flight lookup might still be resolving against. A lookup that started before the invalidation and one that starts during or after it can, in principle, see different answers for what should be one consistent piece of state, and an in-flight lookup that's already past the entry and mid-DMA when the invalidation lands raises the same question this book's next chapter takes up directly. Whether hardware serializes invalidation against all in-flight lookups on that entry (blocking new lookups, draining old ones, then applying the change), lets an in-flight lookup complete against a now-stale copy of the translation it already fetched, or does something else entirely is not stated anywhere public. This chapter doesn't have a documented answer to hand the reader — only the shape of the question.
+
+**Where the deregistration side of this gets picked up properly.** [Mid-Transaction Deregistration](../mid-transaction-deregistration) is the chapter that takes the deregistration half of this exact race further — what a DMA engine holding a translation it already fetched is supposed to do when the entry backing that translation gets torn down mid-burst. This chapter's job was narrower: establishing that the race exists the moment an MR has more than one concurrent owner, and that read-only concurrency is not the part of the problem worth spending more words on.
+
+> **Design rationale.** The reasoned split between "trivial" and "hard" here tracks a general principle that shows up anywhere multiple readers share one piece of mutable state: readers alone never need coordination, because nothing about a read can be observed by another read. The moment a writer (here, an invalidation) enters the picture, some coordination has to exist — the only real design choices are where that coordination cost gets paid. A design could pay it on every lookup (check a busy/pending-invalidate bit on every access, even the overwhelming majority that never race anything), or pay it only when an invalidation actually happens (accept that a lookup and an invalidation can genuinely interleave, and instead guarantee the invalidation itself waits for or fences off in-flight lookups before completing). The first makes the common case slightly slower to make the rare case simple to reason about; the second keeps the common case free but pushes the real complexity onto the invalidation path specifically — which is a smaller, less latency-sensitive piece of the datapath to spend that complexity on. Neither is documented as the real answer; this is analysis, not a report of what any real RNIC does.
+
+## Interface and timing reference table
+
+| Question a real design has to answer | This chapter's position |
+|---|---|
+| Concurrent read-only lookups against one shared entry | Reasoned as trivial — lookups don't mutate the entry, so nothing needs arbitrating |
+| Concurrent invalidation (MW rebind, partial dereg) racing an in-flight lookup | Not publicly documented for any real RNIC — reasoned analysis only |
+| Does an in-flight lookup see the old or new translation once an invalidation lands mid-lookup | Open question this book does not resolve |
+| Where invalidation-vs-lookup coordination cost gets paid (every lookup vs. only on invalidation) | Open design tradeoff; see design rationale above |
+| Relationship to Part 1's multi-QP arbitration | Different shape — many owners, one entry, not many entries, one reporting path |
+
+[Key Cache Eviction Policy](../key-cache-eviction-policy) leaves shared ownership behind and returns to the numbers from Key Caching: what decides which cached translation gets evicted when the working set runs out of room.
