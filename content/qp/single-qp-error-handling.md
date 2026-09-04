@@ -11,7 +11,7 @@ next: /qp/multi-qp-error-arbitration
 
 ## Locator
 
-<!-- IMAGE: Master RNIC block diagram (see docs/MASTER_DIAGRAM_INVENTORY.md), full canvas, all blocks at opacity 0.35 except QP Table and QP Cache, drawn at full opacity with the indigo highlight override (fill #eef2ff, stroke #4338ca at stroke-width 2, label text #312e81) per docs/SVG_STYLE.md -- identical highlight target to 1.5's locator, since this chapter is still describing behavior owned by that same block. Add one small red-outlined annotation glyph (per SVG_STYLE.md's fault role color) on the QP Cache box itself, distinct from the indigo highlight, to signal "this chapter is about the fault path through this block specifically." -->
+![The master RNIC block diagram with the QP Table and QP Cache pair highlighted, the same target as the QP State Machine chapter -- this chapter covers the fault path through that same block.](/images/qp/06-single-qp-error-handling-locator.svg)
 
 [QP State Machine](../qp-state-machine) covered how a QP reaches ERROR and named this chapter as the place that explains what ERROR actually does to a QP's outstanding work. This is that chapter — for exactly one QP, in isolation. [Multi-QP Error Arbitration](../multi-qp-error-arbitration) picks up immediately after with the harder question of many QPs faulting together.
 

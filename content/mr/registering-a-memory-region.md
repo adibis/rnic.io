@@ -11,7 +11,7 @@ next: /mr/permission-and-bounds-violations
 
 ## Locator
 
-<!-- IMAGE: Master RNIC block diagram, full canvas, with the "MR/Key Table" block highlighted (full-opacity indigo override treatment per docs/SVG_STYLE.md, overriding its normal amber shared-resource color) and every other block, including Key Cache, at opacity 0.35. Caption: "Registering a memory region writes a new entry into this table for the first time -- there is no further hardware-enforced handshake past it, unlike the QP's multi-state climb to RTS." -->
+![The master RNIC block diagram with the MR/Key Table highlighted and Key Cache dimmed -- this chapter writes a new entry into that table for the first time.](/images/mr/04-registering-a-memory-region-locator.svg)
 
 [The Key Table](/mr/the-key-table) covered the MPT/MTT structure a memory region's entry lives in once it exists. This chapter covers how it gets there.
 

@@ -10,7 +10,7 @@ prev: /qp/hardware-assisted-eviction-engines
 
 ## Locator
 
-<!-- IMAGE: Master RNIC block diagram (per docs/MASTER_DIAGRAM_INVENTORY.md), full canvas. QP Table / QP Cache highlighted at full opacity with the indigo highlight override per docs/SVG_STYLE.md (not their normal amber role color), same treatment as the QP State Machine chapter's locator. In addition, draw full-opacity connector arrows (rather than the usual single highlighted block's arrows) from QP Table/Cache out to three other blocks this chapter's reasoning touches: Replay Buffer, RX Parser/Reassembly, and DMA Engine -- each of those three drawn at a distinct partial emphasis (e.g. opacity 0.6) rather than the full 0.35 dim every other block gets, to visually signal "this chapter's reasoning reaches into these, even though it doesn't own them." Caption: "Mid-transaction reset touches state this chapter doesn't own -- the replay buffer (Part 5), RX reassembly and DMA writeback (Parts 4 and 8) -- without re-deriving any of it." -->
+![The master RNIC block diagram with QP Table and QP Cache highlighted -- this chapter's reasoning also reaches into the Replay Buffer, RX Parser/Reassembly, and DMA Engine without owning any of them.](/images/qp/10-mid-transaction-qp-reset-locator.svg)
 
 ## Overview
 

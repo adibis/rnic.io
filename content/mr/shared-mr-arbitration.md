@@ -11,7 +11,7 @@ next: /mr/key-cache-eviction-policy
 
 ## Locator
 
-<!-- IMAGE: Master RNIC block diagram (see docs/MASTER_DIAGRAM_INVENTORY.md), full canvas, all blocks at opacity 0.35 except MR/Key Table and Key Cache, drawn at full opacity with the indigo highlight override (fill #eef2ff, stroke #4338ca at stroke-width 2, label text #312e81) per docs/SVG_STYLE.md. Unlike the funnel framing used elsewhere for shared reporting paths, draw four or five small sky-blue "QP" boxes (per SVG_STYLE.md's actor-color #f0f9ff fill / #0369a1 stroke) arranged around the single highlighted Key Cache box, each with its own short arrow pointing in toward that one box -- not converging into a shared channel downstream of it, but landing on the same single entry from multiple independent directions. Caption underneath: "many owners, one entry -- not many entries, one reporting path." -->
+![The master RNIC block diagram with MR/Key Table and Key Cache highlighted -- this chapter is about many QPs addressing the same entry at once, not many entries sharing one reporting path.](/images/mr/06-shared-mr-arbitration-locator.svg)
 
 [Permission and Bounds Violations](../permission-and-bounds-violations) covered what happens when one QP's access to one MR entry is rejected. This chapter asks a different question: what happens when more than one QP is addressing that same entry at the same time, none of them necessarily doing anything wrong. This is confirmed thin territory — no source found describes how a real RNIC internally arbitrates simultaneous accesses from multiple QPs against one shared MR/key-table entry, and this chapter says so plainly rather than presenting reasoned analysis as documented fact.
 

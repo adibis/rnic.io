@@ -10,7 +10,7 @@ prev: /mr/hardware-assisted-key-cache-eviction
 
 ## Locator
 
-<!-- IMAGE: Master RNIC block diagram (per docs/MASTER_DIAGRAM_INVENTORY.md), full canvas. MR/Key Table and Key Cache highlighted at full opacity with the indigo highlight override per docs/SVG_STYLE.md (not their normal amber role color), same treatment as this Part's earlier chapters. In addition, draw a full-opacity connector arrow from Key Cache out to DMA Engine (the one place two Parts' caching stories meet, per docs/MASTER_DIAGRAM_INVENTORY.md), with DMA Engine itself drawn at partial emphasis (opacity 0.6) rather than the usual 0.35 dim every other block gets, to signal "this chapter's reasoning reaches into this block without owning it." Caption: "Mid-transaction deregistration is a race between software retiring a key-table entry and a DMA engine still mid-burst against the translation that entry used to hold." -->
+![The master RNIC block diagram with MR/Key Table and Key Cache highlighted -- this chapter's reasoning also reaches into the DMA Engine, the one place two Parts' caching stories meet.](/images/mr/09-mid-transaction-deregistration-locator.svg)
 
 ## Overview
 

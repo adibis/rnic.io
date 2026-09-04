@@ -11,7 +11,7 @@ next: /qp/mid-transaction-qp-reset
 
 ## Locator
 
-<!-- IMAGE: Master RNIC block diagram (per docs/MASTER_DIAGRAM_INVENTORY.md), full canvas, all blocks at opacity 0.35 except QP Cache and its Eviction Engine satellite block, both at full opacity with the indigo highlight override per docs/SVG_STYLE.md (not their normal amber role color), identical highlight set to the previous chapter's locator -- this chapter zooms into the same satellite block, asking a different question about it. -->
+![The master RNIC block diagram with the QP Cache highlighted, the same target as the Eviction Policy chapter -- this chapter asks what hardware actually runs that policy.](/images/qp/09-hardware-assisted-eviction-engines-locator.svg)
 
 ## Overview
 

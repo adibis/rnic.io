@@ -11,7 +11,7 @@ next: /qp/installing-a-qp
 
 ## Locator
 
-<!-- IMAGE: Master RNIC block diagram (per docs/MASTER_DIAGRAM_INVENTORY.md), full canvas, all ~11 top-level blocks and their connecting arrows drawn as in every chapter's locator. Only the QP Cache block is rendered at full opacity with the indigo highlight treatment (fill #eef2ff, stroke #4338ca at stroke-width 2, label text #312e81), positioned adjacent to/in front of the QP Table block. Every other block (QP Table, MR/Key Table, Key Cache, WQE Fetch/Sched, TX Packet Build, RX Parser/Reassembly, RX PSN Check, Replay Buffer, Rate Limiter, CQE Gen, CQ Storage, DMA Engine) and every connector arrow is rendered at opacity 0.35, per docs/SVG_STYLE.md's highlight/dim convention. -->
+![The master RNIC block diagram with only the QP Cache highlighted, positioned in front of the QP Table, every other block and connector dimmed.](/images/qp/03-qp-caching-locator.svg)
 
 The QP Cache is the on-chip working set of QP contexts sitting in front of the QP Table's DRAM/HBM-backed storage — this chapter, in the master diagram above.
 

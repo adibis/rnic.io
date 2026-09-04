@@ -11,7 +11,7 @@ next: /qp/qp-state-machine
 
 ## Locator
 
-<!-- IMAGE: Master RNIC block diagram, full canvas, with the "QP Table" block highlighted (full-opacity indigo override treatment per docs/SVG_STYLE.md, overriding its normal amber shared-resource color) and every other block, including QP Cache, at opacity 0.35. Caption: "Installing a QP writes a new entry into this table for the first time, then drives it through its first hardware-enforced transition." -->
+![The master RNIC block diagram with the QP Table highlighted and every other block, including QP Cache, dimmed -- this chapter writes a new entry into that table for the first time.](/images/qp/04-installing-a-qp-locator.svg)
 
 [The QP Table](/qp/the-qp-table) covered the structure a QP's context lives in once it exists. This chapter covers how it gets there in the first place.
 

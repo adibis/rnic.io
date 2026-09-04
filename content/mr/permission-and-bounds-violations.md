@@ -11,7 +11,7 @@ next: /mr/shared-mr-arbitration
 
 ## Locator
 
-<!-- IMAGE: Master RNIC block diagram (see docs/MASTER_DIAGRAM_INVENTORY.md), full canvas, all blocks at opacity 0.35 except MR/Key Table and Key Cache, drawn at full opacity with the indigo highlight override (fill #eef2ff, stroke #4338ca at stroke-width 2, label text #312e81) per docs/SVG_STYLE.md. Add one small red-outlined annotation glyph (per SVG_STYLE.md's fault-role color, #fef2f2 fill / #b91c1c stroke) on the Key Cache box, distinct from the indigo highlight, signaling "this chapter is about a lookup at this block that comes back rejected, not one that misses." -->
+![The master RNIC block diagram with MR/Key Table and Key Cache highlighted -- this chapter is about a lookup at this pair that comes back rejected, not one that misses.](/images/mr/05-permission-and-bounds-violations-locator.svg)
 
 [Registering a Memory Region](../registering-a-memory-region) covered how an MR gets its base address, length, and access-permission bits installed into the key table in the first place. This chapter is about what happens when an already-registered entry gets looked up by an incoming remote operation that doesn't fit it — either the address and length it names fall outside what was registered, or the operation type it's asking for isn't one the registration allowed.
 

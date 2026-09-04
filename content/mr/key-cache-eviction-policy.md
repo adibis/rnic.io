@@ -11,7 +11,7 @@ next: /mr/hardware-assisted-key-cache-eviction
 
 ## Locator
 
-<!-- IMAGE: Master RNIC block diagram (per docs/MASTER_DIAGRAM_INVENTORY.md), full canvas, all blocks at opacity 0.35 except MR/Key Table, Key Cache, and Key Cache's small satellite "Eviction Engine" block, all three drawn at full opacity with the indigo highlight override per docs/SVG_STYLE.md's highlight/dim convention (not their normal amber shared-resource role color, which only applies at reduced opacity). The Eviction Engine satellite sits directly attached to the Key Cache box, smaller, with a dashed connector between them (per SVG_STYLE.md's inactive/satellite dasharray convention), mirroring the QP Cache/Eviction Engine pairing in /qp/eviction-policy's locator. -->
+![The master RNIC block diagram with MR/Key Table and Key Cache highlighted -- this chapter covers what decides which cached translation gets evicted, and the separate mass-invalidation trigger deregistration causes.](/images/mr/07-key-cache-eviction-policy-locator.svg)
 
 ## Overview
 

@@ -13,7 +13,7 @@ next: /qp/single-qp-error-handling
 
 The master diagram with the QP Table / QP Cache block highlighted — the state machine described in this chapter is logic owned by that block, not a separate structure of its own.
 
-<!-- IMAGE: Master RNIC block diagram (see docs/MASTER_DIAGRAM_INVENTORY.md), full canvas, all blocks present at reduced opacity (0.35) except QP Table and QP Cache, which are drawn at full opacity with the indigo highlight override (fill #eef2ff, stroke #4338ca at stroke-width 2, label text #312e81) per docs/SVG_STYLE.md's highlight/dim convention -- not their normal amber "shared/stateful resource" role color, which only applies at reduced opacity like every other dimmed block. Connector arrows between QP Table/Cache and the TX Scheduler, RX Parser/Reassembly, and Eviction Engine satellite block are at full opacity; every other arrow inherits the 0.35 dimming of its endpoints. -->
+![The master RNIC block diagram with the QP Table and QP Cache pair highlighted -- the state machine this chapter covers is logic owned by that block, not a separate structure.](/images/qp/05-qp-state-machine-locator.svg)
 
 ## Overview
 

@@ -16,7 +16,7 @@ A Memory Region descriptor is what a successful registration produces: a record 
 
 ## Locator
 
-<!-- IMAGE: Master RNIC block diagram (per docs/MASTER_DIAGRAM_INVENTORY.md), full canvas, with the "MR/Key Table" block highlighted (full-opacity indigo override treatment per docs/SVG_STYLE.md, overriding its normal amber shared-resource color) and every other block, including Key Cache, at opacity 0.35. Caption: "The Memory Region Descriptor is not a block of its own -- it's the data that lives inside each MR/Key Table entry. This chapter zooms into one entry; the next chapter covers the table structure holding it." -->
+![The master RNIC block diagram with the MR/Key Table highlighted and Key Cache dimmed -- this chapter covers the data living inside one entry of that table, not the structure itself.](/images/mr/01-the-memory-region-descriptor-locator.svg)
 
 Every field below lives inside one entry of the Key Table the next chapter covers -- this chapter is about what's in that entry, not the structure holding it.
 

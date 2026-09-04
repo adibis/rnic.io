@@ -16,7 +16,7 @@ A Queue Pair's context is the complete set of state hardware needs to send and r
 
 ## Locator
 
-<!-- IMAGE: Master RNIC block diagram, full canvas, with the "QP Table / QP Cache" block pair highlighted (full-opacity indigo treatment per docs/SVG_STYLE.md) and every other block (WQE Fetch/Sched, TX Packet Build, RX Parser/Reassembly, RX PSN Check, MR/Key Table, Key Cache, Replay Buffer, Rate Limiter, CQE Gen, CQ Storage, DMA Engine) dimmed to opacity 0.35. Caption note under the diagram: "QP Context is not a block of its own -- it's the data that lives inside each QP Table / QP Cache entry. This chapter zooms into one entry; the next two chapters cover the table and cache structures holding it." -->
+![The master RNIC block diagram with the QP Table and QP Cache pair highlighted and every other block dimmed -- this chapter covers the data living inside one entry of that pair, not the structure itself.](/images/qp/01-qp-context-locator.svg)
 
 Every field below lives inside one entry of the QP Table this Part covers next -- this chapter is about what's in that entry, not the structure holding it.
 

@@ -11,7 +11,7 @@ next: /mr/mid-transaction-deregistration
 
 ## Locator
 
-<!-- IMAGE: Master RNIC block diagram (per docs/MASTER_DIAGRAM_INVENTORY.md), full canvas, all blocks at opacity 0.35 except Key Cache and its Eviction Engine satellite block, both drawn at full opacity with the indigo highlight override per docs/SVG_STYLE.md's highlight/dim convention (not their normal amber role color), same highlight set as the previous chapter's locator -- this chapter zooms into the same satellite block, asking what runs it rather than what it decides. -->
+![The master RNIC block diagram with the Key Cache highlighted, the same target as the Key Cache Eviction Policy chapter -- this chapter asks what hardware actually runs each mechanism.](/images/mr/08-hardware-assisted-key-cache-eviction-locator.svg)
 
 ## Overview
 

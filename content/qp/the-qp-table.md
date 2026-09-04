@@ -11,7 +11,7 @@ next: /qp/qp-caching
 
 ## Locator
 
-<!-- IMAGE: Master RNIC block diagram, full canvas, with the "QP Table" block highlighted (full-opacity indigo override treatment per docs/SVG_STYLE.md's highlight/dim convention -- fill #eef2ff, stroke #4338ca at stroke-width 2, label text #312e81 -- overriding its normal amber shared-resource color for this highlight) and every other block, including QP Cache, at opacity 0.35. Caption: "The QP Table is the backing store every QP Context (chapter 1.1) lives in as one addressable entry. QP Caching, next, covers the on-chip working set sitting in front of it." -->
+![The master RNIC block diagram with the QP Table highlighted and every other block, including QP Cache, dimmed -- this chapter is the backing store one QP Context entry lives in.](/images/qp/02-the-qp-table-locator.svg)
 
 [QP Context](/qp/qp-context) covered what's inside one entry. This chapter is about the structure holding every entry, and how a QP number finds the right one.
 

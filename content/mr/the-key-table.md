@@ -17,7 +17,7 @@ Every registered Memory Region's descriptor lives in a table sized to hold as ma
 
 ## Locator
 
-<!-- IMAGE: Master RNIC block diagram, full canvas, with the "MR/Key Table" block highlighted (full-opacity indigo override treatment per docs/SVG_STYLE.md's highlight/dim convention -- fill #eef2ff, stroke #4338ca at stroke-width 2, label text #312e81 -- overriding its normal amber shared-resource color for this highlight) and every other block, including Key Cache, at opacity 0.35. Caption: "The Key Table is the backing store every Memory Region Descriptor (chapter 2.1) lives in as one addressable entry. Key Caching, next, covers the on-chip working set sitting in front of it." -->
+![The master RNIC block diagram with the MR/Key Table highlighted and Key Cache dimmed -- this chapter is the backing store every Memory Region Descriptor lives in as one addressable entry.](/images/mr/02-the-key-table-locator.svg)
 
 ## Block diagram
 

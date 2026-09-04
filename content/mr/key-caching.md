@@ -11,7 +11,7 @@ next: /mr/registering-a-memory-region
 
 ## Locator
 
-<!-- IMAGE: Master RNIC block diagram (per docs/MASTER_DIAGRAM_INVENTORY.md), full canvas, all ~11 top-level blocks and their connecting arrows drawn as in every chapter's locator. Only the Key Cache block is rendered at full opacity with the indigo highlight treatment (fill #eef2ff, stroke #4338ca at stroke-width 2, label text #312e81), positioned adjacent to/in front of the MR/Key Table block. Every other block (MR/Key Table, QP Table, QP Cache, WQE Fetch/Sched, TX Packet Build, RX Parser/Reassembly, RX PSN Check, Replay Buffer, Rate Limiter, CQE Gen, CQ Storage, DMA Engine) and every connector arrow is rendered at opacity 0.35, per docs/SVG_STYLE.md's highlight/dim convention. In addition, draw a dashed annotation bracket spanning both the Key Cache box and the QP Cache box (drawn at its normal 0.35 dim, but the bracket itself full opacity in slate #64748b) labeled "same on-chip SRAM" -- this is the one deliberate exception to strict highlight/dim, since this chapter's point is that these two boxes are not physically separate structures. -->
+![The master RNIC block diagram with only the Key Cache highlighted, positioned in front of the MR/Key Table, every other block and connector dimmed.](/images/mr/03-key-caching-locator.svg)
 
 The Key Cache is the on-chip working set of MPT/MTT entries sitting in front of the MR/Key Table's DRAM/HBM-backed storage -- this chapter, in the master diagram above. It is drawn as its own box for the same reason [QP Caching](/qp/qp-caching) drew the QP Cache as its own box: each is the working set for a different structure's lookups. But the two boxes are not two pieces of silicon. They are the same SRAM.
 

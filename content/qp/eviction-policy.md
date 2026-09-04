@@ -11,7 +11,7 @@ next: /qp/hardware-assisted-eviction-engines
 
 ## Locator
 
-<!-- IMAGE: Master RNIC block diagram (per docs/MASTER_DIAGRAM_INVENTORY.md), full canvas, all blocks at opacity 0.35 except QP Cache and its small satellite "Eviction Engine" block, both drawn at full opacity with the indigo highlight override per docs/SVG_STYLE.md's highlight/dim convention (not their normal amber role color, which only applies at reduced opacity). The Eviction Engine satellite sits directly attached to the QP Cache box, smaller, with a dashed connector between them (per SVG_STYLE.md's "inactive/satellite" dasharray convention). -->
+![The master RNIC block diagram with the QP Cache highlighted -- this chapter is about which cached QP context gets evicted when that cache is full.](/images/qp/08-eviction-policy-locator.svg)
 
 ## Overview
 
