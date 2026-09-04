@@ -11,7 +11,7 @@ next: /qp/eviction-policy
 
 ## Locator
 
-<!-- IMAGE: Master RNIC block diagram (see docs/MASTER_DIAGRAM_INVENTORY.md), full canvas, all blocks at opacity 0.35 except QP Table and QP Cache (full opacity, amber role color) plus the CQE Gen / CQ Storage block pair, also drawn at full opacity, with a full-opacity connector arrow running from QP Table/Cache to CQE Gen -- this chapter's subject is specifically the shared path between many faulting QPs and the one reporting structure they all converge on. -->
+<!-- IMAGE: Master RNIC block diagram (see docs/MASTER_DIAGRAM_INVENTORY.md), full canvas, all blocks at opacity 0.35 except QP Table and QP Cache (full opacity, indigo highlight override per docs/SVG_STYLE.md, not their normal amber role color) plus the CQE Gen / CQ Storage block pair, also drawn at full opacity with the same indigo override, with a full-opacity connector arrow running from QP Table/Cache to CQE Gen -- this chapter's subject is specifically the shared path between many faulting QPs and the one reporting structure they all converge on. -->
 
 This chapter is honest about its own limits before it starts: no vendor publishes how its RNIC actually schedules or prioritizes fault reporting when many QPs go down at once. [Single-QP Error Handling](../single-qp-error-handling) is grounded in documented verbs-layer behavior throughout. This chapter is reasoned architectural analysis of a real problem that behavior creates at scale, not a report of one real chip's internal arbitration logic — flagged plainly here, and again where it matters below.
 

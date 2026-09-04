@@ -1,0 +1,46 @@
+---
+title: "Hardware-Assisted Eviction Engines"
+weight: 9
+date: 2026-09-04
+publishDate: 2026-09-04
+draft: true
+description: "Deciding which QP to evict is one question. Deciding what actually runs that decision -- fixed silicon, a programmable engine, or a trap to software -- is a separate one, and it's where the cost of flexibility gets paid in latency, not complexity."
+prev: /qp/eviction-policy
+next: /qp/mid-transaction-qp-reset
+---
+
+## Locator
+
+<!-- IMAGE: Master RNIC block diagram (per docs/MASTER_DIAGRAM_INVENTORY.md), full canvas, all blocks at opacity 0.35 except QP Cache and its Eviction Engine satellite block, both at full opacity with the indigo highlight override per docs/SVG_STYLE.md (not their normal amber role color), identical highlight set to the previous chapter's locator -- this chapter zooms into the same satellite block, asking a different question about it. -->
+
+## Overview
+
+[Eviction Policy](../eviction-policy) asked which cached QP should be evicted under pressure. This chapter asks a separate question: what actually executes that decision, on every single cache miss, without becoming the bottleneck the cache itself exists to avoid. The answer sits somewhere on a spectrum from fully fixed hardware to a full software trap, and where a real design lands on that spectrum is a genuine engineering trade, not a solved problem.
+
+## Block diagram
+
+<!-- IMAGE: A horizontal spectrum diagram, three labeled positions left to right: "Fixed-function hardware" (a small hardwired state-machine icon, solid indigo box), "Programmable hardware engine" (a small sequencer/register-file icon, solid indigo box with a dashed border segment suggesting configurability), "Software-driven" (a box shaped like a trap/interrupt handler, connected by a dashed arrow up to a "firmware / driver" box outside the chip boundary, since this path leaves silicon). Each position has a small latency bar underneath, shortest at "fixed-function" and longest at "software-driven," and a small flexibility bar going the opposite direction, to make the trade visually explicit without needing invented numbers. -->
+
+## Deep walkthrough
+
+**Fully fixed-function hardware.** The eviction policy from the previous chapter is wired directly into the cache controller's logic at design time — an LRU bit per line, say, updated and consulted entirely in hardware, with no register interface exposed to change how it behaves. This is the fastest possible answer: a cache miss resolves its victim in the same cycle-scale path as the rest of the lookup, with nothing waiting on anything off-chip. The cost is inflexibility baked in for the life of the silicon — if a later workload needs error-weighted eviction and the chip only implements LRU, there is no field upgrade path; the next design has to change it.
+
+**A programmable hardware engine.** Keep the decision in hardware, but expose it through configuration: weight registers software can tune, a small threshold table, or a compact embedded sequencer running a constrained policy program, none of which touch the fast path's cycle budget on a hit. This is the realistic middle ground most serious designs actually reach for — it keeps eviction decisions off the software critical path entirely (a miss still resolves without leaving the chip to ask permission), while giving an operator or driver a real lever to shift behavior between, say, pure LRU and priority-aware eviction, without a silicon respin.
+
+**Software-driven.** Hardware detects cache pressure and traps: "eviction needed, pick a victim," handed off to firmware or a driver running on a management core. This is maximally flexible — arbitrary policy logic, easy to update, easy to instrument — and it reintroduces exactly the cost this book's opening chapter ([What Is RDMA](/overview/what-is-rdma)) named as the thing hardware offload was supposed to remove: a software round trip sitting on a path that used to be, or was supposed to be, hardware-only. A cache miss is already the expensive case relative to a hit; routing its resolution through software makes the expensive case measurably more expensive, on top of the PCIe fetch [QP Caching](../qp-caching) already charges it.
+
+None of the three is the universally correct answer, and no public source documents which real RNICs land where on this spectrum for QP-context eviction specifically — this is squarely inside vendor silicon that isn't publicly described. What follows is this book's own reasoned analysis of what pushes a design toward one end or the other, not a report of any one chip's actual implementation.
+
+The workload shape drives the choice. A deployment where eviction pressure is rare and traffic is fairly uniform can tolerate fixed-function hardware's inflexibility, because the policy question barely matters in practice. A deployment running mixed-priority tenants on shared adapters, where 1.8's priority- or error-weighting genuinely changes outcomes, needs at least a programmable engine to make that weighting adjustable without a new chip. A software-driven trap only earns its cost where eviction events are rare enough, or policy sophistication valuable enough, that occasional software latency on a cache miss is a fair trade against the flexibility gained — plausible for a research or highly specialized platform, a hard sell for a general-purpose line-rate NIC.
+
+> **Design rationale.** The instinct to reach for maximum flexibility — trap to software, let firmware decide anything — collides directly with the reason a QP cache exists at all: [QP Caching](../qp-caching) built this structure specifically to keep per-packet hot-path work off of PCIe and off of software, because that round trip is exactly what a cache miss already costs. Handing the *eviction decision itself* back to software on every miss doesn't eliminate that cost, it just relocates and probably compounds it. A programmable-but-hardware-resident engine is less a compromise than the design that actually respects the reason the cache was built in the first place: keep every step of a fast-path miss in hardware, and spend the flexibility budget on registers and thresholds a driver can tune, not on a round trip that leaves the chip.
+
+## Interface / timing reference
+
+| Engine type | Fast-path cost on a miss | Flexibility | Field-tunable |
+|---|---|---|---|
+| Fixed-function | lowest — resolves in the same on-chip path as the lookup | none — fixed at design time | no |
+| Programmable hardware engine | low — stays on-chip, decision logic reads tunable registers/weights | moderate — bounded by what the engine's configuration surface exposes | yes |
+| Software-driven trap | highest — leaves the chip, waits on firmware/driver | highest — arbitrary policy logic | yes, trivially |
+
+That closes out the caching-and-eviction half of this Part. The last chapter turns to a different kind of hazard entirely: what happens when a QP doesn't just get quietly evicted, but gets reset while an operation against it is still in flight.
