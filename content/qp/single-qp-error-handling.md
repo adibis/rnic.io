@@ -1,0 +1,50 @@
+---
+title: "Single-QP Error Handling"
+weight: 6
+date: 2026-09-04
+publishDate: 2026-09-04
+draft: true
+description: "A QP in ERROR doesn't fail loudly and stop -- it fails loudly and keeps going, flushing every queued work request through the completion queue with a status that says none of this actually happened. Here's what that flush actually does, and why the QP sitting next to it never even notices."
+prev: /qp/qp-state-machine
+next: /qp/multi-qp-error-arbitration
+---
+
+## Locator
+
+<!-- IMAGE: Master RNIC block diagram (see docs/MASTER_DIAGRAM_INVENTORY.md), full canvas, all blocks at opacity 0.35 except QP Table and QP Cache, drawn at full opacity in the amber "shared/stateful resource" role color per docs/SVG_STYLE.md -- identical highlight target to 1.5's locator, since this chapter is still describing behavior owned by that same block. Add one small red-outlined annotation glyph (per SVG_STYLE.md's fault role color) on the QP Cache box itself, distinct from the amber highlight, to signal "this chapter is about the fault path through this block specifically." -->
+
+[QP State Machine](../qp-state-machine) covered how a QP reaches ERROR and named this chapter as the place that explains what ERROR actually does to a QP's outstanding work. This is that chapter — for exactly one QP, in isolation. [Multi-QP Error Arbitration](../multi-qp-error-arbitration) picks up immediately after with the harder question of many QPs faulting together.
+
+## Overview
+
+A QP that reaches ERROR does not stop processing — it starts flushing. Every work request already posted and not yet completed, and every work request posted afterward, drains through the completion queue carrying a status that says the operation never happened, until nothing is left in either queue. Nothing about this touches any other QP on the same adapter: ERROR is scoped to exactly the QP that faulted, by construction, and that isolation guarantee is this chapter's real subject.
+
+## Block diagram
+
+<!-- IMAGE: Small diagram of one QP's send and receive queues both draining into a single Completion Queue. Each queue shown as a short FIFO of WQE boxes; every box exiting the FIFO is stamped "IBV_WC_WR_FLUSH_ERR" in red text (fault role color) rather than a normal green/neutral completion, distinguishing a flush from a real completion. A dotted boundary box drawn around this one QP's send queue, receive queue, and their entries only -- explicitly excluding the Completion Queue itself and any other QP's queues -- captioned "fault isolation boundary: this QP's queues only." -->
+
+## Deep walkthrough
+
+**What a flush actually is.** Once a QP is in ERROR, hardware doesn't discard outstanding work silently — it completes every one of it, in order, with `IBV_WC_WR_FLUSH_ERR` instead of a normal success status. This includes work already posted and awaiting processing when the fault occurred, and work posted afterward, for as long as the application keeps posting to a QP it hasn't yet noticed is dead. A flush is not a hardware fault of its own; it's the QP telling software, one completion at a time, "this didn't happen, and neither will anything you post from here." Draining continues until both queues are empty, at which point the QP is fully quiesced in ERROR and waiting for a RESET.
+
+**Two kinds of fault, and why the distinction matters.** Not every path into ERROR means the same thing about what went wrong. `IBV_EVENT_QP_REQ_ERR` fires when the responder side of this QP detects a transport-layer violation in a packet arriving for it — an unsupported or out-of-sequence opcode. It's RC-only, and it's rare enough that its own documentation calls it a sign of "problems in the subnet or when an RDMA device sends illegal packets" — something is wrong with what's arriving, not with how this QP was set up. `IBV_EVENT_QP_ACCESS_ERR` is a different animal entirely: a misaligned atomic request, more outstanding RDMA read/atomic requests than `max_dest_rd_atomic` allows, an R_Key violation, or a length error on an operation without immediate data. Its own documentation frames this plainly: these "usually occur because of bugs in the user code," not because the network or the peer did anything wrong. Both auto-transition the QP to ERROR identically from hardware's side — the distinction is entirely about where a diagnosing engineer should look afterward, protocol/wire problem versus local-programming problem, not about how the QP itself behaves once it's there.
+
+**Isolation is the property, not an accident.** Nothing in either error path touches a sibling QP on the same adapter. The flush behavior, the ERROR state itself, and the eventual RESET-to-recover path are all scoped to the one QP context that faulted — a second QP carrying on normal RTS traffic through the exact same TX/RX pipeline stages, cached in the exact same QP Cache, keeps running without observing anything. That's worth stating explicitly here because it's precisely the property [Multi-QP Error Arbitration](../multi-qp-error-arbitration) complicates: isolation between two QPs faulting independently is one problem; many QPs faulting from one shared cause, all needing to report through the same channel at once, is a different one.
+
+**SRQ-associated QPs need one more signal before teardown.** A QP that shares a Shared Receive Queue with other QPs can't simply be destroyed the moment it reaches ERROR — some of its outstanding receive-side work may still reference WQEs pulled from that shared queue, and destroying the QP before that work finishes draining risks leaving the SRQ itself in an inconsistent state for the QPs still using it. `IBV_EVENT_QP_LAST_WQE_REACHED` is the signal that closes this gap: it fires once this QP has consumed the last SRQ-sourced WQE it will ever consume, and it's the event software waits for before it's safe to tear the QP down without disturbing its SRQ siblings.
+
+> **Design rationale.** Flushing every outstanding operation with an explicit status, rather than simply halting the QP and leaving posted-but-unprocessed work in limbo, is what makes fault recovery a software-observable, boundedly-long process instead of an open question the application has to poll for indefinitely. It costs hardware a real obligation — walk both queues to completion, in order, generating a real CQE for each entry, even though none of them succeeded — instead of just setting a flag and stopping. That cost buys the application a guarantee: post-then-poll always terminates, one way or another, for every request it ever issued, fault or no fault. The alternative (silently dropping queued work with no completion at all) would turn every fault into a hang the application has no event to wake up on.
+
+## Interface and timing reference table
+
+| Signal / status | Fires when | Scope |
+|---|---|---|
+| `IBV_WC_WR_FLUSH_ERR` | every outstanding/subsequent WQE on a QP already in ERROR | this QP's SQ and RQ only |
+| `IBV_EVENT_QP_FATAL` | an error prevents further completions on this QP | this QP; recovery requires RESET |
+| `IBV_EVENT_QP_REQ_ERR` | responder-side transport violation (unsupported/out-of-sequence opcode) | RC only, this QP |
+| `IBV_EVENT_QP_ACCESS_ERR` | R_Key violation, misaligned atomic, outstanding-read/atomic overrun, length error | RC only, this QP |
+| `IBV_EVENT_QP_LAST_WQE_REACHED` | this QP's last SRQ-sourced WQE has been consumed, following an ERROR transition | this QP, SRQ-associated only |
+| `IBV_WC_RETRY_EXC_ERR` | local `retry_cnt` exhausted with no ack/nack from the peer at all | this QP |
+| `IBV_WC_RNR_RETRY_EXC_ERR` | local `rnr_retry` exhausted after repeated RNR NAKs from the peer | this QP |
+
+One QP faulting is a contained, well-defined event. [Multi-QP Error Arbitration](../multi-qp-error-arbitration) asks what happens when the isolation boundary this chapter just described has to hold under many simultaneous faults instead of one.
