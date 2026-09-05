@@ -21,7 +21,7 @@ A Send Queue's WQEs live in a ring in host memory -- a fixed-size, circular buff
 
 ## Block diagram
 
-<!-- IMAGE: A circular ring buffer drawn as a row of numbered slots wrapping visually back to slot 0, with a producer-index arrow and consumer-index arrow both pointing into it, the region between them shaded to represent posted-but-not-yet-fetched WQEs. A callout box reading "capacity = N slots, but only N-1 usable -- producer == consumer must mean empty, not ambiguous with full" sits beside the ring. Below it, a separate small doorbell sequence: an actor box "software" with two paths -- (a) a normal path: small "producer index write" box arrowing into a "doorbell register (MMIO, 64B aligned)" box, arrowing into "WQE Fetch" reading the ring; (b) a BlueFlame path drawn in a different color, labeled "WQE bytes written directly," bypassing the ring entirely with a dashed arrow straight into a "UAR (BlueFlame buffer)" box that feeds WQE Fetch without a separate ring read, captioned "lower latency for small messages -- skips the round trip through host-memory ring and back." -->
+![An 8-slot Send Queue ring wrapping back to slot 0, with a consumer index and producer index each pointing into the ring and the slots between them shaded amber as posted-but-unfetched, captioned with the N-1 usable-capacity rule; below it, two notification paths to WQE Fetch -- an ordinary producer-index write through a 64-byte MMIO doorbell register, and a dashed BlueFlame path writing WQE bytes directly into a UAR buffer, bypassing the ring entirely for lower latency on small messages.](/images/tx/02-the-send-queue-ring-block.svg)
 
 ## Deep walkthrough
 
