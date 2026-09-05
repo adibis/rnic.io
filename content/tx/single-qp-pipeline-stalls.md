@@ -21,7 +21,7 @@ A QP's WQE can be sitting on-chip, fully prefetched, and still not be ready to b
 
 ## Block diagram
 
-<!-- IMAGE: Two QPs' WQEs shown entering the same shared pipeline stage from two lanes that merge into one: QP A's lane carrying a small "latency-sensitive WQE" box, QP B's lane carrying a large "elephant-flow WQE" box occupying visibly more of the shared resource (drawn wider/taller than QP A's). The merge point is a single narrow gate captioned "finite internal queue slots -- limited number, not per-QP." QP B's large WQE is shown blocking the gate while QP A's WQE waits behind it in a small red-outlined "stalled" annotation, captioned "head-of-line blocking: work-conserving processing serves whatever's ready, in arrival order, not by size or urgency." A small inset chart/annotation reads "measured: up to 90% throughput loss for the stalled flow, 16 concurrent elephant flows (Zhang et al.)." -->
+![QP A's small latency-sensitive WQE and QP B's large elephant-flow WQE both feeding one narrow shared gate representing finite internal queue slots not allocated per-QP -- QP B's large WQE occupies the gate while QP A's WQE stalls behind it, dashed and marked stalled, illustrating work-conserving head-of-line blocking measured to cost a stalled flow up to 90% of its throughput under 16 concurrent elephant flows.](/images/tx/05-single-qp-pipeline-stalls-block.svg)
 
 ## Deep walkthrough
 
