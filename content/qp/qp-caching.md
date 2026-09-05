@@ -17,7 +17,7 @@ The QP Cache is the on-chip working set of QP contexts sitting in front of the Q
 
 ## Overview
 
-Every packet that touches a QP — building one on transmit, parsing one on receive — needs that QP's live context: its state, its PSN counters, its negotiated path. Fetching that context from the QP Table on every single packet would mean a DRAM or PCIe round trip on the critical path of every packet the adapter handles, which is not compatible with line-rate operation. The QP Cache exists to make the common case — a QP that's actively carrying traffic — resolve on-chip, and to make the uncommon case — a QP that isn't — cost a measurable, bounded penalty instead of an unbounded one.
+A CPU never re-walks a page table on every memory access it can avoid -- a TLB caches the translations actually in use, because paying DRAM/page-walk latency on every single access would be unworkable at core clock speeds. A QP's live context faces the identical problem for a different structure: every packet that touches a QP — building one on transmit, parsing one on receive — needs that QP's live context: its state, its PSN counters, its negotiated path. Fetching that context from the QP Table on every single packet would mean a DRAM or PCIe round trip on the critical path of every packet the adapter handles, which is not compatible with line-rate operation. The QP Cache exists to make the common case — a QP that's actively carrying traffic — resolve on-chip, and to make the uncommon case — a QP that isn't — cost a measurable, bounded penalty instead of an unbounded one.
 
 ## Block diagram
 

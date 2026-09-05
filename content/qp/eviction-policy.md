@@ -15,7 +15,7 @@ next: /qp/hardware-assisted-eviction-engines
 
 ## Overview
 
-[QP Caching](../qp-caching) established that the on-chip working set has a hard ceiling — around 5,000 QPs on ConnectX-4/5's 2MB of shared SRAM — and that real deployments run past it. When a QP not currently in the cache needs servicing and every slot is occupied, something already resident has to leave first. This chapter is about what decides which one: the policy question, not yet the question of what hardware actually runs that policy, which is [Hardware-Assisted Eviction Engines](../hardware-assisted-eviction-engines)'s subject.
+Which cached line survives eviction is a question every CPU cache has to answer too -- LRU, random, or a priority scheme are the same three shapes a QP Cache's eviction policy chooses between, just applied to QP contexts instead of cache lines. [QP Caching](../qp-caching) established that the on-chip working set has a hard ceiling — around 5,000 QPs on ConnectX-4/5's 2MB of shared SRAM — and that real deployments run past it. When a QP not currently in the cache needs servicing and every slot is occupied, something already resident has to leave first. This chapter is about what decides which one: the policy question, not yet the question of what hardware actually runs that policy, which is [Hardware-Assisted Eviction Engines](../hardware-assisted-eviction-engines)'s subject.
 
 ## Block diagram
 
