@@ -22,16 +22,15 @@ Knowing this changes how you should read the book. When Part 5 says "eviction po
 
 ## The chapter template
 
-Every chapter in Parts 1 and onward — not the [Part 0](/overview/) (Overview) chapters you've been reading, including this one — follows one fixed shape, in this order:
+Every chapter in Parts 1 and onward — not the [Part 0](/overview/) (Overview) chapters you've been reading, including this one — follows the same core shape, in this order:
 
 - **Locator.** The master RNIC block diagram, with this chapter's block highlighted and everything else dimmed. It's both a "you are here" and the chapter's hero image, the same drawing every time, never a new diagram.
-- **Overview.** One paragraph, datasheet-terse, stating what this block does before any mechanism is described.
+- **Overview.** One paragraph stating what this block does and why it exists, before any mechanism is described.
 - **Block diagram.** A second diagram, zoomed to just this stage or structure, replacing the locator's whole-chip context with actual internal detail.
 - **Deep walkthrough.** What a field or signal is, where in the pipeline it's checked, what failure mode it produces when it's wrong, and what happens next — retried, retracted, or aborted, at what scope. Where another chapter owns the next step, this section names that chapter and stops, rather than re-explaining what it already covers.
 - **Design rationale sidebar.** Set visually apart from the rest of the chapter, and the one place this book allows itself a narrative voice: why this structure got built this way, and what got traded off to get there.
-- **Interface and timing reference table.** Signal names, latencies, buffer sizes, cache sizes — the part of the chapter you come back to later without rereading the prose around it.
 
-Six sections, every chapter, whether the chapter is about a table, a state machine, or a pipeline stage. Once you've read one chapter, you know the shape of the next thirty.
+This is a shape to expect, not a checklist every chapter is forced through -- a chapter that has nothing real to say in a given section skips it rather than filling it with restated prose or an invented number to look complete. Once you've read a few chapters, you'll recognize the shape of the rest, even where one of them departs from it for a real reason.
 
 Part 1, chapter 1 — *QP Context* — is where that shape starts, and where this book's real depth begins.
 

@@ -11,8 +11,6 @@ next: /qp/single-qp-error-handling
 
 ## Locator
 
-The master diagram with the QP Table / QP Cache block highlighted — the state machine described in this chapter is logic owned by that block, not a separate structure of its own.
-
 ![The master RNIC block diagram with the QP Table and QP Cache pair highlighted -- the state machine this chapter covers is logic owned by that block, not a separate structure.](/images/qp/05-qp-state-machine-locator.svg)
 
 ## Overview
@@ -39,7 +37,7 @@ Line up RTR→RTS's required set against what UC and UD ask for at the same tran
 
 > **Design rationale.** Hardware could, in principle, let software assemble a QP's configuration incrementally and only check completeness lazily, the first time the QP actually needs an attribute nobody set. It doesn't, because that would turn a configuration bug into a wire-visible failure — a QP silently sending with a garbage or zero-valued retry timeout, say — discovered only once real traffic depends on it, instead of a rejected `ibv_modify_qp` call the driver can report immediately. Enforcing the attribute mask at the transition itself moves every one of those failures to the earliest possible moment, before a single packet carrying that QP's state has gone anywhere. The cost is a rigid, transport-specific mask table baked into the silicon's validation logic rather than a more flexible "fill in whatever, whenever" model — a trade rnic.io's per-Part checklist keeps making in different forms: catch it at the gate, not downstream.
 
-That's the state machine's full input surface — the reference to come back to once a later chapter starts asking what happens when one of these fields is wrong at runtime rather than missing at setup. [Single-QP Error Handling](../single-qp-error-handling) is exactly that chapter: what a QP in ERROR actually does to its outstanding work, and the isolation guarantee that keeps one QP's fault from touching any other.
+That's the state machine's full input surface — worth having settled once, cleanly, before a later chapter starts asking what happens when one of these fields is wrong at runtime rather than missing at setup. [Single-QP Error Handling](../single-qp-error-handling) is exactly that chapter: what a QP in ERROR actually does to its outstanding work, and the isolation guarantee that keeps one QP's fault from touching any other.
 
 ## References
 

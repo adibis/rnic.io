@@ -33,7 +33,7 @@ Multi-core RAS design faces the same shape of question when a resource shared ac
 
 > **Design rationale.** The honest design tension here is that the QP-fault path would like an arbitration policy tuned to *why* QPs fault in batches (a link event probably wants every affected QP reported fast and roughly together, since they share one root cause worth diagnosing once) while a truly general event-reporting path has to stay agnostic to the source of whatever it's arbitrating between. A real implementation either builds one general-purpose arbitration mechanism and accepts that it isn't specifically tuned to the batched-fault case, or builds fault reporting a dedicated fast path separate from routine completion traffic — trading extra hardware complexity for a guarantee that a fault storm doesn't wait behind a queue of ordinary, successful completions. Which side of that trade a given design takes isn't something public sourcing settles, and isn't something this book asserts as fact.
 
-[Eviction Policy](../eviction-policy) leaves the fault path behind and returns to the QP Cache from [QP Caching](../qp-caching)'s numbers: what decides which cached QP gets evicted when the working set runs out of room.
+[Eviction Policy](../eviction-policy) leaves the fault path behind and returns to the QP Cache [QP Caching](../qp-caching) already established: what decides which cached QP gets evicted when the working set runs out of room.
 
 ## References
 
