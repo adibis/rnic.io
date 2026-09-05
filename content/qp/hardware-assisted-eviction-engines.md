@@ -19,7 +19,7 @@ next: /qp/mid-transaction-qp-reset
 
 ## Block diagram
 
-<!-- IMAGE: A horizontal spectrum diagram, three labeled positions left to right: "Fixed-function hardware" (a small hardwired state-machine icon, solid indigo box), "Programmable hardware engine" (a small sequencer/register-file icon, solid indigo box with a dashed border segment suggesting configurability), "Software-driven" (a box shaped like a trap/interrupt handler, connected by a dashed arrow up to a "firmware / driver" box outside the chip boundary, since this path leaves silicon). Each position has a small latency bar underneath, shortest at "fixed-function" and longest at "software-driven," and a small flexibility bar going the opposite direction, to make the trade visually explicit without needing invented numbers. -->
+![A horizontal spectrum from fixed-function hardware through a programmable engine to a software-driven trap that leaves the chip entirely, with latency and flexibility bars both growing longer left to right.](/images/qp/09-hardware-assisted-eviction-engines-block.svg)
 
 ## Deep walkthrough
 
