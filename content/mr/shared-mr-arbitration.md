@@ -49,5 +49,4 @@ A memory region registered once and handed out to many QPs — a shared receive 
 
 ## References
 
-- InfiniBand Trade Association, *InfiniBand™ Architecture Specification*, Volume 1 (General Specifications).
 - No IETF or IBTA standard governs concurrent-lookup-vs-invalidation arbitration on one key-table entry -- it is implementation-specific silicon design, not a wire-format or software-interface contract any standards body defines. This chapter's treatment is grounded in the sources cited in-text above, not a standards document.

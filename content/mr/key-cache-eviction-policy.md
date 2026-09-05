@@ -50,5 +50,4 @@ The next chapter turns to what hardware actually runs both of these mechanisms, 
 
 ## References
 
-- InfiniBand Trade Association, *InfiniBand™ Architecture Specification*, Volume 1 (General Specifications).
 - No IETF or IBTA standard governs key-cache eviction policy and mass-invalidation mechanics -- it is implementation-specific silicon design, not a wire-format or software-interface contract any standards body defines. This chapter's treatment is grounded in the sources cited in-text above, not a standards document.
