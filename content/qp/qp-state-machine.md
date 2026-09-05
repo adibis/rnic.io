@@ -23,7 +23,7 @@ A Queue Pair's state is not a status flag hardware happens to expose — it's a 
 
 A zoomed state diagram: RESET, INIT, RTR, RTS as the core forward path, SQD as an RTS-reachable sub-graph with its own draining/drained internal states, ERROR reachable from any state, and RESET as ERROR's only way out.
 
-<!-- IMAGE: State diagram, five/six primary nodes (RESET, INIT, RTR, RTS, ERROR, plus SQD as a satellite state attached to RTS) laid out left to right in forward-transition order. Solid arrows for the core RESET→INIT→RTR→RTS path, each labeled with its required ibv_modify_qp attribute mask bits (short form). A dashed bidirectional arrow between RTS and SQD, itself containing two internal sub-states (draining, drained) shown as a small nested pair. Dashed arrows from every state converging into ERROR, colored in the red "fault" role color per docs/SVG_STYLE.md. One arrow from ERROR back to RESET, labeled "only path out," full opacity, distinct from the dashed fault-arrows feeding in. -->
+![The RC QP state machine: RESET through INIT, RTR, RTS labeled with each transition's required attribute mask, SQD as a satellite draining state off RTS, every state's fatal-error path converging into ERROR, and the single ERROR-to-RESET arrow as the only way out.](/images/qp/05-qp-state-machine-block.svg)
 
 ## Deep walkthrough
 
