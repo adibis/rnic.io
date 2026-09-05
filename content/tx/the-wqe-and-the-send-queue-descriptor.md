@@ -20,7 +20,7 @@ A Work Queue Element is what software actually writes into a Send Queue ring -- 
 
 ## Block diagram
 
-<!-- IMAGE: Three stacked shapes showing the same operation (an RDMA Write) at three levels of abstraction, connected by downward arrows labeled with what changes at each step. Top: "struct ibv_send_wr / ib_sge" (software-facing, sky-blue actor color) showing its four conceptual fields -- opcode, sg_list/num_sge, remote addr/rkey (in the wr.rdma union), send_flags -- captioned "what software writes, transport-agnostic." Middle: "mlx5_wqe_cseg (control segment)" (neutral slate, vendor-specific) showing its real four 32-bit fields -- opcode, sq_ds, flags, misc -- with a small annotation on sq_ds reading "DS count: 6 bits, max 63 data segments" captioned "one real vendor's on-chip packing of the same information -- denser, not a 1:1 field match." Bottom: a small inline-vs-DMA fork, captioned "payload <= 28 bytes: carried inline in the WQE itself" branching left to a small "inline payload" box, and "payload > 28 bytes: separate DMA read required" branching right to a small "DMA Engine" box (dimmed, forward reference), with the 28-byte threshold labeled on the fork point itself. -->
+![Software's generic ibv_send_wr/ib_sge shape (opcode, sg_list/num_sge, remote addr/rkey, send_flags) translating into Mellanox mlx5's real four-field on-chip control segment (opcode, sq_ds, flags, misc, with a 6-bit data-segment count capping a WQE at 63 segments), which then forks on the 28-byte inline threshold into either an inline payload carried in the WQE itself or a separate DMA read.](/images/tx/01-the-wqe-and-the-send-queue-descriptor-block.svg)
 
 ## Deep walkthrough
 
