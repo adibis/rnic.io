@@ -21,7 +21,7 @@ Many QPs sharing one adapter can all have traffic ready to send at the same mome
 
 ## Block diagram
 
-<!-- IMAGE: Several QP lanes (4-5) all feeding into one narrow "TX Scheduler" gate, each lane's WQE box labeled with a different attribute -- one "elephant flow," one "latency-sensitive," one "control-plane (dereg)." Three small labeled dials/knobs beside the gate representing candidate policies: "round-robin," "weighted round-robin (per-QP share)," "priority (control ops first)" -- mirroring eviction-policy.md's recency/priority/error-state input framing visually. A callout box reads "NVIDIA (quoted): deregistration ops get scheduled first via internal QoS policy" pointing at the priority dial specifically. A second, separate callout below the whole diagram reads "DCQCN + PFC enabled, HOL blocking still measured -- congestion control does not reach this gate" with a small dashed box labeled "Part 6: Congestion Control" sitting off to the side, explicitly disconnected from the scheduler gate by a crossed-out arrow. -->
+![Four QPs -- an elephant flow, a latency-sensitive one, a control-plane deregistration, and an ordinary one -- feeding one TX Scheduler gate, with three candidate policies (round-robin, weighted round-robin, priority) consulted, NVIDIA's own quoted confirmation that deregistration ops get scheduled first via internal QoS policy, and a crossed-out line showing Part 6's congestion control never reaches this gate despite DCQCN and PFC both being enabled.](/images/tx/06-multi-qp-tx-scheduling-block.svg)
 
 ## Deep walkthrough
 
