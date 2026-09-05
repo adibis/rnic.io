@@ -1,0 +1,58 @@
+---
+title: "Hardware-Assisted TX Scheduling Engines"
+weight: 7
+date: 2026-09-04
+publishDate: 2026-09-04
+draft: true
+description: "Part 1 asked whether an eviction policy runs as fixed silicon, a programmable engine, or a software trap. This chapter asks the same question of TX scheduling -- and unlike Part 1's version, it has real, dated evidence that at least some shipped RNICs sit at the software-driven end of that spectrum, not by choice so much as by not having built the alternative yet."
+prev: /tx/multi-qp-tx-scheduling
+next: /tx/mid-transaction-tx-reset
+---
+
+## Locator
+
+![The master RNIC block diagram with WQE Fetch / TX Scheduler highlighted -- the same target as Multi-QP TX Scheduling, this chapter asks what hardware actually runs the policy that chapter named.](/images/tx/07-hardware-assisted-tx-scheduling-engines-locator.svg)
+
+[Multi-QP TX Scheduling](../multi-qp-tx-scheduling) named the real candidate policies -- round-robin, weighted round-robin, priority. This chapter asks what actually executes whichever one a given design picks, the same fixed/programmable/software-driven question [Hardware-Assisted Eviction Engines](/qp/hardware-assisted-eviction-engines) already asked of QP Cache eviction.
+
+## Overview
+
+A scheduling decision that has to run on every single arbitration between ready QPs can be hardwired at design time, built as a programmable engine a driver can retune without a hardware respin, or pushed out to software entirely. [Hardware-Assisted Eviction Engines](/qp/hardware-assisted-eviction-engines) already worked through this exact spectrum for cache eviction, and that reasoning applies here without needing to be re-derived -- what this chapter adds is real, dated evidence for where actual deployments have sat on it, not just the abstract tradeoff.
+
+## Block diagram
+
+<!-- IMAGE: The same three-position horizontal spectrum as qp/hardware-assisted-eviction-engines.md's diagram (fixed-function hardware / programmable hardware engine / software-driven), redrawn for TX scheduling specifically. Left position ("fixed-function") shown faded/dashed with a caption "no public evidence any real RNIC ships pure fixed-function TX scheduling -- included for spectrum completeness, not because it's confirmed." Middle position ("programmable hardware engine, firmware-tunable") shown solid, with a callout "NVIDIA: internal QoS policy, firmware-adjustable (Kong et al. Appendix B)." Right position ("software-driven") shown solid, with a callout "Justitia: built specifically because the RNICs it targeted had no programmable packet scheduler (2019/2022)." Below the spectrum, a small separate box labeled "IEEE 802.1Qaz (ETS) -- switch/link-level scheduling analog, NOT this chapter's mechanism" connected by a dashed, crossed-out line to the main spectrum, captioned "same shape of policy (priority + weighted-share hybrid), different layer of the stack entirely." -->
+
+## Deep walkthrough
+
+**The spectrum itself -- not re-derived, cross-referenced.** [Hardware-Assisted Eviction Engines](/qp/hardware-assisted-eviction-engines) already worked through the full latency-versus-flexibility tradeoff between fixed-function hardware, a programmable hardware engine, and a software-driven trap, for QP Cache eviction. Every word of that reasoning -- fixed silicon is fastest and least flexible; a programmable engine is the realistic middle ground most designs reach for; a software trap on every decision reintroduces exactly the round-trip RDMA hardware offload exists to remove -- applies to TX scheduling without modification. This chapter doesn't re-argue it a second time; it applies the same spectrum to a different decision (whose WQE gets the pipeline next, not which cache line gets evicted) and grounds where real evidence actually places it.
+
+**The middle of the spectrum -- real, vendor-confirmed, and firmware-adjustable.** [Multi-QP TX Scheduling](../multi-qp-tx-scheduling) already named NVIDIA's own quoted admission that a shipped RNIC runs an internal QoS scheduling policy, and that the vendor's fix for a measured anomaly was a firmware-level tuning of that same policy rather than a hardware redesign. That's real, concrete evidence the mechanism sits closer to "programmable hardware engine" than "fixed-function" -- a policy that can be retuned in firmware, without a new chip, is by definition not hardwired at tape-out the way pure fixed-function logic would be. What isn't public: the exact shape of that programmability -- whether it's a small set of vendor-exposed knobs, a fuller programmable sequencer, or something narrower than either -- so this chapter states the position on the spectrum (closer to programmable than fixed) without overclaiming the specific mechanism.
+
+**The software-driven end -- real, dated, and explicitly a workaround, not a design choice by the RNIC vendor.** Zhang et al. (Justitia) state directly that the RDMA NICs their study targeted did not have programmable packet schedulers at all: "Justitia works on existing RDMA NICs that do not have programmable packet schedulers." Their own comparison names Titan and Loom as prior systems that "improve performance isolation on conventional NICs by programming on-NIC packet schedulers," explicitly judged insufficient for RDMA because that approach "only schedules a single resource: the outgoing link," not the other internal resources (caches, execution units) this book's own caching chapters already established are real and contended. Justitia's answer was to build the missing scheduling entirely in software -- a driver-level daemon distributing tokens in a round-robin (or weighted-round-robin) fashion, enforced by shapers "implemented in the RDMA driver." This is real, working, shipped-as-a-workaround evidence for the software-driven end of the spectrum -- dated to a specific study (2019, later published 2022) and scoped to the specific RNICs it tested, not a claim that every RNIC lacks a programmable scheduler today or ever did.
+
+**The fixed-function end -- included for spectrum completeness, not because it's confirmed.** No source this book found describes a real RNIC shipping pure fixed-function TX scheduling with zero programmability -- unlike QP Cache eviction, where [Hardware-Assisted Eviction Engines](/qp/hardware-assisted-eviction-engines) at least had the general silicon-design tradeoff to reason from without a specific counter-example. This chapter states that absence plainly rather than asserting a fixed-function RNIC exists somewhere unconfirmed.
+
+**A standards-level analog, one layer removed -- worth naming precisely so it isn't confused with this chapter's mechanism.** IEEE 802.1Qaz's Enhanced Transmission Selection (ETS) defines a real, public standard for a hierarchical scheduler combining static priority scheduling with a bandwidth-sharing algorithm such as weighted round robin or deficit round robin -- genuinely the same *shape* of policy this chapter has been describing. But ETS governs switch and link-level scheduling of already-built Ethernet frames moving through a fabric, not an RNIC's own internal arbitration between WQEs from different QPs before a packet is even built. `[NOTE: summarized here from secondary sources, not the IEEE standard text itself -- the general shape (priority + weighted-share hybrid) is reliable, but this chapter doesn't cite specific numeric parameters from it.]` Worth knowing ETS exists and worth knowing precisely why it isn't the same mechanism -- a reader who encounters "ETS" in a switch vendor's documentation shouldn't assume it describes what this chapter is about.
+
+**Deficit Round Robin -- the general algorithmic family a real WRR-style scheduler would draw from, not an RDMA-specific mechanism.** DRR (and its weighted variant) is a packet-based approximation of ideal generalized processor sharing, using a per-queue deficit counter that accumulates credit while a queue waits and spends it on transmission, handling variable-length packets fairly without per-packet floating-point computation. This is general network-scheduling literature, not something any source ties specifically to an RNIC's internal TX arbiter -- cited here as the algorithmic family a real weighted scheduler would plausibly draw from, not as a claim about what any specific vendor implements.
+
+**What happens next.** This chapter closes the scheduling question this Part opened with [Single-QP Pipeline Stalls](../single-qp-pipeline-stalls) and continued through [Multi-QP TX Scheduling](../multi-qp-tx-scheduling). What's left is a question orthogonal to all of it: what happens to a WQE caught mid-fetch, mid-build, or mid-schedule when the QP it belongs to resets underneath it.
+
+> **Design rationale.** The same design tension [Hardware-Assisted Eviction Engines](/qp/hardware-assisted-eviction-engines) already named applies here with real evidence behind it rather than abstract reasoning alone: a vendor building toward NVIDIA's demonstrated position (a firmware-tunable internal policy) buys the ability to fix a measured fairness problem without a hardware respin, at the cost of building and validating that programmability in the first place. A vendor building toward Justitia's demonstrated position -- no on-chip programmable scheduler at all -- ships simpler hardware and pushes the entire fairness problem to software, at the direct, measured cost [Single-QP Pipeline Stalls](../single-qp-pipeline-stalls) already quantified: up to 90% throughput loss for a stalled flow, on hardware that hasn't built a way to prevent it in silicon. Neither position is free, and the honest reading of the evidence above is that real, shipped RNICs have occupied both ends of this spectrum at different points, not converged on one answer.
+
+## Interface / timing reference
+
+| Position on spectrum | Real evidence | Source |
+|---|---|---|
+| Fixed-function, no programmability | Not confirmed for any real RNIC | included for spectrum completeness only |
+| Programmable hardware engine, firmware-tunable | Confirmed -- internal QoS policy, vendor-tuned via firmware | NVIDIA (quoted in Kong et al., NSDI 2023, Appendix B) |
+| Software-driven (no on-chip scheduler) | Confirmed, dated -- built as a workaround for RNICs lacking one | Zhang et al. (Justitia, arXiv 1905.04437), 2019/2022 |
+| Switch/link-level analog (ETS, IEEE 802.1Qaz) | Real public standard, different layer of the stack | secondary sources -- not this chapter's mechanism |
+| Algorithmic family for a WRR-style engine | DRR/WDRR, general packet-scheduling literature | not RDMA-specific |
+
+[Mid-Transaction TX Reset](/tx/mid-transaction-tx-reset) closes this Part: what happens to a WQE caught mid-fetch, mid-build, or mid-schedule when its owning QP resets underneath it.
+
+## References
+
+- No IETF or IBTA standard governs which hardware runs a TX scheduling policy -- it is implementation-specific silicon and firmware design, not a wire-format or software-interface contract any standards body defines. IEEE 802.1Qaz (Enhanced Transmission Selection) is a real public standard for the switch/link-level analog named above, but does not govern this chapter's mechanism. This chapter's treatment is grounded in the sources cited in-text above, not a standards document.
