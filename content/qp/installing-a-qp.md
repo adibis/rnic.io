@@ -21,7 +21,7 @@ A QP doesn't arrive in hardware fully formed. Software allocates a table entry f
 
 ## Block diagram
 
-<!-- IMAGE: Left-to-right sequence of three boxes. Box 1: "ibv_create_qp() / equivalent hardware allocation call" with a small arrow labeled "assigns QP number" pointing down into Box 2. Box 2: "QP Table entry, state = RESET" (drawn in the amber shared-resource color, matching the-qp-table.md's block diagram) with fields shown as empty/greyed placeholders. An arrow labeled "ibv_modify_qp(RESET -> INIT), attribute mask: PKEY_INDEX | PORT | ACCESS_FLAGS" points right into Box 3: "QP Table entry, state = INIT" with those three fields now shown filled in (highlighted), the rest still greyed. A small red "X" branch off the transition arrow, labeled "mask incomplete -> call rejected, entry stays in RESET," per the fault/error role color. -->
+![Installing a QP: ibv_create_qp assigns a QP number into a RESET-state table entry, then ibv_modify_qp(RESET->INIT) either fills in port/pkey/access-flags together or is rejected outright, leaving the entry unchanged in RESET.](/images/qp/04-installing-a-qp-block.svg)
 
 ## Deep walkthrough
 

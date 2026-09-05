@@ -21,7 +21,7 @@ Every packet that touches a QP — building one on transmit, parsing one on rece
 
 ## Block diagram
 
-<!-- IMAGE: Zoomed diagram of QP Cache internals only. A cluster of small boxes labeled "QPC" (~375 bytes each, per the cited figure below), captioned collectively "on-chip SRAM working set." Two lookup paths arrive from the left into a single lookup point on the cache: one from a "TX Scheduler" box labeled "QP being scheduled," one from an "RX Parser" box labeled "destination QP from BTH." Two outcomes branch right from the lookup point: a solid indigo "hit" arrow returning directly to whichever pipeline stage asked; a red "miss" arrow (per SVG_STYLE.md's fault/error role color) dropping down to a "QP Table (DRAM/HBM-backed)" box, with a dashed return arrow labeled "PCIe fetch, populate cache line" back up into the cache. Keep the cache's internal box generic ("working set of cached QPCs") rather than depicting a specific tag/index/associativity structure — that organization is not publicly documented for any real RNIC and should not be drawn as if it were. -->
+![The QP Cache with hit and miss paths: TX Scheduler and RX Parser both look up the cache first, a hit returns directly, a miss falls through to the QP Table with a PCIe fetch to repopulate the cache line.](/images/qp/03-qp-caching-block.svg)
 
 ## Deep walkthrough
 
