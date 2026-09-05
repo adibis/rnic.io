@@ -37,10 +37,6 @@ Worth flagging honestly rather than smoothing over: Kong et al.'s own architectu
 
 > **Design rationale.** A dedicated, fixed slice of on-chip SRAM for each of QPC, MTT/MPT, CQC, and EQC is a real, available alternative to sharing -- simpler to reason about, and no resource type can ever be starved by another's workload. The tested hardware this chapter's evidence comes from doesn't do that: it shares one pool across all four instead, the same tradeoff any cache faces when deciding whether to partition by data type -- a fixed split wastes SRAM on whichever resource type a given deployment happens to use lightly, while starving the one it uses heavily, and the right ratio is workload-dependent in a way no single silicon design fixed at tape-out can adapt to. Sharing the pool lets the cache's occupancy follow the actual access pattern instead of a static guess, at the cost this chapter already named: a workload heavy in one resource type can degrade a completely unrelated one sharing the same SRAM. Whether a different real design partitions instead, and eats the opposite cost, isn't something this chapter can rule out -- only the shared-pool tradeoff is the one this chapter's evidence actually speaks to.
 
-## Interface / timing reference
-
-No standard fixes a capacity, a partition ratio, or a hit/miss latency for this cache, and this chapter isn't going to state a testbed-specific number as if it were one -- see the design rationale above for the actual tradeoff a real implementation is choosing between.
-
 [Registering a Memory Region](/mr/registering-a-memory-region) covers what happens before any of this: how a memory region gets into the table -- and, for one entry at a time, into this cache -- in the first place.
 
 ## References
