@@ -21,7 +21,7 @@ A QP that reaches ERROR does not stop processing — it starts flushing. Every w
 
 ## Block diagram
 
-<!-- IMAGE: Small diagram of one QP's send and receive queues both draining into a single Completion Queue. Each queue shown as a short FIFO of WQE boxes; every box exiting the FIFO is stamped "IBV_WC_WR_FLUSH_ERR" in red text (fault role color) rather than a normal green/neutral completion, distinguishing a flush from a real completion. A dotted boundary box drawn around this one QP's send queue, receive queue, and their entries only -- explicitly excluding the Completion Queue itself and any other QP's queues -- captioned "fault isolation boundary: this QP's queues only." -->
+![One QP's send and receive queues both draining into the Completion Queue, every entry stamped IBV_WC_WR_FLUSH_ERR, inside a fault isolation boundary that excludes the CQ itself and any other QP.](/images/qp/06-single-qp-error-handling-block1.svg)
 
 ## Deep walkthrough
 
@@ -35,9 +35,7 @@ A QP that reaches ERROR does not stop processing — it starts flushing. Every w
 
 **SRQ-associated QPs need one more signal before teardown.** A QP that shares a Shared Receive Queue with other QPs can't simply be destroyed the moment it reaches ERROR — some of its outstanding receive-side work may still reference WQEs pulled from that shared queue, and destroying the QP before that work finishes draining risks leaving the SRQ itself in an inconsistent state for the QPs still using it. `IBV_EVENT_QP_LAST_WQE_REACHED` is the signal that closes this gap: it fires once this QP has consumed the last SRQ-sourced WQE it will ever consume, and it's the event software waits for before it's safe to tear the QP down without disturbing its SRQ siblings.
 
-<!-- IMAGE: Small inset diagram, separate from the main FIFO-drain diagram above. One QP box in ERROR (red fault-role border) with its RQ shown pulling from a shared SRQ box (drawn in the amber shared-resource color, same visual family as QP Table/Cache) that two other, healthy QP boxes also pull from. A dashed arrow from the faulted QP's RQ to the SRQ labeled "still draining WQEs already pulled." Once that drain empties, an arrow labeled "IBV_EVENT_QP_LAST_WQE_REACHED" fires from the faulted QP to a small "safe to destroy" flag -- captioned "the SRQ itself, and its other QPs, are untouched throughout." -->
-
-
+![An SRQ-associated QP in ERROR still draining WQEs it already pulled from a Shared Receive Queue two other healthy QPs also use, waiting for IBV_EVENT_QP_LAST_WQE_REACHED before it's safe to destroy, with the SRQ and its other QPs untouched throughout.](/images/qp/06-single-qp-error-handling-block2.svg)
 
 > **Design rationale.** Flushing every outstanding operation with an explicit status, rather than simply halting the QP and leaving posted-but-unprocessed work in limbo, is what makes fault recovery a software-observable, boundedly-long process instead of an open question the application has to poll for indefinitely. It costs hardware a real obligation — walk both queues to completion, in order, generating a real CQE for each entry, even though none of them succeeded — instead of just setting a flag and stopping. That cost buys the application a guarantee: post-then-poll always terminates, one way or another, for every request it ever issued, fault or no fault. The alternative (silently dropping queued work with no completion at all) would turn every fault into a hang the application has no event to wake up on.
 
