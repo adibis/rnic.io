@@ -21,7 +21,7 @@ Everything the previous three chapters covered -- the WQE's fields, the ring hol
 
 ## Block diagram
 
-<!-- IMAGE: A single WQE (small box, labeled with its fields from the-wqe-and-the-send-queue-descriptor.md) with four labeled arrows fanning out into the four things a built packet needs: (1) "BTH" arrow pulling opcode + QP's own dest_qp_num (dashed line back to a small QP Context box) + QP's live sq_psn (dashed line back to the same box); (2) "RETH" arrow, drawn conditionally/dashed, pulling remote addr/rkey from the WQE itself -- captioned "first/only packet of a multi-packet message only, per 0.4"; (3) "payload" arrow, forking into "inline (<=28B)" and "DMA read" per the-wqe-and-the-send-queue-descriptor.md's threshold; (4) an "ICRC" box at the very end of the assembled packet, captioned "computed last, over every field that doesn't change hop-to-hop." All four converge into one "packet out" arrow pointing at the wire. -->
+![A fetched WQE fanning out into BTH (opcode, dest QP, and PSN pulled in from QP Context), a conditional RETH carrying the WQE's own remote address and rkey on FIRST/ONLY packets only, and a payload segment either inline or DMA-read -- all three converging into an assembled packet that gets an ICRC computed last over its invariant fields before leaving as wire output.](/images/tx/04-tx-packet-build-block.svg)
 
 ## Deep walkthrough
 
