@@ -41,15 +41,6 @@ Supply all four and the QP moves to INIT. Supply fewer, and per [QP State Machin
 
 > **Design rationale.** Requiring `qp_access_flags` at RESET→INIT rather than leaving it unset until some later, optional call closes off a real gap: without that requirement, a QP could reach a state where it's capable of exchanging packets while its permission set is simply undefined, which is exactly the kind of ambiguity a hardware-enforced gate exists to prevent. But unlike `IBV_QP_PORT` and `IBV_QP_PKEY_INDEX` -- which really do need a full teardown to change, since they're not on the RTS→RTS optional list at all -- access flags get a second, live path precisely because permission changes are a normal, expected operational need (granting remote-write access to a connection that didn't start with it, say) in a way that changing a QP's physical port or partition membership mid-connection isn't. The design didn't pick uniform rigidity across every RESET→INIT attribute; it picked rigidity for the two that define what a QP structurally *is*, and left a live door open for the one that's routinely operational.
 
-## Interface reference
-
-| Attribute (RC) | What it fixes | Changeable later without a full RESET? |
-|---|---|---|
-| `IBV_QP_PORT` | Physical port this QP is bound to | No |
-| `IBV_QP_PKEY_INDEX` | Partition key index -- an active partitioning boundary on native IB; carried for spec-compatibility in most RoCEv2 fabrics, which run no subnet manager to assign non-default partitions | No |
-| `IBV_QP_ACCESS_FLAGS` | Remote write / read / atomic permissions honored against this QP | Yes -- via a same-state RTS→RTS `ibv_modify_qp` call |
-| `IBV_QP_STATE` | Confirms the transition itself (RESET→INIT) | -- |
-
 That's every bit RESET→INIT requires, and nothing this table lists is optional -- omit one and the call is refused, per [QP State Machine](/qp/qp-state-machine), which picks up immediately where this chapter stops: INIT→RTR, naming a peer, and RTR→RTS, arming the QP to send.
 
 ## References

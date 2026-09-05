@@ -37,18 +37,6 @@ Every registered Memory Region's descriptor lives in a table sized to hold as ma
 
 > **Design rationale.** Splitting protection metadata (MPT) from translation entries (MTT) rather than storing one flat per-registration record that inlines both lets a single registration's page count grow without growing the cost of every lookup that only needs the permission/bounds answer, not the full translation chain -- a permission check can stop at the MPT entry; only a lookup that's actually moving data needs to walk into MTT territory. That's the same kind of separation-of-concerns a page-table walker gets from splitting page-table levels out of a single flat mapping, applied here to registration metadata instead of virtual address bits. The cost is exactly what [Key Caching](/mr/key-caching) has to reckon with next: two related structures to keep resident together instead of one, sharing the same finite on-chip working set.
 
-## Interface reference
-
-| Property | Answer |
-|---|---|
-| Structure | Two related tables: MPT (protection metadata) + MTT (translation entries) |
-| Addressed by | `lkey` (local) or `rkey` (remote) -- a keyed lookup, not confirmed to be a dense index |
-| Backing store | DRAM or on-package HBM -- off-chip, not on-chip SRAM |
-| MPT entry contents | One Memory Region Descriptor ([chapter 2.1](/mr/the-memory-region-descriptor)) per entry |
-| MTT entry contents | One physical-page translation; one MPT entry may point to many |
-| What's consulted first on a real lookup | The Key Cache ([chapter 2.3](/mr/key-caching)) -- this table is the miss path |
-| Invalid-key handling | Must fail cleanly; specific mechanism not publicly documented -- see [Permission and Bounds Violations](/mr/permission-and-bounds-violations) |
-
 [Key Caching](/mr/key-caching) is next: the on-chip working set that makes touching this table on every operation unnecessary -- and the fact that it's the exact same SRAM Part 1's QP Cache already uses.
 
 ## References

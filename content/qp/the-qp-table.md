@@ -41,19 +41,6 @@ This chapter's table diagram now carries two panels: the lookup path itself, and
 
 > **Design rationale.** The honest state of public documentation here is thin: no source found describes a specific modern RNIC's QP table organization in the kind of detail this book would need to state as settled fact. What follows is reasoned architectural inference, not a citation. A flat, directly-indexed table is the cheapest possible structure to build and to look up -- one multiply-and-add from QP number to address, no walk, no intermediate levels -- and it's a perfectly reasonable design as long as the supported QP count stays small enough that a fully-populated table is affordable in DRAM/HBM regardless of how many QPs are actually in use at once. Once the supported QP count grows large enough that provisioning a flat table sized to the maximum, rather than the typical, deployment becomes wasteful, a shallow multi-level structure -- allocate second-level table pages lazily, only for QP-number ranges that actually have QPs in them -- trades one extra pointer dereference on the (cache-backed, so usually cheap) miss path for real memory savings on hardware that has to support a QP count far larger than any single deployment will actually use concurrently. Which side of that tradeoff a real chip lands on is a capacity-planning decision this book can reason about but not report on with citations.
 
-## Interface reference
-
-| Property | Answer |
-|---|---|
-| Addressed by | QP number (assigned once, at QP creation, fixed for the QP's life) |
-| Backing store | DRAM or on-package HBM -- off-chip, not on-chip SRAM |
-| Addressing scheme | Direct index (flat table) or shallow multi-level index (page-table-style), depending on supported QP-count range -- implementation-specific, not standardized |
-| Entry contents | One QP Context ([chapter 1.1](/qp/qp-context)) per entry |
-| What's consulted first on a real lookup | The QP Cache ([chapter 1.3](/qp/qp-caching)) -- this table is the miss path, not the common path |
-| Invalid-index handling | Must fail cleanly and cheaply; specific mechanism not publicly documented |
-| Freed QP number reuse | Quarantine before reissue vs. immediate reuse -- not publicly documented |
-| Table-full behavior | QP creation fails synchronously in software; no cache-eviction question involved (contrast with [QP Caching](/qp/qp-caching)) |
-
 [QP Caching](/qp/qp-caching) is next: the on-chip working set that makes touching this table on every packet unnecessary, and what a cache miss against it actually costs.
 
 ## References

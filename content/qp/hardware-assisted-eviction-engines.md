@@ -35,14 +35,6 @@ The workload shape drives the choice. A deployment where eviction pressure is ra
 
 > **Design rationale.** The instinct to reach for maximum flexibility — trap to software, let firmware decide anything — collides directly with the reason a QP cache exists at all: [QP Caching](../qp-caching) built this structure specifically to keep per-packet hot-path work off of PCIe and off of software, because that round trip is exactly what a cache miss already costs. Handing the *eviction decision itself* back to software on every miss doesn't eliminate that cost, it just relocates and probably compounds it. A programmable-but-hardware-resident engine is less a compromise than the design that actually respects the reason the cache was built in the first place: keep every step of a fast-path miss in hardware, and spend the flexibility budget on registers and thresholds a driver can tune, not on a round trip that leaves the chip.
 
-## Interface / timing reference
-
-| Engine type | Fast-path cost on a miss | Flexibility | Field-tunable |
-|---|---|---|---|
-| Fixed-function | lowest — resolves in the same on-chip path as the lookup | none — fixed at design time | no |
-| Programmable hardware engine | low — stays on-chip, decision logic reads tunable registers/weights | moderate — bounded by what the engine's configuration surface exposes | yes |
-| Software-driven trap | highest — leaves the chip, waits on firmware/driver | highest — arbitrary policy logic | yes, trivially |
-
 That closes out the caching-and-eviction half of this Part. The last chapter turns to a different kind of hazard entirely: what happens when a QP doesn't just get quietly evicted, but gets reset while an operation against it is still in flight.
 
 ## References

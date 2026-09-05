@@ -35,16 +35,6 @@ Fetching a WQE from host DRAM on every single doorbell would put a PCIe round tr
 
 > **Design rationale.** A demand-driven cache and a lookahead prefetch buffer are both answers to the same underlying question -- how to avoid paying a PCIe round trip on every single operation -- but they're the right answer to genuinely different access patterns. QP numbers and keys arrive in whatever order a workload's traffic happens to produce, which is exactly why [QP Caching](/qp/qp-caching) and [Key Caching](/mr/key-caching) need real eviction policies deciding what to keep resident under pressure. A Send Queue's WQEs never arrive out of order relative to their own ring -- the next one needed is always, by construction, the next one in the ring -- so there's no victim to select and no eviction policy to design; the only real design question is how far ahead to read, a tuning parameter rather than a policy question. Building a WQE prefetch buffer as a lookahead structure rather than forcing it through the same hit/miss/eviction framing as this book's other caches isn't a missed opportunity for consistency -- it's matching the mechanism to an access pattern that's structurally simpler than the ones QP Cache and Key Cache actually have to handle.
 
-## Interface / timing reference
-
-| Property | Value | Source / notes |
-|---|---|---|
-| WQE cache -- existence and job | confirmed real | "stores prefetched send WQEs and posted receive WQEs" (Kong et al., NSDI 2023) |
-| WQE cache -- capacity | not documented | no source gives this a specific figure, unlike the shared 2MB QPC/MTT figure cited elsewhere |
-| Prefetch distance (WQEs read ahead of consumer index) | not documented | `[SPARSE PUBLIC SOURCING]` -- reasoned as a tuning parameter, not confirmed |
-| Prefetch trigger (fixed vs. adaptive) | not documented | `[SPARSE PUBLIC SOURCING]` |
-| Failure mode when prefetch hasn't caught up | a stall, not a cache miss | see [Single-QP Pipeline Stalls](/tx/single-qp-pipeline-stalls) |
-
 [TX Packet Build](/tx/tx-packet-build) is next: the stage that takes an on-chip WQE and actually produces the wire packet [What Is RoCEv2](/overview/what-is-rocev2) already described field by field.
 
 ## References

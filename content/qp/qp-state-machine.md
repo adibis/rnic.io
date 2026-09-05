@@ -39,22 +39,6 @@ Line up RTR→RTS's required set against what UC and UD ask for at the same tran
 
 > **Design rationale.** Hardware could, in principle, let software assemble a QP's configuration incrementally and only check completeness lazily, the first time the QP actually needs an attribute nobody set. It doesn't, because that would turn a configuration bug into a wire-visible failure — a QP silently sending with a garbage or zero-valued retry timeout, say — discovered only once real traffic depends on it, instead of a rejected `ibv_modify_qp` call the driver can report immediately. Enforcing the attribute mask at the transition itself moves every one of those failures to the earliest possible moment, before a single packet carrying that QP's state has gone anywhere. The cost is a rigid, transport-specific mask table baked into the silicon's validation logic rather than a more flexible "fill in whatever, whenever" model — a trade rnic.io's per-Part checklist keeps making in different forms: catch it at the gate, not downstream.
 
-## Interface and timing reference table
-
-| Field | Set at | RC scope | Meaning |
-|---|---|---|---|
-| `path_mtu` | INIT→RTR | RC/UC only | Path MTU negotiated for this connection |
-| `dest_qp_num` | INIT→RTR | RC/UC only | Destination QP number this QP is bound to |
-| `rq_psn` | INIT→RTR | RC/UC only | Next PSN this QP expects to receive |
-| `max_dest_rd_atomic` | INIT→RTR | RC only | Responder resources: outstanding RDMA read/atomic this QP will accept as responder |
-| `min_rnr_timer` | INIT→RTR | RC only | Minimum RNR NAK timer this QP will report to a peer |
-| `sq_psn` | RTR→RTS | all | Next PSN this QP will send |
-| `max_rd_atomic` | RTR→RTS | RC only | Requester resources: outstanding RDMA read/atomic this QP may have in flight as requester |
-| `timeout` | RTR→RTS | RC only | Local ACK timeout, primary path |
-| `retry_cnt` | RTR→RTS | RC only | Retry count before `IBV_WC_RETRY_EXC_ERR` |
-| `rnr_retry` | RTR→RTS | RC only | RNR retry count before `IBV_WC_RNR_RETRY_EXC_ERR` |
-| `en_sqd_async_notify` | any, before SQD | all | Enables `IBV_EVENT_SQ_DRAINED` on the draining→drained transition |
-
 That's the state machine's full input surface — the reference to come back to once a later chapter starts asking what happens when one of these fields is wrong at runtime rather than missing at setup. [Single-QP Error Handling](../single-qp-error-handling) is exactly that chapter: what a QP in ERROR actually does to its outstanding work, and the isolation guarantee that keeps one QP's fault from touching any other.
 
 ## References

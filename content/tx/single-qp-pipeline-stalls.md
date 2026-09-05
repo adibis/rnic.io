@@ -37,15 +37,6 @@ A QP's WQE can be sitting on-chip, fully prefetched, and still not be ready to b
 
 > **Design rationale.** A work-conserving pipeline -- one that never idles while there's any ready work, regardless of whose work it is or how large -- maximizes aggregate throughput across every QP sharing the adapter, which is a genuinely reasonable design goal in isolation. The cost, measured directly by the finding above, is that "maximize aggregate throughput" and "protect any individual QP's throughput from its neighbors" are different goals that can actively conflict: the same work-conserving behavior that keeps the pipeline maximally busy is exactly what lets one large flow's WQEs monopolize a shared, finite resource at a small flow's direct expense. A design that instead reserved dedicated per-QP pipeline capacity would fix the isolation problem at the cost of the aggregate-throughput goal the work-conserving design optimized for -- capacity reserved for an idle QP is capacity nothing else can use in the meantime. Neither choice is free, and which one a real vendor's default behavior favors is exactly what the next chapter's scheduling-policy question is actually about.
 
-## Design considerations
-
-| Design consideration | What it determines |
-|---|---|
-| Root cause: a real RNIC's internal queue slots are finite and shared, not allocated per QP | One QP's large operation can occupy the shared resource long enough to starve a different QP's small one -- confirmed real on shipped hardware, not a theoretical risk (Zhang et al., Justitia, arXiv 1905.04437) |
-| Mechanism: work-conserving processing serves whatever's ready, in arrival order, not by size or urgency | A pipeline that never idles while ready work exists has no built-in notion of "this WQE is more urgent," which is exactly what lets a large flow monopolize the gate |
-| Specific stalling pipeline stage | Not documented anywhere public -- `[SPARSE PUBLIC SOURCING]`; described architecturally here, not invented |
-| Fault isolation (Part 1) vs. throughput isolation (this chapter) | Different guarantees -- fault isolation holds ([1.6](/qp/single-qp-error-handling)); throughput isolation does not, absent an explicit scheduling policy |
-
 [Multi-QP TX Scheduling](/tx/multi-qp-tx-scheduling) is next: the policy question this chapter's confirmed collapse directly motivates.
 
 ## References

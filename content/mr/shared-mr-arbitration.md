@@ -35,16 +35,6 @@ Multiple CPU cores can cache the same page-table entry in their own TLBs safely,
 
 > **Design rationale.** The reasoned split between "trivial" and "hard" here tracks a general principle that shows up anywhere multiple readers share one piece of mutable state: readers alone never need coordination, because nothing about a read can be observed by another read. The moment a writer (here, an invalidation) enters the picture, some coordination has to exist — the only real design choices are where that coordination cost gets paid. A design could pay it on every lookup (check a busy/pending-invalidate bit on every access, even the overwhelming majority that never race anything), or pay it only when an invalidation actually happens (accept that a lookup and an invalidation can genuinely interleave, and instead guarantee the invalidation itself waits for or fences off in-flight lookups before completing). The first makes the common case slightly slower to make the rare case simple to reason about; the second keeps the common case free but pushes the real complexity onto the invalidation path specifically — which is a smaller, less latency-sensitive piece of the datapath to spend that complexity on. Neither is documented as the real answer; this is analysis, not a report of what any real RNIC does.
 
-## Interface and timing reference table
-
-| Question a real design has to answer | This chapter's position |
-|---|---|
-| Concurrent read-only lookups against one shared entry | Reasoned as trivial — lookups don't mutate the entry, so nothing needs arbitrating |
-| Concurrent invalidation (MW rebind, partial dereg) racing an in-flight lookup | Not publicly documented for any real RNIC — reasoned analysis only |
-| Does an in-flight lookup see the old or new translation once an invalidation lands mid-lookup | Open question this book does not resolve |
-| Where invalidation-vs-lookup coordination cost gets paid (every lookup vs. only on invalidation) | Open design tradeoff; see design rationale above |
-| Relationship to Part 1's multi-QP arbitration | Different shape — many owners, one entry, not many entries, one reporting path |
-
 [Key Cache Eviction Policy](../key-cache-eviction-policy) leaves shared ownership behind and returns to the numbers from Key Caching: what decides which cached translation gets evicted when the working set runs out of room.
 
 ## References

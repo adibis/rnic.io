@@ -37,15 +37,6 @@ Beyond the Kong et al. finding, this chapter shares Part 1 chapter 8's epistemic
 
 > **Design rationale.** A targeted invalidation that has any chance of missing a line is a worse failure than an untargeted one that's merely more expensive. If the thing being protected against is a remote peer resolving a stale rkey against memory the OS has already reassigned, "clear everything, cheaply and provably" beats "clear precisely, and hope the sweep found every line" — the cost of the conservative choice is paid in refetch latency, an inconvenience Key Caching already quantifies; the cost of the aggressive choice, gotten wrong, is a correctness violation. That asymmetry is exactly why a mass-invalidation trigger belongs in the same chapter as ordinary eviction policy rather than off in a footnote: it's not a more extreme eviction, it's a different kind of guarantee, purchased at a different kind of price.
 
-## Interface / timing reference
-
-| Trigger | Decision input | Real cost |
-|---|---|---|
-| Capacity pressure — LRU | last-access time per cached translation | blind to which translation is safe vs. costly to evict, same tradeoff as the QP Cache |
-| Capacity pressure — priority-weighted | software/operator-set weight per MR or connection | needs an external owner for the weights; risk of a few MRs pinning most of the cache |
-| Capacity pressure — error-weighted | live error/violation history from the reliability path or permission-violation counters | couples the key cache to state it doesn't otherwise track |
-| Deregistration — mass invalidation | none — the dereg call itself is the only input; no victim is selected | wholesale flush of the working set, measured to roughly halve victim throughput on at least one real RNIC (Kong et al., ConnectX-5) regardless of which capacity policy governs the ordinary case |
-
 The next chapter turns to what hardware actually runs both of these mechanisms, and asks whether the mass-invalidation trigger just described changes where the answer should sit on the fixed-function/programmable/software-driven spectrum [Hardware-Assisted Key Cache Eviction](../hardware-assisted-key-cache-eviction) opens with.
 
 ## References

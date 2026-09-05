@@ -39,18 +39,6 @@ A CPU exception or branch misprediction doesn't leave the instructions behind it
 
 > **Design rationale.** Flushing every outstanding operation with an explicit status, rather than simply halting the QP and leaving posted-but-unprocessed work in limbo, is what makes fault recovery a software-observable, boundedly-long process instead of an open question the application has to poll for indefinitely. It costs hardware a real obligation — walk both queues to completion, in order, generating a real CQE for each entry, even though none of them succeeded — instead of just setting a flag and stopping. That cost buys the application a guarantee: post-then-poll always terminates, one way or another, for every request it ever issued, fault or no fault. The alternative (silently dropping queued work with no completion at all) would turn every fault into a hang the application has no event to wake up on.
 
-## Interface and timing reference table
-
-| Signal / status | Fires when | Scope |
-|---|---|---|
-| `IBV_WC_WR_FLUSH_ERR` | every outstanding/subsequent WQE on a QP already in ERROR | this QP's SQ and RQ only |
-| `IBV_EVENT_QP_FATAL` | an error prevents further completions on this QP -- including a shared CQ or SRQ error, which fires this same event on every QP associated with it at once | this QP; recovery requires RESET (see multi-QP note above) |
-| `IBV_EVENT_QP_REQ_ERR` | responder-side transport violation (unsupported/out-of-sequence opcode) | RC only, this QP |
-| `IBV_EVENT_QP_ACCESS_ERR` | R_Key violation, misaligned atomic, outstanding-read/atomic overrun, length error | RC only, this QP |
-| `IBV_EVENT_QP_LAST_WQE_REACHED` | this QP's last SRQ-sourced WQE has been consumed, following an ERROR transition | this QP, SRQ-associated only |
-| `IBV_WC_RETRY_EXC_ERR` | local `retry_cnt` exhausted with no ack/nack from the peer at all | RC only, this QP |
-| `IBV_WC_RNR_RETRY_EXC_ERR` | local `rnr_retry` exhausted after repeated RNR NAKs from the peer | RC only, this QP |
-
 One QP faulting is a contained, well-defined event. [Multi-QP Error Arbitration](../multi-qp-error-arbitration) asks what happens when the isolation boundary this chapter just described has to hold under many simultaneous faults instead of one.
 
 ## References

@@ -33,14 +33,6 @@ next: /mr/mid-transaction-deregistration
 
 > **Design rationale.** A design that fences the mass-invalidate against every in-flight lookup buys correctness — no lookup ever observes a translation that's simultaneously being torn down — at the cost of turning an unrelated application's `ibv_dereg_mr` call into a latency event for every other tenant currently touching the cache, however briefly. A design that doesn't fence buys speed and isolation between tenants at the cost of an unresolved race whose actual behavior on real silicon isn't documented anywhere this book found. The asymmetry that makes this a harder call than it looks: an eviction engine's fencing cost is paid by the one workload that caused the pressure, but an invalidation engine's fencing cost, if it exists, is paid by every workload sharing the cache at the moment one of them happens to deregister a region — a blast radius in *time* (stalling unrelated lookups) layered on top of the blast radius in *space* ([Key Cache Eviction Policy](../key-cache-eviction-policy)'s wholesale-flush finding) this Part has already established. Neither this chapter nor any source it could find says which tradeoff a real vendor actually made.
 
-## Interface / timing reference
-
-| Mechanism | What decides it | Cost model |
-|---|---|---|
-| Capacity-pressure eviction (fixed/programmable/software) | Identical to [Hardware-Assisted Eviction Engines](/qp/hardware-assisted-eviction-engines) -- not re-derived here | Same spectrum: lowest latency/least flexible (fixed-function) to highest latency/most flexible (software trap) |
-| Mass invalidation on `ibv_dereg_mr` | No policy -- a global clear/broadcast-invalidate signal, not a victim-selection decision | Cost depends entirely on whether it fences in-flight lookups first (undocumented) -- unfenced is cheap and fast; fenced pays a stall proportional to however many lookups are live across the whole shared cache at that instant |
-| Fencing in-flight lookups against a mass invalidation | Not documented for any real RNIC | Open question shared with [Shared-MR Arbitration](../shared-mr-arbitration) and [Mid-Transaction Deregistration](../mid-transaction-deregistration) |
-
 [Mid-Transaction Deregistration](../mid-transaction-deregistration) closes this Part by taking the fencing question from a cache-wide concern to a single DMA burst's concern: what happens to one transfer, already in progress, when the translation it depends on disappears out from under it mid-burst.
 
 ## References

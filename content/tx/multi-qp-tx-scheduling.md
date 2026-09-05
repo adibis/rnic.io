@@ -37,17 +37,6 @@ Many QPs sharing one adapter can all have traffic ready to send at the same mome
 
 > **Design rationale.** None of the three policies above is a universally correct choice, and this book isn't picking one for the reader, the same honest position [Eviction Policy](/qp/eviction-policy) took for cache victim selection. Round-robin's fairness is cheap and simple but blind to how much work each QP is actually asking for; weighted round-robin fixes that at the cost of needing an external owner for the weights, the same cost [Eviction Policy](/qp/eviction-policy)'s priority-weighted option paid; strict priority serves genuinely urgent operations (control-plane work like deregistration, per NVIDIA's own example) predictably fast, at a real, structural starvation risk for whatever it deprioritizes. What this chapter adds beyond that already-familiar tradeoff is the confirmed fact that no amount of network-side congestion control substitutes for getting this policy right -- DCQCN and PFC were both active and both irrelevant in the study that measured this failure mode directly, which means whichever of these three policies (or some blend) a real vendor picks, it's the only lever that actually reaches this specific problem.
 
-## Interface and timing reference table
-
-| Question | This chapter's position |
-|---|---|
-| Do real, shipped RNICs run internal TX scheduling? | Yes -- confirmed directly (NVIDIA's own quoted response, Kong et al. Appendix B) |
-| Round-robin | Simple, starvation-free; blind to per-QP work volume |
-| Weighted round-robin | Fixes that blindness; needs an external weight owner (real example: Justitia, software/driver-layer) |
-| Priority scheduling | Serves urgent work predictably (e.g. deregistration, per NVIDIA); real starvation risk for deprioritized traffic |
-| Does DCQCN/PFC fix this? | No -- directly tested and confirmed not to (Zhang et al., Justitia) |
-| Relationship to Part 6 (Congestion Control) | Different problem, empirically confirmed separate: this chapter is internal-pipeline scheduling; Part 6 is network-congestion reaction |
-
 [Hardware-Assisted TX Scheduling Engines](/tx/hardware-assisted-tx-scheduling-engines) is next: what actually runs whichever policy this chapter names -- fixed silicon, a programmable engine, or firmware.
 
 ## References

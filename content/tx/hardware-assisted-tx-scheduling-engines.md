@@ -39,17 +39,7 @@ A scheduling decision that has to run on every single arbitration between ready 
 
 **What happens next.** This chapter closes the scheduling question this Part opened with [Single-QP Pipeline Stalls](../single-qp-pipeline-stalls) and continued through [Multi-QP TX Scheduling](../multi-qp-tx-scheduling). What's left is a question orthogonal to all of it: what happens to a WQE caught mid-fetch, mid-build, or mid-schedule when the QP it belongs to resets underneath it.
 
-> **Design rationale.** The same design tension [Hardware-Assisted Eviction Engines](/qp/hardware-assisted-eviction-engines) already named applies here with real evidence behind it rather than abstract reasoning alone: a vendor building toward NVIDIA's demonstrated position (a firmware-tunable internal policy) buys the ability to fix a measured fairness problem without a hardware respin, at the cost of building and validating that programmability in the first place. A vendor building toward Justitia's demonstrated position -- no on-chip programmable scheduler at all -- ships simpler hardware and pushes the entire fairness problem to software, at the direct, measured cost [Single-QP Pipeline Stalls](../single-qp-pipeline-stalls) already quantified: up to 90% throughput loss for a stalled flow, on hardware that hasn't built a way to prevent it in silicon. Neither position is free, and the honest reading of the evidence above is that real, shipped RNICs have occupied both ends of this spectrum at different points, not converged on one answer.
-
-## Interface / timing reference
-
-| Position on spectrum | Real evidence | Source |
-|---|---|---|
-| Fixed-function, no programmability | Not confirmed for any real RNIC | included for spectrum completeness only |
-| Programmable hardware engine, firmware-tunable | Confirmed -- internal QoS policy, vendor-tuned via firmware | NVIDIA (quoted in Kong et al., NSDI 2023, Appendix B) |
-| Software-driven (no on-chip scheduler) | Confirmed, dated -- built as a workaround for RNICs lacking one | Zhang et al. (Justitia, arXiv 1905.04437), 2019/2022 |
-| Switch/link-level analog (ETS, IEEE 802.1Qaz) | Real public standard, different layer of the stack | secondary sources -- not this chapter's mechanism |
-| Algorithmic family for a WRR-style engine | DRR/WDRR, general packet-scheduling literature | not RDMA-specific |
+> **Design rationale.** The same design tension [Hardware-Assisted Eviction Engines](/qp/hardware-assisted-eviction-engines) already named applies here with real evidence behind it rather than abstract reasoning alone: a vendor building toward NVIDIA's demonstrated position (a firmware-tunable internal policy) buys the ability to fix a measured fairness problem without a hardware respin, at the cost of building and validating that programmability in the first place. A vendor building toward Justitia's demonstrated position -- no on-chip programmable scheduler at all -- ships simpler hardware and pushes the entire fairness problem to software, at the direct, confirmed cost [Single-QP Pipeline Stalls](../single-qp-pipeline-stalls) already established: a real, severe throughput collapse for a stalled flow, on hardware that hasn't built a way to prevent it in silicon. Neither position is free, and the honest reading of the evidence above is that real, shipped RNICs have occupied both ends of this spectrum at different points, not converged on one answer.
 
 [Mid-Transaction TX Reset](/tx/mid-transaction-tx-reset) closes this Part: what happens to a WQE caught mid-fetch, mid-build, or mid-schedule when its owning QP resets underneath it.
 

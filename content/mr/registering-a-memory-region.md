@@ -37,15 +37,6 @@ Registering a Memory Region is conceptually the same act as installing a page-ta
 
 > **Design rationale.** Pinning pages at registration time rather than defaulting every MR to ODP-style lazy resolution is a deliberate choice about where to put a cost that has to be paid somewhere. Upfront pinning makes every subsequent access to that region fault-free and its latency predictable -- exactly what a performance-sensitive RDMA path wants, since a stall on the data path is precisely what registration exists to move out of the way in the first place. The cost is that registration itself becomes proportional to region size, paid whether or not the whole region ever actually gets touched. ODP inverts that trade: registration is cheap regardless of size, but the first-touch cost is deferred, not eliminated, and lands unpredictably wherever an access pattern first reaches a given page. Neither option is free; the choice is really about which latency a given workload can afford to have -- a known one, paid once, or a smaller, spread-out one, paid on demand.
 
-## Interface / timing reference
-
-| Step | What happens | Cost model |
-|---|---|---|
-| `ibv_reg_mr` (default, pinned) | Walk process page tables, pin pages, populate MPT + MTT entries, assign `lkey`/`rkey` | Upfront, proportional to region size / page count -- exact figure not disclosed at verbs level |
-| `IBV_ACCESS_ON_DEMAND` (explicit ODP) | Upfront pinning skipped for the named range | Deferred to first touch, page-fault-style |
-| Implicit ODP recipe | `addr = 0`, `length = SIZE_MAX`, `IBV_ACCESS_ON_DEMAND` set | Covers the entire process address space lazily, one registration |
-| `ibv_dereg_mr` | MPT/MTT entries removed, keys retired | Software must stop using the retired keys itself -- not hardware-enforced (2.5) |
-
 Registration and deregistration are what put keys into circulation and take them back out. What happens when a key that's still in circulation gets presented for an operation it was never granted, or against an address range outside what it covers, is [Permission and Bounds Violations](/mr/permission-and-bounds-violations)'s subject next.
 
 ## References

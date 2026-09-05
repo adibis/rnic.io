@@ -38,22 +38,6 @@ A Work Queue Element is what software actually writes into a Send Queue ring -- 
 
 > **Design rationale.** Keeping the software-facing WQE struct thin and transport-agnostic, rather than exposing a variant shaped to each vendor's actual on-chip packing, is what lets one verbs API target every RNIC vendor without an application recompiling against vendor-specific structs. The cost of that abstraction is paid entirely on the hardware side of the boundary: every real implementation has to translate a generic `opcode` + `sg_list` shape into whatever dense, fixed-width packing its own pipeline can parse efficiently -- mlx5's four-32-bit-field control segment is one real, public example of paying that cost, not the only way to pay it. A vendor that instead exposed its literal on-chip WQE format as the API would save that translation step, at the cost of every application becoming vendor-locked to that one layout -- exactly the tradeoff RDMA's whole verbs model was built to avoid.
 
-## Interface reference
-
-IBTA-V1 mandates which fields a Work Request must carry per opcode at a semantic level (an RDMA Write names a remote address, an `rkey`, a data segment list); it does not mandate a C struct layout. `struct ib_send_wr` is the Linux/OFA verbs community's software realization of that requirement -- de facto universal, but not itself an IBTA document. The mlx5 rows below are one vendor's own further step, packing that same information into a real on-chip shape IBTA says nothing about at all.
-
-| Field | Source | Notes |
-|---|---|---|
-| `opcode` | `struct ib_send_wr` (Linux/OFA verbs convention) | from the catalog ([0.4](/overview/operation-catalog)); must match this QP's transport |
-| `sg_list` / `num_sge` | `struct ib_send_wr` (Linux/OFA verbs convention) | local scatter-gather list, each entry an `addr`/`length`/`lkey` triple |
-| `send_flags` | `struct ib_send_wr` (Linux/OFA verbs convention) | e.g. signaled-completion request |
-| immediate data / invalidate rkey | `struct ib_send_wr` (union) | opcode-dependent, mutually exclusive |
-| mlx5 control segment | `mlx5_wqe_cseg` (DPDK `mlx5_prm.h`) -- one vendor's real on-chip packing, not a standard | 4x 32-bit: `opcode`, `sq_ds`, `flags`, `misc` |
-| Data segment (DS) count width | `mlx5_wqe_cseg.sq_ds` -- same vendor's own constraint | 6 bits, `MLX5_DSEG_MAX` = 63 segments per WQE |
-| RC/UC WQE size | measured (Kong et al., NSDI 2023) | 36 bytes |
-| UD WQE size | measured (Kong et al., NSDI 2023) | 68 bytes -- larger due to per-message destination addressing |
-| Maximum inline payload | measured (Kong et al., NSDI 2023) | 28 bytes -- above this, payload requires a separate DMA read |
-
 [The Send Queue Ring](/tx/the-send-queue-ring) is next: the structure that holds one of these WQEs per posted entry, and how hardware finds the next one to fetch.
 
 ## References

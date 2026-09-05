@@ -41,17 +41,6 @@ Two distinct real-world conditions are this chapter's subject: a bounds violatio
 
 > **Design rationale.** Collapsing bounds and permission checks into one reported status, rather than exposing two, costs an application almost nothing in practice — either way, the right response to a remote access error is the same: stop, figure out (in software, from context the RNIC never had reason to hand back) what was actually wrong with the request, and fix the program that issued it. A finer-grained status would help a developer debugging one specific mistake, but it would also mean carrying two codes down every path that currently only needs one, for a distinction whose only consumer is a human reading a log, not a machine making a different decision based on which one fired. That's a plausible reason the umbrella status exists as one thing rather than two — reasoned here, not confirmed by any source, since no source explains the design decision either way.
 
-## Interface and timing reference table
-
-| Signal / status | Fires when | Scope |
-|---|---|---|
-| `IBV_EVENT_QP_ACCESS_ERR` | R_Key violation, misaligned atomic request, too many outstanding RDMA read/atomic requests, or a length error without immediate data | responder-side QP, RC only; auto-transitions that QP to ERROR |
-| `IBV_WC_REM_ACCESS_ERR` | requester's completion status when the remote side rejected the operation for any of the above reasons | requester-side QP, via its own completion queue |
-| Bounds violation (address+length outside registered range) | not a separately reported condition | folds into the umbrella statuses above |
-| Permission violation (opcode not enabled by access flags) | not a separately reported condition | folds into the umbrella statuses above |
-| Check ordering (bounds-then-permission vs. the reverse) | not documented by any public source | implementation detail, not spec-mandated |
-| Stale rkey after deregistration | application's responsibility per `ibv_dereg_mr()` contract; not hardware-guaranteed-safe | see [Mid-Transaction Deregistration](../mid-transaction-deregistration) |
-
 The two conditions this chapter named are what happens when one QP's access to one MR is rejected. [Shared-MR Arbitration](../shared-mr-arbitration) asks the harder question underneath that: what happens when many QPs are addressing that same MR at once, and one of them is trying to invalidate it while the others are still mid-lookup.
 
 ## References

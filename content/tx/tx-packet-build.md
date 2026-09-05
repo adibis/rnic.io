@@ -17,7 +17,7 @@ This chapter sits outside [Part 1](/qp/) (Queue Pair Management)'s ten-item chec
 
 ## Overview
 
-Everything the previous three chapters covered -- the WQE's fields, the ring holding it, the on-chip prefetch getting it there ahead of need -- exists to feed this one stage: turning a fetched WQE into the exact wire packet [What Is RoCEv2](/overview/what-is-rocev2) already described byte-for-byte. This is where a `struct ib_send_wr`'s `opcode` and `sg_list` actually become a Base Transport Header, a RETH if the opcode needs one, and a closing ICRC -- the concrete moment software's shape and hardware's wire shape finally converge.
+A doorbell is the same kind of "kick" any command-queue-driven hardware engine responds to: fetch the descriptor, produce the fixed output format it requires, issue it. This stage is that sequence's last step for RDMA. Everything the previous three chapters covered -- the WQE's fields, the ring holding it, the on-chip prefetch getting it there ahead of need -- exists to feed this one stage: turning a fetched WQE into the exact wire packet [What Is RoCEv2](/overview/what-is-rocev2) already described byte-for-byte. This is where a `struct ib_send_wr`'s `opcode` and `sg_list` actually become a Base Transport Header, a RETH if the opcode needs one, and a closing ICRC -- the concrete moment software's shape and hardware's wire shape finally converge.
 
 ## Block diagram
 
@@ -34,18 +34,6 @@ Everything the previous three chapters covered -- the WQE's fields, the ring hol
 **What happens next.** A built, ICRC-closed packet is what actually leaves the port -- the exact bytes [What Is RoCEv2](/overview/what-is-rocev2) described crossing the wire, now a real instance of that shape rather than a description of it. This chapter's job ends here; what happens if this stage never gets to run at all -- because the WQE feeding it stalled, or the QP feeding it reset mid-build -- belongs to the next two chapters, not this one.
 
 > **Design rationale.** Fixing every wire-format field's shape and position at the specification level ([What Is RoCEv2](/overview/what-is-rocev2)), independent of how any given vendor's pipeline actually produces it, is what lets RoCEv2 interoperate across vendors at all -- two RNICs built by different companies, with completely different internal packet-build pipelines, only have to agree on the bytes that leave the port, not on how either of them assembles those bytes internally. That's exactly why this chapter can state every field's shape with total confidence while stating the assembly mechanism itself as undocumented -- the specification was only ever a contract about the wire, never a contract about the silicon producing it, and a vendor is free to build this stage as one monolithic unit or a dozen internal sub-stages as long as the packet that leaves matches the spec bit-for-bit.
-
-## Interface reference
-
-| Field | Source | Notes |
-|---|---|---|
-| BTH opcode | this WQE's `opcode` | catalog: [0.4](/overview/operation-catalog) |
-| BTH dest QP | this QP's `dest_qp_num` | fixed at INIT→RTR, [QP Context](/qp/qp-context) |
-| BTH PSN | this QP's live `sq_psn` | hardware-advanced, no software write |
-| RETH addr / rkey | this WQE's remote fields | only on FIRST/ONLY packets of RDMA Write/Read, per [0.4](/overview/operation-catalog) |
-| Payload | inline (WQE) or DMA read | 28-byte threshold, [3.1](/tx/the-wqe-and-the-send-queue-descriptor) |
-| ICRC | computed over invariant fields | covers everything except hop-mutable framing, [0.2](/overview/what-is-rocev2) |
-| Internal build sequencing (combined vs. multi-stage) | not documented | implementation detail, not spec-mandated |
 
 [Single-QP Pipeline Stalls](/tx/single-qp-pipeline-stalls) is next: what happens when one of this stage's required inputs -- a resolved `rkey`, an available PSN, the payload itself -- isn't ready yet, and whether that stall touches any other QP sharing this same pipeline.
 

@@ -34,16 +34,6 @@ RESET is legal from any state, including RTS with a WQE actively occupying one o
 
 > **Design rationale.** The HiP08 case above is worth reading as more than a trivia item: it's real evidence for which side of a genuine design tradeoff at least one real vendor landed on. Building hardware that can cleanly abort a WQE at any of this Part's four pipeline positions, at any instant, is real silicon complexity -- every stage needs an abort path, not just a forward path, and that path has to be provably correct for a case (an error transition) that is by definition rare and hard to test exhaustively. Punting that complexity to software -- let the hardware simply stop being coherent about outstanding work on error, and have the driver notice and clean up on the next touch -- is cheaper to build and verify, at the cost of a real window where outstanding state is inconsistent until software happens to look. HiP08's driver history shows a real vendor accepting that cost, at least for one hardware generation, rather than building the harder, fully-hardware-flushable alternative. Whether other vendors made the opposite trade is exactly the kind of fact this book has not been able to confirm from public sources.
 
-## Interface / timing reference
-
-| Decision point | What a real design has to choose | This book's position |
-|---|---|---|
-| WQE still ring-resident, untouched, on RESET | Simply invalid on next read vs. explicit invalidation | Not documented; reasoned as low-risk since it was never fetched |
-| WQE in prefetch buffer on RESET | Discarded vs. allowed to complete prefetch harmlessly | Not documented |
-| WQE mid-build (TX Packet Build) on RESET | Abort in hardware vs. cannot abort, software must detect and clean up | **Real, shipped example of the latter**: HiP08 RoCE hardware, confirmed via kernel patch series |
-| WQE queued at the TX Scheduler gate on RESET | Removed from scheduling consideration vs. serviced anyway | Not documented |
-| Related: CQE cleanup on a shared CQ during QP reset | Per-QP-only vs. whole-CQ clearing | Real, disputed on a linux-rdma mailing-list thread against IBTA-V1 §10.2.4.4/§10.3.1 -- Part 7's territory, named here as an adjacent, real data point |
-
 This closes Part 3. Eight chapters, one TX pipeline, the same checklist [How to Read This Guide](/overview/how-to-read-this-guide) previewed, applied to a datapath instead of a resource -- two items dropped because they genuinely didn't apply, one merge, and one chapter (TX Packet Build) that exists entirely outside the checklist because a resource-management checklist was never built to ask about a pipeline's own transform stage. Part 4 (RX Pipeline) runs a related set of questions against the receiving side of everything this Part just built.
 
 ## References

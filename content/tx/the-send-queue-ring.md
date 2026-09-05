@@ -39,19 +39,6 @@ A Send Queue's WQEs live in a ring in host memory -- a fixed-size, circular buff
 
 > **Design rationale.** A ring buffer addressed by masking rather than modulo, and an off-by-one capacity rule that never lets producer and consumer collide ambiguously, are both instances of the same design principle: pay a small, fixed, one-time cost (one wasted slot; a power-of-two size constraint) to make every subsequent operation cheap and branch-free, rather than handling the ambiguous case explicitly on every single push and pop. BlueFlame makes a related trade at a different layer: writing WQE bytes directly into a UAR alongside the doorbell costs more CPU-side work per post (a larger MMIO write, non-temporal stores to bypass cache) in exchange for skipping the ring's own host-memory round trip on the hardware side for small, latency-sensitive messages -- a trade that only pays off when the message is small enough that the extra CPU-side copy is cheaper than the PCIe fetch it avoids, which is exactly why it exists as an optional path rather than replacing the ordinary ring entirely.
 
-## Interface / timing reference
-
-No standard specifies ring internals, doorbell layout, or wraparound mechanics -- every row below is a real, checkable example from one specific open-source implementation, cited to show a genuine, working answer exists, not to assert that answer as architecturally mandated.
-
-| Property | Value | Real example (not a standard requirement) |
-|---|---|---|
-| Ring wraparound | bitwise mask, `(index + 1) & index_mask` | `rxe`'s own choice -- requires a power-of-two slot count; a real RNIC is free to wrap differently |
-| Usable capacity | N-1 of N physical slots | the standard resolution any ring with this producer/consumer ambiguity needs, not `rxe`-specific |
-| Index synchronization | `smp_load_acquire()` / `smp_store_release()` | `rxe`'s own choice of ordering primitive for shared, cross-privilege state |
-| Doorbell MMIO size | 64 bytes, fixed and aligned | measured on real ConnectX hardware (Kong et al., NSDI 2023) -- a real number, still vendor-specific |
-| BlueFlame | WQE bytes written directly to UAR via non-temporal stores, alongside doorbell | `libmlx5`'s own real implementation -- a named Mellanox mechanism, not a universal one |
-| Doorbell record | posted-WQE counter, updated separately from BlueFlame's data copy | `libmlx5` (`qp->gen_data.db[MLX5_SND_DBR]`) -- same vendor-specific mechanism |
-
 [WQE Prefetch](/tx/wqe-prefetch) is next: what happens between a doorbell ring and a WQE actually being on-chip and ready for the pipeline to build a packet from.
 
 ## References

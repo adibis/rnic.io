@@ -68,37 +68,6 @@ A smaller set moves continuously, under hardware's own control, with no software
 
 > **Design rationale.** Splitting `max_rd_atomic` and `max_dest_rd_atomic` into two independent fields, rather than one shared "outstanding read/atomic" limit, is what lets a connection be asymmetric on purpose -- a storage target that mostly serves reads and rarely issues them can advertise a generous `max_dest_rd_atomic` and a minimal `max_rd_atomic`, sized to its actual role, instead of both ends negotiating down to the more conservative of two roles neither of them is symmetrically playing. The cost of that flexibility is exactly the confusion this chapter opened with: two fields that sound like they mean the same thing, differing only in whose queue is counted, is a genuinely easy pair to transpose, and getting it backwards doesn't fail loudly at setup -- it just silently under- or over-provisions one direction of a connection until traffic patterns expose it.
 
-## Interface reference
-
-| Field | Type | Transport scope | Update model |
-|---|---|---|---|
-| `qp_state` | enum | all | software-written, on transition |
-| `cur_qp_state` | enum | all | software-supplied (asserted current state) |
-| `path_mtu` | enum | RC/UC | set once, INIT→RTR |
-| `path_mig_state` | enum | APM-capable HCAs | set once |
-| `qkey` | uint32_t | UD | set once, RESET→INIT |
-| `rq_psn` | uint32_t | RC/UC | set once (INIT→RTR), then hardware-advanced |
-| `sq_psn` | uint32_t | all | set once (RTR→RTS), then hardware-advanced |
-| `dest_qp_num` | uint32_t | RC/UC | set once, INIT→RTR |
-| `qp_access_flags` | bitmask | RC/UC only | set at RESET→INIT, re-settable later live via RTS→RTS (see [Installing a QP](/qp/installing-a-qp)) |
-| `cap` | struct | QP-resize-capable HCAs | set once |
-| `ah_attr` | struct | RC/UC | set once, INIT→RTR |
-| `alt_ah_attr` | struct | RC/UC | set once (alternate path) |
-| `pkey_index` | uint16_t | all | set once, RESET→INIT -- an active partitioning boundary on native IB, largely inert in most RoCEv2 fabrics (no subnet manager; see [Installing a QP](/qp/installing-a-qp)) |
-| `alt_pkey_index` | uint16_t | RC/UC | set once (alternate path) |
-| `en_sqd_async_notify` | uint8_t | all | set once |
-| `sq_draining` | uint8_t | all | hardware-set, query-only |
-| `max_rd_atomic` | uint8_t | RC | set once, RTR→RTS (requester ceiling) |
-| `max_dest_rd_atomic` | uint8_t | RC | set once, INIT→RTR (responder ceiling) |
-| `min_rnr_timer` | uint8_t | RC | set once, INIT→RTR |
-| `port_num` | uint8_t | all | set once, RESET→INIT |
-| `timeout` | uint8_t | RC | set once, RTR→RTS |
-| `retry_cnt` | uint8_t | RC | set once, RTR→RTS |
-| `rnr_retry` | uint8_t | RC | set once, RTR→RTS |
-| `alt_port_num` | uint8_t | RC/UC | set once (alternate path) |
-| `alt_timeout` | uint8_t | RC | set once (alternate path) |
-| `rate_limit` | uint32_t | vendor pacing extension | set once |
-
 [The QP Table](/qp/the-qp-table) picks this context up as a single addressable entry and covers where it actually lives.
 
 ## References

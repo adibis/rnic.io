@@ -37,14 +37,6 @@ No public source documents which of these a real RNIC actually ships, or whether
 
 > **Design rationale.** A pure-LRU cache is the simplest thing that could possibly work, and it's a reasonable default precisely because most real traffic is not adversarial — it's bursty and clustered, and recency really is a decent predictor most of the time. The case for spending real hardware complexity on priority- or error-weighting only holds once a workload actually has QPs whose importance or health genuinely diverges from their recency — a mixed-tenant deployment with SLA-bound and best-effort traffic sharing one adapter, say. Building that complexity in when it isn't needed is pure cost with no payoff; leaving it out when it is needed means the one QP an operator most cares about is exactly as vulnerable to eviction as everything else competing for the same cache line. There's no policy that's free of that trade.
 
-## Interface / timing reference
-
-| Policy | Decision input | Real cost |
-|---|---|---|
-| LRU | last-access time per cached QPC | blind to which QP is safe vs. costly to evict |
-| Priority-weighted | software/operator-set per-QP weight | needs an external owner for the weights; risk of a few QPs pinning most of the cache |
-| Error-weighted | live retry/RNR/timeout state from the reliability engine (Part 5) | couples the cache to reliability-engine state, a cross-cutting dependency |
-
 The next chapter asks whether the policy above runs as fixed hardware logic, a programmable engine, or a software-driven trap — a different question from which policy is correct.
 
 ## References

@@ -48,25 +48,6 @@ Every field below lives inside one entry of [The Key Table](/mr/the-key-table), 
 
 > **Design rationale.** Issuing `lkey` and `rkey` as two independent values, rather than one shared key checked differently depending on who presents it, is what lets the two permission surfaces move independently. A local process's own access to memory it registered itself is a much less sensitive question than what a remote peer -- untrusted, on a different machine -- is allowed to do to that same memory. Splitting the key means revoking or never granting the remote-facing one (`rkey`) doesn't have to touch the local-facing one at all, and an application that only ever needs local access never has to hand out anything a remote peer could present. A single shared key would work too, checked against a caller-identity bit the hardware would then have to carry alongside every operation -- independent keys sidestep needing that extra piece of state at all, at the cost of managing two numbers instead of one. What this design choice does *not* buy, per the measurements above: a remote peer is supposed to be authenticated by possession of a 32-bit `rkey`, but real drivers hand that key out with only a few bits of actual unpredictability, which is a hardware-adjacent design decision (how the key generator is seeded and advanced) sitting entirely outside what the two-key split itself was ever meant to solve.
 
-## Interface reference
-
-| Field | Source | Scope | Notes |
-|---|---|---|---|
-| `context` / `pd` | `struct ibv_mr` (Linux/OFA verbs convention) | software | which device and Protection Domain this MR belongs to |
-| `addr` / `length` | `struct ibv_mr` (Linux/OFA verbs convention) | software + hardware | the registered virtual address range |
-| `handle` | `struct ibv_mr` (Linux/OFA verbs convention) | software/kernel only | MR object identifier -- not wire-visible, not a hardware-checked key |
-| `lkey` | `struct ibv_mr` (Linux/OFA verbs convention) | local process | presented in this process's own Work Requests against this MR |
-| `rkey` | `struct ibv_mr` (Linux/OFA verbs convention) | remote peer | presented in an incoming RDMA operation against this MR |
-| `IBV_ACCESS_LOCAL_WRITE` | IBTA-V1 access control (Linux/OFA name) | local | allows local write via `lkey` |
-| `IBV_ACCESS_REMOTE_WRITE` | IBTA-V1 access control (Linux/OFA name) | remote | allows incoming RDMA Write via `rkey`; requires local write underneath it |
-| `IBV_ACCESS_REMOTE_READ` | IBTA-V1 access control (Linux/OFA name) | remote | allows incoming RDMA Read via `rkey` |
-| `IBV_ACCESS_REMOTE_ATOMIC` | IBTA-V1 access control (Linux/OFA name) | remote | allows incoming Atomics via `rkey`; requires local write underneath it |
-| `IBV_ACCESS_MW_BIND` | IBTA-V1 (Memory Windows) | local | allows a Memory Window to be bound against this MR -- see [Registering a Memory Region](/mr/registering-a-memory-region) |
-| `IBV_ACCESS_RELAXED_ORDERING` | Linux/OFA + vendor hardware -- not in IBTA-V1 | remote | optional, capability-gated; permits out-of-order completion of network writes to this region |
-| `IBV_ACCESS_ON_DEMAND` | Linux/OFA -- not in IBTA-V1 | local | ODP -- see [Registering a Memory Region](/mr/registering-a-memory-region) |
-| `rkey` real-world entropy | measured (ReDMArk, USENIX Security 2021) | -- | 0-2.85 bits across tested drivers, all sequential -- far below the 32-bit field width |
-| `pd` isolation in practice | measured (ReDMArk, USENIX Security 2021) | -- | connection managers default to one PD per process; key generator is shared across PDs regardless |
-
 [The Key Table](/mr/the-key-table) is next: the structure that holds one of these entries per registered region, and how a presented `lkey` or `rkey` finds the right one.
 
 ## References
