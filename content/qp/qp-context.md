@@ -18,7 +18,7 @@ A Queue Pair's context is the complete set of state hardware needs to send and r
 
 ![The master RNIC block diagram with the QP Table and QP Cache pair highlighted and every other block dimmed -- this chapter covers the data living inside one entry of that pair, not the structure itself.](/images/qp/01-qp-context-locator.svg)
 
-Every field below lives inside one entry of the QP Table this Part covers next -- this chapter is about what's in that entry, not the structure holding it.
+Every field below lives inside one entry of [The QP Table](/qp/the-qp-table), which this Part covers next -- this chapter is about what's in that entry, not the structure holding it.
 
 ## The fields, and what's really two roles wearing one name
 
