@@ -45,15 +45,18 @@ menu:
     - name: Memory Region / Key Table
       pageRef: /mr
       weight: 3
+    - name: TX Pipeline
+      pageRef: /tx
+      weight: 4
     - name: About
       pageRef: /about
-      weight: 4
-    - name: search
       weight: 5
+    - name: search
+      weight: 6
       params:
         type: search
     - name: theme-toggle
-      weight: 6
+      weight: 7
       params:
         type: theme-toggle
 
