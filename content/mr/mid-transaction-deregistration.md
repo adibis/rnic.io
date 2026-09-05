@@ -18,7 +18,7 @@ prev: /mr/hardware-assisted-key-cache-eviction
 
 ## Block diagram
 
-<!-- IMAGE: A two-actor timeline diagram, time running left to right, two horizontal swim lanes. Top lane, labeled "Remote requester (software + RNIC)": a box "rkey resolved against MPT/MTT" followed by an arrow into a wider box "DMA burst in progress, offset X of length L" that extends rightward past the midpoint of the diagram. Bottom lane, labeled "Local software (this MR's owner)": a box positioned so its left edge aligns roughly under the midpoint of the top lane's DMA-burst box, labeled "ibv_dereg_mr() called" with an arrow down into a small "MPT/MTT entry invalidated (possibly whole cache, per Kong et al.)" box. A vertical dashed red line runs from the "ibv_dereg_mr() called" box straight up through the still-extending "DMA burst in progress" box above it, with a large red question mark at the intersection point. Caption: "Does the DMA engine hold a private copy of the translation for the burst already in progress, or does the burst read a table entry that concurrent software just invalidated? Not resolved anywhere public." -->
+![A two-lane timeline: the remote requester's rkey resolving against MPT/MTT and continuing into a long DMA burst still in progress, while local software calls ibv_dereg_mr() and invalidates the MPT/MTT entry (possibly the whole cache) partway through that burst -- a dashed red line strikes up from the deregistration into the still-running burst with a question mark, asking whether the DMA engine holds a private translation copy immune to the race or reads a table entry concurrent software just invalidated.](/images/mr/09-mid-transaction-deregistration-block.svg)
 
 ## Deep walkthrough
 
