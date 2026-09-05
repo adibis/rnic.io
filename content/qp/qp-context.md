@@ -12,7 +12,7 @@ next: /qp/the-qp-table
 
 ## Overview
 
-A CPU core's architectural state -- program counter, registers, in-flight transaction trackers -- exists scoped to one thread of execution; a Queue Pair is the RNIC's own equivalent, existing scoped to one specific peer connection instead. A Queue Pair's context is the complete set of state hardware needs to send and receive on that connection correctly: which state the QP is in, who it's connected to, what sequence numbers it's tracking, and how many outstanding operations it's allowed to carry in either direction. Software supplies most of it once, at specific state transitions; hardware updates the rest continuously, on every packet, without a software write in the loop.
+A CPU core's architectural state -- program counter, registers, in-flight transaction trackers -- is scoped to one thread of execution; a Queue Pair is the RNIC's own equivalent, scoped instead to one specific peer connection. A Queue Pair's context is the complete set of state hardware needs to send and receive on that connection correctly: which state the QP is in, who it's connected to, what sequence numbers it's tracking, and how many outstanding operations it's allowed to carry in either direction. Software supplies most of it once, at specific state transitions; hardware updates the rest continuously, on every packet, without a software write in the loop.
 
 ## Locator
 

@@ -17,7 +17,7 @@ next: /qp/multi-qp-error-arbitration
 
 ## Overview
 
-A CPU exception or branch misprediction doesn't leave the instructions behind it in the pipeline in limbo -- it squashes them, in order, each with a defined outcome, rather than letting them vanish silently or complete against a state that's no longer valid. A QP that reaches ERROR does the same thing for its own in-flight work: it does not stop processing — it starts flushing. Every work request already posted and not yet completed, and every work request posted afterward, drains through the completion queue carrying a status that says the operation never happened, until nothing is left in either queue. Nothing about this touches any other QP on the same adapter: ERROR is scoped to exactly the QP that faulted, by construction, and that isolation guarantee is this chapter's real subject.
+A CPU exception or branch misprediction doesn't strand the instructions still in flight behind it in limbo -- it squashes them, in order, each with a defined outcome, rather than letting them vanish silently or complete against a state that's no longer valid. A QP that reaches ERROR does the same thing for its own in-flight work: it does not stop processing — it starts flushing. Every work request already posted and not yet completed, and every work request posted afterward, drains through the completion queue carrying a status that says the operation never happened, until nothing is left in either queue. Nothing about this touches any other QP on the same adapter: ERROR is scoped to exactly the QP that faulted, by construction, and that isolation guarantee is this chapter's real subject.
 
 ## Block diagram
 
