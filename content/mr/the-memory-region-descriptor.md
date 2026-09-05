@@ -22,7 +22,7 @@ Every field below lives inside one entry of the Key Table the next chapter cover
 
 ## Block diagram
 
-<!-- IMAGE: A single entry box labeled "MPT entry" subdivided into labeled sub-fields: "addr" (base virtual address), "length", "lkey", "rkey", "access flags" (shown as a small row of individually-labeled bit boxes: LOCAL_WRITE, REMOTE_WRITE, REMOTE_READ, REMOTE_ATOMIC, MW_BIND), "pd" (small icon linking out to a separate "Protection Domain" box). Two labeled arrows point INTO the lkey and rkey sub-fields specifically, from two separate actor boxes on the left drawn in the sky-blue actor color per docs/SVG_STYLE.md: "Local process (posts WRs against its own memory)" arrowing to lkey, "Remote peer (incoming RDMA operations)" arrowing to rkey -- both arrows terminate at the same entry box, visually establishing "one entry, two independently-scoped keys, two different callers." A separate small "handle" sub-field is shown off to one side in a dimmed/greyed box, captioned "software/kernel-side identifier for the MR object -- not a hardware-checked key, easy to conflate with lkey/rkey, isn't one." -->
+![One MPT entry subdivided into addr, length, lkey, and rkey sub-fields, a row of access-flag bits, and a pd field linking out to a separate Protection Domain box, with arrows from a Local process actor into lkey and a Remote peer actor into rkey, and the software-only handle field shown separately below, dimmed, to keep it from being conflated with the two hardware-checked keys.](/images/mr/01-the-memory-region-descriptor-block.svg)
 
 ## Deep walkthrough
 
