@@ -31,7 +31,13 @@ A QP that reaches ERROR does not stop processing — it starts flushing. Every w
 
 **Isolation is the property, not an accident.** Nothing in either error path touches a sibling QP on the same adapter. The flush behavior, the ERROR state itself, and the eventual RESET-to-recover path are all scoped to the one QP context that faulted — a second QP carrying on normal RTS traffic through the exact same TX/RX pipeline stages, cached in the exact same QP Cache, keeps running without observing anything. That's worth stating explicitly here because it's precisely the property [Multi-QP Error Arbitration](../multi-qp-error-arbitration) complicates: isolation between two QPs faulting independently is one problem; many QPs faulting from one shared cause, all needing to report through the same channel at once, is a different one.
 
+**A third trigger, and the one that doesn't stay single-QP.** `IBV_EVENT_QP_FATAL` is more than a generic "something prevented further completions" catch-all -- it has a documented cause that the other two triggers don't: an error on a Completion Queue or a Shared Receive Queue this QP is associated with. When a CQ or SRQ itself hits an error, *every* QP associated with it -- not just the one that happened to trigger the condition -- transitions to ERROR and fires its own `IBV_EVENT_QP_FATAL`, simultaneously. This chapter's isolation story still holds for `QP_REQ_ERR` and `QP_ACCESS_ERR`, both scoped to the one QP that faulted; `QP_FATAL` via a shared CQ/SRQ is the one documented, concrete mechanism by which a single upstream cause takes out many QPs at the exact same instant. [Multi-QP Error Arbitration](../multi-qp-error-arbitration) is where that scenario actually gets reasoned through.
+
 **SRQ-associated QPs need one more signal before teardown.** A QP that shares a Shared Receive Queue with other QPs can't simply be destroyed the moment it reaches ERROR — some of its outstanding receive-side work may still reference WQEs pulled from that shared queue, and destroying the QP before that work finishes draining risks leaving the SRQ itself in an inconsistent state for the QPs still using it. `IBV_EVENT_QP_LAST_WQE_REACHED` is the signal that closes this gap: it fires once this QP has consumed the last SRQ-sourced WQE it will ever consume, and it's the event software waits for before it's safe to tear the QP down without disturbing its SRQ siblings.
+
+<!-- IMAGE: Small inset diagram, separate from the main FIFO-drain diagram above. One QP box in ERROR (red fault-role border) with its RQ shown pulling from a shared SRQ box (drawn in the amber shared-resource color, same visual family as QP Table/Cache) that two other, healthy QP boxes also pull from. A dashed arrow from the faulted QP's RQ to the SRQ labeled "still draining WQEs already pulled." Once that drain empties, an arrow labeled "IBV_EVENT_QP_LAST_WQE_REACHED" fires from the faulted QP to a small "safe to destroy" flag -- captioned "the SRQ itself, and its other QPs, are untouched throughout." -->
+
+
 
 > **Design rationale.** Flushing every outstanding operation with an explicit status, rather than simply halting the QP and leaving posted-but-unprocessed work in limbo, is what makes fault recovery a software-observable, boundedly-long process instead of an open question the application has to poll for indefinitely. It costs hardware a real obligation — walk both queues to completion, in order, generating a real CQE for each entry, even though none of them succeeded — instead of just setting a flag and stopping. That cost buys the application a guarantee: post-then-poll always terminates, one way or another, for every request it ever issued, fault or no fault. The alternative (silently dropping queued work with no completion at all) would turn every fault into a hang the application has no event to wake up on.
 
@@ -40,12 +46,12 @@ A QP that reaches ERROR does not stop processing — it starts flushing. Every w
 | Signal / status | Fires when | Scope |
 |---|---|---|
 | `IBV_WC_WR_FLUSH_ERR` | every outstanding/subsequent WQE on a QP already in ERROR | this QP's SQ and RQ only |
-| `IBV_EVENT_QP_FATAL` | an error prevents further completions on this QP | this QP; recovery requires RESET |
+| `IBV_EVENT_QP_FATAL` | an error prevents further completions on this QP -- including a shared CQ or SRQ error, which fires this same event on every QP associated with it at once | this QP; recovery requires RESET (see multi-QP note above) |
 | `IBV_EVENT_QP_REQ_ERR` | responder-side transport violation (unsupported/out-of-sequence opcode) | RC only, this QP |
 | `IBV_EVENT_QP_ACCESS_ERR` | R_Key violation, misaligned atomic, outstanding-read/atomic overrun, length error | RC only, this QP |
 | `IBV_EVENT_QP_LAST_WQE_REACHED` | this QP's last SRQ-sourced WQE has been consumed, following an ERROR transition | this QP, SRQ-associated only |
-| `IBV_WC_RETRY_EXC_ERR` | local `retry_cnt` exhausted with no ack/nack from the peer at all | this QP |
-| `IBV_WC_RNR_RETRY_EXC_ERR` | local `rnr_retry` exhausted after repeated RNR NAKs from the peer | this QP |
+| `IBV_WC_RETRY_EXC_ERR` | local `retry_cnt` exhausted with no ack/nack from the peer at all | RC only, this QP |
+| `IBV_WC_RNR_RETRY_EXC_ERR` | local `rnr_retry` exhausted after repeated RNR NAKs from the peer | RC only, this QP |
 
 One QP faulting is a contained, well-defined event. [Multi-QP Error Arbitration](../multi-qp-error-arbitration) asks what happens when the isolation boundary this chapter just described has to hold under many simultaneous faults instead of one.
 

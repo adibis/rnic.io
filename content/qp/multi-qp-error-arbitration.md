@@ -17,11 +17,11 @@ This chapter is honest about its own limits before it starts: no vendor publishe
 
 ## Overview
 
-The previous chapter's isolation guarantee holds for exactly one fault at a time. A link flap, a shared upstream resource failing, or any single event that takes out a batch of QPs simultaneously turns "one QP flushes its queues and reports through the CQ" into "many QPs all need to flush and report through structures that are, at some point, shared and serialized" — and something has to decide the order that happens in.
+The previous chapter's isolation guarantee holds for exactly one fault at a time. This isn't only a hypothetical "link flap" scenario -- it's a documented, concrete mechanism: when a Completion Queue or Shared Receive Queue itself hits an error, *every* QP associated with it transitions to ERROR and fires `IBV_EVENT_QP_FATAL` simultaneously, not one at a time ([Single-QP Error Handling](../single-qp-error-handling) names this trigger directly). A CQ or SRQ shared across dozens or hundreds of QPs turns one upstream failure into exactly that many simultaneous fault events, all needing to flush and report through structures that are, at that instant, shared and serialized — and something has to decide the order that happens in.
 
 ## Block diagram
 
-<!-- IMAGE: A many-to-one funnel diagram: eight or so small "QP" boxes on the left, each with a small red fault-role-color glyph attached (per docs/SVG_STYLE.md), each with an arrow converging into a single narrow "reporting path" channel in the center (drawn as a queue/FIFO shape), which fans back out on the right into a single "CQE Gen" box. Annotate the narrow channel with a bracket labeled "serialization point: one path, many simultaneous demands." -->
+<!-- IMAGE: A many-to-one funnel diagram, now grounded in the specific documented trigger rather than a generic hypothetical: one shared "CQ (or SRQ)" box at the top, drawn with a fault-role-color crack/glyph indicating it has itself hit an error. Eight small "QP" boxes below it, each with an arrow UP from the faulted CQ/SRQ box into it (not the reverse direction of the old spec) labeled "IBV_EVENT_QP_FATAL," each firing at the same instant (draw all eight arrows the same visual weight, no stagger, to show simultaneity). All eight QP boxes then funnel back down into a single narrow "reporting path" channel (queue/FIFO shape), which fans out into "CQE Gen." Annotate the narrow channel with a bracket labeled "serialization point: one path, eight simultaneous demands, all from the same one upstream cause." -->
 
 ## Deep walkthrough
 
@@ -46,5 +46,4 @@ The previous chapter's isolation guarantee holds for exactly one fault at a time
 
 ## References
 
-- InfiniBand Trade Association, *InfiniBand™ Architecture Specification*, Volume 1 (General Specifications).
-- No IETF or IBTA standard governs multi-QP fault servicing/reporting order -- it is implementation-specific silicon design, not a wire-format or software-interface contract any standards body defines. This chapter's treatment is grounded in the sources cited in-text above, not a standards document.
+No IETF or IBTA standard governs multi-QP fault servicing/reporting order -- it is implementation-specific silicon design, not a wire-format or software-interface contract any standards body defines. This chapter's treatment is grounded in the sources cited in-text above (the `IBV_EVENT_QP_FATAL` cascading-fault mechanism is documented verbs-layer behavior; the servicing-order reasoning is not), not a standards document.
