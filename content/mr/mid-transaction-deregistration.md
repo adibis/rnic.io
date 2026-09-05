@@ -14,7 +14,7 @@ prev: /mr/hardware-assisted-key-cache-eviction
 
 ## Overview
 
-[Mid-Transaction QP Reset](/qp/mid-transaction-qp-reset) closed Part 1 on the same shape of question this chapter closes Part 2 with: a resource torn down while something is still actively using it. There, the resource was a Queue Pair and the thing still in flight was a packet, a replay-buffer entry, a partially-reassembled message. Here, the resource is a Memory Region and the thing still in flight is a DMA burst that has already resolved an `rkey` against the key table and started moving bytes, at the exact moment software calls `ibv_dereg_mr` on the other end of that same MR. Same shape, different resource, and — unlike Part 1's version — one real, sourced anchor to start from before the chapter has to reason on its own.
+[Mid-Transaction QP Reset](/qp/mid-transaction-qp-reset) closed [Part 1](/qp/) (Queue Pair Management) on the same shape of question this chapter closes [Part 2](/mr/) (Memory Region / Key Table) with: a resource torn down while something is still actively using it. There, the resource was a Queue Pair and the thing still in flight was a packet, a replay-buffer entry, a partially-reassembled message. Here, the resource is a Memory Region and the thing still in flight is a DMA burst that has already resolved an `rkey` against the key table and started moving bytes, at the exact moment software calls `ibv_dereg_mr` on the other end of that same MR. Same shape, different resource, and — unlike Part 1's version — one real, sourced anchor to start from before the chapter has to reason on its own.
 
 ## Block diagram
 

@@ -20,7 +20,7 @@ Removing the kernel from the data path removes the thing that used to check ever
 
 ## Reliable delivery moves from a software stack into the adapter's own retry engine
 
-For a Reliable Connection (RC) Queue Pair, the adapter tracks its own packet sequence numbers, generates and consumes its own acknowledgements, and retries on its own — the job a software TCP stack normally does, run instead as a hardware state machine per connection. This isn't inference from the API shape alone: the wire header (Part 0.2) carries a PSN field on every packet, and a QP's own configuration (`timeout`, `retry_cnt`, `rnr_retry` — Part 1's QP Context) only makes sense if something in the adapter is actively running a timer and a retry count against them. Part 5 (Reliability Engine) is that state machine, and Part 1's error-handling chapters (1.6, 1.7) cover what happens when it gives up.
+For a Reliable Connection (RC) Queue Pair, the adapter tracks its own packet sequence numbers, generates and consumes its own acknowledgements, and retries on its own — the job a software TCP stack normally does, run instead as a hardware state machine per connection. This isn't inference from the API shape alone: the wire header (Part 0.2) carries a PSN field on every packet, and a QP's own configuration (`timeout`, `retry_cnt`, `rnr_retry` — [Part 1](/qp/) (Queue Pair Management)'s QP Context) only makes sense if something in the adapter is actively running a timer and a retry count against them. Part 5 (Reliability Engine) is that state machine, and Part 1's error-handling chapters (1.6, 1.7) cover what happens when it gives up.
 
 ## The remote CPU is optional
 

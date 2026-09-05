@@ -8,7 +8,7 @@ description: "A registered memory region hands back two keys, not one -- and the
 next: /mr/the-key-table
 ---
 
-[How to Read This Guide](/overview/how-to-read-this-guide) named the checklist Part 1 ran in full against the Queue Pair. This Part runs the same checklist a second time, against a different resource: the Memory Region and the key table that stores it. This chapter is where that starts -- the descriptor itself, field by field, before the next chapter covers the structure holding every one of them.
+[How to Read This Guide](/overview/how-to-read-this-guide) named the checklist [Part 1](/qp/) (Queue Pair Management) ran in full against the Queue Pair. This Part runs the same checklist a second time, against a different resource: the Memory Region and the key table that stores it. This chapter is where that starts -- the descriptor itself, field by field, before the next chapter covers the structure holding every one of them.
 
 ## Overview
 

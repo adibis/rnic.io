@@ -49,14 +49,14 @@ A smaller set moves continuously, under hardware's own control, with no software
 
 **`dest_qp_num`** -- the peer's QP number, RC/UC only, set once at INIT→RTR, held fixed for the connection's life.
 - *What*: a 32-bit field holding the 24-bit destination QP number -- the exact width and position [What Is RoCEv2](/overview/what-is-rocev2) already described inside the BTH.
-- *Where used*: not checked against an incoming packet so much as stamped into every outgoing one -- the TX pipeline (Part 3) builds each packet's BTH by copying this QP's `dest_qp_num` straight into the destination-QP field, on every single packet this QP ever sends.
+- *Where used*: not checked against an incoming packet so much as stamped into every outgoing one -- the TX pipeline (Part 3 (TX Pipeline)) builds each packet's BTH by copying this QP's `dest_qp_num` straight into the destination-QP field, on every single packet this QP ever sends.
 - *When it's wrong*: it isn't something that can fail at runtime -- it's fixed at INIT→RTR and only reachable again through a full RESET. A QP simply cannot send to a different peer without being torn down and rebuilt.
 - *What happens next*: nothing to retry here; this field's only failure mode is a software bug at connection setup, not a hardware fault.
 
 **`rq_psn` / `sq_psn`** -- the receive- and send-side sequence counters.
 - *What*: 32-bit fields, RC/UC only for `rq_psn`, all transports for `sq_psn`. `rq_psn` starts at a value software supplies at INIT→RTR (the PSN the peer's first packet is expected to carry); `sq_psn` starts at a value software supplies at RTR→RTS, then advances under hardware's own control from there.
-- *Where checked*: `rq_psn` against the PSN in every arriving packet's BTH -- exactly where in the pipeline that comparison happens, and what happens to a packet that doesn't match, is the RX pipeline's (Part 4) open question, deliberately not resolved here (see [One Transaction, Start to Finish](/overview/one-transaction-start-to-finish) for the walkthrough that first flags it).
-- *What happens next*: a PSN mismatch is reliability-engine (Part 5) territory -- this chapter's job stops at naming the field and what it holds, not how a gap or duplicate gets handled.
+- *Where checked*: `rq_psn` against the PSN in every arriving packet's BTH -- exactly where in the pipeline that comparison happens, and what happens to a packet that doesn't match, is the RX pipeline's (Part 4 (RX Pipeline)) open question, deliberately not resolved here (see [One Transaction, Start to Finish](/overview/one-transaction-start-to-finish) for the walkthrough that first flags it).
+- *What happens next*: a PSN mismatch is reliability-engine (Part 5 (Reliability Engine)) territory -- this chapter's job stops at naming the field and what it holds, not how a gap or duplicate gets handled.
 
 ## Design rationale
 

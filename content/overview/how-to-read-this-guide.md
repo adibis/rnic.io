@@ -8,7 +8,7 @@ description: "The same eight-item checklist gets applied to a different hardware
 prev: /overview/one-transaction-start-to-finish
 ---
 
-[The previous article](../one-transaction-start-to-finish) walked one RDMA Write through the whole machine and closed on an observation worth taking seriously instead of skimming past: the same storage-structure-plus-working-set shape showed up more than once in a single transaction, attached to two different hardware resources on two different machines. That wasn't an accident of which example operation got chosen. It's structural. This article names the pattern directly and tells you where in the book it recurs, so you recognize it on purpose from here on rather than noticing it again by coincidence in Part 5.
+[The previous article](../one-transaction-start-to-finish) walked one RDMA Write through the whole machine and closed on an observation worth taking seriously instead of skimming past: the same storage-structure-plus-working-set shape showed up more than once in a single transaction, attached to two different hardware resources on two different machines. That wasn't an accident of which example operation got chosen. It's structural. This article names the pattern directly and tells you where in the book it recurs, so you recognize it on purpose from here on rather than noticing it again by coincidence in Part 5 (Reliability Engine).
 
 ## The checklist
 
@@ -16,13 +16,13 @@ Several Parts of this book ask the same ten questions about a different piece of
 
 Ten questions, one resource. **Part 1, Queue Pair Management, is this checklist run against the Queue Pair, in full** — QP Context, then the QP Table, then QP Caching, then Installing a QP, then the QP State Machine, then Single-QP Error Handling, then Multi-QP Error Arbitration, then Eviction Policy, then Hardware-Assisted Eviction Engines, then Mid-Transaction QP Reset. Ten chapters, ten questions, in the same order given above. It's the longest, most granular Part in this book for exactly that reason: it's not that the Queue Pair is more complicated than everything else here, it's that Part 1 is where the checklist gets shown in full once, so later Parts don't have to re-derive it from scratch.
 
-They don't. Part 2 runs the same checklist against the Memory Region and its Key Table — the same shape, one chapter short, because a Memory Region's lifecycle doesn't carry the state-machine richness a Queue Pair's does, and Part 2 says so explicitly rather than silently skipping a step. Part 5's replay buffer is a third instance of the same table-plus-working-set-plus-eviction question, this time applied to unacknowledged, in-flight packet data instead of connection state or address translations. Part 6's per-QP rate-limiter state is a fourth. By the time you reach Part 6, you'll have seen this exact shape often enough that its chapter list should be predictable before you read it.
+They don't. Part 2 runs the same checklist against the Memory Region and its Key Table — the same shape, one chapter short, because a Memory Region's lifecycle doesn't carry the state-machine richness a Queue Pair's does, and Part 2 says so explicitly rather than silently skipping a step. Part 5's replay buffer is a third instance of the same table-plus-working-set-plus-eviction question, this time applied to unacknowledged, in-flight packet data instead of connection state or address translations. Part 6 (Congestion Control Engine)'s per-QP rate-limiter state is a fourth. By the time you reach Part 6, you'll have seen this exact shape often enough that its chapter list should be predictable before you read it.
 
 Knowing this changes how you should read the book. When Part 5 says "eviction policy" and cross-references Part 1 instead of re-explaining what an eviction policy is, that's not a shortcut taken to save the author's time — it's the guide telling you these are the same question, so an answer worked out once in Part 1 should transfer.
 
 ## The chapter template
 
-Every chapter in Parts 1 and onward — not the Part 0 chapters you've been reading, including this one — follows one fixed shape, in this order:
+Every chapter in Parts 1 and onward — not the [Part 0](/overview/) (Overview) chapters you've been reading, including this one — follows one fixed shape, in this order:
 
 - **Locator.** The master RNIC block diagram, with this chapter's block highlighted and everything else dimmed. It's both a "you are here" and the chapter's hero image, the same drawing every time, never a new diagram.
 - **Overview.** One paragraph, datasheet-terse, stating what this block does before any mechanism is described.
