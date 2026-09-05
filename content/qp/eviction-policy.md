@@ -19,7 +19,7 @@ next: /qp/hardware-assisted-eviction-engines
 
 ## Block diagram
 
-<!-- IMAGE: Zoomed diagram of the QP Cache, all slots shown occupied with small "QPC" boxes. An incoming arrow labeled "QP N+1 needed, cache full" points at the cache from the left. A small decision box labeled "Eviction Policy" sits between the cache and a highlighted "victim" QPC slot (drawn in the red fault/emphasis color per docs/SVG_STYLE.md, distinct from the neutral occupied slots), with three small labeled input arrows feeding the decision box: "recency" (from an access-time tag), "priority" (from a software-set weight), "error state" (from the reliability engine's per-QP retry/timeout counters, dashed arrow since this input crosses into Part 5's territory). An arrow from the victim slot back down to "QP Table (DRAM/HBM)" labeled "written back if dirty, then freed," and a new arrow from the table up into the now-free slot labeled "QP N+1 fetched in." -->
+![The QP Cache full with QP N+1 needing a slot: the Eviction Policy decision box takes recency, priority, and error-state inputs to pick a victim, which is written back to the QP Table if dirty and freed, with QP N+1 fetched into the now-free slot.](/images/qp/08-eviction-policy-block.svg)
 
 ## Deep walkthrough
 
