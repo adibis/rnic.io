@@ -47,6 +47,8 @@ A smaller set moves continuously, under hardware's own control, with no software
 
 ## Deep walkthrough: three fields worth tracing all the way through
 
+Not every field named above gets the same full treatment here, and it's worth saying plainly why. `port_num`, `pkey_index`, and `qp_access_flags` already get real depth in [Installing a QP](/qp/installing-a-qp) -- what each one gates, what happens if it's missing, and (for `qp_access_flags` specifically) the one live path that reopens it later -- so this chapter doesn't re-derive that story. `timeout`, `retry_cnt`, `rnr_retry`, and `min_rnr_timer` belong to the reliability engine's own retry/timeout machinery, which this book hasn't reached yet (Part 5); naming them here as fields this QP carries is as far as this chapter goes. `path_mtu` and `qkey` (UD-only, and this Part assumes RC throughout) don't get dedicated depth anywhere in this book's current scope. The three fields below are the ones whose story belongs specifically to this chapter -- not owned by a single transition, and not deferred to a Part that doesn't exist yet.
+
 **`max_dest_rd_atomic`** -- the responder-side ceiling from above.
 - *What*: an 8-bit value, RC only, set once at the INIT→RTR transition.
 - *Where this is checked*: at the responder, against a live count of that QP's currently outstanding incoming read/atomic requests, whenever a new `RDMA_READ_REQUEST` or atomic opcode arrives for it.
