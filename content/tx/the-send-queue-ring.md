@@ -41,14 +41,16 @@ A Send Queue's WQEs live in a ring in host memory -- a fixed-size, circular buff
 
 ## Interface / timing reference
 
-| Property | Value | Source / notes |
+No standard specifies ring internals, doorbell layout, or wraparound mechanics -- every row below is a real, checkable example from one specific open-source implementation, cited to show a genuine, working answer exists, not to assert that answer as architecturally mandated.
+
+| Property | Value | Real example (not a standard requirement) |
 |---|---|---|
-| Ring wraparound | bitwise mask, `(index + 1) & index_mask` | `rxe_queue.h`, requires a power-of-two slot count |
-| Usable capacity | N-1 of N physical slots | producer == consumer is defined as empty |
-| Index synchronization | `smp_load_acquire()` / `smp_store_release()` | `rxe`, shared between untrusted userspace and kernel/hardware |
-| Doorbell MMIO size | 64 bytes, fixed and aligned | measured (Kong et al., NSDI 2023) |
-| BlueFlame | WQE bytes written directly to UAR via non-temporal stores, alongside doorbell | `libmlx5`, real driver source -- vendor-specific, not universal |
-| Doorbell record | posted-WQE counter, updated separately from BlueFlame's data copy | `libmlx5` (`qp->gen_data.db[MLX5_SND_DBR]`) |
+| Ring wraparound | bitwise mask, `(index + 1) & index_mask` | `rxe`'s own choice -- requires a power-of-two slot count; a real RNIC is free to wrap differently |
+| Usable capacity | N-1 of N physical slots | the standard resolution any ring with this producer/consumer ambiguity needs, not `rxe`-specific |
+| Index synchronization | `smp_load_acquire()` / `smp_store_release()` | `rxe`'s own choice of ordering primitive for shared, cross-privilege state |
+| Doorbell MMIO size | 64 bytes, fixed and aligned | measured on real ConnectX hardware (Kong et al., NSDI 2023) -- a real number, still vendor-specific |
+| BlueFlame | WQE bytes written directly to UAR via non-temporal stores, alongside doorbell | `libmlx5`'s own real implementation -- a named Mellanox mechanism, not a universal one |
+| Doorbell record | posted-WQE counter, updated separately from BlueFlame's data copy | `libmlx5` (`qp->gen_data.db[MLX5_SND_DBR]`) -- same vendor-specific mechanism |
 
 [WQE Prefetch](/tx/wqe-prefetch) is next: what happens between a doorbell ring and a WQE actually being on-chip and ready for the pipeline to build a packet from.
 

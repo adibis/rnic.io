@@ -24,6 +24,8 @@ A Work Queue Element is what software actually writes into a Send Queue ring -- 
 
 ## Deep walkthrough
 
+**What the standard actually requires, versus what one software convention makes concrete.** IBTA-V1 specifies a Work Request's required content at a semantic level per opcode -- an RDMA Write names a remote address, an `rkey`, and a local data segment list; it does not specify a C struct, a field order, or a byte layout. `struct ib_send_wr` (and its userspace-verbs mirror, `struct ibv_send_wr`) is the Linux/OFA verbs community's software realization of that requirement -- de facto universal across every vendor's software stack, but a software convention this book is citing as a real, checkable example, not an IBTA document itself. Worth being precise about that distinction before going further: the standard sets what a Work Request must communicate; a specific software API is one concrete way of communicating it; and, one layer further still below, a specific vendor's on-chip format is a third, independent thing again -- three different shapes this chapter is about to walk through, only one of which any standards body actually specifies.
+
 **The software-facing shape, and what it deliberately doesn't commit to.** The Linux kernel's own generic representation, `struct ib_send_wr` (and its userspace-verbs mirror, `struct ibv_send_wr`), is deliberately thin: a `next` pointer for chaining multiple WRs in one post call, a `wr_id`/`wr_cqe` for matching a future completion back to this specific request, a `sg_list`/`num_sge` pair naming local source bytes via a `struct ib_sge` (`addr`, `length`, `lkey` -- the local key [The Memory Region Descriptor](/mr/the-memory-region-descriptor) already covers field by field), an `opcode` from the catalog [0.4](/overview/operation-catalog) already enumerated, `send_flags`, and a union carrying either immediate data or an invalidate-rkey value depending on which opcode this is. Nowhere in this struct is there a BTH, a PSN, or an ICRC -- those are hardware's job to produce, not software's job to supply. This is the same abstraction-boundary gap this book has already named at the doorbell ([0.5](/overview/one-transaction-start-to-finish)) and the QP table's internal organization ([2.2](/qp/the-qp-table)): a public, checkable software-facing struct exists, and it is not a claim about what any specific RNIC stores internally.
 
 **A real vendor's on-chip shape, shown specifically to make that gap concrete rather than asserted abstractly.** Mellanox's mlx5 driver packs a WQE's control segment (`mlx5_wqe_cseg`, confirmed directly against the DPDK source) into exactly four 32-bit fields: `opcode`, `sq_ds`, `flags`, `misc`. `sq_ds` folds two pieces of information into one field -- how many data segments this WQE carries, constrained to 6 bits, capping a single WQE at 63 data segments (`MLX5_DSEG_MAX`). Compare this to `ib_send_wr`'s separate, independent `num_sge` field: the same information (how many scatter-gather entries this operation touches) exists in both shapes, but one vendor's real hardware packs it into a shared, width-constrained field alongside an opcode, while the software-facing struct keeps it as its own untyped `int`. Neither shape is wrong -- they're solving different problems. Software's shape optimizes for a stable, transport-agnostic API surface across every vendor's hardware; one real vendor's on-chip shape optimizes for what actually fits efficiently into a fixed-width control segment a pipeline stage can parse in hardware. This is one real, checkable example, not a claim that every RNIC packs a WQE control segment identically.
@@ -38,14 +40,16 @@ A Work Queue Element is what software actually writes into a Send Queue ring -- 
 
 ## Interface reference
 
+IBTA-V1 mandates which fields a Work Request must carry per opcode at a semantic level (an RDMA Write names a remote address, an `rkey`, a data segment list); it does not mandate a C struct layout. `struct ib_send_wr` is the Linux/OFA verbs community's software realization of that requirement -- de facto universal, but not itself an IBTA document. The mlx5 rows below are one vendor's own further step, packing that same information into a real on-chip shape IBTA says nothing about at all.
+
 | Field | Source | Notes |
 |---|---|---|
-| `opcode` | `struct ib_send_wr` | from the catalog ([0.4](/overview/operation-catalog)); must match this QP's transport |
-| `sg_list` / `num_sge` | `struct ib_send_wr` | local scatter-gather list, each entry an `addr`/`length`/`lkey` triple |
-| `send_flags` | `struct ib_send_wr` | e.g. signaled-completion request |
+| `opcode` | `struct ib_send_wr` (Linux/OFA verbs convention) | from the catalog ([0.4](/overview/operation-catalog)); must match this QP's transport |
+| `sg_list` / `num_sge` | `struct ib_send_wr` (Linux/OFA verbs convention) | local scatter-gather list, each entry an `addr`/`length`/`lkey` triple |
+| `send_flags` | `struct ib_send_wr` (Linux/OFA verbs convention) | e.g. signaled-completion request |
 | immediate data / invalidate rkey | `struct ib_send_wr` (union) | opcode-dependent, mutually exclusive |
-| mlx5 control segment | `mlx5_wqe_cseg` (DPDK `mlx5_prm.h`) | 4x 32-bit: `opcode`, `sq_ds`, `flags`, `misc` -- one real vendor's on-chip packing |
-| Data segment (DS) count width | `mlx5_wqe_cseg.sq_ds` | 6 bits, `MLX5_DSEG_MAX` = 63 segments per WQE |
+| mlx5 control segment | `mlx5_wqe_cseg` (DPDK `mlx5_prm.h`) -- one vendor's real on-chip packing, not a standard | 4x 32-bit: `opcode`, `sq_ds`, `flags`, `misc` |
+| Data segment (DS) count width | `mlx5_wqe_cseg.sq_ds` -- same vendor's own constraint | 6 bits, `MLX5_DSEG_MAX` = 63 segments per WQE |
 | RC/UC WQE size | measured (Kong et al., NSDI 2023) | 36 bytes |
 | UD WQE size | measured (Kong et al., NSDI 2023) | 68 bytes -- larger due to per-message destination addressing |
 | Maximum inline payload | measured (Kong et al., NSDI 2023) | 28 bytes -- above this, payload requires a separate DMA read |
