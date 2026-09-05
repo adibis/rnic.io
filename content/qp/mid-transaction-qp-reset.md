@@ -18,7 +18,7 @@ RESET is legal from every state a QP can be in, including RTS with operations ac
 
 ## Block diagram
 
-<!-- IMAGE: A single QP's state at the instant RESET is issued, drawn as five small labeled boxes arranged around a central "QP" node rather than a pipeline: (1) "Replay Buffer entries: unacked, PSN N..N+k" attached via a dashed line to a Replay Buffer icon (amber, same visual family as the QP Table per the recurring-pattern convention), (2) "RX reassembly: message M, packets 1..j of n received" attached to an RX Parser icon, (3) "DMA writeback: burst in progress, offset X of length L" attached to a DMA Engine icon, (4) "Live PSN counters: rq_psn, sq_psn" shown as a small pair of registers directly on the QP node itself, (5) "Congestion/rate-limiter state: current rate, DCQCN feedback timers" attached via a dashed line to a Rate Limiter icon (amber, same visual family), positioned as the fifth satellite alongside Replay Buffer since both are named in docs/MASTER_DIAGRAM_INVENTORY.md as the same table+working-set+eviction pattern applied to different resources. A large "RESET" arrow strikes the central QP node from outside the diagram, with a question-mark icon on each of the four dashed lines to the satellite structures -- visually posing "what happens to each of these" rather than answering it, consistent with this chapter's honest framing. -->
+![A QP struck by RESET with four satellite structures around it -- Replay Buffer, Rate Limiter, RX Parser/Reassembly, and DMA Engine -- each connected by a dashed line ending in a question mark, posing what happens to each rather than answering it, with the QP's own live PSN counters shown on the node itself.](/images/qp/10-mid-transaction-qp-reset-block.svg)
 
 ## Deep walkthrough
 
