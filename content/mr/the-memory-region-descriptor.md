@@ -48,11 +48,11 @@ Every field below lives inside one entry of [The Key Table](/mr/the-key-table), 
 
 | Field | Source | Scope | Notes |
 |---|---|---|---|
-| `context` / `pd` | `struct ibv_mr` | software | which device and Protection Domain this MR belongs to |
-| `addr` / `length` | `struct ibv_mr` | software + hardware | the registered virtual address range |
-| `handle` | `struct ibv_mr` | software/kernel only | MR object identifier -- not wire-visible, not a hardware-checked key |
-| `lkey` | `struct ibv_mr` | local process | presented in this process's own Work Requests against this MR |
-| `rkey` | `struct ibv_mr` | remote peer | presented in an incoming RDMA operation against this MR |
+| `context` / `pd` | `struct ibv_mr` (Linux/OFA verbs convention) | software | which device and Protection Domain this MR belongs to |
+| `addr` / `length` | `struct ibv_mr` (Linux/OFA verbs convention) | software + hardware | the registered virtual address range |
+| `handle` | `struct ibv_mr` (Linux/OFA verbs convention) | software/kernel only | MR object identifier -- not wire-visible, not a hardware-checked key |
+| `lkey` | `struct ibv_mr` (Linux/OFA verbs convention) | local process | presented in this process's own Work Requests against this MR |
+| `rkey` | `struct ibv_mr` (Linux/OFA verbs convention) | remote peer | presented in an incoming RDMA operation against this MR |
 | `IBV_ACCESS_LOCAL_WRITE` | access flags | local | allows local write via `lkey` |
 | `IBV_ACCESS_REMOTE_WRITE` | access flags | remote | allows incoming RDMA Write via `rkey` |
 | `IBV_ACCESS_REMOTE_READ` | access flags | remote | allows incoming RDMA Read via `rkey` |
