@@ -21,7 +21,7 @@ Every registered Memory Region's descriptor lives in a table sized to hold as ma
 
 ## Block diagram
 
-<!-- IMAGE: Two adjacent large boxes side by side, labeled "MPT (Memory Protection Table)" and "MTT (Memory Translation Table)", both DRAM/HBM-backed (neutral slate fill). MPT subdivided into a column of small entry rows, each labeled "MPT entry" with a key icon to its left, captioned "address, length, permissions -- one entry per registration (chapter 2.1)." An arrow from each MPT entry points right into one or more rows in the MTT box, labeled "MTT entries -- one or more physical-page translations per registration," captioned "a registration spanning many physical pages needs many MTT entries behind one MPT entry." An arrow from outside labeled "lkey (local) or rkey (remote), presented with an operation" points at the MPT box with a magnifying-glass icon over one row, captioned "keyed lookup -- addressing mechanism not publicly documented; not assumed to be a dense index the way a QP number is." A second, smaller dashed-outline box overlapping the top of both, labeled "Key Cache (chapter 2.3) -- the working set actually consulted first." -->
+![The MPT (Memory Protection Table) and MTT (Memory Translation Table) side by side, with a presented lkey or rkey landing on one MPT entry via a keyed lookup, that entry's arrows fanning out to one or more MTT entries holding its physical-page translations, and a dashed Key Cache box overlapping the top of both tables to mark the working set actually consulted first.](/images/mr/02-the-key-table-block.svg)
 
 ## Deep walkthrough
 
