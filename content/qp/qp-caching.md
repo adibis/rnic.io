@@ -25,7 +25,7 @@ Every packet that touches a QP — building one on transmit, parsing one on rece
 
 ## Deep walkthrough
 
-**What.** The cache holds a working set of QP Contexts (QPCs) — the same per-QP fields chapter 1.1 covers field by field, populated from the QP Table entry the last time that QP was touched. A cited 2026 study of QP-scalable RDMA loss recovery in hyperscale AI training clusters measured a Reliable Connection QPC at roughly 375 bytes on Mellanox ConnectX-4/5 hardware, against 2MB of on-chip SRAM available to hold address mappings and QP metadata together — which puts the fully-cacheable working set at around 5,000 QPs before the SRAM is full and something has to be evicted to make room for anything new.
+**What.** The cache holds a working set of QP Contexts (QPCs) — the same per-QP fields [QP Context](../qp-context) covers field by field, populated from the QP Table entry the last time that QP was touched. "Communication-Semantic-Aware RDMA Loss Recovery for QP-scalable Hyperscale AI Training" (arXiv 2606.20582, 2026) measured a Reliable Connection QPC at roughly 375 bytes on Mellanox ConnectX-4/5 hardware, against 2MB of on-chip SRAM available to hold address mappings and QP metadata together — which puts the fully-cacheable working set at around 5,000 QPs before the SRAM is full and something has to be evicted to make room for anything new.
 
 **Where checked.** Every pipeline stage that needs a QP's context checks the cache first: the TX Scheduler, deciding which QP to service next, and the RX Parser, resolving the destination QP number it just read out of an incoming BTH (0.2). Neither stage has any path to the wire or to host memory that skips this lookup.
 
@@ -47,7 +47,7 @@ Every packet that touches a QP — building one on transmit, parsing one on rece
 | Hit cost | on-chip, nanoseconds-scale | qualitative — no cited cycle count |
 | Miss cost | PCIe round trip to host memory, microseconds-scale | qualitative — no cited cycle count |
 
-The next chapter covers what happens when a QP doesn't yet exist in either the cache or the table at all — the software-to-hardware handoff that creates one.
+[Installing a QP](../installing-a-qp) covers what happens when a QP doesn't yet exist in either the cache or the table at all — the software-to-hardware handoff that creates one.
 
 ## References
 
