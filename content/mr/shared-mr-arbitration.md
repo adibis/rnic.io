@@ -21,7 +21,7 @@ A memory region registered once and handed out to many QPs — a shared receive 
 
 ## Block diagram
 
-<!-- IMAGE: Two-panel side-by-side comparison, shared vertical gutter, per docs/SVG_STYLE.md's multi-panel convention. Left panel, labeled "concurrent reads -- no contention": three sky-blue QP boxes each with a solid indigo arrow into one central "MPT/MTT entry" box, entry box stays in its normal state color throughout, no annotation glyph -- captioned "lookups don't mutate the entry; nothing to arbitrate." Right panel, labeled "read racing an invalidation -- undocumented": two sky-blue QP boxes with solid indigo arrows into the same central entry box labeled "in-flight lookup," plus one QP box with a red dashed arrow into the same entry box labeled "MW rebind / partial dereg," with a red-outlined caution glyph (per SVG_STYLE.md fault-role color) placed directly on the entry box where the dashed arrow lands, and a dashed question-mark bracket underneath captioned "resolution mechanics not documented anywhere public." -->
+![Side-by-side comparison: three QPs issuing concurrent read-only lookups into one shared MPT/MTT entry with nothing to arbitrate, versus two QPs' in-flight lookups racing a fourth QP's MW rebind or partial deregistration into that same entry, marked with a caution glyph and a dashed question-mark bracket noting the resolution mechanics aren't documented anywhere public.](/images/mr/06-shared-mr-arbitration-block.svg)
 
 ## Deep walkthrough
 
