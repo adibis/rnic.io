@@ -29,6 +29,7 @@ The next article works through every operation this transport actually carries â
 
 ## References
 
+- InfiniBand Trade Association, *InfiniBandâ„¢ Architecture Specification*, Volume 1 (General Specifications) -- defines the BTH/RETH/AETH transport layer this chapter describes as unchanged by RoCEv2's fix.
 - InfiniBand Trade Association, *Supplement to InfiniBand Architecture Specification Volume 1, Release 1.2.1, Annex A17: RoCEv2* (2014).
 - J. Postel, *Internet Protocol*, RFC 791, IETF (September 1981).
 - S. Deering, R. Hinden, *Internet Protocol, Version 6 (IPv6) Specification*, RFC 8200, IETF (July 2017).
