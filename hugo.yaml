@@ -1,0 +1,66 @@
+baseURL: https://rnic.io/
+locale: en-us
+title: rnic.io
+theme: hextra
+
+enableRobotsTXT: true
+enableGitInfo: true
+
+params:
+  description: "A definitive, datasheet-depth guide to RDMA-capable NIC architecture: RoCEv2 wire format, Queue Pair management, memory registration, and every hardware structure between a WQE and the wire."
+  images:
+    - "images/og-card.png"
+
+  author:
+    name: Aditya Shevade
+
+  navbar:
+    displayTitle: true
+    displayLogo: false
+    width: wide
+
+  page:
+    width: wide
+
+  theme:
+    default: light
+    displayToggle: true
+
+  footer:
+    displayCopyright: false
+    displayPoweredBy: false
+
+  displayUpdatedDate: true
+  dateFormat: "January 2, 2006"
+
+
+menu:
+  main:
+    - name: Overview
+      pageRef: /overview
+      weight: 1
+    - name: Queue Pair Management
+      pageRef: /qp
+      weight: 2
+    - name: Memory Region / Key Table
+      pageRef: /mr
+      weight: 3
+    - name: About
+      pageRef: /about
+      weight: 4
+    - name: search
+      weight: 5
+      params:
+        type: search
+    - name: theme-toggle
+      weight: 6
+      params:
+        type: theme-toggle
+
+markup:
+  highlight:
+    noClasses: false
+    style: monokai
+  goldmark:
+    renderer:
+      unsafe: true
