@@ -8,7 +8,7 @@ description: "The same eight-item checklist gets applied to a different hardware
 prev: /overview/one-transaction-start-to-finish
 ---
 
-[The previous article](../one-transaction-start-to-finish) walked one RDMA Write through the whole machine and closed on an observation worth taking seriously instead of skimming past: the same storage-structure-plus-working-set shape showed up more than once in a single transaction, attached to two different hardware resources on two different machines. That wasn't an accident of which example operation got chosen. It's structural. This article names the pattern directly and tells you where in the book it recurs, so you recognize it on purpose from here on rather than noticing it again by coincidence in Part 5 (Reliability Engine).
+[The previous article](../one-transaction-start-to-finish) walked one RDMA Write through the whole machine and closed on something structural, not incidental: the same storage-structure-plus-working-set shape showed up more than once in a single transaction, attached to two different hardware resources on two different machines. That wasn't an accident of which example operation got chosen. It's structural. This article names the pattern directly and tells you where in the book it recurs, so you recognize it on purpose from here on rather than noticing it again by coincidence in Part 5 (Reliability Engine).
 
 ## The checklist
 
