@@ -68,3 +68,4 @@ Every field below lives inside one entry of [The Key Table](/mr/the-key-table), 
 ## References
 
 - InfiniBand Trade Association, *InfiniBand™ Architecture Specification*, Volume 1 (General Specifications).
+- J. Recio, B. Metzler, P. Culley, J. Hilland, D. Garcia, *A Remote Direct Memory Access Protocol Specification*, RFC 5040, IETF (October 2007) -- defines "Steering Tag" (STag), the iWARP term mentioned above for this same local/remote key-split concept.

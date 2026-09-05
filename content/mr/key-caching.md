@@ -47,7 +47,7 @@ Worth flagging honestly rather than smoothing over: Kong et al.'s own architectu
 | Average RTT, 2^20 MRs registered (4GB, working set overflowed) | ~5.1 μs (~2x increase) | same source, same measurement |
 | Bandwidth degradation, 18K+ MRs / 96 QPs / 6 threads | 40.1% | Kong et al., NSDI 2023, measured directly on ConnectX-5 |
 
-The next chapter covers what happens before any of this: how a memory region gets into the table -- and, for one entry at a time, into this cache -- in the first place.
+[Registering a Memory Region](/mr/registering-a-memory-region) covers what happens before any of this: how a memory region gets into the table -- and, for one entry at a time, into this cache -- in the first place.
 
 ## References
 
