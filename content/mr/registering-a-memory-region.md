@@ -21,7 +21,7 @@ A Queue Pair climbs through a hardware-enforced sequence of states before it can
 
 ## Block diagram
 
-<!-- IMAGE: Left-to-right sequence of four boxes. Box 1: "ibv_reg_mr(pd, addr, length, access_flags)" with a small arrow labeled "walks process page tables, pins pages" pointing down into Box 2. Box 2: "MPT entry populated (address, length, permissions) + one or more MTT entries (physical page translations)" drawn in the amber shared-resource color, matching the-key-table.md's block diagram, with a further small arrow labeled "keys assigned" pointing right into Box 3: "MR valid -- lkey/rkey usable in Work Requests" (indigo, full opacity). Below Box 1, a dashed-line branch (per SVG_STYLE.md's inactive-region dasharray) labeled "IBV_ACCESS_ON_DEMAND set" skips the "pins pages" arrow entirely and instead points to a small satellite box: "no upfront pinning -- first touch resolved page-fault-style," captioned in small text "implicit ODP: one rkey covers the whole process address space -- see 2.5," rejoining the main flow at Box 3's MPT/MTT population step to show ODP still ends in the same valid state, just by a different path. Box 3 has one further arrow right, labeled "ibv_dereg_mr()," into Box 4: "MR invalid -- MPT/MTT entries removed, lkey/rkey retired." -->
+![ibv_reg_mr walking page tables and pinning pages into a populated MPT/MTT entry, which then becomes a valid MR with usable lkey/rkey, and later ibv_dereg_mr retiring it -- with a dashed branch showing IBV_ACCESS_ON_DEMAND skipping upfront pinning for a page-fault-style first touch instead, and rejoining the same MPT/MTT population step.](/images/mr/04-registering-a-memory-region-block.svg)
 
 ## Deep walkthrough
 
