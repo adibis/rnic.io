@@ -21,7 +21,7 @@ The previous chapter's isolation guarantee holds for exactly one fault at a time
 
 ## Block diagram
 
-<!-- IMAGE: A many-to-one funnel diagram, now grounded in the specific documented trigger rather than a generic hypothetical: one shared "CQ (or SRQ)" box at the top, drawn with a fault-role-color crack/glyph indicating it has itself hit an error. Eight small "QP" boxes below it, each with an arrow UP from the faulted CQ/SRQ box into it (not the reverse direction of the old spec) labeled "IBV_EVENT_QP_FATAL," each firing at the same instant (draw all eight arrows the same visual weight, no stagger, to show simultaneity). All eight QP boxes then funnel back down into a single narrow "reporting path" channel (queue/FIFO shape), which fans out into "CQE Gen." Annotate the narrow channel with a bracket labeled "serialization point: one path, eight simultaneous demands, all from the same one upstream cause." -->
+![A shared CQ or SRQ that has itself hit an error fires IBV_EVENT_QP_FATAL on eight associated QPs at the same instant, all funneling down through one serialized reporting path into CQE Gen.](/images/qp/07-multi-qp-error-arbitration-block.svg)
 
 ## Deep walkthrough
 
