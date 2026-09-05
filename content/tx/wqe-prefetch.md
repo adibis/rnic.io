@@ -21,7 +21,7 @@ Fetching a WQE from host DRAM on every single doorbell would put a PCIe round tr
 
 ## Block diagram
 
-<!-- IMAGE: A Send Queue ring (same visual as the-send-queue-ring.md's diagram, simplified) with a consumer-index marker, and a shaded "lookahead window" spanning several slots ahead of that marker, each slot in the window labeled "prefetched, on-chip." An arrow from the lookahead window into a small "WQE Cache" box (on-chip SRAM, shared visual family with QP Cache/Key Cache but drawn without a hit/miss branch -- this structure doesn't miss the way a lookup cache does, it just hasn't reached a given slot yet). A dashed, unlabeled box captioned "prefetch distance and trigger: not publicly documented" sits beside the lookahead window, visually marking the open question rather than asserting a specific depth. -->
+![A Send Queue ring with a consumer index pointing at one slot and the next several slots ahead of it bracketed as a prefetched, on-chip lookahead window, arrowing down into a WQE Cache box in the same amber on-chip-SRAM family as QP Cache and Key Cache but with no hit/miss branch -- beside it, a dashed box noting that prefetch distance and trigger aren't publicly documented.](/images/tx/03-wqe-prefetch-block.svg)
 
 ## Deep walkthrough
 
