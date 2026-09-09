@@ -36,30 +36,15 @@ params:
 
 menu:
   main:
-    - name: Overview
-      pageRef: /overview
-      weight: 1
-    - name: Queue Pair Management
-      pageRef: /qp
-      weight: 2
-    - name: Memory Region / Key Table
-      pageRef: /mr
-      weight: 3
-    - name: TX Pipeline
-      pageRef: /tx
-      weight: 4
-    - name: RX Pipeline
-      pageRef: /rx
-      weight: 5
     - name: About
       pageRef: /about
-      weight: 6
+      weight: 1
     - name: search
-      weight: 7
+      weight: 2
       params:
         type: search
     - name: theme-toggle
-      weight: 8
+      weight: 3
       params:
         type: theme-toggle
 

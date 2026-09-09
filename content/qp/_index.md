@@ -1,6 +1,6 @@
 ---
 title: "Queue Pair Management"
-weight: 1
+weight: 2
 description: "Every RDMA operation runs against a Queue Pair, and every Queue Pair is a piece of hardware state that has to be stored, cached, installed, driven through a state machine, isolated from its neighbors when it faults, and torn down safely mid-transaction. This Part is the full ten-item checklist run once, in depth, against the QP."
 icon: layout-grid
 cascade:

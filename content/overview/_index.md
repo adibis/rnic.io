@@ -1,6 +1,6 @@
 ---
 title: "Overview"
-weight: 0
+weight: 1
 description: "What RDMA demands of a NIC, RoCEv2's wire format at overview depth, and one transaction walked start to finish -- the map this book's block-by-block Parts fill in afterward."
 icon: book-open
 cascade:

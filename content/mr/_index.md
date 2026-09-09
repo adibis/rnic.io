@@ -1,6 +1,6 @@
 ---
 title: "Memory Region / Key Table"
-weight: 2
+weight: 3
 description: "Every RDMA operation carries a key instead of a QP number, and that key has to resolve to a real region, real permissions, and a real address range before a single byte moves. This Part runs Part 1's ten-item checklist a second time, against the Memory Region and its Key Table."
 icon: key
 cascade:

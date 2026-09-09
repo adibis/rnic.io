@@ -1,6 +1,6 @@
 ---
 title: "TX Pipeline"
-weight: 3
+weight: 4
 description: "A Work Request posted to a Queue Pair doesn't become a wire packet by magic -- it's fetched off a ring, built into a real BTH/RETH/AETH packet, and arbitrated onto the wire alongside every other QP sharing the same pipeline. This Part is the first one that isn't a resource with a table and a cache -- it's the datapath itself."
 icon: send
 cascade:

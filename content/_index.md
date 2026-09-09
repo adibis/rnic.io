@@ -1,6 +1,7 @@
 ---
 title: rnic.io
 layout: hextra-home
+type: docs
 ---
 
 ## rnic.io

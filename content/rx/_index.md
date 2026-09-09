@@ -1,6 +1,6 @@
 ---
 title: "RX Pipeline"
-weight: 4
+weight: 5
 description: "A packet arriving at the wire is bytes, nothing more, until something takes it apart, decides whether it is even allowed to exist yet, and turns it into bytes sitting correctly in host memory. This Part is that datapath, run in the direction Part 3 built."
 icon: inbox-arrow-down
 cascade:
