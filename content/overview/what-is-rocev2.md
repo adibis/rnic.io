@@ -23,16 +23,7 @@ The UDP destination port is fixed at 4791 for every RoCEv2 packet, regardless of
 
 Every RoCEv2 packet, whatever its operation, opens with the same 12-byte Base Transport Header (BTH):
 
-```
- byte offset   0          1              2–3          4–7                 8–11
-             +----------+--------------+------------+-------------------+-------------------+
-             | OpCode   | Flags        | P_Key      | Dest QPN word     | PSN word          |
-             | (8 bits) | (SE, M,      | (16 bits)  | (24-bit dest. QP  | (24-bit packet    |
-             |          |  PadCnt,     |            |  number, packed   |  sequence number, |
-             |          |  TVer)       |            |  with a reserved  |  packed with the  |
-             |          |              |            |  bit)             |  AckReq bit)      |
-             +----------+--------------+------------+-------------------+-------------------+
-```
+![The Base Transport Header's 12-byte layout: OpCode (8 bits, byte 0), Flags (8 bits -- SE, M, PadCnt, TVer -- byte 1), P_Key (16 bits, bytes 2-3), Dest QPN word (24-bit destination QP number plus a reserved bit, bytes 4-7), and PSN word (24-bit packet sequence number plus the AckReq bit, bytes 8-11).](/images/overview/02-bth-layout.svg)
 
 OpCode is the field everything else keys off: it names both the operation (SEND, RDMA WRITE, RDMA READ, an atomic, an acknowledgement) and, for a multi-packet message, that packet's position in it (FIRST, MIDDLE, LAST, or ONLY for a single-packet message) — the full table is 0.4's job. The destination QP number and the PSN each get a 24-bit field, packed alongside a couple of other bits (a reserved bit riding with the QPN, an ACK-request flag riding with the PSN) whose exact bit positions this overview doesn't pin down — that belongs to whichever pipeline-stage chapter actually parses the header (Part 4, RX Pipeline). Congestion signaling rides in the outer IP header instead, not in the BTH at all — [RoCEv1 → RoCEv2](../rocev1-to-rocev2) covers why that placement is exactly what routability bought this protocol. What's fixed, and carries forward from here: the destination QP number is how a receiving adapter knows which QP context to look up (Part 1.2/1.3), and the PSN is what the reliability engine (Part 5 (Reliability Engine)) checks on every packet to detect loss, duplication, and reordering.
 
