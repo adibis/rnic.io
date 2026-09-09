@@ -17,7 +17,10 @@ This chapter sits outside [Part 1](/qp/) (Queue Pair Management)'s ten-item chec
 
 ## Overview
 
-A doorbell is the same kind of "kick" any command-queue-driven hardware engine responds to: fetch the descriptor, produce the fixed output format it requires, issue it. This stage is that sequence's last step for RDMA. Everything the previous three chapters covered -- the WQE's fields, the ring holding it, the on-chip prefetch getting it there ahead of need -- exists to feed this one stage: turning a fetched WQE into the exact wire packet [What Is RoCEv2](/overview/what-is-rocev2) already described byte-for-byte. This is where a WQE's opcode and scatter-gather list actually become a Base Transport Header, a RETH if the opcode needs one, and a closing ICRC -- the concrete moment software's shape and hardware's wire shape finally converge.
+This stage is the last step of a fetch-produce-issue sequence, run for RDMA specifically: everything the previous three chapters covered -- the WQE's fields, the ring holding it, the on-chip prefetch getting it there ahead of need -- exists to feed this one stage, turning a fetched WQE into the exact wire packet [What Is RoCEv2](/overview/what-is-rocev2) already described byte-for-byte. This is where a WQE's opcode and scatter-gather list actually become a Base Transport Header, a RETH if the opcode needs one, and a closing ICRC -- the concrete moment software's shape and hardware's wire shape finally converge.
+
+> [!WARNING] Analogy
+> A doorbell is the same kind of "kick" any command-queue-driven hardware engine responds to: fetch the descriptor, produce the fixed output format it requires, issue it.
 
 ## Block diagram
 
@@ -33,7 +36,8 @@ A doorbell is the same kind of "kick" any command-queue-driven hardware engine r
 
 **What happens next.** A built, ICRC-closed packet is what actually leaves the port -- the exact bytes [What Is RoCEv2](/overview/what-is-rocev2) described crossing the wire, now a real instance of that shape rather than a description of it. This chapter's job ends here; what happens if this stage never gets to run at all -- because the WQE feeding it stalled, or the QP feeding it reset mid-build -- belongs to the next two chapters, not this one.
 
-> **Design rationale.** Fixing every wire-format field's shape and position at the specification level ([What Is RoCEv2](/overview/what-is-rocev2)), independent of how any given vendor's pipeline actually produces it, is what lets RoCEv2 interoperate across vendors at all -- two RNICs built by different companies, with completely different internal packet-build pipelines, only have to agree on the bytes that leave the port, not on how either of them assembles those bytes internally. That's exactly why this chapter can state every field's shape with total confidence while stating the assembly mechanism itself as undocumented -- the specification was only ever a contract about the wire, never a contract about the silicon producing it, and a vendor is free to build this stage as one monolithic unit or a dozen internal sub-stages as long as the packet that leaves matches the spec bit-for-bit.
+> [!TIP] Why
+> Fixing every wire-format field's shape and position at the specification level ([What Is RoCEv2](/overview/what-is-rocev2)), independent of how any given vendor's pipeline actually produces it, is what lets RoCEv2 interoperate across vendors at all -- two RNICs built by different companies, with completely different internal packet-build pipelines, only have to agree on the bytes that leave the port, not on how either of them assembles those bytes internally. That's exactly why this chapter can state every field's shape with total confidence while stating the assembly mechanism itself as undocumented -- the specification was only ever a contract about the wire, never a contract about the silicon producing it, and a vendor is free to build this stage as one monolithic unit or a dozen internal sub-stages as long as the packet that leaves matches the spec bit-for-bit.
 
 [Single-QP Pipeline Stalls](/tx/single-qp-pipeline-stalls) is next: what happens when one of this stage's required inputs -- a resolved `rkey`, an available PSN, the payload itself -- isn't ready yet, and whether that stall touches any other QP sharing this same pipeline.
 
