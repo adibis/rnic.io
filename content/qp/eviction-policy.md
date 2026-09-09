@@ -15,7 +15,10 @@ next: /qp/hardware-assisted-eviction-engines
 
 ## Overview
 
-Which cached line survives eviction is a question every CPU cache has to answer too -- LRU, random, or a priority scheme are the same three shapes a QP Cache's eviction policy chooses between, just applied to QP contexts instead of cache lines. [QP Caching](../qp-caching) established that the on-chip working set has a hard ceiling, confirmed real and measurable on shipped hardware, and that real deployments run past it. When a QP not currently in the cache needs servicing and every slot is occupied, something already resident has to leave first. This chapter is about what decides which one: the policy question, not yet the question of what hardware actually runs that policy, which is [Hardware-Assisted Eviction Engines](../hardware-assisted-eviction-engines)'s subject.
+[QP Caching](../qp-caching) established that the on-chip working set has a hard ceiling, confirmed real and measurable on shipped hardware, and that real deployments run past it. When a QP not currently in the cache needs servicing and every slot is occupied, something already resident has to leave first. This chapter is about what decides which one: the policy question, not yet the question of what hardware actually runs that policy, which is [Hardware-Assisted Eviction Engines](../hardware-assisted-eviction-engines)'s subject.
+
+> [!WARNING] Analogy
+> Which cached line survives eviction is a question every CPU cache has to answer too -- LRU, random, or a priority scheme are the same three shapes a QP Cache's eviction policy chooses between, just applied to QP contexts instead of cache lines.
 
 ## Block diagram
 
@@ -39,7 +42,8 @@ None of these three is a universally correct choice, and this book doesn't pick 
 
 No public source documents which of these a real RNIC actually ships, or whether a real implementation blends more than one. That's not a gap in this book's research — vendor cache-replacement policy is not the kind of detail that shows up in a public programming guide. What's above is this book's own reasoned analysis of the tradeoff space a designer actually faces, not a citation.
 
-> **Design rationale.** A pure-LRU cache is the simplest thing that could possibly work, and it's a reasonable default precisely because most real traffic is not adversarial — it's bursty and clustered, and recency really is a decent predictor most of the time. The case for spending real hardware complexity on priority- or error-weighting only holds once a workload actually has QPs whose importance or health diverges meaningfully from their recency — a mixed-tenant deployment with SLA-bound and best-effort traffic sharing one adapter, say. Building that complexity in when it isn't needed is pure cost with no payoff; leaving it out when it is needed means the one QP an operator most cares about is exactly as vulnerable to eviction as everything else competing for the same cache line. There's no policy that's free of that trade.
+> [!TIP] Why
+> A pure-LRU cache is the simplest thing that could possibly work, and it's a reasonable default precisely because most real traffic is not adversarial — it's bursty and clustered, and recency really is a decent predictor most of the time. The case for spending real hardware complexity on priority- or error-weighting only holds once a workload actually has QPs whose importance or health diverges meaningfully from their recency — a mixed-tenant deployment with SLA-bound and best-effort traffic sharing one adapter, say. Building that complexity in when it isn't needed is pure cost with no payoff; leaving it out when it is needed means the one QP an operator most cares about is exactly as vulnerable to eviction as everything else competing for the same cache line. There's no policy that's free of that trade.
 
 The next chapter asks whether the policy above runs as fixed hardware logic, a programmable engine, or a software-driven trap — a different question from which policy is correct.
 

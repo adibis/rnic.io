@@ -17,7 +17,10 @@ next: /qp/multi-qp-error-arbitration
 
 ## Overview
 
-A CPU exception or branch misprediction doesn't strand the instructions still in flight behind it in limbo -- it squashes them, in order, each with a defined outcome, rather than letting them vanish silently or complete against a state that's no longer valid. A QP that reaches ERROR does the same thing for its own in-flight work: it does not stop processing — it starts flushing. Every work request already posted and not yet completed, and every work request posted afterward, drains through the completion queue carrying a status that says the operation never happened, until nothing is left in either queue. Nothing about this touches any other QP on the same adapter: ERROR is scoped to exactly the QP that faulted, by construction, and that isolation guarantee is this chapter's real subject.
+A QP that reaches ERROR does not stop processing — it starts flushing.
+
+> [!WARNING] Analogy
+> A CPU exception or branch misprediction doesn't strand the instructions still in flight behind it in limbo -- it squashes them, in order, each with a defined outcome, rather than letting them vanish silently or complete against a state that's no longer valid. A QP in ERROR does the same thing for its own in-flight work. Every work request already posted and not yet completed, and every work request posted afterward, drains through the completion queue carrying a status that says the operation never happened, until nothing is left in either queue. Nothing about this touches any other QP on the same adapter: ERROR is scoped to exactly the QP that faulted, by construction, and that isolation guarantee is this chapter's real subject.
 
 ## Block diagram
 
@@ -37,7 +40,8 @@ A CPU exception or branch misprediction doesn't strand the instructions still in
 
 ![An SRQ-associated QP in ERROR still draining WQEs it already pulled from a Shared Receive Queue two other healthy QPs also use, waiting for the last-SRQ-WQE-consumed event before it's safe to destroy, with the SRQ and its other QPs untouched throughout.](/images/qp/06-single-qp-error-handling-block2.svg)
 
-> **Design rationale.** Flushing every outstanding operation with an explicit status, rather than simply halting the QP and leaving posted-but-unprocessed work in limbo, is what makes fault recovery a software-observable, boundedly-long process instead of an open question the application has to poll for indefinitely. It costs hardware a real obligation — walk both queues to completion, in order, generating a real CQE for each entry, even though none of them succeeded — instead of just setting a flag and stopping. That cost buys the application a guarantee: post-then-poll always terminates, one way or another, for every request it ever issued, fault or no fault. The alternative (silently dropping queued work with no completion at all) would turn every fault into a hang the application has no event to wake up on.
+> [!TIP] Why
+> Flushing every outstanding operation with an explicit status, rather than simply halting the QP and leaving posted-but-unprocessed work in limbo, is what makes fault recovery a software-observable, boundedly-long process instead of an open question the application has to poll for indefinitely. It costs hardware a real obligation — walk both queues to completion, in order, generating a real CQE for each entry, even though none of them succeeded — instead of just setting a flag and stopping. That cost buys the application a guarantee: post-then-poll always terminates, one way or another, for every request it ever issued, fault or no fault. The alternative (silently dropping queued work with no completion at all) would turn every fault into a hang the application has no event to wake up on.
 
 One QP faulting is a contained, well-defined event. [Multi-QP Error Arbitration](../multi-qp-error-arbitration) asks what happens when the isolation boundary this chapter just described has to hold under many simultaneous faults instead of one.
 

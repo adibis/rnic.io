@@ -12,7 +12,10 @@ next: /qp/the-qp-table
 
 ## Overview
 
-A CPU core's architectural state -- program counter, registers, in-flight transaction trackers -- is scoped to one thread of execution; a Queue Pair is the RNIC's own equivalent, scoped instead to one specific peer connection. A Queue Pair's context is the complete set of state hardware needs to send and receive on that connection correctly: which state the QP is in, who it's connected to, what sequence numbers it's tracking, and how many outstanding operations it's allowed to carry in either direction. Software supplies most of it once, at specific state transitions; hardware updates the rest continuously, on every packet, without a software write in the loop.
+A Queue Pair's context is the complete set of state hardware needs to send and receive on that connection correctly: which state the QP is in, who it's connected to, what sequence numbers it's tracking, and how many outstanding operations it's allowed to carry in either direction. Software supplies most of it once, at specific state transitions; hardware updates the rest continuously, on every packet, without a software write in the loop.
+
+> [!WARNING] Analogy
+> A CPU core's architectural state -- program counter, registers, in-flight transaction trackers -- is scoped to one thread of execution; a Queue Pair is the RNIC's own equivalent, scoped instead to one specific peer connection.
 
 ## Locator
 
@@ -29,7 +32,13 @@ Two fields deserve pulling out before the full list: they're the most commonly m
 - **The requester-side outstanding-read/atomic ceiling** -- how many RDMA read and atomic requests *this* QP may have outstanding **as the requester**, at once. It bounds how deep this QP's own send-side read/atomic pipeline can run.
 - **The responder-side outstanding-read/atomic ceiling** -- how many incoming RDMA read and atomic requests *this* QP will accept and hold **as the responder**, before it has to push back. It bounds how many of the remote peer's read/atomic requests this QP can have in flight against it.
 
-These are independently negotiated, apply to opposite directions of the same connection, and are very often asymmetric -- a QP that mostly issues reads and rarely serves them might run a high requester-side ceiling and a low responder-side ceiling. Reading one where the other belongs is the single easiest way to misdiagnose a QP context.
+These are independently negotiated, apply to opposite directions of the same connection, and are very often asymmetric -- a QP that mostly issues reads and rarely serves them might run a high requester-side ceiling and a low responder-side ceiling.
+
+> [!NOTE] Concept
+> Requester-side ceiling = what *this QP has sent* (bounds its own read/atomic pipeline). Responder-side ceiling = what *this QP will accept* (bounds the peer's read/atomic requests against it). Same shape, opposite direction, independently sized.
+
+> [!CAUTION] Gotcha
+> Reading one where the other belongs is the single easiest way to misdiagnose a QP context. Getting it backwards doesn't fail loudly -- it silently under- or over-provisions one direction of a connection until traffic patterns expose it.
 
 Beyond that pair, the fields split cleanly by transport scope. UD (Unreliable Datagram) has no remote-access permission concept at all -- it supports only SEND/RECEIVE, so the remote-access permission mask doesn't apply to it either, alongside the rest of RC/UC's connection-oriented fields below. RC (Reliable Connection) carries every field UC does plus the ones only a connection with hardware-managed reliability needs: the ACK timeout, the retry-count ceiling, the RNR-retry ceiling, the RNR-NAK timer floor, and the outstanding-read/atomic ceiling pair above. UD (Unreliable Datagram) carries none of that -- no reliability state to speak of, no destination-QP field even, since a UD QP names its destination per-message rather than once at connection setup. UC (Unreliable Connected) sits between the two: connected like RC, but without the reliability fields, since there's no retry engine reading them. (A fourth transport, XRC, decouples a QP's receive side from any one specific send-side QP further still, to cut per-peer QP count in large fan-in deployments -- it's out of scope for this Part, which assumes RC throughout.)
 
@@ -66,9 +75,8 @@ Not every field named above gets the same full treatment here, and here's why. T
 - *Where this is checked*: at the receiving QP, comparing the receive-side counter against the PSN carried in every arriving packet's BTH -- exactly which pipeline stage performs that comparison, and what happens to a packet that doesn't match, is the RX pipeline's (Part 4 (RX Pipeline)) open question, deliberately not resolved here (see [One Transaction, Start to Finish](/overview/one-transaction-start-to-finish) for the walkthrough that first flags it).
 - *What happens next*: a PSN mismatch is reliability-engine (Part 5 (Reliability Engine)) territory -- this chapter's job stops at naming the field and what it holds, not how a gap or duplicate gets handled.
 
-## Design rationale
-
-> **Design rationale.** Splitting the outstanding-read/atomic ceiling into two independent fields, one per direction, rather than one shared "outstanding read/atomic" limit, is what lets a connection be asymmetric on purpose -- a storage target that mostly serves reads and rarely issues them can advertise a generous responder-side ceiling and a minimal requester-side ceiling, sized to its actual role, instead of both ends negotiating down to the more conservative of two roles neither of them is symmetrically playing. The cost of that flexibility is exactly the confusion this chapter opened with: two fields that sound like they mean the same thing, differing only in whose queue is counted, is an easy pair to transpose, and getting it backwards doesn't fail loudly at setup -- it just silently under- or over-provisions one direction of a connection until traffic patterns expose it.
+> [!TIP] Why
+> Splitting the outstanding-read/atomic ceiling into two independent fields, one per direction, rather than one shared "outstanding read/atomic" limit, is what lets a connection be asymmetric on purpose -- a storage target that mostly serves reads and rarely issues them can advertise a generous responder-side ceiling and a minimal requester-side ceiling, sized to its actual role, instead of both ends negotiating down to the more conservative of two roles neither of them is symmetrically playing.
 
 [The QP Table](/qp/the-qp-table) picks this context up as a single addressable entry and covers where it actually lives.
 
