@@ -17,7 +17,7 @@ This chapter sits outside [Part 1](/qp/) (Queue Pair Management)'s ten-item chec
 
 ## Overview
 
-A doorbell is the same kind of "kick" any command-queue-driven hardware engine responds to: fetch the descriptor, produce the fixed output format it requires, issue it. This stage is that sequence's last step for RDMA. Everything the previous three chapters covered -- the WQE's fields, the ring holding it, the on-chip prefetch getting it there ahead of need -- exists to feed this one stage: turning a fetched WQE into the exact wire packet [What Is RoCEv2](/overview/what-is-rocev2) already described byte-for-byte. This is where a `struct ib_send_wr`'s `opcode` and `sg_list` actually become a Base Transport Header, a RETH if the opcode needs one, and a closing ICRC -- the concrete moment software's shape and hardware's wire shape finally converge.
+A doorbell is the same kind of "kick" any command-queue-driven hardware engine responds to: fetch the descriptor, produce the fixed output format it requires, issue it. This stage is that sequence's last step for RDMA. Everything the previous three chapters covered -- the WQE's fields, the ring holding it, the on-chip prefetch getting it there ahead of need -- exists to feed this one stage: turning a fetched WQE into the exact wire packet [What Is RoCEv2](/overview/what-is-rocev2) already described byte-for-byte. This is where a WQE's opcode and scatter-gather list actually become a Base Transport Header, a RETH if the opcode needs one, and a closing ICRC -- the concrete moment software's shape and hardware's wire shape finally converge.
 
 ## Block diagram
 

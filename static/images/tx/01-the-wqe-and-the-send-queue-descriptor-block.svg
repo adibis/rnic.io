@@ -1,4 +1,4 @@
-<svg viewBox="0 0 900 480" xmlns="http://www.w3.org/2000/svg" font-family="'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monospace"><defs><style>
+<svg viewBox="0 0 900 470" xmlns="http://www.w3.org/2000/svg" font-family="'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monospace"><defs><style>
 @font-face {
   font-family: 'Tecnico Fino';
   font-style: normal;
@@ -12,35 +12,35 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
   <marker id="arrWD3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/></marker>
 </defs>
 
-<text x="450" y="22" font-size="14" font-weight="500" fill="#0f172a" text-anchor="middle">From Software's WQE to One Vendor's On-Chip Packing</text>
+<text x="450" y="22" font-size="14" font-weight="500" fill="#0f172a" text-anchor="middle">From Software's Work Request to a Real On-Chip Packing</text>
 
 <rect x="200" y="50" width="500" height="90" rx="8" fill="#f0f9ff" stroke="#0369a1" stroke-width="1.5"/>
-<text x="450" y="72" font-size="12" font-weight="500" fill="#0369a1" text-anchor="middle">struct ibv_send_wr / ib_sge</text>
+<text x="450" y="72" font-size="12" font-weight="500" fill="#0369a1" text-anchor="middle">software work-request descriptor</text>
 <text x="450" y="88" font-size="8" fill="#0369a1" text-anchor="middle">what software writes, transport-agnostic</text>
 <rect x="210" y="96" width="110" height="30" fill="#ffffff" stroke="#0369a1"/>
 <text x="265" y="115" font-size="8" fill="#0369a1" text-anchor="middle">opcode</text>
 <rect x="330" y="96" width="110" height="30" fill="#ffffff" stroke="#0369a1"/>
-<text x="385" y="115" font-size="7.5" fill="#0369a1" text-anchor="middle">sg_list / num_sge</text>
+<text x="385" y="115" font-size="7.5" fill="#0369a1" text-anchor="middle">scatter-gather list</text>
 <rect x="450" y="96" width="110" height="30" fill="#ffffff" stroke="#0369a1"/>
 <text x="505" y="115" font-size="7.5" fill="#0369a1" text-anchor="middle">remote addr / rkey</text>
 <rect x="570" y="96" width="110" height="30" fill="#ffffff" stroke="#0369a1"/>
-<text x="625" y="115" font-size="8" fill="#0369a1" text-anchor="middle">send_flags</text>
+<text x="625" y="115" font-size="8" fill="#0369a1" text-anchor="middle">flags</text>
 
 <line x1="450" y1="140" x2="450" y2="176" stroke="#334155" stroke-width="1.5" marker-end="url(#arrWD1)"/>
 <text x="620" y="162" font-size="9" fill="#334155" text-anchor="start">hardware translates to a</text>
 <text x="620" y="174" font-size="9" fill="#334155" text-anchor="start">vendor's on-chip packing</text>
 
 <rect x="200" y="180" width="500" height="90" rx="8" fill="#f8fafc" stroke="#334155" stroke-width="2"/>
-<text x="450" y="202" font-size="12" font-weight="500" fill="#0f172a" text-anchor="middle">mlx5_wqe_cseg (control segment)</text>
-<text x="450" y="218" font-size="8" fill="#64748b" text-anchor="middle">one real vendor's on-chip packing -- denser, not a 1:1 field match</text>
+<text x="450" y="202" font-size="12" font-weight="500" fill="#0f172a" text-anchor="middle">a real RNIC's on-chip control segment</text>
+<text x="450" y="218" font-size="8" fill="#64748b" text-anchor="middle">one confirmed on-chip packing -- denser, not a 1:1 field match</text>
 <rect x="210" y="226" width="110" height="30" fill="#ffffff" stroke="#334155"/>
 <text x="265" y="245" font-size="8" fill="#334155" text-anchor="middle">opcode</text>
 <rect x="330" y="226" width="110" height="30" fill="#ffffff" stroke="#334155"/>
-<text x="385" y="245" font-size="8" fill="#334155" text-anchor="middle">sq_ds</text>
+<text x="385" y="245" font-size="8" fill="#334155" text-anchor="middle">seg. count</text>
 <rect x="450" y="226" width="110" height="30" fill="#ffffff" stroke="#334155"/>
 <text x="505" y="245" font-size="8" fill="#334155" text-anchor="middle">flags</text>
 <rect x="570" y="226" width="110" height="30" fill="#ffffff" stroke="#334155"/>
-<text x="625" y="245" font-size="8" fill="#334155" text-anchor="middle">misc</text>
+<text x="625" y="245" font-size="8" fill="#334155" text-anchor="middle">vendor meta</text>
 <text x="385" y="269" font-size="7" fill="#64748b" text-anchor="middle">DS count: 6 bits, max 63 segments</text>
 
 <line x1="450" y1="282" x2="450" y2="316" stroke="#334155" stroke-width="1.5" marker-end="url(#arrWD1)"/>
