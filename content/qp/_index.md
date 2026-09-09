@@ -11,6 +11,6 @@ A Queue Pair is the connection a Reliable Connection RDMA operation runs on, and
 
 [How to Read This Guide](/overview/how-to-read-this-guide) names the ten-question checklist this Part runs in full -- Part 1 is the fullest worked example of it in the book, and the template every later Part's version of the same checklist points back to.
 
-## Published
+## Chapters
 
 {{< section-cards >}}

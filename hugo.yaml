@@ -36,8 +36,8 @@ params:
 
 menu:
   main:
-    - name: Home
-      pageRef: /
+    - name: RDMA
+      pageRef: /overview/
       weight: 1
     - name: About
       pageRef: /about

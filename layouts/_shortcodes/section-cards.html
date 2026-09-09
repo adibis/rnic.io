@@ -13,7 +13,7 @@
 
 {{- $cardContent := "" -}}
 {{- range $pages -}}
-  {{- if ne .File.Filename $.Page.CurrentSection.File.Filename -}}
+  {{- if and (ne .File.Filename $.Page.CurrentSection.File.Filename) (ne .Params.sidebar.exclude true) -}}
     {{- $cardContent = printf "%s%s" $cardContent (partial "shortcodes/card" (dict
       "page" .
       "link" .RelPermalink

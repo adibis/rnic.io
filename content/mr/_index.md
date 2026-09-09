@@ -11,6 +11,6 @@ A remote RDMA operation doesn't address memory the way a local pointer does -- i
 
 [How to Read This Guide](/overview/how-to-read-this-guide) named the ten-question checklist Part 1 ran in full against the Queue Pair. This Part runs the same checklist against a different resource -- nine chapters rather than ten, since the Memory Region's valid/invalid lifecycle doesn't carry Part 1's five-state richness and folds into the registration chapter instead of earning a separate one -- and Parts 5 and 6 run it twice more yet, against a replay buffer and a rate limiter.
 
-## Published
+## Chapters
 
 {{< section-cards >}}
