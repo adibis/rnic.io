@@ -16,9 +16,9 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <rect x="380" y="220" width="140" height="80" rx="8" fill="#f8fafc" stroke="#334155" stroke-width="2"/>
 <text x="450" y="248" font-size="13" font-weight="500" fill="#0f172a" text-anchor="middle">QP</text>
 <rect x="395" y="256" width="50" height="20" rx="3" fill="#eef2ff" stroke="#4338ca"/>
-<text x="420" y="270" font-size="8" fill="#312e81" text-anchor="middle">rq_psn</text>
+<text x="420" y="270" font-size="8" fill="#312e81" text-anchor="middle">rq-psn</text>
 <rect x="455" y="256" width="50" height="20" rx="3" fill="#eef2ff" stroke="#4338ca"/>
-<text x="480" y="270" font-size="8" fill="#312e81" text-anchor="middle">sq_psn</text>
+<text x="480" y="270" font-size="8" fill="#312e81" text-anchor="middle">sq-psn</text>
 <text x="450" y="288" font-size="8" fill="#94a3b8" text-anchor="middle">live PSN counters, on the node itself</text>
 
 <!-- RESET arrow striking from outside -->

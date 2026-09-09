@@ -17,11 +17,11 @@ This chapter is honest about its own limits before it starts: no vendor publishe
 
 ## Overview
 
-Multi-core RAS design faces the same shape of question when a resource shared across cores -- a cache bank, an interconnect ring -- faults and takes several of them down at once: containment per core is straightforward to reason about one at a time, and gets much harder the instant one cause faults many simultaneously. The previous chapter's isolation guarantee holds for exactly one fault at a time. This isn't only a hypothetical "link flap" scenario -- it's a documented, concrete mechanism: when a Completion Queue or Shared Receive Queue itself hits an error, *every* QP associated with it transitions to ERROR and fires `IBV_EVENT_QP_FATAL` simultaneously, not one at a time ([Single-QP Error Handling](../single-qp-error-handling) names this trigger directly). A CQ or SRQ shared across dozens or hundreds of QPs turns one upstream failure into exactly that many simultaneous fault events, all needing to flush and report through structures that are, at that instant, shared and serialized — and something has to decide the order that happens in.
+Multi-core RAS design faces the same shape of question when a resource shared across cores -- a cache bank, an interconnect ring -- faults and takes several of them down at once: containment per core is straightforward to reason about one at a time, and gets much harder the instant one cause faults many simultaneously. The previous chapter's isolation guarantee holds for exactly one fault at a time. This isn't only a hypothetical "link flap" scenario -- it's a documented, concrete mechanism: when a Completion Queue or Shared Receive Queue itself hits an error, *every* QP associated with it transitions to ERROR and fires its own QP-fatal event simultaneously, not one at a time ([Single-QP Error Handling](../single-qp-error-handling) names this trigger directly). A CQ or SRQ shared across dozens or hundreds of QPs turns one upstream failure into exactly that many simultaneous fault events, all needing to flush and report through structures that are, at that instant, shared and serialized — and something has to decide the order that happens in.
 
 ## Block diagram
 
-![A shared CQ or SRQ that has itself hit an error fires IBV_EVENT_QP_FATAL on eight associated QPs at the same instant, all funneling down through one serialized reporting path into CQE Gen.](/images/qp/07-multi-qp-error-arbitration-block.svg)
+![A shared CQ or SRQ that has itself hit an error fires a QP-fatal event on eight associated QPs at the same instant, all funneling down through one serialized reporting path into CQE Gen.](/images/qp/07-multi-qp-error-arbitration-block.svg)
 
 ## Deep walkthrough
 
@@ -37,4 +37,4 @@ Multi-core RAS design faces the same shape of question when a resource shared ac
 
 ## References
 
-No IETF or IBTA standard governs multi-QP fault servicing/reporting order -- it is implementation-specific silicon design, not a wire-format or software-interface contract any standards body defines. This chapter's treatment is grounded in the sources cited in-text above (the `IBV_EVENT_QP_FATAL` cascading-fault mechanism is documented verbs-layer behavior; the servicing-order reasoning is not), not a standards document.
+No IETF or IBTA standard governs multi-QP fault servicing/reporting order -- it is implementation-specific silicon design, not a wire-format or software-interface contract any standards body defines. This chapter's treatment is grounded in the sources cited in-text above (the cascading QP-fatal mechanism is a documented, architecturally real trigger; the servicing-order reasoning is not), not a standards document.
