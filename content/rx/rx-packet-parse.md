@@ -17,7 +17,13 @@ next: /rx/psn-check-and-out-of-order-arrival
 
 ## Overview
 
-A parser is a decode-and-dispatch front end: it does not decide what an operation means, only what it is and where it belongs, before handing it to whatever downstream stage actually acts on it. An arriving frame is, at the moment it lands, nothing but bytes -- Ethernet framing, an IP header, a UDP header, and, if everything above it is well-formed, the Base Transport Header this book has already spent a full chapter describing. Every one of those layers has to be stripped and validated before the destination Queue Pair is even known, and the order that validation happens in is not arbitrary: a real implementation has every reason to reject cheaply before it pays for anything expensive, the same discipline any pipelined decode stage applies to a malformed instruction.
+A parser is a decode-and-dispatch front end: it does not decide what an operation means, only what it is and where it belongs, before handing it to whatever downstream stage actually acts on it. An arriving frame is, at the moment it lands, nothing but bytes -- Ethernet framing, an IP header, a UDP header, and, if everything above it is well-formed, the Base Transport Header this book has already spent a full chapter describing. Every one of those layers has to be stripped and validated before the destination Queue Pair is even known, and the order that validation happens in is not arbitrary: a real implementation has every reason to reject cheaply before it pays for anything expensive.
+
+> [!WARNING] Analogy
+> This is the same discipline any pipelined decode stage applies to a malformed instruction -- reject cheaply, on a field-level check, before paying for anything that costs a real computation.
+
+> [!NOTE] Concept
+> Cheapest check first, most expensive check last. A parser rejects on framing, header sanity, and port match -- each a plain field comparison -- before it ever pays for ICRC, the one check that has to run over the whole assembled payload.
 
 ## Block diagram
 
@@ -35,7 +41,8 @@ A parser is a decode-and-dispatch front end: it does not decide what an operatio
 
 **What happens next.** A packet that survives every check above has a validated transport header, a confirmed destination Queue Pair, and payload bytes ready to be placed -- but it is not yet admitted. Whether it is actually allowed to proceed depends on one more gate this chapter deliberately does not run: comparing its sequence number against what the destination Queue Pair currently expects. [PSN Check and Out-of-Order Arrival](/rx/psn-check-and-out-of-order-arrival) is that gate, immediately next.
 
-> **Design rationale.** Ordering validation from cheapest to most expensive is a general principle, not something specific to this book's RX pipeline -- any hardware stage that has to reject a mix of cheap-to-detect and expensive-to-detect faults benefits from paying for the expensive check only after every cheaper opportunity to avoid it has already passed. The alternative -- computing ICRC unconditionally over every arriving frame regardless of whether its framing, IP header, or UDP port even makes it a legitimate candidate -- would spend this stage's most costly operation on traffic a field comparison could have rejected for a fraction of the cost. The tradeoff this ordering accepts is a small amount of extra pipeline depth (four sequential checks instead of one combined pass), paid in exchange for never spending the expensive check on a packet a cheap one would already have caught.
+> [!TIP] Why
+> Ordering validation from cheapest to most expensive is a general principle, not something specific to this book's RX pipeline -- any hardware stage that has to reject a mix of cheap-to-detect and expensive-to-detect faults benefits from paying for the expensive check only after every cheaper opportunity to avoid it has already passed. The alternative -- computing ICRC unconditionally over every arriving frame regardless of whether its framing, IP header, or UDP port even makes it a legitimate candidate -- would spend this stage's most costly operation on traffic a field comparison could have rejected for a fraction of the cost. The tradeoff this ordering accepts is a small amount of extra pipeline depth (four sequential checks instead of one combined pass), paid in exchange for never spending the expensive check on a packet a cheap one would already have caught.
 
 [PSN Check and Out-of-Order Arrival](/rx/psn-check-and-out-of-order-arrival) is next: the gate that decides whether a parsed, validated packet is actually allowed to proceed.
 
