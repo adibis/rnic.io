@@ -20,7 +20,7 @@ RESET is legal from any state, including RTS with a WQE actively occupying one o
 
 ## Block diagram
 
-<!-- IMAGE: A single QP's WQE shown at four possible pipeline positions simultaneously (ring/not-yet-fetched, prefetch buffer, mid-build in TX Packet Build, waiting at the TX Scheduler gate), each position connected by a dashed line to a large "RESET" arrow striking down from outside, mirroring qp/mid-transaction-qp-reset.md's visual convention exactly. Each dashed line ends in a red question mark except the "mid-build" position, which instead carries a small citation flag reading "HiP08: hardware cannot flush this in error state -- software must detect and flush on next operation (a shipped limitation)." A caption at the bottom reads "four positions, one answer and three open questions -- consistent with this chapter's own evidence." -->
+![A single QP's WQE at four possible TX pipeline positions when RESET lands -- ring-resident, prefetch-buffer-resident, mid-build in TX Packet Build, or waiting at the TX Scheduler gate. Three positions dead-end in an open question; the mid-build position carries a real citation instead: HiP08 hardware cannot flush outstanding work in error state, and software must detect and flush it on the next operation.](/images/tx/08-mid-transaction-tx-reset-block.svg)
 
 ## Deep walkthrough
 

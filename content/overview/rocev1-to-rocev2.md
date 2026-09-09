@@ -21,6 +21,8 @@ RoCEv2's fix doesn't touch the transport layer at all — the BTH, RETH, AETH, a
 
 ## Side by side
 
+![RoCEv1's packet stack (Ethernet, an optional GRH, BTH plus payload, ICRC, FCS -- no IP, one broadcast domain only) next to RoCEv2's (the same BTH-plus-payload block unchanged, now wrapped in IPv4/IPv6 and UDP, routable and ECMP-hashable, carrying DSCP/ECN for DCQCN). The BTH block itself never changes between the two.](/images/overview/03-rocev1-v2-compare.svg)
+
 | | RoCEv1 | RoCEv2 |
 |---|---|---|
 | Carried over | Ethernet directly (EtherType `0x8915`) | UDP/IP over Ethernet (UDP dst port `4791`) |

@@ -15,12 +15,7 @@ next: /overview/rocev1-to-rocev2
 
 A RoCEv2 packet is, from the outside, just UDP over IP over Ethernet — a deliberate choice covered in full in the next chapter. Inside that UDP payload sits the actual RDMA transport: a Base Transport Header, whatever extended headers that packet's operation requires, the payload itself, and a 4-byte integrity trailer specific to RDMA, all ahead of the Ethernet frame's own trailer.
 
-```
-Ethernet | IPv4/IPv6 | UDP | BTH [+ extended headers] | Payload | ICRC | Ethernet FCS
-                        |
-                  dst port 4791 (fixed, IANA-assigned)
-                  src port: flow entropy for ECMP/LAG hashing, not an addressable endpoint
-```
+![A RoCEv2 packet's full layer stack: Ethernet, IPv4/IPv6, and UDP forming an outer shell indistinguishable from ordinary routed traffic, followed by the actual RDMA transport -- BTH on every packet, an opcode-dependent extended header, the payload, and a 4-byte ICRC trailer -- all ahead of the Ethernet frame's own FCS.](/images/overview/02-rocev2-packet-stack.svg)
 
 The UDP destination port is fixed at 4791 for every RoCEv2 packet, regardless of operation. The source port carries no RDMA meaning at all — it exists so routers and switches doing ECMP or LAG hashing (which typically hash the full 5-tuple, UDP ports included) see varying entropy across different flows between the same pair of adapters, instead of every packet between two QPs hashing identically and collapsing onto one path. The adapter picks it from the dynamic/ephemeral port range and varies it per flow; the exact construction is implementation-specific and not something this book states as a fixed formula.
 
