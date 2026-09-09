@@ -18,7 +18,10 @@ A conventional socket write is a syscall: the application hands the kernel a buf
 
 ## Memory protection moves from the OS into the adapter
 
-Removing the kernel from the data path removes the thing that used to check every access against a process's page tables. RDMA replaces that check with one done once, up front, instead of once per operation: memory registration. An application registers a region of its virtual address space with the adapter, the adapter pins the underlying pages and records a virtual-to-physical mapping, and registration returns a pair of keys — an `lkey` for the local side to reference that region in its own Work Requests, and an `rkey` a remote peer can present to reach the same region directly. Every operation against that memory afterward is checked against the key it carries, in hardware, not re-validated by an OS that is no longer in the loop. That single design decision is the reason [Part 2](/mr/) of this book (Memory Region / Key Table) exists as its own Part: a table the adapter must maintain, cache, and enforce permissions against, functionally the same job an MMU does for a CPU, just triggered by a key instead of a page-table walk.
+Removing the kernel from the data path removes the thing that used to check every access against a process's page tables. RDMA replaces that check with one done once, up front, instead of once per operation: memory registration. An application registers a region of its virtual address space with the adapter, the adapter pins the underlying pages and records a virtual-to-physical mapping, and registration returns a pair of keys — an `lkey` for the local side to reference that region in its own Work Requests, and an `rkey` a remote peer can present to reach the same region directly. Every operation against that memory afterward is checked against the key it carries, in hardware, not re-validated by an OS that is no longer in the loop. That single design decision is the reason [Part 2](/mr/) of this book (Memory Region / Key Table) exists as its own Part: a table the adapter must maintain, cache, and enforce permissions against.
+
+> [!WARNING] Analogy
+> This table does functionally the same job an MMU does for a CPU — just triggered by a key presented over the wire instead of a page-table walk issued by a local instruction.
 
 ## Reliable delivery moves from a software stack into the adapter's own retry engine
 
@@ -27,6 +30,9 @@ For a Reliable Connection (RC) Queue Pair, the adapter tracks its own packet seq
 ## The remote CPU is optional
 
 Two-sided operations — SEND and RECEIVE — still involve both ends' software: the sender posts a Send Request, the receiver has to have already posted a matching Receive Request for the payload to land in. RDMA WRITE and RDMA READ don't work that way. A WRITE names a remote virtual address and `rkey` directly, and the responding adapter performs the memory access itself, against a region registered in advance, without the responder's software posting a Work Request for that specific operation — a plain RDMA WRITE consumes no Receive Request at all. The remote CPU can be asleep, busy, or entirely uninvolved, and the data still arrives. That's the capability the "R" in RDMA is actually naming, and it's also why memory registration (previous section) has to happen *before* the operation, not during it — there's no remote software in the loop at operation time to authorize anything on the fly.
+
+> [!NOTE] Concept
+> A plain RDMA WRITE consumes no Receive Request at all. The remote CPU can be asleep, busy, or entirely uninvolved, and the data still arrives — that's the capability the "R" in RDMA is actually naming.
 
 Four capabilities, one underlying fact: work that used to happen in an operating system, once per operation, on both ends of a connection, now has to happen in hardware, on every packet, with no software checkpoint to fall back on if something goes wrong. [What Is RoCEv2](../what-is-rocev2) puts a concrete wire format underneath all four — the header fields, byte offsets, and packet types that carry a Work Request from one adapter's SQ to another's RQ and back again as an acknowledgement.
 

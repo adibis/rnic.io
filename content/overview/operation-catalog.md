@@ -43,7 +43,10 @@ That pre-posting discipline is worth seeing end to end, not just stated: the res
 | `RDMA_WRITE_ONLY` | BTH + RETH | single-packet message |
 | `RDMA_WRITE_ONLY_WITH_IMMEDIATE` | BTH + RETH + IMMDT | single-packet message with immediate data |
 
-RETH appears only on FIRST and ONLY: the destination address, rkey, and length only need stating once per message, at its start, not repeated on every packet of it. `RDMA_WRITE_LAST_WITH_IMMEDIATE` deserves calling out by name: it's an easy place to guess wrong — it does not carry RETH, matching plain `RDMA_WRITE_LAST` rather than the ONLY variants; the address information was already established back on FIRST and doesn't need restating just because this packet happens to carry immediate data too.
+RETH appears only on FIRST and ONLY: the destination address, rkey, and length only need stating once per message, at its start, not repeated on every packet of it.
+
+> [!CAUTION] Gotcha
+> `RDMA_WRITE_LAST_WITH_IMMEDIATE` does not carry RETH — it matches plain `RDMA_WRITE_LAST`, not the ONLY variants. The address was already established back on FIRST and doesn't need restating just because this packet happens to carry immediate data too.
 
 RDMA WRITE is one-sided: the responder's hardware performs the memory write directly against the address RETH named, with no Receive Request consumed and no completion generated on the responder side — the responder's software may never even know a plain WRITE happened, which is precisely the point of a one-sided operation. The WITH_IMMEDIATE variants break that quietly-one-sided property on purpose: immediate data has to surface to the application somehow, so those variants do consume a Receive Request and do generate a completion, turning an otherwise-invisible WRITE into something the responder's software is explicitly notified about. Silent to software is not the same as silent on the wire, though: RC's reliability contract still requires every WRITE, immediate or not, to be acknowledged back to the requester so the reliability engine can retire its replay-buffer entry and disarm its retry timer (Part 5 (Reliability Engine)) -- the responder's *application* may never see a plain WRITE, but the responder's *hardware* still owes the requester's hardware an ACK.
 

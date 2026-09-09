@@ -48,7 +48,10 @@ The BTH alone is enough for some packets (a SEND-family MIDDLE, say). Others car
 | **IETH** — Invalidate Extended Transport Header | the 32-bit `rkey` to invalidate | 4 bytes |
 | **ATMETH** — Atomic Extended Transport Header | remote virtual address, `rkey`, swap/add operand, compare operand | 28 bytes |
 
-RETH is how a WRITE or READ tells the responder where to touch memory — and, notably, it only needs to appear once per message: on a multi-packet transfer's FIRST or ONLY packet, never on MIDDLE or LAST, since the address and length don't change mid-message. AETH's syndrome byte is easy to under-read: it isn't a generic "ack happened" flag, it's the field that distinguishes a plain ACK from an RNR NAK from every other NAK type, which is exactly the signal [Part 1](/qp/) (Queue Pair Management)'s error-handling chapters and Part 5's reliability engine both key off. ATMETH is sized for the largest operation in the catalog — a 64-bit compare plus a 64-bit swap/add value alongside the usual address and key — which is also why atomics (0.4) never span multiple packets: there's no FIRST/MIDDLE/LAST variant for an operation that's already one fixed-size unit.
+RETH is how a WRITE or READ tells the responder where to touch memory — and, notably, it only needs to appear once per message: on a multi-packet transfer's FIRST or ONLY packet, never on MIDDLE or LAST, since the address and length don't change mid-message. ATMETH is sized for the largest operation in the catalog — a 64-bit compare plus a 64-bit swap/add value alongside the usual address and key — which is also why atomics (0.4) never span multiple packets: there's no FIRST/MIDDLE/LAST variant for an operation that's already one fixed-size unit.
+
+> [!CAUTION] Gotcha
+> AETH's syndrome byte is not a generic "ack happened" flag — it's the field that distinguishes a plain ACK from an RNR NAK from every other NAK type, exactly the signal [Part 1](/qp/) (Queue Pair Management)'s error-handling chapters and Part 5's reliability engine both key off.
 
 ## The ICRC closes the packet with an integrity check that survives routing
 

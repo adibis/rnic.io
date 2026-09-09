@@ -45,6 +45,9 @@ A Reliable Connection can't leave the sender in the dark. The receiver owes an a
 
 One operation, and the QP Table/Cache pattern from Part 1 got consulted twice — once on each end. The Key Table from Part 2 got consulted twice as well, once to validate a local read and once to validate a remote write, by two different pieces of hardware on two different machines. The replay buffer from Part 5 held state for the entire round trip and nothing else in this walkthrough held state anywhere near that long. That's not a coincidence specific to RDMA Write — it's the same storage-structure-plus-working-set shape showing up in more than one place in this single transaction, and it shows up again, differently dressed, in several of the Parts this walkthrough only named in passing. The next article names that shape directly, so the rest of this book reads as a pattern applied repeatedly rather than eight unrelated subsystems that happen to sit next to each other on the same die.
 
+> [!IMPORTANT] Food for Thought
+> This walkthrough touched the QP Table/Cache pattern (Part 1) and the Key Table (Part 2) without dwelling on either, and named the replay buffer (Part 5) as the structure holding state for the entire round trip. Before reading the next article's own reveal: based only on what this one transaction actually touched, which other Parts of this book are likely to face the same table-plus-working-set-plus-eviction question?
+
 ## References
 
 - InfiniBand Trade Association, *InfiniBand™ Architecture Specification*, Volume 1 (General Specifications).
