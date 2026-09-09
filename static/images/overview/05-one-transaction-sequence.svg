@@ -23,7 +23,7 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <line x1="670" y1="88" x2="670" y2="680" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4,3"/>
 
 <rect x="30" y="96" width="240" height="46" rx="6" fill="#f0f9ff" stroke="#0369a1" stroke-width="1.5"/>
-<text x="150" y="116" font-size="12" font-weight="500" fill="#0369a1" text-anchor="middle">App: post_send(WRITE_IMM)</text>
+<text x="150" y="116" font-size="12" font-weight="500" fill="#0369a1" text-anchor="middle">App posts WRITE_IMM Work Request</text>
 <text x="150" y="133" font-size="10" fill="#64748b" text-anchor="middle">raddr+rkey, lkey, imm</text>
 
 <rect x="30" y="152" width="240" height="44" rx="6" fill="#eef2ff" stroke="#4338ca" stroke-width="1.5"/>

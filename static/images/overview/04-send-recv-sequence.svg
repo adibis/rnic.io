@@ -22,10 +22,10 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <line x1="670" y1="82" x2="670" y2="494" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4,3"/>
 
 <rect x="540" y="90" width="260" height="34" rx="6" fill="#fffbeb" stroke="#df8e1d" stroke-width="1.5"/>
-<text x="670" y="111" font-size="10" fill="#b45309" text-anchor="middle">post_recv(WQE) -- pre-posted ahead of time</text>
+<text x="670" y="111" font-size="10" fill="#b45309" text-anchor="middle">Receive WQE posted ahead of time</text>
 
 <rect x="30" y="140" width="240" height="46" rx="6" fill="#f0f9ff" stroke="#0369a1" stroke-width="1.5"/>
-<text x="150" y="160" font-size="13" font-weight="500" fill="#0369a1" text-anchor="middle">App: post_send(SEND)</text>
+<text x="150" y="160" font-size="13" font-weight="500" fill="#0369a1" text-anchor="middle">App posts SEND Work Request</text>
 <text x="150" y="177" font-size="10" fill="#64748b" text-anchor="middle">no remote address named</text>
 
 <rect x="30" y="200" width="240" height="44" rx="6" fill="#eef2ff" stroke="#4338ca" stroke-width="1.5"/>
