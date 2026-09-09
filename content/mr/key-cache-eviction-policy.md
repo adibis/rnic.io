@@ -19,7 +19,7 @@ next: /mr/hardware-assisted-key-cache-eviction
 
 ## Block diagram
 
-![Two side-by-side panels: capacity pressure, where an Eviction Policy weighs recency, priority, and dashed error-state input to pick one victim slot in a full Key Cache and write it back to the MR/Key Table, versus deregistration, where ibv_dereg_mr() triggers a thick red outline enclosing every slot in the cache at once -- the whole working set invalidated, not just the one entry being retired, with Kong et al.'s confirmed victim-throughput collapse once deregistration starts.](/images/mr/07-key-cache-eviction-policy-block.svg)
+![Two side-by-side panels: capacity pressure, where an Eviction Policy weighs recency, priority, and dashed error-state input to pick one victim slot in a full Key Cache and write it back to the MR/Key Table, versus deregistration, where a software deregistration call triggers a thick red outline enclosing every slot in the cache at once -- the whole working set invalidated, not just the one entry being retired, with Kong et al.'s confirmed victim-throughput collapse once deregistration starts.](/images/mr/07-key-cache-eviction-policy-block.svg)
 
 ## Deep walkthrough
 
