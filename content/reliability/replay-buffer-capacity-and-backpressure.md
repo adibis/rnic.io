@@ -17,7 +17,10 @@ next: /reliability/mid-transaction-reliability-reset
 
 ## Overview
 
-A QP Cache entry evicted under pressure costs a future re-fetch from the QP Table, nothing more -- the evicted context was still valid, still correct, just no longer resident. A Key Cache entry evicted under pressure costs the same kind of re-fetch. Neither eviction loses anything a workload actually needed; both just move a cost from now to later. A Replay Buffer entry is not like either of them. It holds the only record a requester has of data it may still need to resend, and evicting it before an acknowledgment confirms the peer received it doesn't defer a cost to later -- it destroys the requester's ability to recover from loss at all, for that specific operation, permanently. This resource cannot answer a capacity question with a victim-selection policy the way the other two do.
+A QP Cache entry evicted under pressure costs a future re-fetch from the QP Table, nothing more -- the evicted context was still valid, still correct, just no longer resident. A Key Cache entry evicted under pressure costs the same kind of re-fetch. Neither eviction loses anything a workload actually needed; both just move a cost from now to later. A Replay Buffer entry is not like either of them. This resource cannot answer a capacity question with a victim-selection policy the way the other two do.
+
+> [!NOTE] Concept
+> Evicting a QP Cache or Key Cache entry just defers a cost -- a future re-fetch. Evicting a Replay Buffer entry before an acknowledgment confirms delivery destroys the requester's only record of data it may still need to resend, permanently, for that specific operation. That's not a performance cost. It's a correctness violation.
 
 ## Block diagram
 
@@ -37,7 +40,8 @@ A QP Cache entry evicted under pressure costs a future re-fetch from the QP Tabl
 
 **What happens next.** This chapter closed the last open capacity question this Part's two resources raise under ordinary operation. What happens when a QP carrying armed timers and outstanding Replay Buffer entries resets mid-transaction -- the one scenario this chapter and every other in this Part have deliberately deferred -- is [Mid-Transaction Reliability Reset](/reliability/mid-transaction-reliability-reset)'s subject, closing this Part.
 
-> **Design rationale.** Backpressure trades throughput for safety in a way eviction never had to: a QP genuinely held back from transmitting new work loses real send bandwidth for as long as the gate holds, where an evicted cache entry only ever cost a future re-fetch's worth of latency. That's a strictly worse cost on paper, and Reliable Connection pays it anyway, because the alternative -- transmitting past the point where an entry can be safely held for possible retransmission -- doesn't trade a small cost for a larger one, it trades a small cost for an unrecoverable one. A design that instead allowed transmission to outrun replay capacity, and simply gave up on retransmitting whatever overflowed, would not be offering Reliable Connection's contract at all; it would be offering something weaker while still calling itself reliable. The gate exists because the alternative isn't a worse version of this resource -- it's a different, lesser guarantee wearing this one's name.
+> [!TIP] Why
+> Backpressure trades throughput for safety in a way eviction never had to: a QP genuinely held back from transmitting new work loses real send bandwidth for as long as the gate holds, where an evicted cache entry only ever cost a future re-fetch's worth of latency. That's a strictly worse cost on paper, and Reliable Connection pays it anyway, because the alternative -- transmitting past the point where an entry can be safely held for possible retransmission -- doesn't trade a small cost for a larger one, it trades a small cost for an unrecoverable one. A design that instead allowed transmission to outrun replay capacity, and simply gave up on retransmitting whatever overflowed, would not be offering Reliable Connection's contract at all; it would be offering something weaker while still calling itself reliable. The gate exists because the alternative isn't a worse version of this resource -- it's a different, lesser guarantee wearing this one's name.
 
 ## References
 
