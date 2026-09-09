@@ -36,15 +36,18 @@ params:
 
 menu:
   main:
+    - name: Home
+      pageRef: /
+      weight: 1
     - name: About
       pageRef: /about
-      weight: 1
-    - name: search
       weight: 2
+    - name: search
+      weight: 3
       params:
         type: search
     - name: theme-toggle
-      weight: 3
+      weight: 4
       params:
         type: theme-toggle
 
