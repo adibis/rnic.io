@@ -48,15 +48,18 @@ menu:
     - name: TX Pipeline
       pageRef: /tx
       weight: 4
+    - name: RX Pipeline
+      pageRef: /rx
+      weight: 5
     - name: About
       pageRef: /about
-      weight: 5
-    - name: search
       weight: 6
+    - name: search
+      weight: 7
       params:
         type: search
     - name: theme-toggle
-      weight: 7
+      weight: 8
       params:
         type: theme-toggle
 
