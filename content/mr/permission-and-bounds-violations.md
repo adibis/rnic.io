@@ -9,15 +9,15 @@ prev: /mr/registering-a-memory-region
 next: /mr/shared-mr-arbitration
 ---
 
+## Overview
+
+Two distinct real-world conditions are this chapter's subject: a bounds violation, where the address-plus-length an incoming RDMA operation names falls outside the MR's registered range, and a permission violation, where the operation type itself — a remote write, say — isn't enabled by the flags the MR was registered with (an MR registered with only remote-read permission has no obligation to accept a remote write). Both are named, distinct conditions, not one vague "bad remote access" idea. What's undocumented -- and possibly nonexistent -- is a hardware distinction between them: every source available treats a rejected remote access as one umbrella status, regardless of which of the two conditions actually triggered it. This chapter says that plainly rather than inventing a check order the specification doesn't commit to.
+
 ## Locator
 
 ![The master RNIC block diagram with MR/Key Table and Key Cache highlighted -- this chapter is about a lookup at this pair that comes back rejected, not one that misses.](/images/mr/05-permission-and-bounds-violations-locator.svg)
 
 [Registering a Memory Region](../registering-a-memory-region) covered how an MR gets its base address, length, and access-permission bits installed into the key table in the first place. This chapter is about what happens when an already-registered entry gets looked up by an incoming remote operation that doesn't fit it — either the address and length it names fall outside what was registered, or the operation type it's asking for isn't one the registration allowed.
-
-## Overview
-
-Two distinct real-world conditions are this chapter's subject: a bounds violation, where the address-plus-length an incoming RDMA operation names falls outside the MR's registered range, and a permission violation, where the operation type itself — a remote write, say — isn't enabled by the flags the MR was registered with (an MR registered with only remote-read permission has no obligation to accept a remote write). Both are named, distinct conditions, not one vague "bad remote access" idea. What's undocumented -- and possibly nonexistent -- is a hardware distinction between them: every source available treats a rejected remote access as one umbrella status, regardless of which of the two conditions actually triggered it. This chapter says that plainly rather than inventing a check order the specification doesn't commit to.
 
 ## Block diagram
 

@@ -9,15 +9,15 @@ prev: /qp/qp-context
 next: /qp/qp-caching
 ---
 
+## Overview
+
+Every QP context described in the previous chapter lives somewhere: one entry in a table sized to hold as many QPs as the adapter supports, addressed by the QP number that came back when the QP was created. This chapter covers that table's shape -- how a QP number becomes an index, and why an indexed, page-table-like structure is the natural answer to a problem this book can otherwise document only thinly.
+
 ## Locator
 
 ![The master RNIC block diagram with the QP Table highlighted and every other block, including QP Cache, dimmed -- this chapter is the backing store one QP Context entry lives in.](/images/qp/02-the-qp-table-locator.svg)
 
 [QP Context](/qp/qp-context) covered what's inside one entry. This chapter is about the structure holding every entry, and how a QP number finds the right one.
-
-## Overview
-
-Every QP context described in the previous chapter lives somewhere: one entry in a table sized to hold as many QPs as the adapter supports, addressed by the QP number that came back when the QP was created. This chapter covers that table's shape -- how a QP number becomes an index, and why an indexed, page-table-like structure is the natural answer to a problem this book can otherwise document only thinly.
 
 ## Block diagram
 

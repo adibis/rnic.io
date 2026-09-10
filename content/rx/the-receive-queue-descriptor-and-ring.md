@@ -8,15 +8,15 @@ description: "A Send Queue entry tells hardware what to do. A Receive Queue entr
 next: /rx/rx-packet-parse
 ---
 
+## Overview
+
+A Receive Queue entry is the simplest descriptor this book has covered. Where a Send Queue entry names an operation -- an opcode, a scatter-gather list of source bytes, whatever remote-addressing fields that opcode needs -- a Receive Queue entry names only a destination: a scatter-gather list of buffers ready to receive whatever payload lands next. It carries no opcode, because it does not describe an operation; it carries no remote address, because nothing about receiving requires naming where the sender's bytes came from at the descriptor level. It says exactly one thing: here is where the next unaddressed arrival should go.
+
 ## Locator
 
 ![The master RNIC block diagram with Host Memory / Descriptor Rings and RX Parser / Reassembly both highlighted, mirroring Part 3's Send Queue Ring locator on the opposite side of the pipeline -- this chapter covers what one Receive Queue entry contains and the ring holding it, not the parsing stage that consumes it.](/images/rx/01-the-receive-queue-descriptor-and-ring-locator.svg)
 
 [One Transaction, Start to Finish](/overview/one-transaction-start-to-finish) already named a Receive Queue in passing -- a place software provisions buffers "ahead of expected traffic." This chapter opens that structure the same way [The WQE and the Send Queue Descriptor](/tx/the-wqe-and-the-send-queue-descriptor) opened the Send Queue's: what one entry actually contains, and the ring holding every entry for one Receive Queue.
-
-## Overview
-
-A Receive Queue entry is the simplest descriptor this book has covered. Where a Send Queue entry names an operation -- an opcode, a scatter-gather list of source bytes, whatever remote-addressing fields that opcode needs -- a Receive Queue entry names only a destination: a scatter-gather list of buffers ready to receive whatever payload lands next. It carries no opcode, because it does not describe an operation; it carries no remote address, because nothing about receiving requires naming where the sender's bytes came from at the descriptor level. It says exactly one thing: here is where the next unaddressed arrival should go.
 
 ## Block diagram
 

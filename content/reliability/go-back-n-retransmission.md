@@ -9,15 +9,15 @@ prev: /reliability/the-retry-and-rnr-timeout-state-machines
 next: /reliability/multi-qp-retry-arbitration
 ---
 
+## Overview
+
+[RX Packet Parse](/rx/rx-packet-parse) and [PSN Check and Out-of-Order Arrival](/rx/psn-check-and-out-of-order-arrival) already covered the responder's half of this exchange: a gap in arriving sequence numbers is rejected outright, not buffered, with a signal naming the sequence number the responder is actually waiting for. This chapter picks up from the requester's side of that same event -- what happens once a NAK naming a resume point arrives, or once a timer expires with nothing having arrived at all.
+
 ## Locator
 
 ![The master RNIC block diagram with the Replay Buffer and TX Packet Build both highlighted -- retransmission reads from the first and rebuilds through the second, without either block doing anything a normal send didn't already do.](/images/reliability/05-go-back-n-retransmission-locator.svg)
 
 [The Retry and RNR Timeout State Machines](/reliability/the-retry-and-rnr-timeout-state-machines) named the two conditions that trigger a retry. This chapter covers what a retry -- specifically, the ordinary timeout branch's retry -- actually resends.
-
-## Overview
-
-[RX Packet Parse](/rx/rx-packet-parse) and [PSN Check and Out-of-Order Arrival](/rx/psn-check-and-out-of-order-arrival) already covered the responder's half of this exchange: a gap in arriving sequence numbers is rejected outright, not buffered, with a signal naming the sequence number the responder is actually waiting for. This chapter picks up from the requester's side of that same event -- what happens once a NAK naming a resume point arrives, or once a timer expires with nothing having arrived at all.
 
 ## Block diagram
 

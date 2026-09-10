@@ -9,15 +9,15 @@ prev: /reliability/replay-buffer-caching
 next: /reliability/go-back-n-retransmission
 ---
 
+## Overview
+
+Two different conditions can leave a requester without an acknowledgment for something it sent: the packet or its acknowledgment was lost somewhere between the two endpoints, or the packet arrived intact but the responder had nowhere to put it and rejected it instead of processing it. Reliable Connection does not fold these into one generic "didn't get acknowledged" state -- they run as two structurally separate state machines, each armed by a different trigger, each counted against its own independent budget, converging only at the very end on the same terminal outcome: a Queue Pair driven to ERROR once its budget for one of them runs out.
+
 ## Locator
 
 ![The master RNIC block diagram with the Retry Timer block highlighted -- the state machine this chapter covers is logic owned by that block, not a separate structure.](/images/reliability/04-the-retry-and-rnr-timeout-state-machines-locator.svg)
 
 [Retry and Timeout State](/reliability/retry-and-timeout-state) named the live counters this chapter's state machines actually drive. This chapter is the machinery that reads them.
-
-## Overview
-
-Two different conditions can leave a requester without an acknowledgment for something it sent: the packet or its acknowledgment was lost somewhere between the two endpoints, or the packet arrived intact but the responder had nowhere to put it and rejected it instead of processing it. Reliable Connection does not fold these into one generic "didn't get acknowledged" state -- they run as two structurally separate state machines, each armed by a different trigger, each counted against its own independent budget, converging only at the very end on the same terminal outcome: a Queue Pair driven to ERROR once its budget for one of them runs out.
 
 ## Block diagram
 

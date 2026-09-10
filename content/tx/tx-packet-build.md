@@ -9,18 +9,18 @@ prev: /tx/wqe-prefetch
 next: /tx/single-qp-pipeline-stalls
 ---
 
-## Locator
-
-![The master RNIC block diagram with TX Packet Build highlighted -- this chapter is the one stage that actually produces the wire packet every other chapter in this book has described the shape of.](/images/tx/04-tx-packet-build-locator.svg)
-
-[WQE Prefetch](/tx/wqe-prefetch) covered getting a WQE on-chip ahead of need. This chapter is what happens the instant it's needed: the stage that turns a fetched WQE into the wire packet [What Is RoCEv2](/overview/what-is-rocev2) already described field by field.
-
 ## Overview
 
 This stage is the last step of a fetch-produce-issue sequence, run for RDMA specifically: everything the previous three chapters covered -- the WQE's fields, the ring holding it, the on-chip prefetch getting it there ahead of need -- exists to feed this one stage, turning a fetched WQE into the exact wire packet [What Is RoCEv2](/overview/what-is-rocev2) already described byte-for-byte. This is where a WQE's opcode and scatter-gather list actually become a Base Transport Header, a RETH if the opcode needs one, and a closing ICRC -- the concrete moment software's shape and hardware's wire shape finally converge.
 
 > [!WARNING] Analogy
 > A doorbell is the same kind of "kick" any command-queue-driven hardware engine responds to: fetch the descriptor, produce the fixed output format it requires, issue it.
+
+## Locator
+
+![The master RNIC block diagram with TX Packet Build highlighted -- this chapter is the one stage that actually produces the wire packet every other chapter in this book has described the shape of.](/images/tx/04-tx-packet-build-locator.svg)
+
+[WQE Prefetch](/tx/wqe-prefetch) covered getting a WQE on-chip ahead of need. This chapter is what happens the instant it's needed: the stage that turns a fetched WQE into the wire packet [What Is RoCEv2](/overview/what-is-rocev2) already described field by field.
 
 ## Block diagram
 

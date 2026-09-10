@@ -9,15 +9,15 @@ prev: /reliability/the-replay-buffer
 next: /reliability/the-retry-and-rnr-timeout-state-machines
 ---
 
+## Overview
+
+[QP Caching](/qp/qp-caching) and [Key Caching](/mr/key-caching) both established the same fact for two different resources: a real adapter's on-chip SRAM is small, shared, and expensive, and every structure with a working set larger than what fits on-chip pays a measurable cost when it doesn't fit. The Replay Buffer is a third instance of exactly that question, with one wrinkle the other two don't share -- its working set isn't shaped by how many distinct QPs or memory regions a workload happens to touch, but by how long an entry has to survive before an acknowledgment retires it.
+
 ## Locator
 
 ![The master RNIC block diagram with the Replay Buffer highlighted in front of its backing store, in the same visual family as QP Caching and Key Caching's own locator treatment.](/images/reliability/03-replay-buffer-caching-locator.svg)
 
 [The Replay Buffer](/reliability/the-replay-buffer) covered what this structure holds and how it's addressed. This chapter covers where it actually lives while a QP's outstanding requests wait on acknowledgment.
-
-## Overview
-
-[QP Caching](/qp/qp-caching) and [Key Caching](/mr/key-caching) both established the same fact for two different resources: a real adapter's on-chip SRAM is small, shared, and expensive, and every structure with a working set larger than what fits on-chip pays a measurable cost when it doesn't fit. The Replay Buffer is a third instance of exactly that question, with one wrinkle the other two don't share -- its working set isn't shaped by how many distinct QPs or memory regions a workload happens to touch, but by how long an entry has to survive before an acknowledgment retires it.
 
 ## Block diagram
 

@@ -9,18 +9,18 @@ prev: /qp/qp-state-machine
 next: /qp/multi-qp-error-arbitration
 ---
 
-## Locator
-
-![The master RNIC block diagram with the QP Table and QP Cache pair highlighted, the same target as the QP State Machine chapter -- this chapter covers the fault path through that same block.](/images/qp/06-single-qp-error-handling-locator.svg)
-
-[QP State Machine](../qp-state-machine) covered how a QP reaches ERROR and named this chapter as the place that explains what ERROR actually does to a QP's outstanding work. This is that chapter — for exactly one QP, in isolation. [Multi-QP Error Arbitration](../multi-qp-error-arbitration) picks up immediately after with the harder question of many QPs faulting together.
-
 ## Overview
 
 A QP that reaches ERROR does not stop processing — it starts flushing.
 
 > [!WARNING] Analogy
 > A CPU exception or branch misprediction doesn't strand the instructions still in flight behind it in limbo -- it squashes them, in order, each with a defined outcome, rather than letting them vanish silently or complete against a state that's no longer valid. A QP in ERROR does the same thing for its own in-flight work. Every work request already posted and not yet completed, and every work request posted afterward, drains through the completion queue carrying a status that says the operation never happened, until nothing is left in either queue. Nothing about this touches any other QP on the same adapter: ERROR is scoped to exactly the QP that faulted, by construction, and that isolation guarantee is this chapter's real subject.
+
+## Locator
+
+![The master RNIC block diagram with the QP Table and QP Cache pair highlighted, the same target as the QP State Machine chapter -- this chapter covers the fault path through that same block.](/images/qp/06-single-qp-error-handling-locator.svg)
+
+[QP State Machine](../qp-state-machine) covered how a QP reaches ERROR and named this chapter as the place that explains what ERROR actually does to a QP's outstanding work. This is that chapter — for exactly one QP, in isolation. [Multi-QP Error Arbitration](../multi-qp-error-arbitration) picks up immediately after with the harder question of many QPs faulting together.
 
 ## Block diagram
 

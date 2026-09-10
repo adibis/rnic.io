@@ -8,12 +8,6 @@ description: "A WQE and a wire packet are not the same shape. Software builds on
 next: /tx/the-send-queue-ring
 ---
 
-## Locator
-
-![The master RNIC block diagram with Host Memory / Descriptor Rings highlighted and every other block dimmed -- this chapter covers what one ring entry actually contains, not the ring structure itself.](/images/tx/01-the-wqe-and-the-send-queue-descriptor-locator.svg)
-
-[One Transaction, Start to Finish](/overview/one-transaction-start-to-finish) already walked a Work Request from posting to wire, and named the doorbell that tells hardware new work exists without saying what, exactly, that work looks like sitting in memory. This chapter opens that box: the WQE itself, before any pipeline stage has touched it.
-
 ## Overview
 
 A Work Queue Element (WQE) is, architecturally, nothing more exotic than a command descriptor in a producer-consumer ring. What's RDMA-specific is only the fields inside it, not the mechanism: what software actually writes into a Send Queue ring is a generic, transport-agnostic description of one operation -- an opcode, a scatter-gather list naming source bytes, and whatever remote-addressing fields that opcode needs. It is not the wire packet [What Is RoCEv2](/overview/what-is-rocev2) already described field by field, and it is not necessarily what a specific RNIC's own silicon stores on-chip either -- three distinct shapes sit between "software posts a request" and "a BTH/RETH/AETH packet leaves the port," and this chapter is about the first of them.
@@ -23,6 +17,12 @@ A Work Queue Element (WQE) is, architecturally, nothing more exotic than a comma
 
 > [!NOTE] Concept
 > Three distinct shapes sit between "software posts a request" and "a packet leaves the port": what the standard requires (semantic, per opcode), what a software-facing descriptor shape makes concrete (one way of communicating that requirement), and what a specific implementation's on-chip format actually is (a third, independent thing again). Only the first is ever specified by a standards body.
+
+## Locator
+
+![The master RNIC block diagram with Host Memory / Descriptor Rings highlighted and every other block dimmed -- this chapter covers what one ring entry actually contains, not the ring structure itself.](/images/tx/01-the-wqe-and-the-send-queue-descriptor-locator.svg)
+
+[One Transaction, Start to Finish](/overview/one-transaction-start-to-finish) already walked a Work Request from posting to wire, and named the doorbell that tells hardware new work exists without saying what, exactly, that work looks like sitting in memory. This chapter opens that box: the WQE itself, before any pipeline stage has touched it.
 
 ## Block diagram
 

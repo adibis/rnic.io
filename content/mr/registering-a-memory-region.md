@@ -9,6 +9,10 @@ prev: /mr/key-caching
 next: /mr/permission-and-bounds-violations
 ---
 
+## Overview
+
+A Queue Pair climbs through a hardware-enforced sequence of states before it can carry a single packet -- RESET, INIT, RTR, RTS, each transition its own gate. A memory region doesn't. It is registered, at which point its `lkey` and `rkey` are immediately usable in a Work Request, or it is deregistered, at which point they are not. There is no INIT-equivalent holding state, no negotiated handshake with a peer, no multi-attribute mask a driver assembles across several calls. This chapter covers the entire lifecycle -- registration, validity, deregistration -- in one place, in place of a separate state-machine chapter, precisely because the underlying lifecycle doesn't have [QP State Machine](/qp/qp-state-machine)'s richness to justify splitting it up the same way.
+
 ## Locator
 
 ![The master RNIC block diagram with the MR/Key Table highlighted and Key Cache dimmed -- this chapter writes a new entry into that table for the first time.](/images/mr/04-registering-a-memory-region-locator.svg)
@@ -17,10 +21,6 @@ next: /mr/permission-and-bounds-violations
 
 > [!WARNING] Analogy
 > Registering a Memory Region is conceptually the same act as installing a page-table mapping and pinning those pages against eviction or swap -- just performed once, explicitly, for a range about to be exposed outside the process's own instruction stream, instead of continuously for the process's own working set.
-
-## Overview
-
-A Queue Pair climbs through a hardware-enforced sequence of states before it can carry a single packet -- RESET, INIT, RTR, RTS, each transition its own gate. A memory region doesn't. It is registered, at which point its `lkey` and `rkey` are immediately usable in a Work Request, or it is deregistered, at which point they are not. There is no INIT-equivalent holding state, no negotiated handshake with a peer, no multi-attribute mask a driver assembles across several calls. This chapter covers the entire lifecycle -- registration, validity, deregistration -- in one place, in place of a separate state-machine chapter, precisely because the underlying lifecycle doesn't have [QP State Machine](/qp/qp-state-machine)'s richness to justify splitting it up the same way.
 
 ## Block diagram
 

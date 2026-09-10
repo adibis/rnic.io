@@ -9,15 +9,15 @@ prev: /tx/multi-qp-tx-scheduling
 next: /tx/mid-transaction-tx-reset
 ---
 
+## Overview
+
+A scheduling decision that has to run on every single arbitration between ready QPs can be hardwired at design time, built as a programmable engine a driver can retune without a hardware respin, or pushed out to software entirely. [Hardware-Assisted Eviction Engines](/qp/hardware-assisted-eviction-engines) already worked through this exact spectrum for cache eviction, and that reasoning applies here without needing to be re-derived -- what this chapter adds is dated, concrete evidence for where actual deployments have sat on it, not just the abstract tradeoff.
+
 ## Locator
 
 ![The master RNIC block diagram with WQE Fetch / TX Scheduler highlighted -- the same target as Multi-QP TX Scheduling, this chapter asks what hardware actually runs the policy that chapter named.](/images/tx/07-hardware-assisted-tx-scheduling-engines-locator.svg)
 
 [Multi-QP TX Scheduling](../multi-qp-tx-scheduling) named the real candidate policies -- round-robin, weighted round-robin, priority. This chapter asks what actually executes whichever one a given design picks, the same fixed/programmable/software-driven question [Hardware-Assisted Eviction Engines](/qp/hardware-assisted-eviction-engines) already asked of QP Cache eviction.
-
-## Overview
-
-A scheduling decision that has to run on every single arbitration between ready QPs can be hardwired at design time, built as a programmable engine a driver can retune without a hardware respin, or pushed out to software entirely. [Hardware-Assisted Eviction Engines](/qp/hardware-assisted-eviction-engines) already worked through this exact spectrum for cache eviction, and that reasoning applies here without needing to be re-derived -- what this chapter adds is dated, concrete evidence for where actual deployments have sat on it, not just the abstract tradeoff.
 
 ## Block diagram
 

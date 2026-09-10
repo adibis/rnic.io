@@ -9,18 +9,18 @@ prev: /reliability/multi-qp-retry-arbitration
 next: /reliability/mid-transaction-reliability-reset
 ---
 
-## Locator
-
-![The master RNIC block diagram with the Replay Buffer highlighted, captioned to distinguish this chapter's admission-control question from the eviction-policy question Eviction Policy and Key Cache Eviction Policy both answered for two other resources.](/images/reliability/07-replay-buffer-capacity-and-backpressure-locator.svg)
-
-[Eviction Policy](/qp/eviction-policy) and [Key Cache Eviction Policy](/mr/key-cache-eviction-policy) both answered the same question for two other cached resources: which entry gets sacrificed when capacity runs out. This chapter is where that question breaks, and what replaces it.
-
 ## Overview
 
 A QP Cache entry evicted under pressure costs a future re-fetch from the QP Table, nothing more -- the evicted context was still valid, still correct, just no longer resident. A Key Cache entry evicted under pressure costs the same kind of re-fetch. Neither eviction loses anything a workload actually needed; both just move a cost from now to later. A Replay Buffer entry is not like either of them. This resource cannot answer a capacity question with a victim-selection policy the way the other two do.
 
 > [!NOTE] Concept
 > Evicting a QP Cache or Key Cache entry just defers a cost -- a future re-fetch. Evicting a Replay Buffer entry before an acknowledgment confirms delivery destroys the requester's only record of data it may still need to resend, permanently, for that specific operation. That's not a performance cost. It's a correctness violation.
+
+## Locator
+
+![The master RNIC block diagram with the Replay Buffer highlighted, captioned to distinguish this chapter's admission-control question from the eviction-policy question Eviction Policy and Key Cache Eviction Policy both answered for two other resources.](/images/reliability/07-replay-buffer-capacity-and-backpressure-locator.svg)
+
+[Eviction Policy](/qp/eviction-policy) and [Key Cache Eviction Policy](/mr/key-cache-eviction-policy) both answered the same question for two other cached resources: which entry gets sacrificed when capacity runs out. This chapter is where that question breaks, and what replaces it.
 
 ## Block diagram
 

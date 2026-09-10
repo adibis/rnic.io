@@ -9,6 +9,10 @@ prev: /mr/permission-and-bounds-violations
 next: /mr/key-cache-eviction-policy
 ---
 
+## Overview
+
+A memory region registered once and handed out to many QPs — a shared receive buffer is the natural example — faces the same shape of problem: it turns one MPT/MTT entry into a piece of state with multiple independent owners, all capable of hitting it concurrently, and a concurrent invalidation is this chapter's version of the shootdown question -- with no public source saying whether a real RNIC actually solves it the way a CPU does. That's a different arbitration shape from anything [Part 1](/qp/) (Queue Pair Management) covers, distinct enough to name rather than treat as a re-skin of a chapter already written. Reasoning through the shape gets somewhere useful even without a documented hardware answer: concurrent read-only lookups against one entry look, on the face of it, trivial to arbitrate, because a lookup doesn't mutate the entry it reads. The hard case is a concurrent *invalidation* — an MW rebind, or a partial deregistration touching the same entry — racing against lookups still in flight against the old translation. That race's specific hardware resolution is not documented anywhere public, and this chapter doesn't invent one.
+
 ## Locator
 
 ![The master RNIC block diagram with MR/Key Table and Key Cache highlighted -- this chapter is about many QPs addressing the same entry at once, not many entries sharing one reporting path.](/images/mr/06-shared-mr-arbitration-locator.svg)
@@ -17,10 +21,6 @@ next: /mr/key-cache-eviction-policy
 
 > [!WARNING] Analogy
 > Multiple CPU cores can cache the same page-table entry in their own TLBs safely, right up until that entry changes -- at which point the kernel has to shoot down every cached copy before the change is safe to rely on, because a core still executing against a stale translation is a genuine correctness hazard, not a footnote. A concurrent invalidation against a shared MPT/MTT entry is this chapter's version of the same shootdown question.
-
-## Overview
-
-A memory region registered once and handed out to many QPs — a shared receive buffer is the natural example — faces the same shape of problem: it turns one MPT/MTT entry into a piece of state with multiple independent owners, all capable of hitting it concurrently, and a concurrent invalidation is this chapter's version of the shootdown question -- with no public source saying whether a real RNIC actually solves it the way a CPU does. That's a different arbitration shape from anything [Part 1](/qp/) (Queue Pair Management) covers, distinct enough to name rather than treat as a re-skin of a chapter already written. Reasoning through the shape gets somewhere useful even without a documented hardware answer: concurrent read-only lookups against one entry look, on the face of it, trivial to arbitrate, because a lookup doesn't mutate the entry it reads. The hard case is a concurrent *invalidation* — an MW rebind, or a partial deregistration touching the same entry — racing against lookups still in flight against the old translation. That race's specific hardware resolution is not documented anywhere public, and this chapter doesn't invent one.
 
 ## Block diagram
 

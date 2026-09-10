@@ -9,15 +9,15 @@ prev: /tx/tx-packet-build
 next: /tx/multi-qp-tx-scheduling
 ---
 
+## Overview
+
+A QP's WQE can be sitting on-chip, fully prefetched, and still not be ready to become a packet -- waiting on a resolved `rkey`, an SGE's permission check, or its own payload's DMA read to complete. A direct measurement of exactly this shape of problem exists, and it's worse than "this one QP waits a little longer": a real RNIC's finite internal queue slots mean one QP's large, slow-moving operation can measurably starve a different QP's small, otherwise-fast one, sharing the same physical pipeline resources, well before any scheduling policy has a chance to intervene.
+
 ## Locator
 
 ![The master RNIC block diagram with WQE Fetch / TX Scheduler and TX Packet Build both highlighted -- this chapter covers what stalls one QP's path through either stage, before the harder multi-QP question next chapter takes up.](/images/tx/05-single-qp-pipeline-stalls-locator.svg)
 
 [TX Packet Build](../tx-packet-build) named what a built packet needs and left open what happens when one of those inputs isn't ready. This chapter is that question, for one QP in isolation -- what actually stalls its send path, and whether that stall touches anything beyond the QP that caused it.
-
-## Overview
-
-A QP's WQE can be sitting on-chip, fully prefetched, and still not be ready to become a packet -- waiting on a resolved `rkey`, an SGE's permission check, or its own payload's DMA read to complete. A direct measurement of exactly this shape of problem exists, and it's worse than "this one QP waits a little longer": a real RNIC's finite internal queue slots mean one QP's large, slow-moving operation can measurably starve a different QP's small, otherwise-fast one, sharing the same physical pipeline resources, well before any scheduling policy has a chance to intervene.
 
 ## Block diagram
 

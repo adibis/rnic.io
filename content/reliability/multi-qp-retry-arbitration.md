@@ -9,15 +9,15 @@ prev: /reliability/go-back-n-retransmission
 next: /reliability/replay-buffer-capacity-and-backpressure
 ---
 
+## Overview
+
+[Multi-QP TX Scheduling](/tx/multi-qp-tx-scheduling) already established that many QPs with ready work compete for one shared transmit pipeline, and that something has to decide whose work gets serviced next. A retransmission is, mechanically, just another packet asking for that same pipeline -- but it arrives under a circumstance ordinary traffic doesn't share: a timeout already happened, meaning this QP has already paid a measurable delay once, and every other QP retrying at the same moment likely has too, often because they share whatever caused the original loss in the first place.
+
 ## Locator
 
 ![The master RNIC block diagram with the Retry Timer and TX Packet Build/Scheduler blocks both highlighted -- many QPs' retransmissions all compete for the same physical send pipeline Multi-QP TX Scheduling already covers for ordinary traffic.](/images/reliability/06-multi-qp-retry-arbitration-locator.svg)
 
 [Go-Back-N Retransmission](/reliability/go-back-n-retransmission) covered one QP's retransmission in isolation. This chapter asks what happens when many QPs need that same service from the same shared pipeline at once.
-
-## Overview
-
-[Multi-QP TX Scheduling](/tx/multi-qp-tx-scheduling) already established that many QPs with ready work compete for one shared transmit pipeline, and that something has to decide whose work gets serviced next. A retransmission is, mechanically, just another packet asking for that same pipeline -- but it arrives under a circumstance ordinary traffic doesn't share: a timeout already happened, meaning this QP has already paid a measurable delay once, and every other QP retrying at the same moment likely has too, often because they share whatever caused the original loss in the first place.
 
 ## Block diagram
 

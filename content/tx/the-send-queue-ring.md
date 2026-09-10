@@ -9,15 +9,15 @@ prev: /tx/the-wqe-and-the-send-queue-descriptor
 next: /tx/wqe-prefetch
 ---
 
+## Overview
+
+A Send Queue's WQEs live in a ring in host memory -- a fixed-size, circular buffer software writes into and hardware reads from, tracked by a producer index (software's next write position) and a consumer index (hardware's next read position). Posting a Work Request writes a WQE into the ring at the producer index and advances it; it does not, by itself, move any data. A separate act -- ringing the doorbell -- is what actually tells hardware new work exists.
+
 ## Locator
 
 ![The master RNIC block diagram with Host Memory / Descriptor Rings and WQE Fetch / TX Scheduler both highlighted -- this chapter covers the ring itself and the doorbell that tells the fetch stage it has new work.](/images/tx/02-the-send-queue-ring-locator.svg)
 
 [The WQE and the Send Queue Descriptor](../the-wqe-and-the-send-queue-descriptor) covered what one entry contains. This chapter covers the structure holding every entry for one Send Queue, and how hardware learns a new one exists.
-
-## Overview
-
-A Send Queue's WQEs live in a ring in host memory -- a fixed-size, circular buffer software writes into and hardware reads from, tracked by a producer index (software's next write position) and a consumer index (hardware's next read position). Posting a Work Request writes a WQE into the ring at the producer index and advances it; it does not, by itself, move any data. A separate act -- ringing the doorbell -- is what actually tells hardware new work exists.
 
 ## Block diagram
 

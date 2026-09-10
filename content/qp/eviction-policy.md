@@ -9,16 +9,16 @@ prev: /qp/multi-qp-error-arbitration
 next: /qp/hardware-assisted-eviction-engines
 ---
 
-## Locator
-
-![The master RNIC block diagram with the QP Cache highlighted -- this chapter is about which cached QP context gets evicted when that cache is full.](/images/qp/08-eviction-policy-locator.svg)
-
 ## Overview
 
 [QP Caching](../qp-caching) established that the on-chip working set has a hard ceiling, confirmed real and measurable on shipped hardware, and that real deployments run past it. When a QP not currently in the cache needs servicing and every slot is occupied, something already resident has to leave first. This chapter is about what decides which one: the policy question, not yet the question of what hardware actually runs that policy, which is [Hardware-Assisted Eviction Engines](../hardware-assisted-eviction-engines)'s subject.
 
 > [!WARNING] Analogy
 > Which cached line survives eviction is a question every CPU cache has to answer too -- LRU, random, or a priority scheme are the same three shapes a QP Cache's eviction policy chooses between, just applied to QP contexts instead of cache lines.
+
+## Locator
+
+![The master RNIC block diagram with the QP Cache highlighted -- this chapter is about which cached QP context gets evicted when that cache is full.](/images/qp/08-eviction-policy-locator.svg)
 
 ## Block diagram
 

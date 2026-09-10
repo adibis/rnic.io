@@ -9,15 +9,15 @@ prev: /reliability/retry-and-timeout-state
 next: /reliability/replay-buffer-caching
 ---
 
+## Overview
+
+A sender operating over an unreliable channel that still promises reliable delivery faces one unavoidable requirement: it cannot discard what it sent until something confirms the other side received it. An ordinary transmit path is free to release a buffer's contents the instant the bytes leave the wire -- once sent, a wire's own job is done. A Reliable Connection cannot make that assumption, because "sent" and "delivered" are not the same event, and the gap between them is exactly where loss happens. Something has to hold a retrievable record of every unacknowledged operation for as long as [Retry and Timeout State](/reliability/retry-and-timeout-state)'s timer says it might still need to be resent. That something is the Replay Buffer.
+
 ## Locator
 
 ![The master RNIC block diagram with the Replay Buffer highlighted -- the same visual family as the QP Table/Cache and MR Table/Key Cache pairs, and every other block dimmed.](/images/reliability/02-the-replay-buffer-locator.svg)
 
 [Retry and Timeout State](/reliability/retry-and-timeout-state) named the live counters and the armed timer bit tracking whether a retransmission might be needed. This chapter covers what actually gets retransmitted when one is.
-
-## Overview
-
-A sender operating over an unreliable channel that still promises reliable delivery faces one unavoidable requirement: it cannot discard what it sent until something confirms the other side received it. An ordinary transmit path is free to release a buffer's contents the instant the bytes leave the wire -- once sent, a wire's own job is done. A Reliable Connection cannot make that assumption, because "sent" and "delivered" are not the same event, and the gap between them is exactly where loss happens. Something has to hold a retrievable record of every unacknowledged operation for as long as [Retry and Timeout State](/reliability/retry-and-timeout-state)'s timer says it might still need to be resent. That something is the Replay Buffer.
 
 ## Block diagram
 

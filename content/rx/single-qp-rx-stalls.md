@@ -9,15 +9,15 @@ prev: /rx/multi-packet-reassembly
 next: /rx/multi-qp-rx-arbitration
 ---
 
+## Overview
+
+A packet reaching this part's later stages has already cleared parsing and the sequence-number gate -- there is nothing wrong with the packet itself. It can still stall, because processing it to completion depends on a resource that is not available at that instant: a Receive Queue with nothing posted to it, or a DMA engine already occupied placing something else. Neither condition is a fault the way a permission violation or a bad sequence number is; both are a real operation waiting on a finite resource, and this chapter is what that waiting actually does to the one Queue Pair it happens to.
+
 ## Locator
 
 ![The master RNIC block diagram with RX Parser / Reassembly and RX PSN Check both highlighted -- this chapter covers what stalls one QP's path through either stage, before the harder multi-QP question next chapter takes up.](/images/rx/05-single-qp-rx-stalls-locator.svg)
 
 [Multi-Packet Reassembly](/rx/multi-packet-reassembly) covered what a QP's receive path needs to track across packets when everything goes right. This chapter is what happens when a packet is fully valid, correctly sequenced, and still cannot finish being processed -- for exactly one Queue Pair, in isolation.
-
-## Overview
-
-A packet reaching this part's later stages has already cleared parsing and the sequence-number gate -- there is nothing wrong with the packet itself. It can still stall, because processing it to completion depends on a resource that is not available at that instant: a Receive Queue with nothing posted to it, or a DMA engine already occupied placing something else. Neither condition is a fault the way a permission violation or a bad sequence number is; both are a real operation waiting on a finite resource, and this chapter is what that waiting actually does to the one Queue Pair it happens to.
 
 ## Block diagram
 

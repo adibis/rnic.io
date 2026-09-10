@@ -9,15 +9,15 @@ prev: /qp/qp-caching
 next: /qp/qp-state-machine
 ---
 
+## Overview
+
+A QP doesn't arrive in hardware fully formed. IBTA-V1 requires only that a QP come into existence as an allocated, addressable, and inert resource -- a table entry with a QP number, present but not yet configured with anything a packet could use -- before the one gated transition, RESET→INIT, gives it a port and a fixed remote-access permission set. Nothing in the standard says how many QPs one allocation request produces, or what the allocation path looks like in silicon; that's an architectural degree of freedom, not a wire-format or verbs-API fact, and this chapter opens with it before naming any specific software call. Installing a QP is the combination of that allocation and RESET→INIT. Everything past INIT -- naming a peer, arming the QP to send -- is [QP State Machine](/qp/qp-state-machine)'s subject; this chapter stops at the first gate.
+
 ## Locator
 
 ![The master RNIC block diagram with the QP Table highlighted and every other block, including QP Cache, dimmed -- this chapter writes a new entry into that table for the first time.](/images/qp/04-installing-a-qp-locator.svg)
 
 [The QP Table](/qp/the-qp-table) covered the structure a QP's context lives in once it exists. This chapter covers how it gets there in the first place.
-
-## Overview
-
-A QP doesn't arrive in hardware fully formed. IBTA-V1 requires only that a QP come into existence as an allocated, addressable, and inert resource -- a table entry with a QP number, present but not yet configured with anything a packet could use -- before the one gated transition, RESET→INIT, gives it a port and a fixed remote-access permission set. Nothing in the standard says how many QPs one allocation request produces, or what the allocation path looks like in silicon; that's an architectural degree of freedom, not a wire-format or verbs-API fact, and this chapter opens with it before naming any specific software call. Installing a QP is the combination of that allocation and RESET→INIT. Everything past INIT -- naming a peer, arming the QP to send -- is [QP State Machine](/qp/qp-state-machine)'s subject; this chapter stops at the first gate.
 
 ## Block diagram
 

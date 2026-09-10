@@ -9,15 +9,15 @@ prev: /rx/psn-check-and-out-of-order-arrival
 next: /rx/single-qp-rx-stalls
 ---
 
+## Overview
+
+A FIRST packet opens a message; however many MIDDLE packets continue it; a LAST packet closes it. Between FIRST and LAST, every packet belonging to that message has to land in the correct place relative to the ones before it, and the addressing information needed to know where that place is does not repeat on every packet -- [The Operation Catalog](/overview/operation-catalog) already established that RETH, the extended header carrying a remote address and length, appears only on FIRST and ONLY packets, never on MIDDLE or LAST. Something has to hold that address, and how far into the message the last packet advanced it, for as long as the message stays open. This chapter is that something.
+
 ## Locator
 
 ![The master RNIC block diagram with RX Parser / Reassembly highlighted, the same block Chapter 4.2 targets, this time zoomed to the state that persists across packets rather than the parsing logic that runs once per packet.](/images/rx/04-multi-packet-reassembly-locator.svg)
 
 [PSN Check and Out-of-Order Arrival](/rx/psn-check-and-out-of-order-arrival) covered a single packet's admission gate. This chapter covers what a *message* needs -- state that outlives any one packet, because a message can span several of them.
-
-## Overview
-
-A FIRST packet opens a message; however many MIDDLE packets continue it; a LAST packet closes it. Between FIRST and LAST, every packet belonging to that message has to land in the correct place relative to the ones before it, and the addressing information needed to know where that place is does not repeat on every packet -- [The Operation Catalog](/overview/operation-catalog) already established that RETH, the extended header carrying a remote address and length, appears only on FIRST and ONLY packets, never on MIDDLE or LAST. Something has to hold that address, and how far into the message the last packet advanced it, for as long as the message stays open. This chapter is that something.
 
 ## Block diagram
 

@@ -9,15 +9,15 @@ prev: /mr/the-key-table
 next: /mr/registering-a-memory-region
 ---
 
+## Overview
+
+Every DMA the adapter issues against a memory region -- an incoming RDMA Write resolving an `rkey`, an outgoing operation resolving an `lkey` -- needs a translated physical address before the transfer can happen. Resolving that translation from the MR/Key Table's backing store on every DMA would put a DRAM or PCIe round trip on the critical path of every transfer, the same problem [QP Caching](/qp/qp-caching) already described for QP context. The Key Cache exists for the same reason the QP Cache does: to make a translation that's actively in use resolve on-chip, and to make one that isn't cost a measurable, bounded penalty. What this chapter adds that [Part 1](/qp/) (Queue Pair Management)'s version didn't need to say explicitly: the SRAM doing that job for MTT/MPT is the identical SRAM doing it for QP context, and the two working sets are drawing from one shared, finite pool, not two separately sized ones.
+
 ## Locator
 
 ![The master RNIC block diagram with only the Key Cache highlighted, positioned in front of the MR/Key Table, every other block and connector dimmed.](/images/mr/03-key-caching-locator.svg)
 
 The Key Cache is the on-chip working set of MPT/MTT entries sitting in front of the MR/Key Table's DRAM/HBM-backed storage -- this chapter, in the master diagram above. It is drawn as its own box for the same reason [QP Caching](/qp/qp-caching) drew the QP Cache as its own box: each is the working set for a different structure's lookups. But the two boxes are not two pieces of silicon. They are the same SRAM.
-
-## Overview
-
-Every DMA the adapter issues against a memory region -- an incoming RDMA Write resolving an `rkey`, an outgoing operation resolving an `lkey` -- needs a translated physical address before the transfer can happen. Resolving that translation from the MR/Key Table's backing store on every DMA would put a DRAM or PCIe round trip on the critical path of every transfer, the same problem [QP Caching](/qp/qp-caching) already described for QP context. The Key Cache exists for the same reason the QP Cache does: to make a translation that's actively in use resolve on-chip, and to make one that isn't cost a measurable, bounded penalty. What this chapter adds that [Part 1](/qp/) (Queue Pair Management)'s version didn't need to say explicitly: the SRAM doing that job for MTT/MPT is the identical SRAM doing it for QP context, and the two working sets are drawing from one shared, finite pool, not two separately sized ones.
 
 ## Block diagram
 

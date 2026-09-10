@@ -9,18 +9,18 @@ prev: /rx/rx-packet-parse
 next: /rx/multi-packet-reassembly
 ---
 
-## Locator
-
-![The master RNIC block diagram with the RX PSN Check stage highlighted, positioned immediately after RX Parser / Reassembly and with an arrow reaching into the DMA Engine block for the handoff this chapter closes with.](/images/rx/03-psn-check-and-out-of-order-arrival-locator.svg)
-
-[RX Packet Parse](/rx/rx-packet-parse) confirmed a packet's framing, identified its destination Queue Pair, and validated its integrity -- but deliberately stopped short of deciding whether the packet is actually allowed to proceed. This chapter is that decision.
-
 ## Overview
 
 A packet sequence number exists to solve one problem: let a hardware receiver, with no notion of wall-clock time and no reliable way to know what a sender has already retransmitted, decide with certainty whether an arriving packet is the one it expects, one it has already seen, or one that implies something was lost. This is a transaction-tag problem, not a timing problem. A Queue Pair's receiving side holds exactly one number that matters for this decision: the sequence number it expects next.
 
 > [!WARNING] Analogy
 > This is the same shape of question a tagged, non-blocking interface answers for any response that can arrive out of order relative to when it was issued -- match, and it's the one you were waiting for; too early, a duplicate; too late, something's missing. Everything this chapter covers is what happens when a parsed, validated packet's own sequence number is compared against it.
+
+## Locator
+
+![The master RNIC block diagram with the RX PSN Check stage highlighted, positioned immediately after RX Parser / Reassembly and with an arrow reaching into the DMA Engine block for the handoff this chapter closes with.](/images/rx/03-psn-check-and-out-of-order-arrival-locator.svg)
+
+[RX Packet Parse](/rx/rx-packet-parse) confirmed a packet's framing, identified its destination Queue Pair, and validated its integrity -- but deliberately stopped short of deciding whether the packet is actually allowed to proceed. This chapter is that decision.
 
 ## Block diagram
 

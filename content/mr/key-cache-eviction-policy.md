@@ -9,13 +9,13 @@ prev: /mr/shared-mr-arbitration
 next: /mr/hardware-assisted-key-cache-eviction
 ---
 
-## Locator
-
-![The master RNIC block diagram with MR/Key Table and Key Cache highlighted -- this chapter covers what decides which cached translation gets evicted, and the separate mass-invalidation trigger deregistration causes.](/images/mr/07-key-cache-eviction-policy-locator.svg)
-
 ## Overview
 
 [Key Caching](../key-caching) established that the Key Cache is not a dedicated structure — it is the same on-chip SRAM [Part 1](/qp/) (Queue Pair Management)'s QP Cache lives in, contended across QP context, MTT/MPT translations, completion-queue, and event-queue state alike, with a confirmed miss cost when a translation isn't resident, measured directly on shipped hardware once the working set overflows the cache. [Shared-MR Arbitration](../shared-mr-arbitration) covered what happens when multiple QPs reference one live entry at the same time. This chapter asks what happens when an entry has to leave that cache — and unlike Part 1's QP Cache, this question has two different answers depending on what triggered the departure: ordinary capacity pressure, which needs a policy to pick a victim, and memory-region deregistration, which is reasoned to clear out the whole cache at once and needs no victim-selection at all.
+
+## Locator
+
+![The master RNIC block diagram with MR/Key Table and Key Cache highlighted -- this chapter covers what decides which cached translation gets evicted, and the separate mass-invalidation trigger deregistration causes.](/images/mr/07-key-cache-eviction-policy-locator.svg)
 
 ## Block diagram
 

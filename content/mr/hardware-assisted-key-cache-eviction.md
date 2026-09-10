@@ -9,13 +9,13 @@ prev: /mr/key-cache-eviction-policy
 next: /mr/mid-transaction-deregistration
 ---
 
-## Locator
-
-![The master RNIC block diagram with the Key Cache highlighted, the same target as the Key Cache Eviction Policy chapter -- this chapter asks what hardware actually runs each mechanism.](/images/mr/08-hardware-assisted-key-cache-eviction-locator.svg)
-
 ## Overview
 
 [Key Cache Eviction Policy](../key-cache-eviction-policy) named two independent mechanisms living in the same satellite block: ordinary capacity-pressure eviction, which picks one victim translation at a time, and mass invalidation on memory-region deregistration, which clears the working set wholesale with no victim selection at all. This chapter asks what actually runs each one. The first question is identical to one this book has already answered; the second is new.
+
+## Locator
+
+![The master RNIC block diagram with the Key Cache highlighted, the same target as the Key Cache Eviction Policy chapter -- this chapter asks what hardware actually runs each mechanism.](/images/mr/08-hardware-assisted-key-cache-eviction-locator.svg)
 
 ## Block diagram
 

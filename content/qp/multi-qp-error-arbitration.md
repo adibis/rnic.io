@@ -9,18 +9,18 @@ prev: /qp/single-qp-error-handling
 next: /qp/eviction-policy
 ---
 
-## Locator
-
-![The master RNIC block diagram with QP Table, QP Cache, CQE Gen, and CQ Storage all highlighted -- this chapter's subject is the shared reporting path many faulting QPs converge on.](/images/qp/07-multi-qp-error-arbitration-locator.svg)
-
-This chapter is honest about its own limits before it starts: no vendor publishes how its RNIC actually schedules or prioritizes fault reporting when many QPs go down at once. [Single-QP Error Handling](../single-qp-error-handling) is grounded in documented, standard-defined behavior throughout. This chapter is reasoned architectural analysis of a real problem that behavior creates at scale, not a report of one real chip's internal arbitration logic — flagged plainly here, and again where it matters below.
-
 ## Overview
 
 The previous chapter's isolation guarantee holds for exactly one fault at a time.
 
 > [!WARNING] Analogy
 > Multi-core RAS design faces the same shape of question when a resource shared across cores -- a cache bank, an interconnect ring -- faults and takes several of them down at once: containment per core is straightforward to reason about one at a time, and gets much harder the instant one cause faults many simultaneously. This isn't only a hypothetical "link flap" scenario -- it's a documented, concrete mechanism: when a Completion Queue or Shared Receive Queue itself hits an error, *every* QP associated with it transitions to ERROR and fires its own QP-fatal event simultaneously, not one at a time ([Single-QP Error Handling](../single-qp-error-handling) names this trigger directly). A CQ or SRQ shared across dozens or hundreds of QPs turns one upstream failure into exactly that many simultaneous fault events, all needing to flush and report through structures that are, at that instant, shared and serialized — and something has to decide the order that happens in.
+
+## Locator
+
+![The master RNIC block diagram with QP Table, QP Cache, CQE Gen, and CQ Storage all highlighted -- this chapter's subject is the shared reporting path many faulting QPs converge on.](/images/qp/07-multi-qp-error-arbitration-locator.svg)
+
+This chapter is honest about its own limits before it starts: no vendor publishes how its RNIC actually schedules or prioritizes fault reporting when many QPs go down at once. [Single-QP Error Handling](../single-qp-error-handling) is grounded in documented, standard-defined behavior throughout. This chapter is reasoned architectural analysis of a real problem that behavior creates at scale, not a report of one real chip's internal arbitration logic — flagged plainly here, and again where it matters below.
 
 ## Block diagram
 

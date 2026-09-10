@@ -9,15 +9,15 @@ prev: /tx/the-send-queue-ring
 next: /tx/tx-packet-build
 ---
 
+## Overview
+
+Fetching a WQE from host DRAM on every single doorbell would put a PCIe round trip on the critical path of every operation, the same problem [QP Caching](/qp/qp-caching) and [Key Caching](/mr/key-caching) both solve for their own resources -- but a Send Queue ring's strict, front-to-back consumption order means the adapter doesn't need to guess which WQE might be needed next the way a demand-driven cache does; it can simply read ahead of the consumer index before the pipeline actually asks. At least one shipped RNIC does exactly this: a dedicated on-chip WQE cache holding prefetched send WQEs, distinct from the QP-context and address-translation caches this book has already covered.
+
 ## Locator
 
 ![The master RNIC block diagram with WQE Fetch / TX Scheduler highlighted -- this chapter covers the on-chip structure that holds WQEs read ahead of when the pipeline actually needs them.](/images/tx/03-wqe-prefetch-locator.svg)
 
 [QP Caching](/qp/qp-caching) and [Key Caching](/mr/key-caching) both cover a demand-driven working set: a key or QP number arrives, possibly out of order, and the cache either holds it or doesn't. A Send Queue ring has no equivalent of "an arbitrary index arrives" -- it's consumed strictly in order, one WQE after the next, which is exactly why this chapter's structure is shaped differently from both of them.
-
-## Overview
-
-Fetching a WQE from host DRAM on every single doorbell would put a PCIe round trip on the critical path of every operation, the same problem [QP Caching](/qp/qp-caching) and [Key Caching](/mr/key-caching) both solve for their own resources -- but a Send Queue ring's strict, front-to-back consumption order means the adapter doesn't need to guess which WQE might be needed next the way a demand-driven cache does; it can simply read ahead of the consumer index before the pipeline actually asks. At least one shipped RNIC does exactly this: a dedicated on-chip WQE cache holding prefetched send WQEs, distinct from the QP-context and address-translation caches this book has already covered.
 
 ## Block diagram
 

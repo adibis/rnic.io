@@ -8,15 +8,15 @@ description: "Mid-Transaction QP Reset named replay-buffer contents and armed ti
 prev: /reliability/replay-buffer-capacity-and-backpressure
 ---
 
+## Overview
+
+RESET is legal from any state a Reliable Connection Queue Pair can be in, including RTS with a timer currently armed and Replay Buffer entries currently held against outstanding, unacknowledged requests. IBTA's own contract for RESET is thin on specifics: outstanding work gets cleared. What clearing means for this part's own state -- a timer mid-countdown, entries waiting on acknowledgments that may now never arrive -- is where this chapter has to reason past what's written down, the same territory [Mid-Transaction QP Reset](/qp/mid-transaction-qp-reset) already opened for the QP's other in-flight state.
+
 ## Locator
 
 ![The master RNIC block diagram with the Retry Timer and Replay Buffer both highlighted -- this chapter's reasoning also reaches into the QP Table and QP Cache without owning either.](/images/reliability/08-mid-transaction-reliability-reset-locator.svg)
 
 [Mid-Transaction QP Reset](/qp/mid-transaction-qp-reset) named this part's two resources -- an armed timer and outstanding Replay Buffer entries -- among the state a RESET has to reconcile, and left both open, deferring them to a part of the book that didn't exist yet. This chapter is that part's answer.
-
-## Overview
-
-RESET is legal from any state a Reliable Connection Queue Pair can be in, including RTS with a timer currently armed and Replay Buffer entries currently held against outstanding, unacknowledged requests. IBTA's own contract for RESET is thin on specifics: outstanding work gets cleared. What clearing means for this part's own state -- a timer mid-countdown, entries waiting on acknowledgments that may now never arrive -- is where this chapter has to reason past what's written down, the same territory [Mid-Transaction QP Reset](/qp/mid-transaction-qp-reset) already opened for the QP's other in-flight state.
 
 ## Block diagram
 

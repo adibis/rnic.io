@@ -9,15 +9,15 @@ prev: /rx/single-qp-rx-stalls
 next: /rx/hardware-assisted-rx-dispatch-engines
 ---
 
+## Overview
+
+A Send Queue chooses when to make a WQE ready to send; a Queue Pair's receiving side has no equivalent control over when the wire delivers it a packet. Many Queue Pairs sharing one adapter can have packets land within the same narrow window, all needing the same shared parser, the same sequence-number check, the same placement hardware -- and only one physical pipeline to run them through. This is the same policy shape [Multi-QP TX Scheduling](/tx/multi-qp-tx-scheduling) already worked through for the transmit side, and the same shape [Eviction Policy](/qp/eviction-policy) worked through before that for the QP Cache -- round-robin, weighted, priority -- asked here of arrival order on the receiving side instead of departure order on the sending one.
+
 ## Locator
 
 ![The master RNIC block diagram with RX Parser / Reassembly and QP Table / Cache both highlighted -- this chapter is the parser consulting per-QP state while deciding which of several arrived packets to service next.](/images/rx/06-multi-qp-rx-arbitration-locator.svg)
 
 [Single-QP RX Stalls](/rx/single-qp-rx-stalls) confirmed that one Queue Pair's own wait does not touch a different Queue Pair's state. This chapter asks the question that leaves open: when packets belonging to several different Queue Pairs are all ready for this part's shared hardware at once, something has to decide whose gets serviced next.
-
-## Overview
-
-A Send Queue chooses when to make a WQE ready to send; a Queue Pair's receiving side has no equivalent control over when the wire delivers it a packet. Many Queue Pairs sharing one adapter can have packets land within the same narrow window, all needing the same shared parser, the same sequence-number check, the same placement hardware -- and only one physical pipeline to run them through. This is the same policy shape [Multi-QP TX Scheduling](/tx/multi-qp-tx-scheduling) already worked through for the transmit side, and the same shape [Eviction Policy](/qp/eviction-policy) worked through before that for the QP Cache -- round-robin, weighted, priority -- asked here of arrival order on the receiving side instead of departure order on the sending one.
 
 ## Block diagram
 

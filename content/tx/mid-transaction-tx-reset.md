@@ -8,15 +8,15 @@ description: "Mid-Transaction QP Reset closed Part 1 asking what happens to a DM
 prev: /tx/hardware-assisted-tx-scheduling-engines
 ---
 
+## Overview
+
+RESET is legal from any state, including RTS with a WQE actively occupying one of this part's own pipeline stages. What has to become of that WQE -- does the build it's partway through complete, get aborted, or land in some undefined state -- is exactly the kind of question [Mid-Transaction QP Reset](/qp/mid-transaction-qp-reset) already flagged as underdocumented for the QP's other in-flight state. This chapter isn't limited to that same reasoned-analysis-only territory, though: a named, shipped RNIC is on record, in its own vendor's public engineering documentation, as unable to do this cleanly in hardware at all.
+
 ## Locator
 
 ![The master RNIC block diagram with WQE Fetch / TX Scheduler and TX Packet Build both highlighted, and QP Table reachable via the reset arrow -- this chapter's reasoning reaches into every stage this part covered, at the instant RESET lands on one of them.](/images/tx/08-mid-transaction-tx-reset-locator.svg)
 
 [Mid-Transaction QP Reset](/qp/mid-transaction-qp-reset) closed Part 1 on a resource torn down while something was still actively using it -- a replay-buffer entry, a partially-reassembled message, a DMA write mid-burst. This chapter closes Part 3 on the same shape of question, asked specifically of everything this part just built: a WQE mid-fetch, mid-prefetch-buffer-residency, mid-build, or mid-schedule, at the exact instant its owning QP's state machine takes a RESET transition.
-
-## Overview
-
-RESET is legal from any state, including RTS with a WQE actively occupying one of this part's own pipeline stages. What has to become of that WQE -- does the build it's partway through complete, get aborted, or land in some undefined state -- is exactly the kind of question [Mid-Transaction QP Reset](/qp/mid-transaction-qp-reset) already flagged as underdocumented for the QP's other in-flight state. This chapter isn't limited to that same reasoned-analysis-only territory, though: a named, shipped RNIC is on record, in its own vendor's public engineering documentation, as unable to do this cleanly in hardware at all.
 
 ## Block diagram
 

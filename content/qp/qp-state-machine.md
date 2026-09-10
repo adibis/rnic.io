@@ -9,10 +9,6 @@ prev: /qp/installing-a-qp
 next: /qp/single-qp-error-handling
 ---
 
-## Locator
-
-![The master RNIC block diagram with the QP Table and QP Cache pair highlighted -- the state machine this chapter covers is logic owned by that block, not a separate structure.](/images/qp/05-qp-state-machine-locator.svg)
-
 ## Overview
 
 A Queue Pair's state machine is a bring-up sequencer: each state gates exactly which operations are legal next, refusing to advance until its own prerequisites are satisfied. A Queue Pair's state is not a status flag hardware happens to expose — it's that same kind of gate.
@@ -21,6 +17,10 @@ A Queue Pair's state machine is a bring-up sequencer: each state gates exactly w
 > The same shape as a core's reset FSM walking from reset-vector-fetch through to fetch-enabled, or a link protocol's LTSSM walking a physical link from Detect through Polling/Configuration to L0.
 
 RESET, INIT, RTR, RTS, and ERROR are the states a QP can carry live traffic through, in exactly that order forward, and every forward transition is a specific state-transition request that hardware validates against a fixed, transport-dependent list of required attributes before it lets the QP move at all. Supply an incomplete set and the transition is refused, not partially applied. This chapter covers that state machine for Reliable Connection (RC) — the transport every later part's QP is assumed to be running in — and, briefly, why RC's version of it carries more hardware-enforced state than the other two transports do.
+
+## Locator
+
+![The master RNIC block diagram with the QP Table and QP Cache pair highlighted -- the state machine this chapter covers is logic owned by that block, not a separate structure.](/images/qp/05-qp-state-machine-locator.svg)
 
 ## Block diagram
 

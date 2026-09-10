@@ -8,15 +8,15 @@ description: "Mid-Transaction TX Reset closed Part 3 asking what becomes of a WQ
 prev: /rx/hardware-assisted-rx-dispatch-engines
 ---
 
+## Overview
+
+RESET is legal from any state, including RTS with a packet actively occupying one of this part's own pipeline stages. What has to become of that packet -- does whatever this part was doing to it complete, get aborted, or land in some undefined state -- is exactly the kind of question [Mid-Transaction QP Reset](/qp/mid-transaction-qp-reset) already flagged as underdocumented for a Queue Pair's other in-flight state. This chapter has one sharper version of that question to add, specific to this part alone: an open multi-packet message can leave a partial write already sitting in host memory, with nothing downstream of this pipeline aware that it stopped short of complete.
+
 ## Locator
 
 ![The master RNIC block diagram with RX Parser / Reassembly and RX PSN Check both highlighted, and QP Table reachable via the reset arrow -- this chapter's reasoning reaches into every stage this part covered, at the instant RESET lands on one of them.](/images/rx/08-mid-transaction-rx-reset-locator.svg)
 
 [Mid-Transaction QP Reset](/qp/mid-transaction-qp-reset) closed Part 1 on a resource torn down while something was still actively using it. [Mid-Transaction TX Reset](/tx/mid-transaction-tx-reset) closed Part 3 on the same shape of question for the sending side. This chapter closes Part 4 on it for the receiving side: a packet mid-parse, mid-sequence-check, or mid-reassembly, at the exact instant its owning Queue Pair's state machine takes a RESET transition.
-
-## Overview
-
-RESET is legal from any state, including RTS with a packet actively occupying one of this part's own pipeline stages. What has to become of that packet -- does whatever this part was doing to it complete, get aborted, or land in some undefined state -- is exactly the kind of question [Mid-Transaction QP Reset](/qp/mid-transaction-qp-reset) already flagged as underdocumented for a Queue Pair's other in-flight state. This chapter has one sharper version of that question to add, specific to this part alone: an open multi-packet message can leave a partial write already sitting in host memory, with nothing downstream of this pipeline aware that it stopped short of complete.
 
 ## Block diagram
 

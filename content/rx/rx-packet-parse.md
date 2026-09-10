@@ -9,12 +9,6 @@ prev: /rx/the-receive-queue-descriptor-and-ring
 next: /rx/psn-check-and-out-of-order-arrival
 ---
 
-## Locator
-
-![The master RNIC block diagram with RX Parser / Reassembly highlighted and every other block dimmed -- this chapter covers the stage that takes an arriving frame apart, the direct mirror of Part 3's TX Packet Build running in reverse.](/images/rx/02-rx-packet-parse-locator.svg)
-
-[What Is RoCEv2](/overview/what-is-rocev2) already described the wire format this chapter takes apart, field by field. This chapter is not a second pass over that layout -- it is the pipeline stage that consumes it, and the specific order in which a real implementation has every reason to run its checks.
-
 ## Overview
 
 A parser is a decode-and-dispatch front end: it does not decide what an operation means, only what it is and where it belongs, before handing it to whatever downstream stage actually acts on it. An arriving frame is, at the moment it lands, nothing but bytes -- Ethernet framing, an IP header, a UDP header, and, if everything above it is well-formed, the Base Transport Header this book has already spent a full chapter describing. Every one of those layers has to be stripped and validated before the destination Queue Pair is even known, and the order that validation happens in is not arbitrary: a real implementation has every reason to reject cheaply before it pays for anything expensive.
@@ -24,6 +18,12 @@ A parser is a decode-and-dispatch front end: it does not decide what an operatio
 
 > [!NOTE] Concept
 > Cheapest check first, most expensive check last. A parser rejects on framing, header sanity, and port match -- each a plain field comparison -- before it ever pays for ICRC, the one check that has to run over the whole assembled payload.
+
+## Locator
+
+![The master RNIC block diagram with RX Parser / Reassembly highlighted and every other block dimmed -- this chapter covers the stage that takes an arriving frame apart, the direct mirror of Part 3's TX Packet Build running in reverse.](/images/rx/02-rx-packet-parse-locator.svg)
+
+[What Is RoCEv2](/overview/what-is-rocev2) already described the wire format this chapter takes apart, field by field. This chapter is not a second pass over that layout -- it is the pipeline stage that consumes it, and the specific order in which a real implementation has every reason to run its checks.
 
 ## Block diagram
 

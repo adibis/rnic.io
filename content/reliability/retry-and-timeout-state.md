@@ -8,15 +8,15 @@ description: "QP Context named four fields and stopped, deferring them to a part
 next: /reliability/the-replay-buffer
 ---
 
+## Overview
+
+Any full-duplex interface that tags its own outstanding requests needs two kinds of bookkeeping on two different sides of the same connection: something on the issuing side tracking what has been sent and not yet confirmed, and something on the receiving side tracking what's expected to arrive next. [QP Context](/qp/qp-context) already covered the receiving side's half of this for ordinary in-sequence traffic -- `rq_psn`, the next sequence number expected. This chapter covers the issuing side's half, and it's a larger set of state than a single counter: not just how many times a request is allowed to be retried before the connection gives up, but which specific outstanding request is currently being timed, whether that timer is armed at all, and how many retry attempts remain against two separately-counted budgets for two structurally different failure conditions.
+
 ## Locator
 
 ![The master RNIC block diagram with the Retry Timer block highlighted and every other block dimmed -- this chapter covers the live per-QP state that block actually holds.](/images/reliability/01-retry-and-timeout-state-locator.svg)
 
 [QP Context](/qp/qp-context) named `timeout`, `retry_cnt`, `rnr_retry`, and `min_rnr_timer` as fields a Reliable Connection Queue Pair carries, then stopped, saying only that they belong to a reliability engine this book hadn't reached yet. This is that engine, and this chapter is where that debt gets paid.
-
-## Overview
-
-Any full-duplex interface that tags its own outstanding requests needs two kinds of bookkeeping on two different sides of the same connection: something on the issuing side tracking what has been sent and not yet confirmed, and something on the receiving side tracking what's expected to arrive next. [QP Context](/qp/qp-context) already covered the receiving side's half of this for ordinary in-sequence traffic -- `rq_psn`, the next sequence number expected. This chapter covers the issuing side's half, and it's a larger set of state than a single counter: not just how many times a request is allowed to be retried before the connection gives up, but which specific outstanding request is currently being timed, whether that timer is armed at all, and how many retry attempts remain against two separately-counted budgets for two structurally different failure conditions.
 
 ## Block diagram
 

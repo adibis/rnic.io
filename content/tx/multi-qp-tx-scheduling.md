@@ -9,15 +9,15 @@ prev: /tx/single-qp-pipeline-stalls
 next: /tx/hardware-assisted-tx-scheduling-engines
 ---
 
+## Overview
+
+Many QPs sharing one adapter can all have traffic ready to send at the same moment, and only one shared TX pipeline to send it through. This is the same policy shape [Eviction Policy](/qp/eviction-policy) already worked through for the QP Cache -- LRU, priority-weighted, error-weighted -- asked here of a different scarce resource: not which cached context survives, but whose WQE gets the pipeline's next cycle. Unlike that chapter, this one isn't limited to reasoned analysis alone -- a real vendor's own quoted response to a measured anomaly confirms that shipped RNICs do run some internal scheduling policy, and a separate, independent study confirms directly that congestion control alone does not fix the problem this chapter is about.
+
 ## Locator
 
 ![The master RNIC block diagram with WQE Fetch / TX Scheduler and QP Cache both highlighted -- this chapter is the scheduler consulting per-QP state to decide whose WQE gets serviced next.](/images/tx/06-multi-qp-tx-scheduling-locator.svg)
 
 [Single-QP Pipeline Stalls](../single-qp-pipeline-stalls) measured what happens with no scheduling policy actively protecting one QP from another's traffic. This chapter is the policy question that measurement motivates: whichever QPs have a WQE ready to send at the same instant, something has to decide whose gets fetched and built next.
-
-## Overview
-
-Many QPs sharing one adapter can all have traffic ready to send at the same moment, and only one shared TX pipeline to send it through. This is the same policy shape [Eviction Policy](/qp/eviction-policy) already worked through for the QP Cache -- LRU, priority-weighted, error-weighted -- asked here of a different scarce resource: not which cached context survives, but whose WQE gets the pipeline's next cycle. Unlike that chapter, this one isn't limited to reasoned analysis alone -- a real vendor's own quoted response to a measured anomaly confirms that shipped RNICs do run some internal scheduling policy, and a separate, independent study confirms directly that congestion control alone does not fix the problem this chapter is about.
 
 ## Block diagram
 

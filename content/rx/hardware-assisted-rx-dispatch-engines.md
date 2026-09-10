@@ -9,15 +9,15 @@ prev: /rx/multi-qp-rx-arbitration
 next: /rx/mid-transaction-rx-reset
 ---
 
+## Overview
+
+A dispatch decision that has to run on every single arrival competing for shared parsing and placement hardware can be hardwired at design time, built as a programmable engine, or pushed out to software. [Hardware-Assisted Eviction Engines](/qp/hardware-assisted-eviction-engines) already worked through this exact spectrum in full, and that reasoning applies here without needing to be re-derived. What this chapter adds is a real structural argument for where the receive side is likely to sit on it, distinct from the transmit side's answer -- not because less thought went into receive-side hardware, but because the receive side faces a constraint transmit scheduling does not.
+
 ## Locator
 
 ![The master RNIC block diagram with RX Parser / Reassembly highlighted -- the same target as Multi-QP RX Arbitration, this chapter asks what hardware actually runs the policy that chapter named.](/images/rx/07-hardware-assisted-rx-dispatch-engines-locator.svg)
 
 [Multi-QP RX Arbitration](/rx/multi-qp-rx-arbitration) named the candidate policies. This chapter asks what actually executes whichever one a given design picks -- the same fixed-versus-programmable-versus-software-driven question [Hardware-Assisted Eviction Engines](/qp/hardware-assisted-eviction-engines) and [Hardware-Assisted TX Scheduling Engines](/tx/hardware-assisted-tx-scheduling-engines) already asked of two other resources.
-
-## Overview
-
-A dispatch decision that has to run on every single arrival competing for shared parsing and placement hardware can be hardwired at design time, built as a programmable engine, or pushed out to software. [Hardware-Assisted Eviction Engines](/qp/hardware-assisted-eviction-engines) already worked through this exact spectrum in full, and that reasoning applies here without needing to be re-derived. What this chapter adds is a real structural argument for where the receive side is likely to sit on it, distinct from the transmit side's answer -- not because less thought went into receive-side hardware, but because the receive side faces a constraint transmit scheduling does not.
 
 ## Block diagram
 
