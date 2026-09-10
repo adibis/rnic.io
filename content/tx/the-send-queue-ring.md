@@ -3,7 +3,7 @@ title: "The Send Queue Ring"
 weight: 2
 date: 2026-09-04
 publishDate: 2026-09-04
-draft: true
+draft: false
 description: "Posting a Work Request doesn't move a single byte -- it writes a WQE into a ring in host memory and rings a doorbell. This chapter is the ring itself: how it wraps around without a modulo, how a shared index survives being touched by both an untrusted process and a privileged hardware pipeline, and the one optimization that skips the ring's own memory entirely."
 prev: /tx/the-wqe-and-the-send-queue-descriptor
 next: /tx/wqe-prefetch

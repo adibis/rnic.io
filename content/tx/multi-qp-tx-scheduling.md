@@ -3,7 +3,7 @@ title: "Multi-QP TX Scheduling"
 weight: 6
 date: 2026-09-04
 publishDate: 2026-09-04
-draft: true
+draft: false
 description: "Which QP's WQE gets built next, when a dozen QPs all have one ready at once, is the same shape of question Part 1 asked about QP Cache eviction -- round-robin, weighted, priority -- asked here of pipeline cycles instead of cache slots. A vendor's own quoted admission, and a real study that measured DCQCN failing to fix the problem, both ground this chapter in more than reasoning alone."
 prev: /tx/single-qp-pipeline-stalls
 next: /tx/hardware-assisted-tx-scheduling-engines

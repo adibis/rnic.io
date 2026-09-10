@@ -3,7 +3,7 @@ title: "Hardware-Assisted TX Scheduling Engines"
 weight: 7
 date: 2026-09-04
 publishDate: 2026-09-04
-draft: true
+draft: false
 description: "Part 1 asked whether an eviction policy runs as fixed silicon, a programmable engine, or a software trap. This chapter asks the same question of TX scheduling -- and unlike Part 1's version, it has dated, concrete evidence that at least some shipped RNICs sit at the software-driven end of that spectrum, not by choice so much as by not having built the alternative yet."
 prev: /tx/multi-qp-tx-scheduling
 next: /tx/mid-transaction-tx-reset

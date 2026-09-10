@@ -3,7 +3,7 @@ title: "The WQE and the Send Queue Descriptor"
 weight: 1
 date: 2026-09-04
 publishDate: 2026-09-04
-draft: true
+draft: false
 description: "A WQE and a wire packet are not the same shape. Software builds one -- a generic, four-field struct any transport can use. Hardware builds the other from it -- opcode, BTH, RETH, payload, ICRC. This chapter is about the shape that exists in between the two: what a Send Queue actually holds before any of that translation happens."
 next: /tx/the-send-queue-ring
 ---

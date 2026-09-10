@@ -3,7 +3,7 @@ title: "Single-QP Pipeline Stalls"
 weight: 5
 date: 2026-09-04
 publishDate: 2026-09-04
-draft: true
+draft: false
 description: "A large RDMA operation and a small, latency-sensitive one sharing the same TX pipeline sound like a scheduling question. A measured study says it's actually simpler and worse than that: the pipeline serves whatever is ready to send, in the order it became ready, and a fast RDMA write behind a slow one measurably collapses -- before any scheduling policy even gets a turn to decide otherwise."
 prev: /tx/tx-packet-build
 next: /tx/multi-qp-tx-scheduling
