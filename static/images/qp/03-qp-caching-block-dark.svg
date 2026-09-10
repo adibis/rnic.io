@@ -7,27 +7,27 @@
 text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-weight: 400; stroke: currentColor; stroke-width: 0.35px; paint-order: stroke fill; }
 </style></defs>
 <defs>
-  <marker id="arrQCsky" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#0ea5e9"/></marker>
-  <marker id="arrQChit" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6366f1"/></marker>
-  <marker id="arrQCmiss" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#ef4444"/></marker>
+  <marker id="arrQCsky" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#8db7ce"/></marker>
+  <marker id="arrQChit" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#928dce"/></marker>
+  <marker id="arrQCmiss" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#ce8d8d"/></marker>
 </defs>
 
-<text x="450" y="28" font-size="16" font-weight="500" fill="#e2e8f0" text-anchor="middle">QP Cache: hit and miss paths</text>
+<text x="450" y="28" font-size="16" font-weight="500" fill="#ccd0d7" text-anchor="middle">QP Cache: hit and miss paths</text>
 
-<rect x="60" y="60" width="150" height="50" rx="6" fill="#0c4a6e" stroke="#0ea5e9" stroke-width="1.5"/>
-<text x="135" y="82" font-size="12" font-weight="500" fill="#0ea5e9" text-anchor="middle">TX Scheduler</text>
-<text x="135" y="98" font-size="10" fill="#0ea5e9" text-anchor="middle">QP being scheduled</text>
-<line x1="210" y1="85" x2="330" y2="140" stroke="#0ea5e9" stroke-width="1.5" marker-end="url(#arrQCsky)"/>
+<rect x="60" y="60" width="150" height="50" rx="6" fill="#273b49" stroke="#8db7ce" stroke-width="1.5"/>
+<text x="135" y="82" font-size="12" font-weight="500" fill="#8db7ce" text-anchor="middle">TX Scheduler</text>
+<text x="135" y="98" font-size="10" fill="#8db7ce" text-anchor="middle">QP being scheduled</text>
+<line x1="210" y1="85" x2="330" y2="140" stroke="#8db7ce" stroke-width="1.5" marker-end="url(#arrQCsky)"/>
 
-<rect x="60" y="180" width="150" height="50" rx="6" fill="#0c4a6e" stroke="#0ea5e9" stroke-width="1.5"/>
-<text x="135" y="202" font-size="12" font-weight="500" fill="#0ea5e9" text-anchor="middle">RX Parser</text>
-<text x="135" y="218" font-size="10" fill="#0ea5e9" text-anchor="middle">dest QP from BTH</text>
-<line x1="210" y1="205" x2="330" y2="160" stroke="#0ea5e9" stroke-width="1.5" marker-end="url(#arrQCsky)"/>
+<rect x="60" y="180" width="150" height="50" rx="6" fill="#273b49" stroke="#8db7ce" stroke-width="1.5"/>
+<text x="135" y="202" font-size="12" font-weight="500" fill="#8db7ce" text-anchor="middle">RX Parser</text>
+<text x="135" y="218" font-size="10" fill="#8db7ce" text-anchor="middle">dest QP from BTH</text>
+<line x1="210" y1="205" x2="330" y2="160" stroke="#8db7ce" stroke-width="1.5" marker-end="url(#arrQCsky)"/>
 
-<rect x="340" y="90" width="260" height="140" rx="8" fill="#78350f" stroke="#f59e0b" stroke-width="1.5"/>
-<text x="470" y="112" font-size="13" font-weight="500" fill="#fbbf24" text-anchor="middle">QP Cache</text>
-<text x="470" y="128" font-size="10" fill="#fbbf24" text-anchor="middle">working set of cached QPCs</text>
-<g fill="#1e293b" stroke="#f59e0b">
+<rect x="340" y="90" width="260" height="140" rx="8" fill="#494227" stroke="#ceb38d" stroke-width="1.5"/>
+<text x="470" y="112" font-size="13" font-weight="500" fill="#cea98d" text-anchor="middle">QP Cache</text>
+<text x="470" y="128" font-size="10" fill="#cea98d" text-anchor="middle">working set of cached QPCs</text>
+<g fill="#2b2d31" stroke="#ceb38d">
   <rect x="360" y="140" width="50" height="34"/><rect x="415" y="140" width="50" height="34"/>
   <rect x="470" y="140" width="50" height="34"/><rect x="525" y="140" width="50" height="34"/>
   <rect x="360" y="177" width="50" height="34"/><rect x="415" y="177" width="50" height="34"/>
@@ -35,18 +35,18 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 </g>
 <text x="470" y="200" font-size="10" fill="#94a3b8" text-anchor="middle">on-chip SRAM</text>
 
-<line x1="600" y1="130" x2="700" y2="90" stroke="#6366f1" stroke-width="1.5" marker-end="url(#arrQChit)"/>
-<text x="710" y="80" font-size="12" font-weight="500" fill="#6366f1">hit</text>
-<text x="710" y="96" font-size="10" fill="#6366f1">-&gt; back to requesting stage</text>
+<line x1="600" y1="130" x2="700" y2="90" stroke="#928dce" stroke-width="1.5" marker-end="url(#arrQChit)"/>
+<text x="710" y="80" font-size="12" font-weight="500" fill="#928dce">hit</text>
+<text x="710" y="96" font-size="10" fill="#928dce">-&gt; back to requesting stage</text>
 
-<line x1="600" y1="190" x2="700" y2="230" stroke="#ef4444" stroke-width="1.5" marker-end="url(#arrQCmiss)"/>
-<text x="710" y="248" font-size="12" font-weight="500" fill="#ef4444">miss</text>
+<line x1="600" y1="190" x2="700" y2="230" stroke="#ce8d8d" stroke-width="1.5" marker-end="url(#arrQCmiss)"/>
+<text x="710" y="248" font-size="12" font-weight="500" fill="#ce8d8d">miss</text>
 
-<rect x="650" y="270" width="180" height="60" rx="8" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
-<text x="740" y="295" font-size="12" font-weight="500" fill="#94a3b8" text-anchor="middle">QP Table</text>
-<text x="740" y="311" font-size="10" fill="#94a3b8" text-anchor="middle">DRAM/HBM-backed</text>
-<line x1="700" y1="270" x2="640" y2="235" stroke="#ef4444" stroke-width="1.5" marker-end="url(#arrQCmiss)"/>
+<rect x="650" y="270" width="180" height="60" rx="8" fill="#34383d" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="740" y="295" font-size="12" font-weight="500" fill="#949ca8" text-anchor="middle">QP Table</text>
+<text x="740" y="311" font-size="10" fill="#949ca8" text-anchor="middle">DRAM/HBM-backed</text>
+<line x1="700" y1="270" x2="640" y2="235" stroke="#ce8d8d" stroke-width="1.5" marker-end="url(#arrQCmiss)"/>
 
 <path d="M650,300 L610,300 L610,150 L602,150" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arrQChit)"/>
-<text x="500" y="270" font-size="11" fill="#94a3b8" text-anchor="middle">PCIe fetch, populate cache line</text>
+<text x="500" y="270" font-size="11" fill="#949ca8" text-anchor="middle">PCIe fetch, populate cache line</text>
 </svg>

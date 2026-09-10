@@ -7,50 +7,50 @@
 text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-weight: 400; stroke: currentColor; stroke-width: 0.35px; paint-order: stroke fill; }
 </style></defs>
 <defs>
-  <marker id="arrRM1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/></marker>
-  <marker id="arrRM2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6366f1"/></marker>
+  <marker id="arrRM1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#949ca8"/></marker>
+  <marker id="arrRM2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#928dce"/></marker>
   <marker id="arrRMg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/></marker>
 </defs>
 
-<text x="510" y="24" font-size="15" font-weight="500" fill="#e2e8f0" text-anchor="middle">Registering a Memory Region: two paths to the same valid state</text>
+<text x="510" y="24" font-size="15" font-weight="500" fill="#ccd0d7" text-anchor="middle">Registering a Memory Region: two paths to the same valid state</text>
 
-<rect x="40" y="55" width="210" height="70" rx="6" fill="#0c4a6e" stroke="#0ea5e9" stroke-width="1.5"/>
-<text x="145" y="80" font-size="10" font-weight="500" fill="#0ea5e9" text-anchor="middle">register(PD, addr, length,</text>
-<text x="145" y="95" font-size="10" font-weight="500" fill="#0ea5e9" text-anchor="middle">access flags)</text>
+<rect x="40" y="55" width="210" height="70" rx="6" fill="#273b49" stroke="#8db7ce" stroke-width="1.5"/>
+<text x="145" y="80" font-size="10" font-weight="500" fill="#8db7ce" text-anchor="middle">register(PD, addr, length,</text>
+<text x="145" y="95" font-size="10" font-weight="500" fill="#8db7ce" text-anchor="middle">access flags)</text>
 
-<line x1="180" y1="125" x2="300" y2="180" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrRM1)"/>
-<text x="245" y="150" font-size="8" fill="#94a3b8" text-anchor="middle">walks process page tables,</text>
-<text x="245" y="161" font-size="8" fill="#94a3b8" text-anchor="middle">pins pages</text>
+<line x1="180" y1="125" x2="300" y2="180" stroke="#949ca8" stroke-width="1.5" marker-end="url(#arrRM1)"/>
+<text x="245" y="150" font-size="8" fill="#949ca8" text-anchor="middle">walks process page tables,</text>
+<text x="245" y="161" font-size="8" fill="#949ca8" text-anchor="middle">pins pages</text>
 
-<rect x="300" y="185" width="230" height="95" rx="8" fill="#78350f" stroke="#f59e0b" stroke-width="1.5"/>
-<text x="415" y="208" font-size="11" font-weight="500" fill="#fbbf24" text-anchor="middle">MPT entry populated</text>
-<text x="415" y="222" font-size="8" fill="#fbbf24" text-anchor="middle">(address, length, permissions)</text>
-<text x="415" y="236" font-size="8" fill="#fbbf24" text-anchor="middle">+ one or more MTT entries</text>
-<text x="415" y="250" font-size="8" fill="#fbbf24" text-anchor="middle">(physical page translations)</text>
+<rect x="300" y="185" width="230" height="95" rx="8" fill="#494227" stroke="#ceb38d" stroke-width="1.5"/>
+<text x="415" y="208" font-size="11" font-weight="500" fill="#cea98d" text-anchor="middle">MPT entry populated</text>
+<text x="415" y="222" font-size="8" fill="#cea98d" text-anchor="middle">(address, length, permissions)</text>
+<text x="415" y="236" font-size="8" fill="#cea98d" text-anchor="middle">+ one or more MTT entries</text>
+<text x="415" y="250" font-size="8" fill="#cea98d" text-anchor="middle">(physical page translations)</text>
 
-<line x1="530" y1="232" x2="590" y2="232" stroke="#6366f1" stroke-width="1.5" marker-end="url(#arrRM2)"/>
-<text x="560" y="220" font-size="9" fill="#6366f1" text-anchor="middle">keys assigned</text>
+<line x1="530" y1="232" x2="590" y2="232" stroke="#928dce" stroke-width="1.5" marker-end="url(#arrRM2)"/>
+<text x="560" y="220" font-size="9" fill="#928dce" text-anchor="middle">keys assigned</text>
 
-<rect x="590" y="185" width="200" height="95" rx="8" fill="#312e81" stroke="#6366f1" stroke-width="1.5"/>
-<text x="690" y="215" font-size="12" font-weight="500" fill="#a5b4fc" text-anchor="middle">MR valid</text>
-<text x="690" y="231" font-size="9" fill="#a5b4fc" text-anchor="middle">lkey/rkey usable in</text>
-<text x="690" y="244" font-size="9" fill="#a5b4fc" text-anchor="middle">Work Requests</text>
+<rect x="590" y="185" width="200" height="95" rx="8" fill="#272f49" stroke="#928dce" stroke-width="1.5"/>
+<text x="690" y="215" font-size="12" font-weight="500" fill="#8f8dce" text-anchor="middle">MR valid</text>
+<text x="690" y="231" font-size="9" fill="#8f8dce" text-anchor="middle">lkey/rkey usable in</text>
+<text x="690" y="244" font-size="9" fill="#8f8dce" text-anchor="middle">Work Requests</text>
 
-<line x1="790" y1="232" x2="850" y2="232" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrRM1)"/>
-<text x="820" y="220" font-size="9" fill="#94a3b8" text-anchor="middle">deregister()</text>
+<line x1="790" y1="232" x2="850" y2="232" stroke="#949ca8" stroke-width="1.5" marker-end="url(#arrRM1)"/>
+<text x="820" y="220" font-size="9" fill="#949ca8" text-anchor="middle">deregister()</text>
 
-<rect x="850" y="185" width="150" height="95" rx="8" fill="#334155" stroke="#64748b" stroke-width="1.3"/>
-<text x="925" y="215" font-size="11" font-weight="500" fill="#94a3b8" text-anchor="middle">MR invalid</text>
-<text x="925" y="231" font-size="8" fill="#94a3b8" text-anchor="middle">MPT/MTT entries</text>
-<text x="925" y="244" font-size="8" fill="#94a3b8" text-anchor="middle">removed, keys retired</text>
+<rect x="850" y="185" width="150" height="95" rx="8" fill="#2f3237" stroke="#606976" stroke-width="1.3"/>
+<text x="925" y="215" font-size="11" font-weight="500" fill="#949ca8" text-anchor="middle">MR invalid</text>
+<text x="925" y="231" font-size="8" fill="#949ca8" text-anchor="middle">MPT/MTT entries</text>
+<text x="925" y="244" font-size="8" fill="#949ca8" text-anchor="middle">removed, keys retired</text>
 
 <!-- ODP branch -->
 <line x1="145" y1="125" x2="145" y2="293" stroke="#94a3b8" stroke-width="1.3" stroke-dasharray="5,3" marker-end="url(#arrRMg)"/>
-<text x="240" y="197" font-size="8" fill="#94a3b8" text-anchor="middle">deferred-resolution permission set</text>
+<text x="240" y="197" font-size="8" fill="#949ca8" text-anchor="middle">deferred-resolution permission set</text>
 
-<rect x="40" y="298" width="250" height="80" rx="6" fill="#1e293b" stroke="#94a3b8" stroke-width="1.3" stroke-dasharray="5,3"/>
-<text x="165" y="321" font-size="10" font-weight="500" fill="#94a3b8" text-anchor="middle">no upfront pinning --</text>
-<text x="165" y="335" font-size="9" fill="#94a3b8" text-anchor="middle">first touch resolved page-fault-style</text>
+<rect x="40" y="298" width="250" height="80" rx="6" fill="#2b2d31" stroke="#94a3b8" stroke-width="1.3" stroke-dasharray="5,3"/>
+<text x="165" y="321" font-size="10" font-weight="500" fill="#949ca8" text-anchor="middle">no upfront pinning --</text>
+<text x="165" y="335" font-size="9" fill="#949ca8" text-anchor="middle">first touch resolved page-fault-style</text>
 <text x="165" y="353" font-size="7" fill="#94a3b8" text-anchor="middle">implicit ODP: one rkey covers the whole</text>
 <text x="165" y="364" font-size="7" fill="#94a3b8" text-anchor="middle">process address space -- see 2.5</text>
 

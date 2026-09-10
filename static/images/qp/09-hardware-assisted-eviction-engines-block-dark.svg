@@ -7,43 +7,43 @@
 text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-weight: 400; stroke: currentColor; stroke-width: 0.35px; paint-order: stroke fill; }
 </style></defs>
 <defs>
-  <marker id="arrHE1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/></marker>
+  <marker id="arrHE1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#949ca8"/></marker>
 </defs>
 
-<text x="450" y="24" font-size="15" font-weight="500" fill="#e2e8f0" text-anchor="middle">Who runs the eviction decision: a spectrum, not a binary choice</text>
+<text x="450" y="24" font-size="15" font-weight="500" fill="#ccd0d7" text-anchor="middle">Who runs the eviction decision: a spectrum, not a binary choice</text>
 
-<rect x="60" y="55" width="220" height="70" rx="8" fill="#312e81" stroke="#6366f1" stroke-width="1.5"/>
-<text x="170" y="82" font-size="12" font-weight="500" fill="#a5b4fc" text-anchor="middle">Fixed-function</text>
-<text x="170" y="98" font-size="12" font-weight="500" fill="#a5b4fc" text-anchor="middle">hardware</text>
-<text x="170" y="114" font-size="9" fill="#6366f1" text-anchor="middle">hardwired state machine</text>
+<rect x="60" y="55" width="220" height="70" rx="8" fill="#272f49" stroke="#928dce" stroke-width="1.5"/>
+<text x="170" y="82" font-size="12" font-weight="500" fill="#8f8dce" text-anchor="middle">Fixed-function</text>
+<text x="170" y="98" font-size="12" font-weight="500" fill="#8f8dce" text-anchor="middle">hardware</text>
+<text x="170" y="114" font-size="9" fill="#928dce" text-anchor="middle">hardwired state machine</text>
 
-<rect x="340" y="55" width="220" height="70" rx="8" fill="#312e81" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="8,3"/>
-<text x="450" y="82" font-size="12" font-weight="500" fill="#a5b4fc" text-anchor="middle">Programmable</text>
-<text x="450" y="98" font-size="12" font-weight="500" fill="#a5b4fc" text-anchor="middle">hardware engine</text>
-<text x="450" y="114" font-size="9" fill="#6366f1" text-anchor="middle">sequencer + weight registers</text>
+<rect x="340" y="55" width="220" height="70" rx="8" fill="#272f49" stroke="#928dce" stroke-width="1.5" stroke-dasharray="8,3"/>
+<text x="450" y="82" font-size="12" font-weight="500" fill="#8f8dce" text-anchor="middle">Programmable</text>
+<text x="450" y="98" font-size="12" font-weight="500" fill="#8f8dce" text-anchor="middle">hardware engine</text>
+<text x="450" y="114" font-size="9" fill="#928dce" text-anchor="middle">sequencer + weight registers</text>
 
-<rect x="600" y="55" width="180" height="70" rx="8" fill="#312e81" stroke="#6366f1" stroke-width="1.5"/>
-<text x="690" y="82" font-size="12" font-weight="500" fill="#a5b4fc" text-anchor="middle">Software-driven</text>
-<text x="690" y="98" font-size="9" fill="#6366f1" text-anchor="middle">trap on cache pressure</text>
-<line x1="782" y1="90" x2="810" y2="90" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4,3"/>
-<rect x="812" y="65" width="80" height="50" rx="4" fill="#1e293b" stroke="#94a3b8"/>
-<text x="852" y="86" font-size="9" fill="#94a3b8" text-anchor="middle">firmware /</text>
-<text x="852" y="98" font-size="9" fill="#94a3b8" text-anchor="middle">driver</text>
+<rect x="600" y="55" width="180" height="70" rx="8" fill="#272f49" stroke="#928dce" stroke-width="1.5"/>
+<text x="690" y="82" font-size="12" font-weight="500" fill="#8f8dce" text-anchor="middle">Software-driven</text>
+<text x="690" y="98" font-size="9" fill="#928dce" text-anchor="middle">trap on cache pressure</text>
+<line x1="782" y1="90" x2="810" y2="90" stroke="#949ca8" stroke-width="1.5" stroke-dasharray="4,3"/>
+<rect x="812" y="65" width="80" height="50" rx="4" fill="#34383d" stroke="#94a3b8"/>
+<text x="852" y="86" font-size="9" fill="#949ca8" text-anchor="middle">firmware /</text>
+<text x="852" y="98" font-size="9" fill="#949ca8" text-anchor="middle">driver</text>
 <text x="852" y="110" font-size="8" fill="#94a3b8" text-anchor="middle">(off-chip)</text>
 
 <!-- latency bar: shortest at fixed, longest at software -->
-<text x="450" y="160" font-size="11" font-weight="500" fill="#94a3b8" text-anchor="middle">latency on a miss</text>
-<rect x="120" y="170" width="60" height="12" fill="#6366f1"/>
-<rect x="400" y="170" width="120" height="12" fill="#6366f1"/>
-<rect x="630" y="170" width="150" height="12" fill="#6366f1"/>
+<text x="450" y="160" font-size="11" font-weight="500" fill="#949ca8" text-anchor="middle">latency on a miss</text>
+<rect x="120" y="170" width="60" height="12" fill="#928dce"/>
+<rect x="400" y="170" width="120" height="12" fill="#928dce"/>
+<rect x="630" y="170" width="150" height="12" fill="#928dce"/>
 <line x1="120" y1="195" x2="890" y2="195" stroke="#94a3b8" stroke-width="1" marker-end="url(#arrHE1)"/>
-<text x="500" y="210" font-size="9" fill="#94a3b8" text-anchor="middle">longer</text>
+<text x="500" y="210" font-size="9" fill="#949ca8" text-anchor="middle">longer</text>
 
 <!-- flexibility bar: same left-to-right growth direction as latency, since both increase together in this spectrum -->
-<text x="450" y="245" font-size="11" font-weight="500" fill="#94a3b8" text-anchor="middle">flexibility</text>
-<rect x="120" y="255" width="30" height="12" fill="#0ea5e9"/>
-<rect x="400" y="255" width="150" height="12" fill="#0ea5e9"/>
-<rect x="630" y="255" width="150" height="12" fill="#0ea5e9"/>
+<text x="450" y="245" font-size="11" font-weight="500" fill="#949ca8" text-anchor="middle">flexibility</text>
+<rect x="120" y="255" width="30" height="12" fill="#8db7ce"/>
+<rect x="400" y="255" width="150" height="12" fill="#8db7ce"/>
+<rect x="630" y="255" width="150" height="12" fill="#8db7ce"/>
 <line x1="120" y1="280" x2="890" y2="280" stroke="#94a3b8" stroke-width="1" marker-end="url(#arrHE1)"/>
-<text x="500" y="295" font-size="9" fill="#94a3b8" text-anchor="middle">more -- both latency and flexibility increase together, left to right</text>
+<text x="500" y="295" font-size="9" fill="#949ca8" text-anchor="middle">more -- both latency and flexibility increase together, left to right</text>
 </svg>

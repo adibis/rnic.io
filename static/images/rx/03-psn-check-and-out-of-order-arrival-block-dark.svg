@@ -7,43 +7,43 @@
 text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-weight: 400; stroke: currentColor; stroke-width: 0.35px; paint-order: stroke fill; }
 </style></defs>
 <defs>
-  <marker id="arrPC1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6366f1"/></marker>
-  <marker id="arrPC2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#fbbf24"/></marker>
-  <marker id="arrPC3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#ef4444"/></marker>
+  <marker id="arrPC1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#928dce"/></marker>
+  <marker id="arrPC2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#cea98d"/></marker>
+  <marker id="arrPC3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#ce8d8d"/></marker>
 </defs>
 
-<text x="440" y="20" font-size="14" font-weight="500" fill="#e2e8f0" text-anchor="middle">PSN Check: One Comparison, Three Outcomes</text>
+<text x="440" y="20" font-size="14" font-weight="500" fill="#ccd0d7" text-anchor="middle">PSN Check: One Comparison, Three Outcomes</text>
 
-<rect x="330" y="55" width="220" height="50" rx="6" fill="#312e81" stroke="#6366f1" stroke-width="1.5"/>
-<text x="440" y="76" font-size="10" font-weight="500" fill="#a5b4fc" text-anchor="middle">arriving PSN vs.</text>
-<text x="440" y="90" font-size="10" font-weight="500" fill="#a5b4fc" text-anchor="middle">QP's next-expected PSN</text>
+<rect x="330" y="55" width="220" height="50" rx="6" fill="#272f49" stroke="#928dce" stroke-width="1.5"/>
+<text x="440" y="76" font-size="10" font-weight="500" fill="#8f8dce" text-anchor="middle">arriving PSN vs.</text>
+<text x="440" y="90" font-size="10" font-weight="500" fill="#8f8dce" text-anchor="middle">QP's next-expected PSN</text>
 
-<line x1="440" y1="105" x2="440" y2="143" stroke="#6366f1" stroke-width="1.5" marker-end="url(#arrPC1)"/>
-<text x="460" y="128" font-size="9" font-weight="500" fill="#6366f1" text-anchor="start">matches</text>
-<rect x="330" y="145" width="220" height="44" rx="6" fill="#78350f" stroke="#f59e0b" stroke-width="1.5"/>
-<text x="440" y="163" font-size="9" font-weight="500" fill="#fbbf24" text-anchor="middle">permission + bounds check</text>
-<text x="440" y="177" font-size="8" fill="#fbbf24" text-anchor="middle">(Part 2), then DMA handoff</text>
+<line x1="440" y1="105" x2="440" y2="143" stroke="#928dce" stroke-width="1.5" marker-end="url(#arrPC1)"/>
+<text x="460" y="128" font-size="9" font-weight="500" fill="#928dce" text-anchor="start">matches</text>
+<rect x="330" y="145" width="220" height="44" rx="6" fill="#494227" stroke="#ceb38d" stroke-width="1.5"/>
+<text x="440" y="163" font-size="9" font-weight="500" fill="#cea98d" text-anchor="middle">permission + bounds check</text>
+<text x="440" y="177" font-size="8" fill="#cea98d" text-anchor="middle">(Part 2), then DMA handoff</text>
 
-<line x1="330" y1="80" x2="140" y2="80" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#arrPC2)"/>
-<text x="235" y="72" font-size="9" font-weight="500" fill="#fbbf24" text-anchor="middle">lower than expected</text>
-<rect x="20" y="55" width="120" height="50" rx="6" fill="#7f1d1d" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="4,3"/>
-<text x="80" y="75" font-size="9" font-weight="500" fill="#fbbf24" text-anchor="middle">re-acknowledge</text>
-<text x="80" y="89" font-size="8" fill="#fbbf24" text-anchor="middle">same PSN again</text>
+<line x1="330" y1="80" x2="140" y2="80" stroke="#cea98d" stroke-width="1.5" marker-end="url(#arrPC2)"/>
+<text x="235" y="72" font-size="9" font-weight="500" fill="#cea98d" text-anchor="middle">lower than expected</text>
+<rect x="20" y="55" width="120" height="50" rx="6" fill="#492727" stroke="#cea98d" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="80" y="75" font-size="9" font-weight="500" fill="#cea98d" text-anchor="middle">re-acknowledge</text>
+<text x="80" y="89" font-size="8" fill="#cea98d" text-anchor="middle">same PSN again</text>
 
-<path d="M80,105 C 80,160 210,195 328,183" fill="none" stroke="#fbbf24" stroke-width="1.3" stroke-dasharray="4,3" marker-end="url(#arrPC2)"/>
-<text x="150" y="203" font-size="8" fill="#fbbf24" text-anchor="middle">never touches the Receive Queue</text>
+<path d="M80,105 C 80,160 210,195 328,183" fill="none" stroke="#cea98d" stroke-width="1.3" stroke-dasharray="4,3" marker-end="url(#arrPC2)"/>
+<text x="150" y="203" font-size="8" fill="#cea98d" text-anchor="middle">never touches the Receive Queue</text>
 
-<line x1="550" y1="80" x2="708" y2="80" stroke="#ef4444" stroke-width="1.5" marker-end="url(#arrPC3)"/>
-<text x="630" y="72" font-size="9" font-weight="500" fill="#ef4444" text-anchor="middle">higher than expected</text>
-<rect x="710" y="55" width="150" height="60" rx="6" fill="#7f1d1d" stroke="#ef4444" stroke-width="1.5"/>
-<text x="785" y="75" font-size="9" font-weight="500" fill="#ef4444" text-anchor="middle">reject + signal</text>
-<text x="785" y="89" font-size="8" fill="#ef4444" text-anchor="middle">NAK names the PSN</text>
-<text x="785" y="101" font-size="8" fill="#ef4444" text-anchor="middle">to resume from</text>
+<line x1="550" y1="80" x2="708" y2="80" stroke="#ce8d8d" stroke-width="1.5" marker-end="url(#arrPC3)"/>
+<text x="630" y="72" font-size="9" font-weight="500" fill="#ce8d8d" text-anchor="middle">higher than expected</text>
+<rect x="710" y="55" width="150" height="60" rx="6" fill="#492727" stroke="#ce8d8d" stroke-width="1.5"/>
+<text x="785" y="75" font-size="9" font-weight="500" fill="#ce8d8d" text-anchor="middle">reject + signal</text>
+<text x="785" y="89" font-size="8" fill="#ce8d8d" text-anchor="middle">NAK names the PSN</text>
+<text x="785" y="101" font-size="8" fill="#ce8d8d" text-anchor="middle">to resume from</text>
 
-<line x1="440" y1="189" x2="440" y2="227" stroke="#6366f1" stroke-width="1.5" marker-end="url(#arrPC1)"/>
-<rect x="340" y="229" width="200" height="38" rx="6" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
-<text x="440" y="252" font-size="10" font-weight="500" fill="#94a3b8" text-anchor="middle">DMA Engine (Part 8)</text>
+<line x1="440" y1="189" x2="440" y2="227" stroke="#928dce" stroke-width="1.5" marker-end="url(#arrPC1)"/>
+<rect x="340" y="229" width="200" height="38" rx="6" fill="#34383d" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="440" y="252" font-size="10" font-weight="500" fill="#949ca8" text-anchor="middle">DMA Engine (Part 8)</text>
 
-<text x="440" y="310" font-size="8.5" fill="#94a3b8" text-anchor="middle">Only the matching path ever reaches memory. A duplicate re-confirms what the sender already believes;</text>
-<text x="440" y="323" font-size="8.5" fill="#94a3b8" text-anchor="middle">a gap is rejected outright rather than buffered -- this book's own reasoned answer to why, not a documented fact.</text>
+<text x="440" y="310" font-size="8.5" fill="#949ca8" text-anchor="middle">Only the matching path ever reaches memory. A duplicate re-confirms what the sender already believes;</text>
+<text x="440" y="323" font-size="8.5" fill="#949ca8" text-anchor="middle">a gap is rejected outright rather than buffered -- this book's own reasoned answer to why, not a documented fact.</text>
 </svg>

@@ -8,36 +8,36 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 </style></defs>
 <defs>
   <marker id="arrSQ2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/></marker>
-  <marker id="arrSQ3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6366f1"/></marker>
+  <marker id="arrSQ3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#928dce"/></marker>
 </defs>
-<text x="450" y="24" font-size="15" font-weight="500" fill="#e2e8f0" text-anchor="middle">SRQ-associated QP: one more signal before teardown</text>
+<text x="450" y="24" font-size="15" font-weight="500" fill="#ccd0d7" text-anchor="middle">SRQ-associated QP: one more signal before teardown</text>
 
-<rect x="60" y="60" width="140" height="60" rx="6" fill="#7f1d1d" stroke="#ef4444" stroke-width="1.5"/>
-<text x="130" y="85" font-size="12" font-weight="500" fill="#ef4444" text-anchor="middle">Faulted QP</text>
-<text x="130" y="102" font-size="10" fill="#ef4444" text-anchor="middle">state = ERROR</text>
+<rect x="60" y="60" width="140" height="60" rx="6" fill="#492727" stroke="#ce8d8d" stroke-width="1.5"/>
+<text x="130" y="85" font-size="12" font-weight="500" fill="#ce8d8d" text-anchor="middle">Faulted QP</text>
+<text x="130" y="102" font-size="10" fill="#ce8d8d" text-anchor="middle">state = ERROR</text>
 
-<rect x="260" y="50" width="160" height="90" rx="8" fill="#78350f" stroke="#f59e0b" stroke-width="1.5"/>
-<text x="340" y="72" font-size="12" font-weight="500" fill="#fbbf24" text-anchor="middle">Shared SRQ</text>
-<text x="340" y="98" font-size="9" fill="#fbbf24" text-anchor="middle">pulled from by 2 other,</text>
-<text x="340" y="112" font-size="9" fill="#fbbf24" text-anchor="middle">healthy QPs too</text>
+<rect x="260" y="50" width="160" height="90" rx="8" fill="#494227" stroke="#ceb38d" stroke-width="1.5"/>
+<text x="340" y="72" font-size="12" font-weight="500" fill="#cea98d" text-anchor="middle">Shared SRQ</text>
+<text x="340" y="98" font-size="9" fill="#cea98d" text-anchor="middle">pulled from by 2 other,</text>
+<text x="340" y="112" font-size="9" fill="#cea98d" text-anchor="middle">healthy QPs too</text>
 
-<rect x="60" y="150" width="90" height="40" rx="6" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
-<text x="105" y="174" font-size="10" fill="#94a3b8" text-anchor="middle">healthy QP</text>
-<rect x="170" y="150" width="90" height="40" rx="6" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
-<text x="215" y="174" font-size="10" fill="#94a3b8" text-anchor="middle">healthy QP</text>
+<rect x="60" y="150" width="90" height="40" rx="6" fill="#34383d" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="105" y="174" font-size="10" fill="#949ca8" text-anchor="middle">healthy QP</text>
+<rect x="170" y="150" width="90" height="40" rx="6" fill="#34383d" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="215" y="174" font-size="10" fill="#949ca8" text-anchor="middle">healthy QP</text>
 
-<line x1="200" y1="90" x2="258" y2="90" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrSQ2)"/>
-<text x="230" y="45" font-size="8" fill="#ef4444" text-anchor="middle">still draining pulled WQEs</text>
+<line x1="200" y1="90" x2="258" y2="90" stroke="#ce8d8d" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrSQ2)"/>
+<text x="230" y="45" font-size="8" fill="#ce8d8d" text-anchor="middle">still draining pulled WQEs</text>
 
 <line x1="105" y1="150" x2="290" y2="140" stroke="#94a3b8" stroke-width="1" marker-end="url(#arrSQ2)"/>
 <line x1="215" y1="150" x2="320" y2="140" stroke="#94a3b8" stroke-width="1" marker-end="url(#arrSQ2)"/>
 
-<line x1="130" y1="120" x2="130" y2="230" stroke="#6366f1" stroke-width="1.5" marker-end="url(#arrSQ3)"/>
-<text x="200" y="215" font-size="9" fill="#6366f1" text-anchor="middle">last-SRQ-WQE-consumed event</text>
+<line x1="130" y1="120" x2="130" y2="230" stroke="#928dce" stroke-width="1.5" marker-end="url(#arrSQ3)"/>
+<text x="200" y="215" font-size="9" fill="#928dce" text-anchor="middle">last-SRQ-WQE-consumed event</text>
 
-<rect x="60" y="240" width="180" height="40" rx="6" fill="#312e81" stroke="#6366f1" stroke-width="1.5"/>
-<text x="150" y="265" font-size="11" font-weight="500" fill="#a5b4fc" text-anchor="middle">safe to destroy</text>
+<rect x="60" y="240" width="180" height="40" rx="6" fill="#272f49" stroke="#928dce" stroke-width="1.5"/>
+<text x="150" y="265" font-size="11" font-weight="500" fill="#8f8dce" text-anchor="middle">safe to destroy</text>
 
-<text x="500" y="200" font-size="10" fill="#94a3b8" text-anchor="middle">the SRQ itself, and its other QPs,</text>
-<text x="500" y="215" font-size="10" fill="#94a3b8" text-anchor="middle">are untouched throughout</text>
+<text x="500" y="200" font-size="10" fill="#949ca8" text-anchor="middle">the SRQ itself, and its other QPs,</text>
+<text x="500" y="215" font-size="10" fill="#949ca8" text-anchor="middle">are untouched throughout</text>
 </svg>

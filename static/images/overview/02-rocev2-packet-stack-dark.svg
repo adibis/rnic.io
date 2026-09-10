@@ -7,47 +7,47 @@
 text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-weight: 400; stroke: currentColor; stroke-width: 0.35px; paint-order: stroke fill; }
 </style></defs>
 <defs>
-  <marker id="arrPS1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/></marker>
+  <marker id="arrPS1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#949ca8"/></marker>
 </defs>
 
-<text x="450" y="24" font-size="15" font-weight="500" fill="#e2e8f0" text-anchor="middle">A RoCEv2 Packet, Outside In</text>
+<text x="450" y="24" font-size="15" font-weight="500" fill="#ccd0d7" text-anchor="middle">A RoCEv2 Packet, Outside In</text>
 
-<rect x="20" y="60" width="90" height="50" fill="#1e293b" stroke="#94a3b8" stroke-width="1.3"/>
-<text x="65" y="88" font-size="9" fill="#94a3b8" text-anchor="middle">Ethernet</text>
+<rect x="20" y="60" width="90" height="50" fill="#34383d" stroke="#94a3b8" stroke-width="1.3"/>
+<text x="65" y="88" font-size="9" fill="#949ca8" text-anchor="middle">Ethernet</text>
 
-<rect x="110" y="60" width="90" height="50" fill="#1e293b" stroke="#94a3b8" stroke-width="1.3"/>
-<text x="155" y="88" font-size="9" fill="#94a3b8" text-anchor="middle">IPv4/IPv6</text>
+<rect x="110" y="60" width="90" height="50" fill="#34383d" stroke="#94a3b8" stroke-width="1.3"/>
+<text x="155" y="88" font-size="9" fill="#949ca8" text-anchor="middle">IPv4/IPv6</text>
 
-<rect x="200" y="60" width="90" height="50" fill="#1e293b" stroke="#94a3b8" stroke-width="1.3"/>
-<text x="245" y="82" font-size="9" fill="#94a3b8" text-anchor="middle">UDP</text>
-<text x="245" y="95" font-size="7" fill="#94a3b8" text-anchor="middle">dst 4791</text>
+<rect x="200" y="60" width="90" height="50" fill="#34383d" stroke="#94a3b8" stroke-width="1.3"/>
+<text x="245" y="82" font-size="9" fill="#949ca8" text-anchor="middle">UDP</text>
+<text x="245" y="95" font-size="7" fill="#949ca8" text-anchor="middle">dst 4791</text>
 
-<rect x="290" y="55" width="100" height="60" fill="#312e81" stroke="#6366f1" stroke-width="2"/>
-<text x="340" y="80" font-size="9" font-weight="500" fill="#a5b4fc" text-anchor="middle">BTH</text>
-<text x="340" y="93" font-size="7" fill="#6366f1" text-anchor="middle">12 bytes, every packet</text>
+<rect x="290" y="55" width="100" height="60" fill="#272f49" stroke="#928dce" stroke-width="2"/>
+<text x="340" y="80" font-size="9" font-weight="500" fill="#8f8dce" text-anchor="middle">BTH</text>
+<text x="340" y="93" font-size="7" fill="#928dce" text-anchor="middle">12 bytes, every packet</text>
 
-<rect x="390" y="55" width="120" height="60" fill="#312e81" stroke="#6366f1" stroke-width="1.4" stroke-dasharray="5,3"/>
-<text x="450" y="78" font-size="9" font-weight="500" fill="#a5b4fc" text-anchor="middle">extended header</text>
-<text x="450" y="91" font-size="6.5" fill="#6366f1" text-anchor="middle">RETH/AETH/IMMDT/IETH/</text>
-<text x="450" y="101" font-size="6.5" fill="#6366f1" text-anchor="middle">ATMETH -- opcode-dependent</text>
+<rect x="390" y="55" width="120" height="60" fill="#272f49" stroke="#928dce" stroke-width="1.4" stroke-dasharray="5,3"/>
+<text x="450" y="78" font-size="9" font-weight="500" fill="#8f8dce" text-anchor="middle">extended header</text>
+<text x="450" y="91" font-size="6.5" fill="#928dce" text-anchor="middle">RETH/AETH/IMMDT/IETH/</text>
+<text x="450" y="101" font-size="6.5" fill="#928dce" text-anchor="middle">ATMETH -- opcode-dependent</text>
 
-<rect x="510" y="60" width="180" height="50" fill="#78350f" stroke="#f59e0b" stroke-width="1.4"/>
-<text x="600" y="88" font-size="9" font-weight="500" fill="#fbbf24" text-anchor="middle">Payload</text>
+<rect x="510" y="60" width="180" height="50" fill="#494227" stroke="#ceb38d" stroke-width="1.4"/>
+<text x="600" y="88" font-size="9" font-weight="500" fill="#cea98d" text-anchor="middle">Payload</text>
 
-<rect x="690" y="60" width="70" height="50" fill="#7f1d1d" stroke="#ef4444" stroke-width="1.4"/>
-<text x="725" y="82" font-size="9" font-weight="500" fill="#ef4444" text-anchor="middle">ICRC</text>
-<text x="725" y="95" font-size="7" fill="#ef4444" text-anchor="middle">4 bytes</text>
+<rect x="690" y="60" width="70" height="50" fill="#492727" stroke="#ce8d8d" stroke-width="1.4"/>
+<text x="725" y="82" font-size="9" font-weight="500" fill="#ce8d8d" text-anchor="middle">ICRC</text>
+<text x="725" y="95" font-size="7" fill="#ce8d8d" text-anchor="middle">4 bytes</text>
 
-<rect x="760" y="60" width="70" height="50" fill="#1e293b" stroke="#94a3b8" stroke-width="1.3"/>
-<text x="795" y="88" font-size="9" fill="#94a3b8" text-anchor="middle">FCS</text>
+<rect x="760" y="60" width="70" height="50" fill="#34383d" stroke="#94a3b8" stroke-width="1.3"/>
+<text x="795" y="88" font-size="9" fill="#949ca8" text-anchor="middle">FCS</text>
 
 <line x1="20" y1="130" x2="290" y2="130" stroke="#94a3b8" stroke-width="1.3" marker-end="url(#arrPS1)"/>
-<text x="155" y="145" font-size="8" fill="#94a3b8" text-anchor="middle">looks like ordinary UDP/IP to anything routing it</text>
+<text x="155" y="145" font-size="8" fill="#949ca8" text-anchor="middle">looks like ordinary UDP/IP to anything routing it</text>
 
-<line x1="290" y1="130" x2="830" y2="130" stroke="#6366f1" stroke-width="1.3" marker-end="url(#arrPS1)"/>
-<text x="560" y="145" font-size="8" fill="#6366f1" text-anchor="middle">the actual RDMA transport, unchanged since RoCEv1</text>
+<line x1="290" y1="130" x2="830" y2="130" stroke="#928dce" stroke-width="1.3" marker-end="url(#arrPS1)"/>
+<text x="560" y="145" font-size="8" fill="#928dce" text-anchor="middle">the actual RDMA transport, unchanged since RoCEv1</text>
 
-<rect x="60" y="175" width="740" height="46" rx="6" fill="#1e293b" stroke="#94a3b8" stroke-width="1.3"/>
-<text x="430" y="193" font-size="8.5" fill="#94a3b8" text-anchor="middle">source port carries no RDMA meaning -- flow entropy for ECMP/LAG hashing only</text>
-<text x="430" y="208" font-size="8.5" fill="#94a3b8" text-anchor="middle">destination port is fixed at 4791 for every RoCEv2 packet, regardless of operation</text>
+<rect x="60" y="175" width="740" height="46" rx="6" fill="#34383d" stroke="#94a3b8" stroke-width="1.3"/>
+<text x="430" y="193" font-size="8.5" fill="#949ca8" text-anchor="middle">source port carries no RDMA meaning -- flow entropy for ECMP/LAG hashing only</text>
+<text x="430" y="208" font-size="8.5" fill="#949ca8" text-anchor="middle">destination port is fixed at 4791 for every RoCEv2 packet, regardless of operation</text>
 </svg>

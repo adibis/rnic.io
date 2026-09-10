@@ -7,67 +7,67 @@
 text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-weight: 400; stroke: currentColor; stroke-width: 0.35px; paint-order: stroke fill; }
 </style></defs>
 <defs>
-  <marker id="arrKE1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/></marker>
-  <marker id="arrKE2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#ef4444"/></marker>
+  <marker id="arrKE1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#949ca8"/></marker>
+  <marker id="arrKE2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#ce8d8d"/></marker>
 </defs>
 
-<text x="525" y="20" font-size="14" font-weight="500" fill="#e2e8f0" text-anchor="middle">Key Cache Eviction: two independent mechanisms, two different blast radii</text>
+<text x="525" y="20" font-size="14" font-weight="500" fill="#ccd0d7" text-anchor="middle">Key Cache Eviction: two independent mechanisms, two different blast radii</text>
 
-<line x1="530" y1="36" x2="530" y2="235" stroke="#64748b" stroke-width="1"/>
+<line x1="530" y1="36" x2="530" y2="235" stroke="#606976" stroke-width="1"/>
 
-<text x="260" y="42" font-size="11" font-weight="500" fill="#e2e8f0" text-anchor="middle">Capacity pressure</text>
-<text x="800" y="42" font-size="11" font-weight="500" fill="#e2e8f0" text-anchor="middle">Deregistration</text>
+<text x="260" y="42" font-size="11" font-weight="500" fill="#ccd0d7" text-anchor="middle">Capacity pressure</text>
+<text x="800" y="42" font-size="11" font-weight="500" fill="#ccd0d7" text-anchor="middle">Deregistration</text>
 
 <!-- LEFT: capacity pressure -->
-<text x="70" y="55" font-size="8" fill="#94a3b8" text-anchor="middle">new translation</text>
-<text x="70" y="67" font-size="8" fill="#94a3b8" text-anchor="middle">needed, cache full</text>
-<line x1="120" y1="61" x2="176" y2="80" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrKE1)"/>
+<text x="70" y="55" font-size="8" fill="#949ca8" text-anchor="middle">new translation</text>
+<text x="70" y="67" font-size="8" fill="#949ca8" text-anchor="middle">needed, cache full</text>
+<line x1="120" y1="61" x2="176" y2="80" stroke="#949ca8" stroke-width="1.5" marker-end="url(#arrKE1)"/>
 
-<rect x="180" y="55" width="220" height="60" rx="6" fill="#78350f" stroke="#f59e0b" stroke-width="1.5"/>
-<rect x="190" y="65" width="48" height="34" fill="#1e293b" stroke="#f59e0b"/>
-<rect x="242" y="65" width="48" height="34" fill="#1e293b" stroke="#f59e0b"/>
-<rect x="294" y="65" width="48" height="34" fill="#7f1d1d" stroke="#ef4444" stroke-width="2"/>
-<rect x="346" y="65" width="48" height="34" fill="#1e293b" stroke="#f59e0b"/>
-<text x="290" y="128" font-size="7" fill="#fbbf24" text-anchor="middle">all slots occupied</text>
+<rect x="180" y="55" width="220" height="60" rx="6" fill="#494227" stroke="#ceb38d" stroke-width="1.5"/>
+<rect x="190" y="65" width="48" height="34" fill="#2b2d31" stroke="#ceb38d"/>
+<rect x="242" y="65" width="48" height="34" fill="#2b2d31" stroke="#ceb38d"/>
+<rect x="294" y="65" width="48" height="34" fill="#492727" stroke="#ce8d8d" stroke-width="2"/>
+<rect x="346" y="65" width="48" height="34" fill="#2b2d31" stroke="#ceb38d"/>
+<text x="290" y="128" font-size="7" fill="#cea98d" text-anchor="middle">all slots occupied</text>
 
-<rect x="415" y="75" width="80" height="50" rx="6" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
-<text x="455" y="96" font-size="9" font-weight="500" fill="#94a3b8" text-anchor="middle">Eviction</text>
-<text x="455" y="110" font-size="9" font-weight="500" fill="#94a3b8" text-anchor="middle">Policy</text>
-<line x1="400" y1="90" x2="413" y2="90" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrKE1)"/>
+<rect x="415" y="75" width="80" height="50" rx="6" fill="#34383d" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="455" y="96" font-size="9" font-weight="500" fill="#949ca8" text-anchor="middle">Eviction</text>
+<text x="455" y="110" font-size="9" font-weight="500" fill="#949ca8" text-anchor="middle">Policy</text>
+<line x1="400" y1="90" x2="413" y2="90" stroke="#949ca8" stroke-width="1.5" marker-end="url(#arrKE1)"/>
 
-<line x1="425" y1="160" x2="425" y2="127" stroke="#94a3b8" stroke-width="1.2" marker-end="url(#arrKE1)"/>
-<text x="425" y="172" font-size="7" fill="#94a3b8" text-anchor="middle">recency</text>
-<line x1="455" y1="172" x2="455" y2="127" stroke="#94a3b8" stroke-width="1.2" marker-end="url(#arrKE1)"/>
-<text x="455" y="184" font-size="7" fill="#94a3b8" text-anchor="middle">priority</text>
+<line x1="425" y1="160" x2="425" y2="127" stroke="#949ca8" stroke-width="1.2" marker-end="url(#arrKE1)"/>
+<text x="425" y="172" font-size="7" fill="#949ca8" text-anchor="middle">recency</text>
+<line x1="455" y1="172" x2="455" y2="127" stroke="#949ca8" stroke-width="1.2" marker-end="url(#arrKE1)"/>
+<text x="455" y="184" font-size="7" fill="#949ca8" text-anchor="middle">priority</text>
 <line x1="485" y1="184" x2="485" y2="127" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="3,2" marker-end="url(#arrKE1)"/>
 <text x="485" y="196" font-size="6.5" fill="#94a3b8" text-anchor="middle">error state</text>
 <text x="485" y="205" font-size="6.5" fill="#94a3b8" text-anchor="middle">(Part 5)</text>
 
-<line x1="415" y1="100" x2="320" y2="98" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrKE2)"/>
+<line x1="415" y1="100" x2="320" y2="98" stroke="#ce8d8d" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrKE2)"/>
 
-<line x1="318" y1="99" x2="318" y2="166" stroke="#ef4444" stroke-width="1.5" marker-end="url(#arrKE2)"/>
-<text x="250" y="150" font-size="7" fill="#ef4444" text-anchor="middle">written back if dirty, then freed</text>
+<line x1="318" y1="99" x2="318" y2="166" stroke="#ce8d8d" stroke-width="1.5" marker-end="url(#arrKE2)"/>
+<text x="250" y="150" font-size="7" fill="#ce8d8d" text-anchor="middle">written back if dirty, then freed</text>
 
-<rect x="230" y="168" width="180" height="55" rx="6" fill="#78350f" stroke="#f59e0b" stroke-width="1.5"/>
-<text x="320" y="190" font-size="11" font-weight="500" fill="#fbbf24" text-anchor="middle">MR/Key Table</text>
-<text x="320" y="205" font-size="9" fill="#fbbf24" text-anchor="middle">DRAM/HBM</text>
+<rect x="230" y="168" width="180" height="55" rx="6" fill="#494227" stroke="#ceb38d" stroke-width="1.5"/>
+<text x="320" y="190" font-size="11" font-weight="500" fill="#cea98d" text-anchor="middle">MR/Key Table</text>
+<text x="320" y="205" font-size="9" fill="#cea98d" text-anchor="middle">DRAM/HBM</text>
 
 <!-- RIGHT: deregistration -->
-<rect x="580" y="60" width="200" height="55" rx="6" fill="#0c4a6e" stroke="#0ea5e9" stroke-width="1.5"/>
-<text x="680" y="92" font-size="11" font-weight="500" fill="#0ea5e9" text-anchor="middle">deregister()</text>
+<rect x="580" y="60" width="200" height="55" rx="6" fill="#273b49" stroke="#8db7ce" stroke-width="1.5"/>
+<text x="680" y="92" font-size="11" font-weight="500" fill="#8db7ce" text-anchor="middle">deregister()</text>
 
-<line x1="780" y1="88" x2="806" y2="90" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrKE1)"/>
-<text x="810" y="76" font-size="7" fill="#94a3b8" text-anchor="middle">deregister lkey/rkey N</text>
+<line x1="780" y1="88" x2="806" y2="90" stroke="#949ca8" stroke-width="1.5" marker-end="url(#arrKE1)"/>
+<text x="810" y="76" font-size="7" fill="#949ca8" text-anchor="middle">deregister lkey/rkey N</text>
 
-<rect x="820" y="55" width="200" height="60" rx="6" fill="#78350f" stroke="#f59e0b" stroke-width="1.5"/>
-<rect x="830" y="65" width="40" height="34" fill="#1e293b" stroke="#f59e0b"/>
-<rect x="874" y="65" width="40" height="34" fill="#1e293b" stroke="#f59e0b"/>
-<rect x="918" y="65" width="40" height="34" fill="#1e293b" stroke="#f59e0b"/>
-<rect x="962" y="65" width="40" height="34" fill="#1e293b" stroke="#f59e0b"/>
+<rect x="820" y="55" width="200" height="60" rx="6" fill="#494227" stroke="#ceb38d" stroke-width="1.5"/>
+<rect x="830" y="65" width="40" height="34" fill="#2b2d31" stroke="#ceb38d"/>
+<rect x="874" y="65" width="40" height="34" fill="#2b2d31" stroke="#ceb38d"/>
+<rect x="918" y="65" width="40" height="34" fill="#2b2d31" stroke="#ceb38d"/>
+<rect x="962" y="65" width="40" height="34" fill="#2b2d31" stroke="#ceb38d"/>
 
-<rect x="810" y="45" width="220" height="80" rx="8" fill="none" stroke="#ef4444" stroke-width="3"/>
+<rect x="810" y="45" width="220" height="80" rx="8" fill="none" stroke="#ce8d8d" stroke-width="3"/>
 
-<text x="920" y="142" font-size="9" font-weight="500" fill="#ef4444" text-anchor="middle">entire cache invalidated, not just entry N</text>
-<text x="920" y="160" font-size="7" fill="#94a3b8" text-anchor="middle">Kong et al.: confirmed victim-throughput collapse</text>
-<text x="920" y="171" font-size="7" fill="#94a3b8" text-anchor="middle">once deregistration starts (ConnectX-5, tested config)</text>
+<text x="920" y="142" font-size="9" font-weight="500" fill="#ce8d8d" text-anchor="middle">entire cache invalidated, not just entry N</text>
+<text x="920" y="160" font-size="7" fill="#949ca8" text-anchor="middle">Kong et al.: confirmed victim-throughput collapse</text>
+<text x="920" y="171" font-size="7" fill="#949ca8" text-anchor="middle">once deregistration starts (ConnectX-5, tested config)</text>
 </svg>

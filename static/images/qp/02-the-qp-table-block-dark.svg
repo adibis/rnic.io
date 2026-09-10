@@ -7,70 +7,70 @@
 text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-weight: 400; stroke: currentColor; stroke-width: 0.35px; paint-order: stroke fill; }
 </style></defs>
 <defs>
-  <marker id="arrQT1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6366f1"/></marker>
+  <marker id="arrQT1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#928dce"/></marker>
   <marker id="arrQT2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/></marker>
 </defs>
 
-<text x="450" y="28" font-size="16" font-weight="500" fill="#e2e8f0" text-anchor="middle">The QP Table: direct lookup, and the two shapes it can take</text>
+<text x="450" y="28" font-size="16" font-weight="500" fill="#ccd0d7" text-anchor="middle">The QP Table: direct lookup, and the two shapes it can take</text>
 
 <!-- Top panel: the table + lookup -->
-<rect x="60" y="50" width="220" height="200" rx="8" fill="#78350f" stroke="#f59e0b" stroke-width="1.5"/>
-<text x="170" y="70" font-size="12" font-weight="500" fill="#fbbf24" text-anchor="middle">QP Table (DRAM/HBM)</text>
-<g font-size="11" fill="#fbbf24">
-  <rect x="80" y="80" width="180" height="26" fill="#1e293b" stroke="#f59e0b"/>
+<rect x="60" y="50" width="220" height="200" rx="8" fill="#494227" stroke="#ceb38d" stroke-width="1.5"/>
+<text x="170" y="70" font-size="12" font-weight="500" fill="#cea98d" text-anchor="middle">QP Table (DRAM/HBM)</text>
+<g font-size="11" fill="#cea98d">
+  <rect x="80" y="80" width="180" height="26" fill="#2b2d31" stroke="#ceb38d"/>
   <text x="90" y="97">0x0001  QPC</text>
-  <rect x="80" y="106" width="180" height="26" fill="#1e293b" stroke="#f59e0b"/>
+  <rect x="80" y="106" width="180" height="26" fill="#2b2d31" stroke="#ceb38d"/>
   <text x="90" y="123">0x0002  QPC</text>
-  <rect x="80" y="132" width="180" height="26" fill="#1e293b" stroke="#f59e0b"/>
+  <rect x="80" y="132" width="180" height="26" fill="#2b2d31" stroke="#ceb38d"/>
   <text x="90" y="149">...</text>
-  <rect x="80" y="158" width="180" height="26" fill="#1e293b" stroke="#f59e0b" stroke-width="2"/>
+  <rect x="80" y="158" width="180" height="26" fill="#2b2d31" stroke="#ceb38d" stroke-width="2"/>
   <text x="90" y="175" font-weight="500">0x03F1  QPC</text>
-  <rect x="80" y="184" width="180" height="26" fill="#1e293b" stroke="#f59e0b"/>
+  <rect x="80" y="184" width="180" height="26" fill="#2b2d31" stroke="#ceb38d"/>
   <text x="90" y="201">...</text>
 </g>
-<circle cx="170" cy="171" r="14" fill="none" stroke="#ef4444" stroke-width="2"/>
+<circle cx="170" cy="171" r="14" fill="none" stroke="#ce8d8d" stroke-width="2"/>
 
-<rect x="40" y="40" width="260" height="30" rx="6" fill="#0c4a6e" stroke="#0ea5e9" stroke-dasharray="4,3" opacity="0"/>
+<rect x="40" y="40" width="260" height="30" rx="6" fill="#273b49" stroke="#8db7ce" stroke-dasharray="4,3" opacity="0"/>
 
-<line x1="330" y1="60" x2="290" y2="90" stroke="#6366f1" stroke-width="1.5" marker-end="url(#arrQT1)"/>
-<text x="420" y="45" font-size="11" fill="#94a3b8">QP number (from BTH dest QP</text>
-<text x="420" y="60" font-size="11" fill="#94a3b8">field on RX, or QP being</text>
-<text x="420" y="75" font-size="11" fill="#94a3b8">scheduled on TX)</text>
-<text x="420" y="95" font-size="11" fill="#94a3b8" font-style="italic">direct or shallow multi-level</text>
-<text x="420" y="110" font-size="11" fill="#94a3b8" font-style="italic">index -- not a search</text>
+<line x1="330" y1="60" x2="290" y2="90" stroke="#928dce" stroke-width="1.5" marker-end="url(#arrQT1)"/>
+<text x="420" y="45" font-size="11" fill="#949ca8">QP number (from BTH dest QP</text>
+<text x="420" y="60" font-size="11" fill="#949ca8">field on RX, or QP being</text>
+<text x="420" y="75" font-size="11" fill="#949ca8">scheduled on TX)</text>
+<text x="420" y="95" font-size="11" fill="#949ca8" font-style="italic">direct or shallow multi-level</text>
+<text x="420" y="110" font-size="11" fill="#949ca8" font-style="italic">index -- not a search</text>
 
 <!-- Key Cache overlay -->
-<rect x="45" y="35" width="230" height="45" rx="6" fill="#312e81" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="5,3"/>
-<text x="160" y="62" font-size="11" font-weight="500" fill="#a5b4fc" text-anchor="middle">QP Cache (1.3) -- checked first</text>
-<line x1="330" y1="60" x2="278" y2="58" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="3,2" marker-end="url(#arrQT1)"/>
+<rect x="45" y="35" width="230" height="45" rx="6" fill="#272f49" stroke="#928dce" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="160" y="62" font-size="11" font-weight="500" fill="#8f8dce" text-anchor="middle">QP Cache (1.3) -- checked first</text>
+<line x1="330" y1="60" x2="278" y2="58" stroke="#928dce" stroke-width="1.5" stroke-dasharray="3,2" marker-end="url(#arrQT1)"/>
 
 <!-- Bottom inset: flat vs multi-level -->
-<line x1="60" y1="280" x2="840" y2="280" stroke="#64748b" stroke-width="1"/>
-<text x="450" y="302" font-size="14" font-weight="500" fill="#e2e8f0" text-anchor="middle">Two shapes for the same table</text>
+<line x1="60" y1="280" x2="840" y2="280" stroke="#606976" stroke-width="1"/>
+<text x="450" y="302" font-size="14" font-weight="500" fill="#ccd0d7" text-anchor="middle">Two shapes for the same table</text>
 
-<text x="230" y="325" font-size="12" font-weight="500" fill="#94a3b8" text-anchor="middle">Flat table</text>
-<rect x="80" y="335" width="300" height="80" rx="6" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
-<g fill="#475569" stroke="#94a3b8">
+<text x="230" y="325" font-size="12" font-weight="500" fill="#949ca8" text-anchor="middle">Flat table</text>
+<rect x="80" y="335" width="300" height="80" rx="6" fill="#34383d" stroke="#94a3b8" stroke-width="1.5"/>
+<g fill="#575f6b" stroke="#94a3b8">
   <rect x="90" y="345" width="60" height="60"/>
   <rect x="152" y="345" width="60" height="60"/>
   <rect x="214" y="345" width="60" height="60"/>
   <rect x="276" y="345" width="60" height="60"/>
   <rect x="338" y="345" width="30" height="60"/>
 </g>
-<text x="230" y="428" font-size="11" fill="#94a3b8" text-anchor="middle">every slot pre-allocated, whether occupied or not</text>
-<text x="230" y="443" font-size="11" fill="#94a3b8" text-anchor="middle">cheapest lookup, wasted memory on unused range</text>
+<text x="230" y="428" font-size="11" fill="#949ca8" text-anchor="middle">every slot pre-allocated, whether occupied or not</text>
+<text x="230" y="443" font-size="11" fill="#949ca8" text-anchor="middle">cheapest lookup, wasted memory on unused range</text>
 
-<text x="670" y="325" font-size="12" font-weight="500" fill="#94a3b8" text-anchor="middle">Shallow multi-level</text>
-<rect x="600" y="335" width="80" height="34" rx="6" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
-<text x="640" y="356" font-size="10" fill="#94a3b8" text-anchor="middle">top-level dir</text>
+<text x="670" y="325" font-size="12" font-weight="500" fill="#949ca8" text-anchor="middle">Shallow multi-level</text>
+<rect x="600" y="335" width="80" height="34" rx="6" fill="#34383d" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="640" y="356" font-size="10" fill="#949ca8" text-anchor="middle">top-level dir</text>
 <line x1="620" y1="369" x2="600" y2="400" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrQT2)"/>
 <line x1="660" y1="369" x2="700" y2="400" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrQT2)"/>
-<rect x="560" y="400" width="70" height="40" rx="4" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
-<text x="595" y="424" font-size="10" fill="#94a3b8" text-anchor="middle">page (used)</text>
-<rect x="665" y="400" width="70" height="40" rx="4" fill="#1e293b" stroke="#64748b" stroke-width="1" stroke-dasharray="3,2"/>
+<rect x="560" y="400" width="70" height="40" rx="4" fill="#34383d" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="595" y="424" font-size="10" fill="#949ca8" text-anchor="middle">page (used)</text>
+<rect x="665" y="400" width="70" height="40" rx="4" fill="#2b2d31" stroke="#606976" stroke-width="1" stroke-dasharray="3,2"/>
 <text x="700" y="424" font-size="10" fill="#94a3b8" text-anchor="middle">gap (unalloc.)</text>
-<rect x="750" y="400" width="70" height="40" rx="4" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
-<text x="785" y="424" font-size="10" fill="#94a3b8" text-anchor="middle">page (used)</text>
-<text x="670" y="458" font-size="11" fill="#94a3b8" text-anchor="middle">one extra pointer dereference (cache-backed),</text>
-<text x="670" y="472" font-size="11" fill="#94a3b8" text-anchor="middle">no memory spent on unused QP-number ranges</text>
+<rect x="750" y="400" width="70" height="40" rx="4" fill="#34383d" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="785" y="424" font-size="10" fill="#949ca8" text-anchor="middle">page (used)</text>
+<text x="670" y="458" font-size="11" fill="#949ca8" text-anchor="middle">one extra pointer dereference (cache-backed),</text>
+<text x="670" y="472" font-size="11" fill="#949ca8" text-anchor="middle">no memory spent on unused QP-number ranges</text>
 </svg>

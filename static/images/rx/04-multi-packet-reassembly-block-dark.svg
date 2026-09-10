@@ -7,42 +7,42 @@
 text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-weight: 400; stroke: currentColor; stroke-width: 0.35px; paint-order: stroke fill; }
 </style></defs>
 <defs>
-  <marker id="arrRA1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#fbbf24"/></marker>
+  <marker id="arrRA1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#cea98d"/></marker>
 </defs>
 
-<text x="440" y="20" font-size="14" font-weight="500" fill="#e2e8f0" text-anchor="middle">Multi-Packet Reassembly: One Open Context Per Queue Pair</text>
+<text x="440" y="20" font-size="14" font-weight="500" fill="#ccd0d7" text-anchor="middle">Multi-Packet Reassembly: One Open Context Per Queue Pair</text>
 
-<rect x="30" y="45" width="380" height="230" rx="8" fill="#78350f" stroke="#f59e0b" stroke-width="1.5"/>
-<text x="220" y="68" font-size="11" font-weight="500" fill="#fbbf24" text-anchor="middle">QP 17's context</text>
+<rect x="30" y="45" width="380" height="230" rx="8" fill="#494227" stroke="#ceb38d" stroke-width="1.5"/>
+<text x="220" y="68" font-size="11" font-weight="500" fill="#cea98d" text-anchor="middle">QP 17's context</text>
 
-<rect x="55" y="82" width="330" height="34" rx="5" fill="#1e293b" stroke="#f59e0b"/>
-<text x="220" y="103" font-size="9" fill="#94a3b8" text-anchor="middle">destination address -- seeded from RETH on FIRST</text>
+<rect x="55" y="82" width="330" height="34" rx="5" fill="#2b2d31" stroke="#ceb38d"/>
+<text x="220" y="103" font-size="9" fill="#949ca8" text-anchor="middle">destination address -- seeded from RETH on FIRST</text>
 
-<rect x="55" y="126" width="330" height="34" rx="5" fill="#1e293b" stroke="#f59e0b"/>
-<text x="220" y="147" font-size="9" fill="#94a3b8" text-anchor="middle">running byte offset -- advances by each packet's payload</text>
+<rect x="55" y="126" width="330" height="34" rx="5" fill="#2b2d31" stroke="#ceb38d"/>
+<text x="220" y="147" font-size="9" fill="#949ca8" text-anchor="middle">running byte offset -- advances by each packet's payload</text>
 
-<rect x="55" y="170" width="330" height="34" rx="5" fill="#1e293b" stroke="#f59e0b"/>
-<text x="220" y="191" font-size="9" fill="#94a3b8" text-anchor="middle">remaining length -- reaches zero exactly at LAST</text>
+<rect x="55" y="170" width="330" height="34" rx="5" fill="#2b2d31" stroke="#ceb38d"/>
+<text x="220" y="191" font-size="9" fill="#949ca8" text-anchor="middle">remaining length -- reaches zero exactly at LAST</text>
 
-<text x="220" y="230" font-size="8" fill="#fbbf24" text-anchor="middle">FIRST opens this context; MIDDLE advances it;</text>
-<text x="220" y="243" font-size="8" fill="#fbbf24" text-anchor="middle">LAST closes it when the counter hits zero</text>
+<text x="220" y="230" font-size="8" fill="#cea98d" text-anchor="middle">FIRST opens this context; MIDDLE advances it;</text>
+<text x="220" y="243" font-size="8" fill="#cea98d" text-anchor="middle">LAST closes it when the counter hits zero</text>
 <text x="220" y="260" font-size="8" fill="#94a3b8" text-anchor="middle">one message, three fields, bounded lifetime</text>
 
-<rect x="470" y="45" width="380" height="230" rx="8" fill="#78350f" stroke="#f59e0b" stroke-width="1.5"/>
-<text x="660" y="68" font-size="11" font-weight="500" fill="#fbbf24" text-anchor="middle">QP 44's context</text>
+<rect x="470" y="45" width="380" height="230" rx="8" fill="#494227" stroke="#ceb38d" stroke-width="1.5"/>
+<text x="660" y="68" font-size="11" font-weight="500" fill="#cea98d" text-anchor="middle">QP 44's context</text>
 
-<rect x="495" y="82" width="330" height="34" rx="5" fill="#1e293b" stroke="#f59e0b"/>
-<text x="660" y="103" font-size="9" fill="#94a3b8" text-anchor="middle">destination address -- seeded from RETH on FIRST</text>
+<rect x="495" y="82" width="330" height="34" rx="5" fill="#2b2d31" stroke="#ceb38d"/>
+<text x="660" y="103" font-size="9" fill="#949ca8" text-anchor="middle">destination address -- seeded from RETH on FIRST</text>
 
-<rect x="495" y="126" width="330" height="34" rx="5" fill="#1e293b" stroke="#f59e0b"/>
-<text x="660" y="147" font-size="9" fill="#94a3b8" text-anchor="middle">running byte offset -- advances by each packet's payload</text>
+<rect x="495" y="126" width="330" height="34" rx="5" fill="#2b2d31" stroke="#ceb38d"/>
+<text x="660" y="147" font-size="9" fill="#949ca8" text-anchor="middle">running byte offset -- advances by each packet's payload</text>
 
-<rect x="495" y="170" width="330" height="34" rx="5" fill="#1e293b" stroke="#f59e0b"/>
-<text x="660" y="191" font-size="9" fill="#94a3b8" text-anchor="middle">remaining length -- reaches zero exactly at LAST</text>
+<rect x="495" y="170" width="330" height="34" rx="5" fill="#2b2d31" stroke="#ceb38d"/>
+<text x="660" y="191" font-size="9" fill="#949ca8" text-anchor="middle">remaining length -- reaches zero exactly at LAST</text>
 
-<text x="660" y="230" font-size="8" fill="#fbbf24" text-anchor="middle">independent of QP 17's context in every field --</text>
-<text x="660" y="243" font-size="8" fill="#fbbf24" text-anchor="middle">no shared entry, no lookup, no working-set question</text>
+<text x="660" y="230" font-size="8" fill="#cea98d" text-anchor="middle">independent of QP 17's context in every field --</text>
+<text x="660" y="243" font-size="8" fill="#cea98d" text-anchor="middle">no shared entry, no lookup, no working-set question</text>
 
-<text x="440" y="298" font-size="9" fill="#94a3b8" text-anchor="middle">This is not a demand-driven cache and not a lookahead buffer -- it is bounded, per-QP state that exists</text>
-<text x="440" y="312" font-size="9" fill="#94a3b8" text-anchor="middle">only while one message is actually in flight, closed the instant LAST arrives.</text>
+<text x="440" y="298" font-size="9" fill="#949ca8" text-anchor="middle">This is not a demand-driven cache and not a lookahead buffer -- it is bounded, per-QP state that exists</text>
+<text x="440" y="312" font-size="9" fill="#949ca8" text-anchor="middle">only while one message is actually in flight, closed the instant LAST arrives.</text>
 </svg>

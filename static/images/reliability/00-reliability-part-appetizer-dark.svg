@@ -7,38 +7,38 @@
 text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-weight: 400; stroke: currentColor; stroke-width: 0.35px; paint-order: stroke fill; }
 </style></defs>
 <defs>
-  <marker id="arrAppz5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6366f1"/></marker>
+  <marker id="arrAppz5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#928dce"/></marker>
 </defs>
 
-<text x="510" y="26" font-size="16" font-weight="500" fill="#e2e8f0" text-anchor="middle">One sent packet, until it's safe to forget</text>
+<text x="510" y="26" font-size="16" font-weight="500" fill="#ccd0d7" text-anchor="middle">One sent packet, until it's safe to forget</text>
 <text x="510" y="44" font-size="11" fill="#94a3b8" text-anchor="middle">What reliability-owned state does after a packet leaves -- and which chapter covers each step</text>
 
 <!-- Main spine -->
 <g>
-  <rect x="370" y="60" width="280" height="46" rx="6" fill="#78350f" stroke="#f59e0b" stroke-width="1.5"/>
-  <text x="510" y="80" font-size="12" font-weight="500" fill="#fbbf24" text-anchor="middle">Sent: a copy is held, a timer is armed</text>
-  <text x="510" y="96" font-size="10" fill="#fbbf24" text-anchor="middle">Retry and Timeout State (5.1), The Replay Buffer (5.2)</text>
+  <rect x="370" y="60" width="280" height="46" rx="6" fill="#494227" stroke="#ceb38d" stroke-width="1.5"/>
+  <text x="510" y="80" font-size="12" font-weight="500" fill="#cea98d" text-anchor="middle">Sent: a copy is held, a timer is armed</text>
+  <text x="510" y="96" font-size="10" fill="#cea98d" text-anchor="middle">Retry and Timeout State (5.1), The Replay Buffer (5.2)</text>
 </g>
-<line x1="510" y1="106" x2="510" y2="130" stroke="#6366f1" stroke-width="1.5" marker-end="url(#arrAppz5)"/>
+<line x1="510" y1="106" x2="510" y2="130" stroke="#928dce" stroke-width="1.5" marker-end="url(#arrAppz5)"/>
 
 <g>
-  <rect x="370" y="130" width="280" height="46" rx="6" fill="#78350f" stroke="#f59e0b" stroke-width="1.5"/>
-  <text x="510" y="150" font-size="12" font-weight="500" fill="#fbbf24" text-anchor="middle">That held copy is a working set too</text>
-  <text x="510" y="166" font-size="10" fill="#fbbf24" text-anchor="middle">Replay Buffer Caching (5.3)</text>
+  <rect x="370" y="130" width="280" height="46" rx="6" fill="#494227" stroke="#ceb38d" stroke-width="1.5"/>
+  <text x="510" y="150" font-size="12" font-weight="500" fill="#cea98d" text-anchor="middle">That held copy is a working set too</text>
+  <text x="510" y="166" font-size="10" fill="#cea98d" text-anchor="middle">Replay Buffer Caching (5.3)</text>
 </g>
-<line x1="510" y1="176" x2="510" y2="200" stroke="#6366f1" stroke-width="1.5" marker-end="url(#arrAppz5)"/>
+<line x1="510" y1="176" x2="510" y2="200" stroke="#928dce" stroke-width="1.5" marker-end="url(#arrAppz5)"/>
 
 <g>
-  <rect x="370" y="200" width="280" height="46" rx="6" fill="#312e81" stroke="#6366f1" stroke-width="1.5"/>
-  <text x="510" y="220" font-size="12" font-weight="500" fill="#a5b4fc" text-anchor="middle">ACK arrives, or the timer expires first</text>
-  <text x="510" y="236" font-size="10" fill="#6366f1" text-anchor="middle">Retry and RNR Timeout State Machines (5.4)</text>
+  <rect x="370" y="200" width="280" height="46" rx="6" fill="#272f49" stroke="#928dce" stroke-width="1.5"/>
+  <text x="510" y="220" font-size="12" font-weight="500" fill="#8f8dce" text-anchor="middle">ACK arrives, or the timer expires first</text>
+  <text x="510" y="236" font-size="10" fill="#928dce" text-anchor="middle">Retry and RNR Timeout State Machines (5.4)</text>
 </g>
-<line x1="510" y1="246" x2="510" y2="270" stroke="#6366f1" stroke-width="1.5" marker-end="url(#arrAppz5)"/>
+<line x1="510" y1="246" x2="510" y2="270" stroke="#928dce" stroke-width="1.5" marker-end="url(#arrAppz5)"/>
 
 <g>
-  <rect x="370" y="270" width="280" height="46" rx="6" fill="#312e81" stroke="#6366f1" stroke-width="1.5"/>
-  <text x="510" y="290" font-size="12" font-weight="500" fill="#a5b4fc" text-anchor="middle">Retry: which packets actually go back out</text>
-  <text x="510" y="306" font-size="10" fill="#6366f1" text-anchor="middle">Go-Back-N Retransmission (5.5)</text>
+  <rect x="370" y="270" width="280" height="46" rx="6" fill="#272f49" stroke="#928dce" stroke-width="1.5"/>
+  <text x="510" y="290" font-size="12" font-weight="500" fill="#8f8dce" text-anchor="middle">Retry: which packets actually go back out</text>
+  <text x="510" y="306" font-size="10" fill="#928dce" text-anchor="middle">Go-Back-N Retransmission (5.5)</text>
 </g>
 
 <!-- Fan-out into three coexisting hazards -->
@@ -50,23 +50,23 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <text x="510" y="334" font-size="9" fill="#94a3b8" text-anchor="middle">any of these can happen along the way</text>
 
 <g>
-  <rect x="40" y="360" width="280" height="60" rx="6" fill="#312e81" stroke="#6366f1" stroke-width="1.5"/>
-  <text x="180" y="382" font-size="12" font-weight="500" fill="#a5b4fc" text-anchor="middle">Many QPs need retransmission at once</text>
-  <text x="180" y="398" font-size="10" fill="#6366f1" text-anchor="middle">Multi-QP Retry</text>
-  <text x="180" y="411" font-size="10" fill="#6366f1" text-anchor="middle">Arbitration (5.6)</text>
+  <rect x="40" y="360" width="280" height="60" rx="6" fill="#272f49" stroke="#928dce" stroke-width="1.5"/>
+  <text x="180" y="382" font-size="12" font-weight="500" fill="#8f8dce" text-anchor="middle">Many QPs need retransmission at once</text>
+  <text x="180" y="398" font-size="10" fill="#928dce" text-anchor="middle">Multi-QP Retry</text>
+  <text x="180" y="411" font-size="10" fill="#928dce" text-anchor="middle">Arbitration (5.6)</text>
 </g>
 
 <g>
-  <rect x="370" y="360" width="280" height="60" rx="6" fill="#78350f" stroke="#f59e0b" stroke-width="1.5"/>
-  <text x="510" y="382" font-size="12" font-weight="500" fill="#fbbf24" text-anchor="middle">Buffer under pressure -- no eviction here</text>
-  <text x="510" y="398" font-size="10" fill="#fbbf24" text-anchor="middle">Replay Buffer Capacity</text>
-  <text x="510" y="411" font-size="10" fill="#fbbf24" text-anchor="middle">and Backpressure (5.7)</text>
+  <rect x="370" y="360" width="280" height="60" rx="6" fill="#494227" stroke="#ceb38d" stroke-width="1.5"/>
+  <text x="510" y="382" font-size="12" font-weight="500" fill="#cea98d" text-anchor="middle">Buffer under pressure -- no eviction here</text>
+  <text x="510" y="398" font-size="10" fill="#cea98d" text-anchor="middle">Replay Buffer Capacity</text>
+  <text x="510" y="411" font-size="10" fill="#cea98d" text-anchor="middle">and Backpressure (5.7)</text>
 </g>
 
 <g>
-  <rect x="700" y="360" width="280" height="60" rx="6" fill="#312e81" stroke="#6366f1" stroke-width="1.5"/>
-  <text x="840" y="382" font-size="12" font-weight="500" fill="#a5b4fc" text-anchor="middle">QP resets, an ACK will now never come</text>
-  <text x="840" y="398" font-size="10" fill="#6366f1" text-anchor="middle">Mid-Transaction</text>
-  <text x="840" y="411" font-size="10" fill="#6366f1" text-anchor="middle">Reliability Reset (5.8)</text>
+  <rect x="700" y="360" width="280" height="60" rx="6" fill="#272f49" stroke="#928dce" stroke-width="1.5"/>
+  <text x="840" y="382" font-size="12" font-weight="500" fill="#8f8dce" text-anchor="middle">QP resets, an ACK will now never come</text>
+  <text x="840" y="398" font-size="10" fill="#928dce" text-anchor="middle">Mid-Transaction</text>
+  <text x="840" y="411" font-size="10" fill="#928dce" text-anchor="middle">Reliability Reset (5.8)</text>
 </g>
 </svg>
