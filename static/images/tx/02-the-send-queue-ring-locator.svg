@@ -1,4 +1,4 @@
-<svg viewBox="0 0 1240 980" xmlns="http://www.w3.org/2000/svg" font-family="'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monospace"><defs><style>
+<svg viewBox="0 0 1240 1004" xmlns="http://www.w3.org/2000/svg" font-family="'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monospace"><defs><style>
 @font-face {
   font-family: 'Tecnico Fino';
   font-style: normal;
@@ -12,9 +12,10 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
   <marker id="arrSky" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#0369a1"/></marker>
 </defs>
 
-<text x="620" y="34" font-size="24" font-weight="500" fill="#0f172a" text-anchor="middle">rnic.io -- RNIC Architecture, Master Block Diagram</text>
-<text x="620" y="54" font-size="15" fill="#64748b" text-anchor="middle">Every block referenced across Parts 1-8. Each chapter opens with this same drawing, one block highlighted, the rest dimmed.</text>
+<text x="620" y="30" font-size="24" font-weight="500" fill="#0f172a" text-anchor="middle">rnic.io -- RNIC Architecture, Master Block Diagram</text>
+<text x="620" y="50" font-size="15" fill="#64748b" text-anchor="middle">Every block referenced across Parts 1-8. Each chapter opens with this same drawing, one block highlighted, the rest dimmed.</text>
 
+<g transform="translate(0,24)">
 <!-- ============ TX LANE ============ -->
 <g id="block-host-desc-rings" data-role="sky">
   <rect x="20" y="70" width="160" height="55" rx="6" fill="#eef2ff" stroke="#4338ca" stroke-width="2" />
@@ -123,17 +124,18 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 </g>
 
 <g id="arrow-wqe-fetch-sched__tx-packet-build">
-  <line x1="420" y1="97" x2="636" y2="97" stroke="#4338ca" stroke-width="2" marker-end="url(#arrIndigo)"/>
+  <line x1="420" y1="85" x2="636" y2="85" stroke="#4338ca" stroke-width="2" marker-end="url(#arrIndigo)"/>
 </g>
 
 <g id="arrow-rate-limiter__tx-packet-build" opacity="0.35">
-  <path d="M420,637 L530,637 L530,105 L636,105" fill="none" stroke="#b45309" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arrAmber)"/>
-  <text x="540" y="630" font-size="13" fill="#b45309">gates</text>
+  <path d="M420,637 L530,637 L530,110 L636,110" fill="none" stroke="#b45309" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arrAmber)"/>
+  <text x="540" y="160" font-size="13" fill="#b45309" text-anchor="middle" transform="rotate(-90, 540, 160)">gates</text>
 </g>
 
 <g id="arrow-key-cache__dma-engine" opacity="0.35">
-  <path d="M420,432 L500,432 L500,385 L636,385" fill="none" stroke="#b45309" stroke-width="1.5" marker-end="url(#arrAmber)"/>
-  <text x="430" y="422" font-size="13" fill="#64748b">lkey/rkey resolved here</text>
+  <path d="M420,432 L500,432 L500,363 L636,363" fill="none" stroke="#b45309" stroke-width="1.5" marker-end="url(#arrAmber)"/>
+  <text x="425" y="445" font-size="13" fill="#64748b">lkey/rkey</text>
+  <text x="425" y="461" font-size="13" fill="#64748b">resolved here</text>
 </g>
 
 <g id="arrow-tx-packet-build__wire-out" opacity="0.35">
@@ -141,13 +143,13 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 </g>
 
 <g id="arrow-tx-packet-build__replay-buffer" opacity="0.35">
-  <path d="M700,125 L700,180 L580,180 L580,535 L424,535" fill="none" stroke="#b45309" stroke-width="1.5" marker-end="url(#arrAmber)"/>
-  <text x="460" y="528" font-size="13" fill="#64748b">unacked copy held</text>
+  <path d="M705,125 L705,180 L580,180 L580,524 L424,524" fill="none" stroke="#b45309" stroke-width="1.5" marker-end="url(#arrAmber)"/>
+  <text x="595" y="450" font-size="13" fill="#64748b" text-anchor="middle" transform="rotate(-90, 595, 450)">unacked copy held</text>
 </g>
 
 <g id="arrow-tx-packet-build__cqe-gen" opacity="0.35">
-  <path d="M810,125 L810,180 L910,180 L910,795 L760,795 L760,826" fill="none" stroke="#4338ca" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arrIndigo)"/>
-  <text x="620" y="788" font-size="13" fill="#64748b">send completion (if signaled)</text>
+  <path d="M765,125 L765,180 L910,180 L910,795 L690,795 L690,826" fill="none" stroke="#4338ca" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arrIndigo)"/>
+  <text x="920" y="487" font-size="13" fill="#64748b" text-anchor="middle" transform="rotate(-90, 920, 487)">send completion (if signaled)</text>
 </g>
 
 <g id="arrow-wire-in__rx-parser-reassembly" opacity="0.35">
@@ -155,7 +157,7 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 </g>
 
 <g id="arrow-rx-parser-reassembly__qp-cache" opacity="0.35">
-  <path d="M230,857 L120,857 L120,214 L226,214" fill="none" stroke="#4338ca" stroke-width="1.5" marker-end="url(#arrIndigo)"/>
+  <path d="M325,830 L325,795 L120,795 L120,214 L226,214" fill="none" stroke="#4338ca" stroke-width="1.5" marker-end="url(#arrIndigo)"/>
   <text x="15" y="560" font-size="13" fill="#64748b">dest QP</text>
   <text x="15" y="574" font-size="13" fill="#64748b">from BTH</text>
 </g>
@@ -165,18 +167,18 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 </g>
 
 <g id="arrow-rx-psn-check__replay-buffer" opacity="0.35">
-  <path d="M470,830 L470,560 L420,560" fill="none" stroke="#b45309" stroke-width="1.5" marker-end="url(#arrAmber)"/>
-  <text x="480" y="760" font-size="13" fill="#64748b">ack matching</text>
+  <path d="M510,830 L510,548 L420,548" fill="none" stroke="#b45309" stroke-width="1.5" marker-end="url(#arrAmber)"/>
+  <text x="520" y="700" font-size="13" fill="#64748b" text-anchor="middle" transform="rotate(-90, 520, 700)">ack matching</text>
 </g>
 
 <g id="arrow-rx-psn-check__dma-engine" opacity="0.35">
-  <path d="M600,830 L600,470 L636,430" fill="none" stroke="#4338ca" stroke-width="1.5" marker-end="url(#arrIndigo)"/>
-  <text x="610" y="700" font-size="13" fill="#64748b">accepted -&gt; DMA write</text>
+  <path d="M580,830 L580,780 L610,780 L610,470 L636,407" fill="none" stroke="#4338ca" stroke-width="1.5" marker-end="url(#arrIndigo)"/>
+  <text x="625" y="550" font-size="13" fill="#64748b" text-anchor="middle" transform="rotate(-90, 625, 550)">accepted -&gt; DMA write</text>
 </g>
 
 <g id="arrow-dma-engine__cqe-gen" opacity="0.35">
   <path d="M750,440 L750,826" fill="none" stroke="#4338ca" stroke-width="1.5" marker-end="url(#arrIndigo)"/>
-  <text x="795" y="700" font-size="13" fill="#64748b">receive completion</text>
+  <text x="760" y="633" font-size="13" fill="#64748b" text-anchor="middle" transform="rotate(-90, 760, 633)">receive completion</text>
 </g>
 
 <g id="arrow-cqe-gen__cq-storage" opacity="0.35">
@@ -185,5 +187,6 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 
 <g id="arrow-cq-storage__host-event" opacity="0.35">
   <line x1="990" y1="857" x2="1026" y2="857" stroke="#0369a1" stroke-width="1.5" marker-end="url(#arrSky)"/>
+</g>
 </g>
 </svg>
