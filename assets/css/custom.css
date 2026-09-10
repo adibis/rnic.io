@@ -16,3 +16,20 @@
     background-color: rgb(255 255 255 / 0.05);
   }
 }
+
+/* The Overview page inlines the master diagram's raw SVG (instead of an
+   <img>) so its internal <a href> block links stay clickable -- an <img>
+   strips all interactivity out of an embedded SVG. Inline SVG has no
+   intrinsic responsive sizing on its own, so it's set here explicitly. */
+.master-diagram-wrap {
+  overflow-x: auto;
+  margin-top: 2rem;
+}
+.master-diagram-wrap svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.master-diagram-link {
+  text-decoration: none;
+}
