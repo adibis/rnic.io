@@ -4,7 +4,7 @@ weight: 5
 date: 2026-09-09
 publishDate: 2026-09-09
 draft: true
-description: "When a retry fires, hardware doesn't need to know exactly which packet was lost -- only where to resume from. That's cheaper to build than it sounds, and the price is real, wasted bandwidth on packets that technically already arrived."
+description: "When a retry fires, hardware doesn't need to know exactly which packet was lost -- only where to resume from. That's cheaper to build than it sounds, and the price is wasted bandwidth on packets that technically already arrived."
 prev: /reliability/the-retry-and-rnr-timeout-state-machines
 next: /reliability/multi-qp-retry-arbitration
 ---
@@ -39,7 +39,7 @@ next: /reliability/multi-qp-retry-arbitration
 **What happens next.** A single QP's retransmission is a self-contained event once it's triggered. What happens when several QPs need retransmission service from the same shared TX pipeline at the same time -- whether a retransmission gets any different priority than fresh traffic competing for the same resource -- is [Multi-QP Retry Arbitration](/reliability/multi-qp-retry-arbitration)'s subject next.
 
 > [!TIP] Why
-> Resending a whole range, including packets that may have already arrived correctly, trades real, measurable waste -- link bandwidth spent on data the peer already has -- for a much simpler requester. The alternative, selective repeat, would need the responder to communicate exactly which packets within a range it actually has, and the requester to track and resend only the specific gaps, machinery that doesn't exist anywhere else in this book's model of Reliable Connection and would need real state to track partial delivery within an outstanding window rather than a single cumulative point. Go-back-N pays in bandwidth on the rare packet that actually gets lost; selective repeat would pay in silicon complexity on every single connection, whether it ever experiences loss or not. Reliable Connection's architecture chose to spend the cost only when loss actually happens, not continuously to prepare for it.
+> Resending a whole range, including packets that may have already arrived correctly, trades measurable waste -- link bandwidth spent on data the peer already has -- for a much simpler requester. The alternative, selective repeat, would need the responder to communicate exactly which packets within a range it actually has, and the requester to track and resend only the specific gaps, machinery that doesn't exist anywhere else in this book's model of Reliable Connection and would need real state to track partial delivery within an outstanding window rather than a single cumulative point. Go-back-N pays in bandwidth on the rare packet that actually gets lost; selective repeat would pay in silicon complexity on every single connection, whether it ever experiences loss or not. Reliable Connection's architecture chose to spend the cost only when loss actually happens, not continuously to prepare for it.
 
 ## References
 

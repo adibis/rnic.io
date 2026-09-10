@@ -13,7 +13,7 @@ next: /rx/hardware-assisted-rx-dispatch-engines
 
 ![The master RNIC block diagram with RX Parser / Reassembly and QP Table / Cache both highlighted -- this chapter is the parser consulting per-QP state while deciding which of several arrived packets to service next.](/images/rx/06-multi-qp-rx-arbitration-locator.svg)
 
-[Single-QP RX Stalls](/rx/single-qp-rx-stalls) confirmed that one Queue Pair's own wait does not touch a different Queue Pair's state. This chapter asks the question that leaves open: when packets belonging to several different Queue Pairs are all ready for this Part's shared hardware at once, something has to decide whose gets serviced next.
+[Single-QP RX Stalls](/rx/single-qp-rx-stalls) confirmed that one Queue Pair's own wait does not touch a different Queue Pair's state. This chapter asks the question that leaves open: when packets belonging to several different Queue Pairs are all ready for this part's shared hardware at once, something has to decide whose gets serviced next.
 
 ## Overview
 
@@ -36,7 +36,7 @@ A Send Queue chooses when to make a WQE ready to send; a Queue Pair's receiving 
 **What happens next.** Whichever policy actually governs this gate, something has to run it -- fixed silicon, a programmable engine, or a mechanism pushed out to software entirely. That is [Hardware-Assisted RX Dispatch Engines](/rx/hardware-assisted-rx-dispatch-engines)'s subject, immediately next.
 
 > [!TIP] Why
-> None of the three policies above is a universally correct choice for this gate any more than it was for cache eviction or transmit scheduling -- round-robin is cheap and fair but blind to cost-per-packet; weighted round-robin fixes that at the cost of an external weight owner; strict priority serves genuinely time-sensitive traffic (an acknowledgment unblocking a different Queue Pair's own progress, plausibly) predictably fast, at a real starvation risk for whatever it deprioritizes. What is different here from the transmit-side version of this question is how much less public evidence exists to ground the choice: the transmit side had a vendor's own quoted admission and an independent measured study to draw from; the receive side has confirmed dedicated hardware and an honest gap about what runs inside it. This chapter states the tradeoff plainly without overclaiming which side of it any real implementation has actually chosen.
+> None of the three policies above is a universally correct choice for this gate any more than it was for cache eviction or transmit scheduling -- round-robin is cheap and fair but blind to cost-per-packet; weighted round-robin fixes that at the cost of an external weight owner; strict priority serves time-sensitive traffic (an acknowledgment unblocking a different Queue Pair's own progress, plausibly) predictably fast, at a real starvation risk for whatever it deprioritizes. What is different here from the transmit-side version of this question is how much less public evidence exists to ground the choice: the transmit side had a vendor's own quoted admission and an independent measured study to draw from; the receive side has confirmed dedicated hardware and an honest gap about what runs inside it. This chapter states the tradeoff plainly without overclaiming which side of it any real implementation has actually chosen.
 
 [Hardware-Assisted RX Dispatch Engines](/rx/hardware-assisted-rx-dispatch-engines) is next: what actually executes whichever arbitration policy this chapter named.
 

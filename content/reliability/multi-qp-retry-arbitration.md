@@ -17,7 +17,7 @@ next: /reliability/replay-buffer-capacity-and-backpressure
 
 ## Overview
 
-[Multi-QP TX Scheduling](/tx/multi-qp-tx-scheduling) already established that many QPs with ready work compete for one shared transmit pipeline, and that something has to decide whose work gets serviced next. A retransmission is, mechanically, just another packet asking for that same pipeline -- but it arrives under a circumstance ordinary traffic doesn't share: a timeout already happened, meaning this QP has already paid a real, measurable delay once, and every other QP retrying at the same moment likely has too, often because they share whatever caused the original loss in the first place.
+[Multi-QP TX Scheduling](/tx/multi-qp-tx-scheduling) already established that many QPs with ready work compete for one shared transmit pipeline, and that something has to decide whose work gets serviced next. A retransmission is, mechanically, just another packet asking for that same pipeline -- but it arrives under a circumstance ordinary traffic doesn't share: a timeout already happened, meaning this QP has already paid a measurable delay once, and every other QP retrying at the same moment likely has too, often because they share whatever caused the original loss in the first place.
 
 ## Block diagram
 
@@ -34,7 +34,7 @@ next: /reliability/replay-buffer-capacity-and-backpressure
 > [!IMPORTANT] Food for Thought
 > Should a retransmission compete for the shared pipeline on equal footing with fresh traffic, or jump ahead of it because it already missed one deadline? Argue both sides before you decide which fabric characteristics would tip you one way or the other.
 
-**What happens next.** This chapter closed the question of who gets serviced and in what order. What's still unresolved is capacity itself -- not who goes first, but what happens when the Replay Buffer this Part depends on genuinely runs out of room. [Replay Buffer Capacity and Backpressure](/reliability/replay-buffer-capacity-and-backpressure) is that chapter, immediately next.
+**What happens next.** This chapter closed the question of who gets serviced and in what order. What's still unresolved is capacity itself -- not who goes first, but what happens when the Replay Buffer this part depends on runs out of room entirely. [Replay Buffer Capacity and Backpressure](/reliability/replay-buffer-capacity-and-backpressure) is that chapter, immediately next.
 
 > [!TIP] Why
 > A design that gives retransmissions strict priority over fresh traffic accepts a real risk in exchange for faster recovery: a widespread loss event could turn a brief network problem into a longer one, as a flood of retransmissions crowds out the fresh sends that would otherwise be making progress on unaffected connections. A design that treats retransmissions as ordinary traffic accepts slower individual recovery -- a QP that already waited out a timeout waits again, behind whatever else is ready -- in exchange for never letting a correlated failure compound itself through retransmission traffic alone. Neither choice is obviously correct independent of the fabric's own loss characteristics: a fabric where correlated loss events are common and severe has a real argument for caution; one where loss is rare and isolated per-QP has less to lose from prioritizing recovery.

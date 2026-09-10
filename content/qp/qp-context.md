@@ -8,7 +8,7 @@ description: "Two fields on every RC Queue Pair count outstanding RDMA reads and
 next: /qp/the-qp-table
 ---
 
-[How to Read This Guide](/overview/how-to-read-this-guide) named the checklist this Part runs in full, and [One Transaction, Start to Finish](/overview/one-transaction-start-to-finish) already touched this chapter's subject twice without stopping to open it: once to say the sending adapter needs "the sending QP's live context" before it can build a packet, once to say the receiving side performs "the same kind of QP Table/Cache lookup" on arrival. This is where that context actually gets defined, field by field, before the next two chapters cover where it's stored and what gets cached.
+[One Transaction, Start to Finish](/overview/one-transaction-start-to-finish) already touched this chapter's subject twice without stopping to open it: once to say the sending adapter needs "the sending QP's live context" before it can build a packet, once to say the receiving side performs "the same kind of QP Table/Cache lookup" on arrival. This is where that context actually gets defined, field by field, before the next two chapters cover where it's stored and what gets cached.
 
 ## Overview
 
@@ -21,7 +21,7 @@ A Queue Pair's context is the complete set of state hardware needs to send and r
 
 ![The master RNIC block diagram with the QP Table and QP Cache pair highlighted and every other block dimmed -- this chapter covers the data living inside one entry of that pair, not the structure itself.](/images/qp/01-qp-context-locator.svg)
 
-Every field below lives inside one entry of [The QP Table](/qp/the-qp-table), which this Part covers next -- this chapter is about what's in that entry, not the structure holding it.
+Every field below lives inside one entry of [The QP Table](/qp/the-qp-table), which the next chapter covers -- this chapter is about what's in that entry, not the structure holding it.
 
 ## The fields, and what's really two roles wearing one name
 
@@ -40,7 +40,7 @@ These are independently negotiated, apply to opposite directions of the same con
 > [!CAUTION] Gotcha
 > Reading one where the other belongs is the single easiest way to misdiagnose a QP context. Getting it backwards doesn't fail loudly -- it silently under- or over-provisions one direction of a connection until traffic patterns expose it.
 
-Beyond that pair, the fields split cleanly by transport scope. UD (Unreliable Datagram) has no remote-access permission concept at all -- it supports only SEND/RECEIVE, so the remote-access permission mask doesn't apply to it either, alongside the rest of RC/UC's connection-oriented fields below. RC (Reliable Connection) carries every field UC does plus the ones only a connection with hardware-managed reliability needs: the ACK timeout, the retry-count ceiling, the RNR-retry ceiling, the RNR-NAK timer floor, and the outstanding-read/atomic ceiling pair above. UD (Unreliable Datagram) carries none of that -- no reliability state to speak of, no destination-QP field even, since a UD QP names its destination per-message rather than once at connection setup. UC (Unreliable Connected) sits between the two: connected like RC, but without the reliability fields, since there's no retry engine reading them. (A fourth transport, XRC, decouples a QP's receive side from any one specific send-side QP further still, to cut per-peer QP count in large fan-in deployments -- it's out of scope for this Part, which assumes RC throughout.)
+Beyond that pair, the fields split cleanly by transport scope. UD (Unreliable Datagram) has no remote-access permission concept at all -- it supports only SEND/RECEIVE, so the remote-access permission mask doesn't apply to it either, alongside the rest of RC/UC's connection-oriented fields below. RC (Reliable Connection) carries every field UC does plus the ones only a connection with hardware-managed reliability needs: the ACK timeout, the retry-count ceiling, the RNR-retry ceiling, the RNR-NAK timer floor, and the outstanding-read/atomic ceiling pair above. UD (Unreliable Datagram) carries none of that -- no reliability state to speak of, no destination-QP field even, since a UD QP names its destination per-message rather than once at connection setup. UC (Unreliable Connected) sits between the two: connected like RC, but without the reliability fields, since there's no retry engine reading them. (A fourth transport, XRC, decouples a QP's receive side from any one specific send-side QP, to cut per-peer QP count in large fan-in deployments -- it's out of scope here; this part assumes RC throughout.)
 
 ## Block diagram
 
@@ -56,7 +56,7 @@ A smaller set moves continuously, under hardware's own control, with no software
 
 ## Deep walkthrough: three fields, traced end to end
 
-Not every field named above gets the same full treatment here, and here's why. The port-binding attribute, the partition-key index attribute, and the remote-access permission mask already get real depth in [Installing a QP](/qp/installing-a-qp) -- what each one gates, what happens if it's missing, and (for the permission mask specifically) the one live path that reopens it later -- so this chapter doesn't re-derive that story. The ACK timeout, the retry-count ceiling, the RNR-retry ceiling, and the RNR-NAK timer floor belong to the reliability engine's own retry/timeout machinery, which this book hasn't reached yet (Part 5); naming them here as fields this QP carries is as far as this chapter goes. The path MTU attribute and the queue key (UD-only, and this Part assumes RC throughout) don't get dedicated depth anywhere in this book's current scope. The three fields below are the ones whose story belongs specifically to this chapter -- not owned by a single transition, and not deferred to a Part that doesn't exist yet.
+Not every field named above gets the same full treatment here, and here's why. The port-binding attribute, the partition-key index attribute, and the remote-access permission mask already get real depth in [Installing a QP](/qp/installing-a-qp) -- what each one gates, what happens if it's missing, and (for the permission mask specifically) the one live path that reopens it later -- so this chapter doesn't re-derive that story. The ACK timeout, the retry-count ceiling, the RNR-retry ceiling, and the RNR-NAK timer floor belong to the reliability engine's own retry/timeout machinery, which this book hasn't reached yet (Part 5); naming them here as fields this QP carries is as far as this chapter goes. The path MTU attribute and the queue key (UD-only, and this part assumes RC throughout) don't get dedicated depth anywhere in this book's current scope. The three fields below are the ones whose story belongs specifically to this chapter -- not owned by a single transition, and not deferred to a part that doesn't exist yet.
 
 **The responder-side outstanding-read/atomic ceiling** -- the responder-side ceiling from above.
 - *What*: an 8-bit value, RC only, set once at the INIT→RTR transition.

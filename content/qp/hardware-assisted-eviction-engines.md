@@ -15,7 +15,7 @@ next: /qp/mid-transaction-qp-reset
 
 ## Overview
 
-[Eviction Policy](../eviction-policy) asked which cached QP should be evicted under pressure. This chapter asks a separate question: what actually executes that decision, on every single cache miss, without becoming the bottleneck the cache itself exists to avoid. The answer sits somewhere on a spectrum from fully fixed hardware to a full software trap, and where a real design lands on that spectrum is a genuine engineering trade, not a solved problem.
+[Eviction Policy](../eviction-policy) asked which cached QP should be evicted under pressure. This chapter asks a separate question: what actually executes that decision, on every single cache miss, without becoming the bottleneck the cache itself exists to avoid. The answer sits somewhere on a spectrum from fully fixed hardware to a full software trap, and where a real design lands on that spectrum is an engineering trade, not a solved problem.
 
 ## Block diagram
 
@@ -36,7 +36,7 @@ The workload shape drives the choice. A deployment where eviction pressure is ra
 > [!TIP] Why
 > The instinct to reach for maximum flexibility — trap to software, let firmware decide anything — collides directly with the reason a QP cache exists at all: [QP Caching](../qp-caching) built this structure specifically to keep per-packet hot-path work off of PCIe and off of software, because that round trip is exactly what a cache miss already costs. Handing the *eviction decision itself* back to software on every miss doesn't eliminate that cost, it just relocates and probably compounds it. A programmable-but-hardware-resident engine is less a compromise than the design that actually respects the reason the cache was built in the first place: keep every step of a fast-path miss in hardware, and spend the flexibility budget on registers and thresholds a driver can tune, not on a round trip that leaves the chip.
 
-That closes out the caching-and-eviction half of this Part. The last chapter turns to a different kind of hazard entirely: what happens when a QP doesn't just get quietly evicted, but gets reset while an operation against it is still in flight.
+That closes out the caching-and-eviction half of this part. The last chapter turns to a different kind of hazard entirely: what happens when a QP doesn't just get quietly evicted, but gets reset while an operation against it is still in flight.
 
 ## References
 

@@ -4,7 +4,7 @@ weight: 4
 date: 2026-09-04
 publishDate: 2026-09-04
 draft: true
-description: "Every other chapter in this Part is about getting a WQE on-chip. This one is about what happens the instant it is: the stage that actually turns a fetched descriptor into the BTH/RETH/AETH packet this book described field by field back in Part 0, and closes it out with an ICRC covering exactly the fields that survive the trip unchanged."
+description: "Every other chapter in this part is about getting a WQE on-chip. This one is about what happens the instant it is: the stage that actually turns a fetched descriptor into the BTH/RETH/AETH packet this book described field by field back in Part 0, and closes it out with an ICRC covering exactly the fields that survive the trip unchanged."
 prev: /tx/wqe-prefetch
 next: /tx/single-qp-pipeline-stalls
 ---
@@ -13,7 +13,7 @@ next: /tx/single-qp-pipeline-stalls
 
 ![The master RNIC block diagram with TX Packet Build highlighted -- this chapter is the one stage that actually produces the wire packet every other chapter in this book has described the shape of.](/images/tx/04-tx-packet-build-locator.svg)
 
-This chapter sits outside [Part 1](/qp/) (Queue Pair Management)'s ten-item checklist entirely -- see [this Part's introduction](/tx/) for why a resource-management checklist was never going to name a pipeline's actual transform stage on its own.
+[WQE Prefetch](/tx/wqe-prefetch) covered getting a WQE on-chip ahead of need. This chapter is what happens the instant it's needed: the stage that turns a fetched WQE into the wire packet [What Is RoCEv2](/overview/what-is-rocev2) already described field by field.
 
 ## Overview
 
