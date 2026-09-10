@@ -3,7 +3,7 @@ title: "Key Cache Eviction Policy"
 weight: 7
 date: 2026-09-04
 publishDate: 2026-09-04
-draft: true
+draft: false
 description: "The QP Cache only ever loses one entry at a time to eviction pressure. The Key Cache carries that same policy question, plus a second and harsher one: a single deregistration call is reasoned to invalidate the whole cache at once, not just the key being retired."
 prev: /mr/shared-mr-arbitration
 next: /mr/hardware-assisted-key-cache-eviction

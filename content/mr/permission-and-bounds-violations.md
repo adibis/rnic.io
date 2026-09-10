@@ -3,7 +3,7 @@ title: "Permission and Bounds Violations"
 weight: 5
 date: 2026-09-04
 publishDate: 2026-09-04
-draft: true
+draft: false
 description: "An RDMA write that lands outside a memory region's registered range and one that lands inside it but requests an operation the region was never registered to allow surface through the exact same completion status -- no public source says these are two separate hardware checks, or which one runs first."
 prev: /mr/registering-a-memory-region
 next: /mr/shared-mr-arbitration

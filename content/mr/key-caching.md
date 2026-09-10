@@ -3,7 +3,7 @@ title: "Key Caching"
 weight: 3
 date: 2026-09-04
 publishDate: 2026-09-04
-draft: true
+draft: false
 description: "The RNIC's on-chip cache doesn't have an MTT-only section -- it's the exact same SRAM Part 1 already showed you caching QP context. A memory-region-heavy workload and a QP-heavy workload are fighting over the same shelf space, and losing that fight is a confirmed cost on shipped hardware, not a hypothetical one."
 prev: /mr/the-key-table
 next: /mr/registering-a-memory-region
@@ -25,7 +25,7 @@ The Key Cache is the on-chip working set of MPT/MTT entries sitting in front of 
 
 ## Deep walkthrough
 
-**What.** The uRDMA paper's cache model states this plainly, describing the RNIC processing unit's relationship to its own on-chip cache: "the RNIC PU directly interacts with the cache to query QP context metadata and memory region information from QP Context table and Memory Translation/protection Table (MTT) respectively... cache also needs to maintain other essential metadata, including Completion Queue Context (CQC) and Event Queue Context (EQC)." Four resource types, one cache. This directly corroborates [QP Caching](/qp/qp-caching)'s ConnectX-4/5 finding of a 2MB on-chip SRAM holding QP context -- it's the same 2MB, and QPC was never its only tenant. No source found gives MTT/MPT a separate capacity number, and none should be assumed: the 2MB figure is the shared-cache total, not an MTT-only partition carved out of it.
+**What.** The uRDMA paper's cache model states this plainly, describing the RNIC processing unit's relationship to its own on-chip cache: "the RNIC PU directly interacts with the cache to query QP context metadata and memory region information from QP Context table and Memory Translation/protection Table (MTT) respectively... cache also needs to maintain other essential metadata, including Completion Queue Context (CQC) and Event Queue Context (EQC)." Four resource types, one cache, straight from this paper's own architecture description -- not an inference this book is drawing from a QP-side source, since [QP Caching](/qp/qp-caching) is explicit that it has no citable SRAM-size or partitioning finding of its own to extend here. No source found gives MTT/MPT a separate capacity number, and none should be assumed: this is evidence of one shared, unpartitioned pool serving QPC/MTT/MPT/CQC/EQC together, not a claim about total SRAM size.
 
 Kong et al.'s own architecture description (NSDI 2023) complicates that picture: it names an ICM cache, a WQE cache, and MTT/MPT as if they were separate structures, not explicitly one undivided pool the way this chapter frames it. That may be a schematic simplification -- naming logical categories the paper measures independently, over a physical SRAM budget that's still shared -- rather than a real contradiction of the "one pool" claim above, but no source this book found reconciles the two framings explicitly, so treat "shared, unpartitioned SRAM" as this book's best-supported reading, not a fact every source states identically.
 

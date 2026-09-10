@@ -3,7 +3,7 @@ title: "Hardware-Assisted Key Cache Eviction"
 weight: 8
 date: 2026-09-04
 publishDate: 2026-09-04
-draft: true
+draft: false
 description: "Part 1 asked what runs an eviction policy: fixed silicon, a programmable engine, or a trap to software. This chapter asks that question once, in one paragraph, and then asks a second one Part 1 never had to: what runs a flush of the entire cache, and what does that flush cost the lookups it interrupts."
 prev: /mr/key-cache-eviction-policy
 next: /mr/mid-transaction-deregistration

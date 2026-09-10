@@ -3,7 +3,7 @@ title: "Shared-MR Arbitration"
 weight: 6
 date: 2026-09-04
 publishDate: 2026-09-04
-draft: true
+draft: false
 description: "A shared receive buffer registered once and addressed by a dozen QPs turns one key-table entry into something many owners touch at once -- concurrent reads are presumably free, but no public source says what happens when one of those owners tries to invalidate the entry while the others are still reading it."
 prev: /mr/permission-and-bounds-violations
 next: /mr/key-cache-eviction-policy
