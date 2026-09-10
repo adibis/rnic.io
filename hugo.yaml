@@ -33,6 +33,12 @@ params:
   imageZoom:
     enable: true
 
+  # TODO: verify this is the actual public repo once rnic.io is pushed to
+  # GitHub -- placeholder matching chipdv.io's naming convention.
+  reportIssue:
+    enable: true
+    repo: "https://github.com/adibis/rnic.io"
+
   displayUpdatedDate: true
   dateFormat: "January 2, 2006"
 
