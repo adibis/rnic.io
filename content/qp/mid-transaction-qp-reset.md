@@ -6,15 +6,16 @@ publishDate: 2026-09-04
 draft: true
 description: "RESET clears a QP's leftovers -- that much is documented. What counts as a leftover when a multi-packet message is half-arrived, a replay-buffer entry is still waiting on an ACK, and a DMA write is mid-burst is not, and this chapter says so plainly before reasoning through it anyway."
 prev: /qp/hardware-assisted-eviction-engines
+next: /qp/qp-capacity-and-timing
 ---
-
-## Locator
-
-![The master RNIC block diagram with QP Table and QP Cache highlighted -- this chapter's reasoning also reaches into the Replay Buffer, RX Parser/Reassembly, and DMA Engine without owning any of them.](/images/qp/10-mid-transaction-qp-reset-locator.svg)
 
 ## Overview
 
 RESET is legal from every state a QP can be in, including RTS with operations actively in flight -- and IBTA's own contract for it is thin: outstanding work on both queues gets cleared. What "cleared" means when there's nothing in flight is obvious. What it means when a multi-packet message is half-received, a sent packet is still sitting in a replay buffer waiting on an acknowledgment that will now never come, or a DMA write is mid-burst into host memory, is the one place in this part where documentation runs out and a real implementation has to make choices nothing public writes down.
+
+## Locator
+
+![The master RNIC block diagram with QP Table and QP Cache highlighted -- this chapter's reasoning also reaches into the Replay Buffer, RX Parser/Reassembly, and DMA Engine without owning any of them.](/images/qp/10-mid-transaction-qp-reset-locator.svg)
 
 ## Block diagram
 
@@ -43,7 +44,7 @@ But the specific sequencing that gets there -- what gets aborted, what gets allo
 
 This is not a new class of problem. chipdv.io's [Mid-Sim Reset](https://chipdv.io/reuse/mid-sim-reset-plumbing/) covers the same shape of hazard -- a resource torn down while something is still actively using it -- from a testbench-verification angle: a reset arriving mid-simulation while a driver, monitor, or sequence still holds state that assumes the DUT hasn't moved. The domain is different, but the question underneath it isn't: what does "reset" actually have to reconcile when it doesn't arrive at a quiet moment.
 
-This chapter closes Part 1. Part 2 is next, covering the Memory Region and its Key Table.
+This is the last chapter in this part built around one QP at a time. [QP Capacity and Timing](/qp/qp-capacity-and-timing), next, closes Part 1 by asking how many of these can exist together, and what it costs in silicon to let them.
 
 ## References
 

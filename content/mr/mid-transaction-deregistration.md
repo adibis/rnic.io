@@ -6,15 +6,16 @@ publishDate: 2026-09-04
 draft: true
 description: "The verbs contract is unambiguous: stopping use of a key before deregistering it is software's job, not hardware's. What a DMA burst already mid-flight against that key does when the table entry disappears underneath it is a question the contract doesn't have to answer, and no public source does either."
 prev: /mr/hardware-assisted-key-cache-eviction
+next: /mr/mr-capacity-and-timing
 ---
-
-## Locator
-
-![The master RNIC block diagram with MR/Key Table and Key Cache highlighted -- this chapter's reasoning also reaches into the DMA Engine, the one place two Parts' caching stories meet.](/images/mr/09-mid-transaction-deregistration-locator.svg)
 
 ## Overview
 
 [Mid-Transaction QP Reset](/qp/mid-transaction-qp-reset) closed [Part 1](/qp/) (Queue Pair Management) on the same shape of question this chapter closes [Part 2](/mr/) (Memory Region / Key Table) with: a resource torn down while something is still actively using it. There, the resource was a Queue Pair and the thing still in flight was a packet, a replay-buffer entry, a partially-reassembled message. Here, the resource is a Memory Region and the thing still in flight is a DMA burst that has already resolved an `rkey` against the key table and started moving bytes, at the exact moment software deregisters that same MR on the other end. Same shape, different resource, and — unlike Part 1's version — one sourced anchor to start from before the chapter has to reason on its own.
+
+## Locator
+
+![The master RNIC block diagram with MR/Key Table and Key Cache highlighted -- this chapter's reasoning also reaches into the DMA Engine, the one place two Parts' caching stories meet.](/images/mr/09-mid-transaction-deregistration-locator.svg)
 
 ## Block diagram
 
@@ -38,7 +39,7 @@ prev: /mr/hardware-assisted-key-cache-eviction
 
 This is not a new class of problem. [Mid-Transaction QP Reset](/qp/mid-transaction-qp-reset) — Part 1's closing chapter — covers the same shape of hazard against a different resource: a Queue Pair reset with a packet, a replay-buffer entry, and a DMA write all still in flight against it, versus this chapter's Memory Region deregistered with a DMA burst still in flight against its key. Neither chapter can point at a documented resolution mechanism; both can point at exactly what has to be true for the outcome to be correct, and name the race that a real implementation has had to close one way or another.
 
-This chapter closes Part 2 the same way [Mid-Transaction QP Reset](/qp/mid-transaction-qp-reset) closed Part 1: a resource torn down while something still depends on it.
+This is the last chapter in this part built around one Memory Region at a time. [MR Capacity and Timing](/mr/mr-capacity-and-timing), next, closes Part 2 by asking how many of these can exist together, and what it costs in silicon to let them share the same structure safely.
 
 ## References
 
