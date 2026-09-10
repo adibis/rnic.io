@@ -7,41 +7,41 @@
 text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-weight: 400; stroke: currentColor; stroke-width: 0.35px; paint-order: stroke fill; }
 </style></defs>
 <defs>
-  <marker id="arrEC1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#818cf8"/></marker>
+  <marker id="arrEC1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6366f1"/></marker>
 </defs>
 
-<text x="450" y="22" font-size="15" font-weight="500" fill="#f1f5f9" text-anchor="middle">Three Policies, Three Different Questions Asked of the Same Cache</text>
+<text x="450" y="22" font-size="15" font-weight="500" fill="#e2e8f0" text-anchor="middle">Three Policies, Three Different Questions Asked of the Same Cache</text>
 
 <rect x="30" y="50" width="250" height="130" rx="8" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
-<text x="155" y="72" font-size="11" font-weight="500" fill="#cbd5e1" text-anchor="middle">LRU</text>
-<text x="155" y="92" font-size="8.5" fill="#cbd5e1" text-anchor="middle">"which QP went longest</text>
-<text x="155" y="104" font-size="8.5" fill="#cbd5e1" text-anchor="middle">without a packet touching it?"</text>
+<text x="155" y="72" font-size="11" font-weight="500" fill="#94a3b8" text-anchor="middle">LRU</text>
+<text x="155" y="92" font-size="8.5" fill="#94a3b8" text-anchor="middle">"which QP went longest</text>
+<text x="155" y="104" font-size="8.5" fill="#94a3b8" text-anchor="middle">without a packet touching it?"</text>
 <text x="155" y="128" font-size="8" fill="#94a3b8" text-anchor="middle">cheap, no external input --</text>
 <text x="155" y="140" font-size="8" fill="#94a3b8" text-anchor="middle">blind to which QP is expensive</text>
 <text x="155" y="152" font-size="8" fill="#94a3b8" text-anchor="middle">to have evicted</text>
 <text x="155" y="168" font-size="7.5" fill="#94a3b8" text-anchor="middle">input: recency only</text>
 
-<rect x="325" y="50" width="250" height="130" rx="8" fill="#78350f" stroke="#fbbf24" stroke-width="1.5"/>
-<text x="450" y="72" font-size="11" font-weight="500" fill="#fcd34d" text-anchor="middle">Priority-weighted</text>
-<text x="450" y="92" font-size="8.5" fill="#fcd34d" text-anchor="middle">"which QP did software mark</text>
-<text x="450" y="104" font-size="8.5" fill="#fcd34d" text-anchor="middle">as eviction-resistant?"</text>
+<rect x="325" y="50" width="250" height="130" rx="8" fill="#78350f" stroke="#f59e0b" stroke-width="1.5"/>
+<text x="450" y="72" font-size="11" font-weight="500" fill="#fbbf24" text-anchor="middle">Priority-weighted</text>
+<text x="450" y="92" font-size="8.5" fill="#fbbf24" text-anchor="middle">"which QP did software mark</text>
+<text x="450" y="104" font-size="8.5" fill="#fbbf24" text-anchor="middle">as eviction-resistant?"</text>
 <text x="450" y="128" font-size="8" fill="#94a3b8" text-anchor="middle">fixes LRU's blind spot --</text>
 <text x="450" y="140" font-size="8" fill="#94a3b8" text-anchor="middle">someone has to own the weights,</text>
 <text x="450" y="152" font-size="8" fill="#94a3b8" text-anchor="middle">and high-priority QPs can pin space</text>
 <text x="450" y="168" font-size="7.5" fill="#94a3b8" text-anchor="middle">input: software-assigned weight</text>
 
-<rect x="620" y="50" width="250" height="130" rx="8" fill="#7f1d1d" stroke="#f87171" stroke-width="1.5"/>
-<text x="745" y="72" font-size="11" font-weight="500" fill="#f87171" text-anchor="middle">Error-weighted</text>
-<text x="745" y="92" font-size="8.5" fill="#f87171" text-anchor="middle">"which QP is already showing</text>
-<text x="745" y="104" font-size="8.5" fill="#f87171" text-anchor="middle">signs of trouble?"</text>
+<rect x="620" y="50" width="250" height="130" rx="8" fill="#7f1d1d" stroke="#ef4444" stroke-width="1.5"/>
+<text x="745" y="72" font-size="11" font-weight="500" fill="#ef4444" text-anchor="middle">Error-weighted</text>
+<text x="745" y="92" font-size="8.5" fill="#ef4444" text-anchor="middle">"which QP is already showing</text>
+<text x="745" y="104" font-size="8.5" fill="#ef4444" text-anchor="middle">signs of trouble?"</text>
 <text x="745" y="128" font-size="8" fill="#94a3b8" text-anchor="middle">evicts what's cheap to re-fetch</text>
 <text x="745" y="140" font-size="8" fill="#94a3b8" text-anchor="middle">anyway -- but couples the cache to</text>
 <text x="745" y="152" font-size="8" fill="#94a3b8" text-anchor="middle">a completely different subsystem</text>
 <text x="745" y="168" font-size="7.5" fill="#94a3b8" text-anchor="middle">input: Part 5's per-QP retry/RNR counters</text>
 
-<rect x="180" y="220" width="540" height="40" rx="6" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
-<text x="450" y="235" font-size="9" font-weight="500" fill="#c7d2fe" text-anchor="middle">the same eviction decision, three different signals to make it from</text>
-<text x="450" y="250" font-size="8" fill="#818cf8" text-anchor="middle">none is free, none is architecturally forced -- a real design picks one based on workload</text>
+<rect x="180" y="220" width="540" height="40" rx="6" fill="#312e81" stroke="#6366f1" stroke-width="1.5"/>
+<text x="450" y="235" font-size="9" font-weight="500" fill="#a5b4fc" text-anchor="middle">the same eviction decision, three different signals to make it from</text>
+<text x="450" y="250" font-size="8" fill="#6366f1" text-anchor="middle">none is free, none is architecturally forced -- a real design picks one based on workload</text>
 
 <text x="450" y="295" font-size="9" fill="#94a3b8" text-anchor="middle">No source confirms which one, or what blend, a real RNIC ships -- this book states the tradeoff space,</text>
 <text x="450" y="308" font-size="9" fill="#94a3b8" text-anchor="middle">not a recommendation, the same honest position it takes throughout this Part.</text>

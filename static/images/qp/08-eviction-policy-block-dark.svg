@@ -7,54 +7,54 @@
 text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-weight: 400; stroke: currentColor; stroke-width: 0.35px; paint-order: stroke fill; }
 </style></defs>
 <defs>
-  <marker id="arrEP1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#cbd5e1"/></marker>
-  <marker id="arrEP2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#f87171"/></marker>
+  <marker id="arrEP1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/></marker>
+  <marker id="arrEP2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#ef4444"/></marker>
   <marker id="arrEP3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/></marker>
 </defs>
 
-<text x="450" y="24" font-size="15" font-weight="500" fill="#f1f5f9" text-anchor="middle">Eviction Policy: picking a victim under cache pressure</text>
+<text x="450" y="24" font-size="15" font-weight="500" fill="#e2e8f0" text-anchor="middle">Eviction Policy: picking a victim under cache pressure</text>
 
-<text x="60" y="70" font-size="10" fill="#cbd5e1">QP N+1 needed,</text>
-<text x="60" y="83" font-size="10" fill="#cbd5e1">cache full</text>
-<line x1="140" y1="76" x2="200" y2="76" stroke="#cbd5e1" stroke-width="1.5" marker-end="url(#arrEP1)"/>
+<text x="60" y="70" font-size="10" fill="#94a3b8">QP N+1 needed,</text>
+<text x="60" y="83" font-size="10" fill="#94a3b8">cache full</text>
+<line x1="140" y1="76" x2="200" y2="76" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrEP1)"/>
 
-<rect x="200" y="50" width="260" height="60" rx="8" fill="#78350f" stroke="#fbbf24" stroke-width="1.5"/>
-<g fill="#1e293b" stroke="#fbbf24">
+<rect x="200" y="50" width="260" height="60" rx="8" fill="#78350f" stroke="#f59e0b" stroke-width="1.5"/>
+<g fill="#1e293b" stroke="#f59e0b">
 <rect x="215" y="62" width="55" height="34"/><rect x="275" y="62" width="55" height="34"/>
 <rect x="335" y="62" width="55" height="34"/><rect x="395" y="62" width="50" height="34"/>
 </g>
-<text x="330" y="105" font-size="9" fill="#fcd34d" text-anchor="middle">all slots occupied</text>
+<text x="330" y="105" font-size="9" fill="#fbbf24" text-anchor="middle">all slots occupied</text>
 
 <rect x="490" y="55" width="120" height="50" rx="6" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
-<text x="550" y="76" font-size="11" font-weight="500" fill="#cbd5e1" text-anchor="middle">Eviction</text>
-<text x="550" y="92" font-size="11" font-weight="500" fill="#cbd5e1" text-anchor="middle">Policy</text>
+<text x="550" y="76" font-size="11" font-weight="500" fill="#94a3b8" text-anchor="middle">Eviction</text>
+<text x="550" y="92" font-size="11" font-weight="500" fill="#94a3b8" text-anchor="middle">Policy</text>
 
-<line x1="460" y1="80" x2="488" y2="80" stroke="#cbd5e1" stroke-width="1.5" marker-end="url(#arrEP1)"/>
+<line x1="460" y1="80" x2="488" y2="80" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrEP1)"/>
 
 <!-- three inputs -->
-<text x="700" y="30" font-size="9" fill="#cbd5e1" text-anchor="middle">recency</text>
-<line x1="690" y1="35" x2="614" y2="60" stroke="#cbd5e1" stroke-width="1.2" marker-end="url(#arrEP1)"/>
-<text x="700" y="145" font-size="9" fill="#cbd5e1" text-anchor="middle">priority</text>
-<line x1="690" y1="140" x2="614" y2="90" stroke="#cbd5e1" stroke-width="1.2" marker-end="url(#arrEP1)"/>
+<text x="700" y="30" font-size="9" fill="#94a3b8" text-anchor="middle">recency</text>
+<line x1="690" y1="35" x2="614" y2="60" stroke="#94a3b8" stroke-width="1.2" marker-end="url(#arrEP1)"/>
+<text x="700" y="145" font-size="9" fill="#94a3b8" text-anchor="middle">priority</text>
+<line x1="690" y1="140" x2="614" y2="90" stroke="#94a3b8" stroke-width="1.2" marker-end="url(#arrEP1)"/>
 <text x="750" y="90" font-size="9" fill="#94a3b8" text-anchor="middle">error state</text>
 <text x="750" y="102" font-size="8" fill="#94a3b8" text-anchor="middle">(Part 5)</text>
 <line x1="720" y1="88" x2="614" y2="80" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arrEP1)"/>
 
 <!-- victim slot highlighted -->
-<rect x="335" y="150" width="55" height="34" fill="#7f1d1d" stroke="#f87171" stroke-width="2"/>
-<text x="362" y="171" font-size="8" fill="#f87171" text-anchor="middle">victim</text>
-<line x1="362" y1="105" x2="362" y2="148" stroke="#f87171" stroke-width="1.5" stroke-dasharray="3,2" marker-end="url(#arrEP2)"/>
+<rect x="335" y="150" width="55" height="34" fill="#7f1d1d" stroke="#ef4444" stroke-width="2"/>
+<text x="362" y="171" font-size="8" fill="#ef4444" text-anchor="middle">victim</text>
+<line x1="362" y1="105" x2="362" y2="148" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="3,2" marker-end="url(#arrEP2)"/>
 
 <!-- QP Table -->
-<rect x="250" y="230" width="220" height="60" rx="8" fill="#78350f" stroke="#fbbf24" stroke-width="1.5"/>
-<text x="360" y="255" font-size="12" font-weight="500" fill="#fcd34d" text-anchor="middle">QP Table</text>
-<text x="360" y="271" font-size="10" fill="#fcd34d" text-anchor="middle">DRAM/HBM</text>
+<rect x="250" y="230" width="220" height="60" rx="8" fill="#78350f" stroke="#f59e0b" stroke-width="1.5"/>
+<text x="360" y="255" font-size="12" font-weight="500" fill="#fbbf24" text-anchor="middle">QP Table</text>
+<text x="360" y="271" font-size="10" fill="#fbbf24" text-anchor="middle">DRAM/HBM</text>
 
-<path d="M340,184 L 320,228" fill="none" stroke="#f87171" stroke-width="1.5" marker-end="url(#arrEP2)"/>
-<text x="240" y="215" font-size="9" fill="#f87171" text-anchor="middle">written back if dirty,</text>
-<text x="240" y="227" font-size="9" fill="#f87171" text-anchor="middle">then freed</text>
+<path d="M340,184 L 320,228" fill="none" stroke="#ef4444" stroke-width="1.5" marker-end="url(#arrEP2)"/>
+<text x="240" y="215" font-size="9" fill="#ef4444" text-anchor="middle">written back if dirty,</text>
+<text x="240" y="227" font-size="9" fill="#ef4444" text-anchor="middle">then freed</text>
 
-<path d="M400,228 L 385,186" fill="none" stroke="#818cf8" stroke-width="1.5" marker-end="url(#arrEP3)"/>
-<text x="480" y="215" font-size="9" fill="#818cf8" text-anchor="middle">QP N+1</text>
-<text x="480" y="227" font-size="9" fill="#818cf8" text-anchor="middle">fetched in</text>
+<path d="M400,228 L 385,186" fill="none" stroke="#6366f1" stroke-width="1.5" marker-end="url(#arrEP3)"/>
+<text x="480" y="215" font-size="9" fill="#6366f1" text-anchor="middle">QP N+1</text>
+<text x="480" y="227" font-size="9" fill="#6366f1" text-anchor="middle">fetched in</text>
 </svg>

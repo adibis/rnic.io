@@ -7,52 +7,52 @@
 text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-weight: 400; stroke: currentColor; stroke-width: 0.35px; paint-order: stroke fill; }
 </style></defs>
 <defs>
-  <marker id="arrRS1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#818cf8"/></marker>
+  <marker id="arrRS1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6366f1"/></marker>
 </defs>
 
-<text x="450" y="22" font-size="15" font-weight="500" fill="#f1f5f9" text-anchor="middle">One Message, Four Packets: the Context Advancing Over Time</text>
+<text x="450" y="22" font-size="15" font-weight="500" fill="#e2e8f0" text-anchor="middle">One Message, Four Packets: the Context Advancing Over Time</text>
 
-<text x="70" y="55" font-size="10" font-weight="500" fill="#38bdf8" text-anchor="middle">FIRST</text>
-<rect x="20" y="65" width="100" height="30" rx="5" fill="#0c4a6e" stroke="#38bdf8" stroke-width="1.4"/>
-<text x="70" y="85" font-size="8.5" fill="#38bdf8" text-anchor="middle">RETH: addr A, len 400</text>
+<text x="70" y="55" font-size="10" font-weight="500" fill="#0ea5e9" text-anchor="middle">FIRST</text>
+<rect x="20" y="65" width="100" height="30" rx="5" fill="#0c4a6e" stroke="#0ea5e9" stroke-width="1.4"/>
+<text x="70" y="85" font-size="8.5" fill="#0ea5e9" text-anchor="middle">RETH: addr A, len 400</text>
 
-<text x="220" y="55" font-size="10" font-weight="500" fill="#818cf8" text-anchor="middle">MIDDLE</text>
-<rect x="170" y="65" width="100" height="30" rx="5" fill="#312e81" stroke="#818cf8" stroke-width="1.4"/>
-<text x="220" y="85" font-size="8.5" fill="#818cf8" text-anchor="middle">128 bytes payload</text>
+<text x="220" y="55" font-size="10" font-weight="500" fill="#6366f1" text-anchor="middle">MIDDLE</text>
+<rect x="170" y="65" width="100" height="30" rx="5" fill="#312e81" stroke="#6366f1" stroke-width="1.4"/>
+<text x="220" y="85" font-size="8.5" fill="#6366f1" text-anchor="middle">128 bytes payload</text>
 
-<text x="370" y="55" font-size="10" font-weight="500" fill="#818cf8" text-anchor="middle">MIDDLE</text>
-<rect x="320" y="65" width="100" height="30" rx="5" fill="#312e81" stroke="#818cf8" stroke-width="1.4"/>
-<text x="370" y="85" font-size="8.5" fill="#818cf8" text-anchor="middle">128 bytes payload</text>
+<text x="370" y="55" font-size="10" font-weight="500" fill="#6366f1" text-anchor="middle">MIDDLE</text>
+<rect x="320" y="65" width="100" height="30" rx="5" fill="#312e81" stroke="#6366f1" stroke-width="1.4"/>
+<text x="370" y="85" font-size="8.5" fill="#6366f1" text-anchor="middle">128 bytes payload</text>
 
-<text x="520" y="55" font-size="10" font-weight="500" fill="#fcd34d" text-anchor="middle">LAST</text>
-<rect x="470" y="65" width="100" height="30" rx="5" fill="#78350f" stroke="#fbbf24" stroke-width="1.4"/>
-<text x="520" y="85" font-size="8.5" fill="#fcd34d" text-anchor="middle">144 bytes payload</text>
+<text x="520" y="55" font-size="10" font-weight="500" fill="#fbbf24" text-anchor="middle">LAST</text>
+<rect x="470" y="65" width="100" height="30" rx="5" fill="#78350f" stroke="#f59e0b" stroke-width="1.4"/>
+<text x="520" y="85" font-size="8.5" fill="#fbbf24" text-anchor="middle">144 bytes payload</text>
 
-<line x1="70" y1="98" x2="70" y2="130" stroke="#818cf8" stroke-width="1.3" marker-end="url(#arrRS1)"/>
-<line x1="220" y1="98" x2="220" y2="130" stroke="#818cf8" stroke-width="1.3" marker-end="url(#arrRS1)"/>
-<line x1="370" y1="98" x2="370" y2="130" stroke="#818cf8" stroke-width="1.3" marker-end="url(#arrRS1)"/>
-<line x1="520" y1="98" x2="520" y2="130" stroke="#818cf8" stroke-width="1.3" marker-end="url(#arrRS1)"/>
+<line x1="70" y1="98" x2="70" y2="130" stroke="#6366f1" stroke-width="1.3" marker-end="url(#arrRS1)"/>
+<line x1="220" y1="98" x2="220" y2="130" stroke="#6366f1" stroke-width="1.3" marker-end="url(#arrRS1)"/>
+<line x1="370" y1="98" x2="370" y2="130" stroke="#6366f1" stroke-width="1.3" marker-end="url(#arrRS1)"/>
+<line x1="520" y1="98" x2="520" y2="130" stroke="#6366f1" stroke-width="1.3" marker-end="url(#arrRS1)"/>
 
 <rect x="20" y="132" width="100" height="46" rx="5" fill="#1e293b" stroke="#94a3b8" stroke-width="1.3"/>
-<text x="70" y="149" font-size="8" fill="#cbd5e1" text-anchor="middle">context opens</text>
-<text x="70" y="161" font-size="8" fill="#cbd5e1" text-anchor="middle">offset A</text>
-<text x="70" y="172" font-size="8" fill="#cbd5e1" text-anchor="middle">remaining 400</text>
+<text x="70" y="149" font-size="8" fill="#94a3b8" text-anchor="middle">context opens</text>
+<text x="70" y="161" font-size="8" fill="#94a3b8" text-anchor="middle">offset A</text>
+<text x="70" y="172" font-size="8" fill="#94a3b8" text-anchor="middle">remaining 400</text>
 
 <rect x="170" y="132" width="100" height="46" rx="5" fill="#1e293b" stroke="#94a3b8" stroke-width="1.3"/>
-<text x="220" y="149" font-size="8" fill="#cbd5e1" text-anchor="middle">offset A+128</text>
-<text x="220" y="161" font-size="8" fill="#cbd5e1" text-anchor="middle">remaining 272</text>
+<text x="220" y="149" font-size="8" fill="#94a3b8" text-anchor="middle">offset A+128</text>
+<text x="220" y="161" font-size="8" fill="#94a3b8" text-anchor="middle">remaining 272</text>
 
 <rect x="320" y="132" width="100" height="46" rx="5" fill="#1e293b" stroke="#94a3b8" stroke-width="1.3"/>
-<text x="370" y="149" font-size="8" fill="#cbd5e1" text-anchor="middle">offset A+256</text>
-<text x="370" y="161" font-size="8" fill="#cbd5e1" text-anchor="middle">remaining 144</text>
+<text x="370" y="149" font-size="8" fill="#94a3b8" text-anchor="middle">offset A+256</text>
+<text x="370" y="161" font-size="8" fill="#94a3b8" text-anchor="middle">remaining 144</text>
 
-<rect x="470" y="132" width="100" height="46" rx="5" fill="#78350f" stroke="#fbbf24" stroke-width="1.5"/>
-<text x="520" y="149" font-size="8" font-weight="500" fill="#fcd34d" text-anchor="middle">remaining 0</text>
-<text x="520" y="161" font-size="8" font-weight="500" fill="#fcd34d" text-anchor="middle">context closes</text>
+<rect x="470" y="132" width="100" height="46" rx="5" fill="#78350f" stroke="#f59e0b" stroke-width="1.5"/>
+<text x="520" y="149" font-size="8" font-weight="500" fill="#fbbf24" text-anchor="middle">remaining 0</text>
+<text x="520" y="161" font-size="8" font-weight="500" fill="#fbbf24" text-anchor="middle">context closes</text>
 
 <rect x="620" y="60" width="220" height="120" rx="6" fill="#1e293b" stroke="#94a3b8" stroke-width="1.3"/>
-<text x="730" y="80" font-size="9" font-weight="500" fill="#cbd5e1" text-anchor="middle">one Queue Pair's context --</text>
-<text x="730" y="94" font-size="9" font-weight="500" fill="#cbd5e1" text-anchor="middle">bounded, not a lookup</text>
+<text x="730" y="80" font-size="9" font-weight="500" fill="#94a3b8" text-anchor="middle">one Queue Pair's context --</text>
+<text x="730" y="94" font-size="9" font-weight="500" fill="#94a3b8" text-anchor="middle">bounded, not a lookup</text>
 <text x="730" y="115" font-size="8" fill="#94a3b8" text-anchor="middle">a second QP's context updates</text>
 <text x="730" y="127" font-size="8" fill="#94a3b8" text-anchor="middle">on exactly this same shape,</text>
 <text x="730" y="139" font-size="8" fill="#94a3b8" text-anchor="middle">completely independently --</text>

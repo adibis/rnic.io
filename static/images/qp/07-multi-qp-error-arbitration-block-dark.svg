@@ -7,18 +7,18 @@
 text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-weight: 400; stroke: currentColor; stroke-width: 0.35px; paint-order: stroke fill; }
 </style></defs>
 <defs>
-  <marker id="arrMQ1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#f87171"/></marker>
-  <marker id="arrMQ2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#818cf8"/></marker>
+  <marker id="arrMQ1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#ef4444"/></marker>
+  <marker id="arrMQ2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6366f1"/></marker>
 </defs>
 
-<text x="450" y="24" font-size="15" font-weight="500" fill="#f1f5f9" text-anchor="middle">One shared cause, eight simultaneous QP-fatal events</text>
+<text x="450" y="24" font-size="15" font-weight="500" fill="#e2e8f0" text-anchor="middle">One shared cause, eight simultaneous QP-fatal events</text>
 
-<rect x="360" y="45" width="180" height="46" rx="6" fill="#7f1d1d" stroke="#f87171" stroke-width="2"/>
-<text x="450" y="65" font-size="12" font-weight="500" fill="#f87171" text-anchor="middle">CQ (or SRQ)</text>
-<text x="450" y="80" font-size="10" fill="#f87171" text-anchor="middle">has itself hit an error</text>
+<rect x="360" y="45" width="180" height="46" rx="6" fill="#7f1d1d" stroke="#ef4444" stroke-width="2"/>
+<text x="450" y="65" font-size="12" font-weight="500" fill="#ef4444" text-anchor="middle">CQ (or SRQ)</text>
+<text x="450" y="80" font-size="10" fill="#ef4444" text-anchor="middle">has itself hit an error</text>
 
 <!-- 8 QP boxes -->
-<g font-size="9" fill="#cbd5e1">
+<g font-size="9" fill="#94a3b8">
 <rect x="30" y="150" width="80" height="34" rx="4" fill="#1e293b" stroke="#94a3b8"/><text x="70" y="171" text-anchor="middle">QP</text>
 <rect x="120" y="150" width="80" height="34" rx="4" fill="#1e293b" stroke="#94a3b8"/><text x="160" y="171" text-anchor="middle">QP</text>
 <rect x="210" y="150" width="80" height="34" rx="4" fill="#1e293b" stroke="#94a3b8"/><text x="250" y="171" text-anchor="middle">QP</text>
@@ -30,7 +30,7 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 </g>
 
 <!-- 8 arrows up from CQ/SRQ into each QP, same weight -->
-<g stroke="#f87171" stroke-width="1.3" fill="none">
+<g stroke="#ef4444" stroke-width="1.3" fill="none">
 <path d="M70,150 C 70,120 300,100 400,92" marker-end="url(#arrMQ1)"/>
 <path d="M160,150 C 160,125 320,100 405,92" marker-end="url(#arrMQ1)"/>
 <path d="M250,150 C 250,130 350,100 410,92" marker-end="url(#arrMQ1)"/>
@@ -40,10 +40,10 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <path d="M610,150 C 610,130 500,100 480,92" marker-end="url(#arrMQ1)"/>
 <path d="M700,150 C 700,120 520,100 500,92" marker-end="url(#arrMQ1)"/>
 </g>
-<text x="450" y="120" font-size="8" fill="#f87171" text-anchor="middle">QP-fatal event -- all eight, same instant</text>
+<text x="450" y="120" font-size="8" fill="#ef4444" text-anchor="middle">QP-fatal event -- all eight, same instant</text>
 
 <!-- funnel down into reporting channel -->
-<g stroke="#818cf8" stroke-width="1.2" fill="none">
+<g stroke="#6366f1" stroke-width="1.2" fill="none">
 <path d="M70,184 L 420,240"/>
 <path d="M160,184 L 425,240"/>
 <path d="M250,184 L 430,240"/>
@@ -54,12 +54,12 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <path d="M700,184 L 470,240"/>
 </g>
 
-<rect x="400" y="240" width="100" height="30" rx="15" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
-<text x="450" y="260" font-size="9" fill="#c7d2fe" text-anchor="middle">reporting path</text>
-<line x1="500" y1="255" x2="600" y2="255" stroke="#818cf8" stroke-width="1.5" marker-end="url(#arrMQ2)"/>
+<rect x="400" y="240" width="100" height="30" rx="15" fill="#312e81" stroke="#6366f1" stroke-width="1.5"/>
+<text x="450" y="260" font-size="9" fill="#a5b4fc" text-anchor="middle">reporting path</text>
+<line x1="500" y1="255" x2="600" y2="255" stroke="#6366f1" stroke-width="1.5" marker-end="url(#arrMQ2)"/>
 
-<rect x="610" y="235" width="120" height="40" rx="6" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
-<text x="670" y="260" font-size="11" font-weight="500" fill="#c7d2fe" text-anchor="middle">CQE Gen</text>
+<rect x="610" y="235" width="120" height="40" rx="6" fill="#312e81" stroke="#6366f1" stroke-width="1.5"/>
+<text x="670" y="260" font-size="11" font-weight="500" fill="#a5b4fc" text-anchor="middle">CQE Gen</text>
 
 <path d="M380,290 L 380,300 L 520,300 L 520,290" fill="none" stroke="#94a3b8" stroke-width="1"/>
 <text x="450" y="315" font-size="10" fill="#94a3b8" text-anchor="middle">serialization point: one path, eight simultaneous demands,</text>

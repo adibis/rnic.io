@@ -7,37 +7,37 @@
 text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-weight: 400; stroke: currentColor; stroke-width: 0.35px; paint-order: stroke fill; }
 </style></defs>
 <defs>
-  <marker id="arrST1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#fcd34d"/></marker>
-  <marker id="arrST2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#cbd5e1"/></marker>
+  <marker id="arrST1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#fbbf24"/></marker>
+  <marker id="arrST2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/></marker>
 </defs>
 
-<text x="450" y="22" font-size="14" font-weight="500" fill="#f1f5f9" text-anchor="middle">One Shared Gate, Two Very Different WQEs</text>
+<text x="450" y="22" font-size="14" font-weight="500" fill="#e2e8f0" text-anchor="middle">One Shared Gate, Two Very Different WQEs</text>
 
-<rect x="60" y="70" width="190" height="44" rx="6" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
-<text x="155" y="97" font-size="9" font-weight="500" fill="#c7d2fe" text-anchor="middle">QP A -- latency-sensitive WQE</text>
+<rect x="60" y="70" width="190" height="44" rx="6" fill="#312e81" stroke="#6366f1" stroke-width="1.5"/>
+<text x="155" y="97" font-size="9" font-weight="500" fill="#a5b4fc" text-anchor="middle">QP A -- latency-sensitive WQE</text>
 
-<rect x="60" y="170" width="190" height="76" rx="6" fill="#78350f" stroke="#fbbf24" stroke-width="1.5"/>
-<text x="155" y="212" font-size="9" font-weight="500" fill="#fcd34d" text-anchor="middle">QP B -- elephant-flow WQE</text>
+<rect x="60" y="170" width="190" height="76" rx="6" fill="#78350f" stroke="#f59e0b" stroke-width="1.5"/>
+<text x="155" y="212" font-size="9" font-weight="500" fill="#fbbf24" text-anchor="middle">QP B -- elephant-flow WQE</text>
 
-<line x1="250" y1="208" x2="396" y2="178" stroke="#fcd34d" stroke-width="1.6" marker-end="url(#arrST1)"/>
+<line x1="250" y1="208" x2="396" y2="178" stroke="#fbbf24" stroke-width="1.6" marker-end="url(#arrST1)"/>
 
-<line x1="250" y1="92" x2="392" y2="152" stroke="#f87171" stroke-width="1.6" stroke-dasharray="4,3"/>
-<line x1="386" y1="140" x2="398" y2="164" stroke="#f87171" stroke-width="2.5"/>
-<text x="330" y="115" font-size="9" font-weight="700" fill="#f87171" text-anchor="middle">stalled</text>
+<line x1="250" y1="92" x2="392" y2="152" stroke="#ef4444" stroke-width="1.6" stroke-dasharray="4,3"/>
+<line x1="386" y1="140" x2="398" y2="164" stroke="#ef4444" stroke-width="2.5"/>
+<text x="330" y="115" font-size="9" font-weight="700" fill="#ef4444" text-anchor="middle">stalled</text>
 
-<rect x="400" y="140" width="80" height="70" rx="6" fill="#78350f" stroke="#fbbf24" stroke-width="2"/>
-<text x="440" y="180" font-size="10" font-weight="500" fill="#fcd34d" text-anchor="middle">gate</text>
+<rect x="400" y="140" width="80" height="70" rx="6" fill="#78350f" stroke="#f59e0b" stroke-width="2"/>
+<text x="440" y="180" font-size="10" font-weight="500" fill="#fbbf24" text-anchor="middle">gate</text>
 <text x="440" y="225" font-size="8" fill="#94a3b8" text-anchor="middle">finite internal queue slots --</text>
 <text x="440" y="237" font-size="8" fill="#94a3b8" text-anchor="middle">limited number, not per-QP</text>
 
-<line x1="480" y1="175" x2="558" y2="175" stroke="#cbd5e1" stroke-width="1.4" marker-end="url(#arrST2)"/>
+<line x1="480" y1="175" x2="558" y2="175" stroke="#94a3b8" stroke-width="1.4" marker-end="url(#arrST2)"/>
 <rect x="560" y="155" width="160" height="40" rx="6" fill="#1e293b" stroke="#94a3b8" stroke-width="1.4"/>
-<text x="640" y="180" font-size="9" fill="#cbd5e1" text-anchor="middle">TX pipeline continues</text>
+<text x="640" y="180" font-size="9" fill="#94a3b8" text-anchor="middle">TX pipeline continues</text>
 
 <text x="450" y="285" font-size="9" fill="#94a3b8" text-anchor="middle">head-of-line blocking: work-conserving processing serves whatever's ready,</text>
 <text x="450" y="298" font-size="9" fill="#94a3b8" text-anchor="middle">in arrival order, not by size or urgency</text>
 
-<rect x="550" y="325" width="300" height="50" rx="6" fill="#7f1d1d" stroke="#f87171" stroke-width="1.3"/>
-<text x="700" y="345" font-size="8" fill="#f87171" text-anchor="middle">measured on real hardware: severe, confirmed</text>
-<text x="700" y="358" font-size="8" fill="#f87171" text-anchor="middle">throughput collapse for the stalled flow (Zhang et al.)</text>
+<rect x="550" y="325" width="300" height="50" rx="6" fill="#7f1d1d" stroke="#ef4444" stroke-width="1.3"/>
+<text x="700" y="345" font-size="8" fill="#ef4444" text-anchor="middle">measured on real hardware: severe, confirmed</text>
+<text x="700" y="358" font-size="8" fill="#ef4444" text-anchor="middle">throughput collapse for the stalled flow (Zhang et al.)</text>
 </svg>

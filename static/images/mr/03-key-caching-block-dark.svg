@@ -7,40 +7,40 @@
 text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-weight: 400; stroke: currentColor; stroke-width: 0.35px; paint-order: stroke fill; }
 </style></defs>
 <defs>
-  <marker id="arrKCsky" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#38bdf8"/></marker>
-  <marker id="arrKChit" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#818cf8"/></marker>
-  <marker id="arrKCmiss" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#f87171"/></marker>
+  <marker id="arrKCsky" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#0ea5e9"/></marker>
+  <marker id="arrKChit" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6366f1"/></marker>
+  <marker id="arrKCmiss" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#ef4444"/></marker>
   <marker id="arrKCret" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/></marker>
 </defs>
 
-<text x="450" y="24" font-size="15" font-weight="500" fill="#f1f5f9" text-anchor="middle">The Shared On-Chip Cache: one SRAM, four resource types</text>
+<text x="450" y="24" font-size="15" font-weight="500" fill="#e2e8f0" text-anchor="middle">The Shared On-Chip Cache: one SRAM, four resource types</text>
 
-<rect x="60" y="55" width="780" height="195" rx="10" fill="#1e293b" stroke="#cbd5e1" stroke-width="2"/>
-<text x="450" y="76" font-size="12" font-weight="500" fill="#f1f5f9" text-anchor="middle">on-chip SRAM (shared, ~2MB)</text>
+<rect x="60" y="55" width="780" height="195" rx="10" fill="#1e293b" stroke="#94a3b8" stroke-width="2"/>
+<text x="450" y="76" font-size="12" font-weight="500" fill="#e2e8f0" text-anchor="middle">on-chip SRAM (shared, ~2MB)</text>
 
 <line x1="250" y1="86" x2="250" y2="222" stroke="#64748b" stroke-width="1.2" stroke-dasharray="4,3"/>
 <line x1="430" y1="86" x2="430" y2="222" stroke="#64748b" stroke-width="1.2" stroke-dasharray="4,3"/>
 <line x1="610" y1="86" x2="610" y2="222" stroke="#64748b" stroke-width="1.2" stroke-dasharray="4,3"/>
 
-<text x="160" y="98" font-size="11" font-weight="500" fill="#818cf8" text-anchor="middle">QPC entries</text>
+<text x="160" y="98" font-size="11" font-weight="500" fill="#6366f1" text-anchor="middle">QPC entries</text>
 <rect x="82" y="106" width="70" height="32" fill="#1e293b" stroke="#94a3b8"/>
 <rect x="158" y="106" width="70" height="32" fill="#1e293b" stroke="#94a3b8"/>
 <rect x="82" y="146" width="70" height="32" fill="#1e293b" stroke="#94a3b8"/>
 <rect x="158" y="146" width="70" height="32" fill="#1e293b" stroke="#94a3b8"/>
 
-<text x="340" y="98" font-size="11" font-weight="700" fill="#f1f5f9" text-anchor="middle">MTT/MPT entries</text>
-<rect x="262" y="106" width="70" height="32" fill="#1e293b" stroke="#cbd5e1" stroke-width="2"/>
-<rect x="338" y="106" width="70" height="32" fill="#1e293b" stroke="#cbd5e1" stroke-width="2"/>
-<rect x="262" y="146" width="70" height="32" fill="#1e293b" stroke="#cbd5e1" stroke-width="2"/>
-<rect x="338" y="146" width="70" height="32" fill="#1e293b" stroke="#cbd5e1" stroke-width="2"/>
+<text x="340" y="98" font-size="11" font-weight="700" fill="#e2e8f0" text-anchor="middle">MTT/MPT entries</text>
+<rect x="262" y="106" width="70" height="32" fill="#1e293b" stroke="#94a3b8" stroke-width="2"/>
+<rect x="338" y="106" width="70" height="32" fill="#1e293b" stroke="#94a3b8" stroke-width="2"/>
+<rect x="262" y="146" width="70" height="32" fill="#1e293b" stroke="#94a3b8" stroke-width="2"/>
+<rect x="338" y="146" width="70" height="32" fill="#1e293b" stroke="#94a3b8" stroke-width="2"/>
 
-<text x="520" y="98" font-size="11" font-weight="500" fill="#cbd5e1" text-anchor="middle">CQC entries</text>
+<text x="520" y="98" font-size="11" font-weight="500" fill="#94a3b8" text-anchor="middle">CQC entries</text>
 <rect x="442" y="106" width="70" height="32" fill="#1e293b" stroke="#94a3b8"/>
 <rect x="518" y="106" width="70" height="32" fill="#1e293b" stroke="#94a3b8"/>
 <rect x="442" y="146" width="70" height="32" fill="#1e293b" stroke="#94a3b8"/>
 <rect x="518" y="146" width="70" height="32" fill="#1e293b" stroke="#94a3b8"/>
 
-<text x="700" y="98" font-size="11" font-weight="500" fill="#cbd5e1" text-anchor="middle">EQC entries</text>
+<text x="700" y="98" font-size="11" font-weight="500" fill="#94a3b8" text-anchor="middle">EQC entries</text>
 <rect x="622" y="106" width="70" height="32" fill="#1e293b" stroke="#94a3b8"/>
 <rect x="698" y="106" width="70" height="32" fill="#1e293b" stroke="#94a3b8"/>
 <rect x="622" y="146" width="70" height="32" fill="#1e293b" stroke="#94a3b8"/>
@@ -49,22 +49,22 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <text x="450" y="200" font-size="9" fill="#94a3b8" text-anchor="middle">dashed separators only -- no fixed wall between resource types</text>
 
 <!-- DMA Engine actor -->
-<rect x="40" y="300" width="240" height="66" rx="6" fill="#0c4a6e" stroke="#38bdf8" stroke-width="1.5"/>
-<text x="160" y="320" font-size="11" font-weight="500" fill="#38bdf8" text-anchor="middle">DMA Engine --</text>
-<text x="160" y="335" font-size="10" fill="#38bdf8" text-anchor="middle">Address Translation stage</text>
-<text x="160" y="350" font-size="8" fill="#38bdf8" text-anchor="middle">resolving lkey/rkey to physical address</text>
+<rect x="40" y="300" width="240" height="66" rx="6" fill="#0c4a6e" stroke="#0ea5e9" stroke-width="1.5"/>
+<text x="160" y="320" font-size="11" font-weight="500" fill="#0ea5e9" text-anchor="middle">DMA Engine --</text>
+<text x="160" y="335" font-size="10" fill="#0ea5e9" text-anchor="middle">Address Translation stage</text>
+<text x="160" y="350" font-size="8" fill="#0ea5e9" text-anchor="middle">resolving lkey/rkey to physical address</text>
 
-<line x1="160" y1="300" x2="338" y2="232" stroke="#38bdf8" stroke-width="1.5" marker-end="url(#arrKCsky)"/>
+<line x1="160" y1="300" x2="338" y2="232" stroke="#0ea5e9" stroke-width="1.5" marker-end="url(#arrKCsky)"/>
 
-<line x1="360" y1="232" x2="220" y2="300" stroke="#818cf8" stroke-width="1.5" marker-end="url(#arrKChit)"/>
-<text x="300" y="258" font-size="11" font-weight="500" fill="#818cf8" text-anchor="middle">hit</text>
+<line x1="360" y1="232" x2="220" y2="300" stroke="#6366f1" stroke-width="1.5" marker-end="url(#arrKChit)"/>
+<text x="300" y="258" font-size="11" font-weight="500" fill="#6366f1" text-anchor="middle">hit</text>
 
-<line x1="380" y1="235" x2="650" y2="320" stroke="#f87171" stroke-width="1.5" marker-end="url(#arrKCmiss)"/>
-<text x="520" y="288" font-size="11" font-weight="500" fill="#f87171" text-anchor="middle">miss</text>
+<line x1="380" y1="235" x2="650" y2="320" stroke="#ef4444" stroke-width="1.5" marker-end="url(#arrKCmiss)"/>
+<text x="520" y="288" font-size="11" font-weight="500" fill="#ef4444" text-anchor="middle">miss</text>
 
 <!-- MR/Key Table -->
 <rect x="650" y="310" width="210" height="60" rx="8" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
-<text x="755" y="332" font-size="12" font-weight="500" fill="#cbd5e1" text-anchor="middle">MR/Key Table</text>
+<text x="755" y="332" font-size="12" font-weight="500" fill="#94a3b8" text-anchor="middle">MR/Key Table</text>
 <text x="755" y="347" font-size="9" fill="#94a3b8" text-anchor="middle">DRAM/HBM-backed</text>
 
 <path d="M650,352 L 420,352 L 420,236" fill="none" stroke="#94a3b8" stroke-width="1.4" stroke-dasharray="5,4" marker-end="url(#arrKCret)"/>

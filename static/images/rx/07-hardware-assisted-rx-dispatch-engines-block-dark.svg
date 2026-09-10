@@ -10,29 +10,29 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
   <marker id="arrHD1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/></marker>
 </defs>
 
-<text x="450" y="24" font-size="15" font-weight="500" fill="#f1f5f9" text-anchor="middle">Who runs the RX dispatch decision: the same spectrum, redrawn</text>
+<text x="450" y="24" font-size="15" font-weight="500" fill="#e2e8f0" text-anchor="middle">Who runs the RX dispatch decision: the same spectrum, redrawn</text>
 
-<rect x="60" y="55" width="220" height="70" rx="8" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
-<text x="170" y="82" font-size="12" font-weight="500" fill="#c7d2fe" text-anchor="middle">Fixed-function</text>
-<text x="170" y="98" font-size="12" font-weight="500" fill="#c7d2fe" text-anchor="middle">hardware</text>
-<text x="170" y="114" font-size="9" fill="#818cf8" text-anchor="middle">hardwired arrival gate</text>
+<rect x="60" y="55" width="220" height="70" rx="8" fill="#312e81" stroke="#6366f1" stroke-width="1.5"/>
+<text x="170" y="82" font-size="12" font-weight="500" fill="#a5b4fc" text-anchor="middle">Fixed-function</text>
+<text x="170" y="98" font-size="12" font-weight="500" fill="#a5b4fc" text-anchor="middle">hardware</text>
+<text x="170" y="114" font-size="9" fill="#6366f1" text-anchor="middle">hardwired arrival gate</text>
 
-<rect x="340" y="55" width="220" height="70" rx="8" fill="#312e81" stroke="#818cf8" stroke-width="1.5" stroke-dasharray="8,3"/>
-<text x="450" y="82" font-size="12" font-weight="500" fill="#c7d2fe" text-anchor="middle">Programmable</text>
-<text x="450" y="98" font-size="12" font-weight="500" fill="#c7d2fe" text-anchor="middle">hardware engine</text>
-<text x="450" y="114" font-size="9" fill="#818cf8" text-anchor="middle">firmware-adjustable policy</text>
+<rect x="340" y="55" width="220" height="70" rx="8" fill="#312e81" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="8,3"/>
+<text x="450" y="82" font-size="12" font-weight="500" fill="#a5b4fc" text-anchor="middle">Programmable</text>
+<text x="450" y="98" font-size="12" font-weight="500" fill="#a5b4fc" text-anchor="middle">hardware engine</text>
+<text x="450" y="114" font-size="9" fill="#6366f1" text-anchor="middle">firmware-adjustable policy</text>
 
 <rect x="620" y="55" width="200" height="70" rx="8" fill="#312e81" stroke="#94a3b8" stroke-width="1.5" opacity="0.4"/>
 <text x="720" y="82" font-size="12" font-weight="500" fill="#94a3b8" text-anchor="middle" opacity="0.7">Software-driven</text>
 <text x="720" y="98" font-size="9" fill="#94a3b8" text-anchor="middle" opacity="0.7">trap on every arrival</text>
 
-<rect x="600" y="140" width="240" height="70" rx="6" fill="#7f1d1d" stroke="#f87171" stroke-width="1.3" stroke-dasharray="4,3"/>
-<text x="720" y="160" font-size="9" font-weight="500" fill="#f87171" text-anchor="middle">a packet has already crossed the</text>
-<text x="720" y="173" font-size="9" fill="#f87171" text-anchor="middle">wire before this pipeline gets a say --</text>
-<text x="720" y="186" font-size="9" fill="#f87171" text-anchor="middle">a software round trip risks falling</text>
-<text x="720" y="199" font-size="9" fill="#f87171" text-anchor="middle">behind line rate, not just running late</text>
+<rect x="600" y="140" width="240" height="70" rx="6" fill="#7f1d1d" stroke="#ef4444" stroke-width="1.3" stroke-dasharray="4,3"/>
+<text x="720" y="160" font-size="9" font-weight="500" fill="#ef4444" text-anchor="middle">a packet has already crossed the</text>
+<text x="720" y="173" font-size="9" fill="#ef4444" text-anchor="middle">wire before this pipeline gets a say --</text>
+<text x="720" y="186" font-size="9" fill="#ef4444" text-anchor="middle">a software round trip risks falling</text>
+<text x="720" y="199" font-size="9" fill="#ef4444" text-anchor="middle">behind line rate, not just running late</text>
 
-<line x1="720" y1="126" x2="720" y2="138" stroke="#f87171" stroke-width="1.3" marker-end="url(#arrHD1)"/>
+<line x1="720" y1="126" x2="720" y2="138" stroke="#ef4444" stroke-width="1.3" marker-end="url(#arrHD1)"/>
 
 <text x="450" y="248" font-size="9" fill="#94a3b8" text-anchor="middle">Transmit scheduling faces no equivalent deadline -- Part 3's own software-driven example is real evidence that</text>
 <text x="450" y="261" font-size="9" fill="#94a3b8" text-anchor="middle">position is viable there. This is reasoned architectural inference for RX, not a documented fact about any chip.</text>

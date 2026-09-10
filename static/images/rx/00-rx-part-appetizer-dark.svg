@@ -7,38 +7,38 @@
 text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-weight: 400; stroke: currentColor; stroke-width: 0.35px; paint-order: stroke fill; }
 </style></defs>
 <defs>
-  <marker id="arrAppz4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#818cf8"/></marker>
+  <marker id="arrAppz4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6366f1"/></marker>
 </defs>
 
-<text x="510" y="26" font-size="16" font-weight="500" fill="#f1f5f9" text-anchor="middle">One packet, from wire to memory</text>
+<text x="510" y="26" font-size="16" font-weight="500" fill="#e2e8f0" text-anchor="middle">One packet, from wire to memory</text>
 <text x="510" y="44" font-size="11" fill="#94a3b8" text-anchor="middle">What the RX Pipeline does to one arriving packet -- and which chapter covers each step</text>
 
 <!-- Main spine -->
 <g>
-  <rect x="370" y="60" width="280" height="46" rx="6" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
-  <text x="510" y="80" font-size="12" font-weight="500" fill="#c7d2fe" text-anchor="middle">A packet lands, a receive slot is ready</text>
-  <text x="510" y="96" font-size="10" fill="#818cf8" text-anchor="middle">The Receive Queue Descriptor and Ring (4.1)</text>
+  <rect x="370" y="60" width="280" height="46" rx="6" fill="#312e81" stroke="#6366f1" stroke-width="1.5"/>
+  <text x="510" y="80" font-size="12" font-weight="500" fill="#a5b4fc" text-anchor="middle">A packet lands, a receive slot is ready</text>
+  <text x="510" y="96" font-size="10" fill="#6366f1" text-anchor="middle">The Receive Queue Descriptor and Ring (4.1)</text>
 </g>
-<line x1="510" y1="106" x2="510" y2="130" stroke="#818cf8" stroke-width="1.5" marker-end="url(#arrAppz4)"/>
+<line x1="510" y1="106" x2="510" y2="130" stroke="#6366f1" stroke-width="1.5" marker-end="url(#arrAppz4)"/>
 
 <g>
-  <rect x="370" y="130" width="280" height="46" rx="6" fill="#78350f" stroke="#fbbf24" stroke-width="1.5"/>
-  <text x="510" y="150" font-size="12" font-weight="500" fill="#fcd34d" text-anchor="middle">Headers parsed, destination QP resolved</text>
-  <text x="510" y="166" font-size="10" fill="#fcd34d" text-anchor="middle">RX Packet Parse (4.2)</text>
+  <rect x="370" y="130" width="280" height="46" rx="6" fill="#78350f" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="510" y="150" font-size="12" font-weight="500" fill="#fbbf24" text-anchor="middle">Headers parsed, destination QP resolved</text>
+  <text x="510" y="166" font-size="10" fill="#fbbf24" text-anchor="middle">RX Packet Parse (4.2)</text>
 </g>
-<line x1="510" y1="176" x2="510" y2="200" stroke="#818cf8" stroke-width="1.5" marker-end="url(#arrAppz4)"/>
+<line x1="510" y1="176" x2="510" y2="200" stroke="#6366f1" stroke-width="1.5" marker-end="url(#arrAppz4)"/>
 
 <g>
-  <rect x="370" y="200" width="280" height="46" rx="6" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
-  <text x="510" y="220" font-size="12" font-weight="500" fill="#c7d2fe" text-anchor="middle">PSN checked -- in order, or not</text>
-  <text x="510" y="236" font-size="10" fill="#818cf8" text-anchor="middle">PSN Check and Out-of-Order Arrival (4.3)</text>
+  <rect x="370" y="200" width="280" height="46" rx="6" fill="#312e81" stroke="#6366f1" stroke-width="1.5"/>
+  <text x="510" y="220" font-size="12" font-weight="500" fill="#a5b4fc" text-anchor="middle">PSN checked -- in order, or not</text>
+  <text x="510" y="236" font-size="10" fill="#6366f1" text-anchor="middle">PSN Check and Out-of-Order Arrival (4.3)</text>
 </g>
-<line x1="510" y1="246" x2="510" y2="270" stroke="#818cf8" stroke-width="1.5" marker-end="url(#arrAppz4)"/>
+<line x1="510" y1="246" x2="510" y2="270" stroke="#6366f1" stroke-width="1.5" marker-end="url(#arrAppz4)"/>
 
 <g>
-  <rect x="370" y="270" width="280" height="46" rx="6" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
-  <text x="510" y="290" font-size="12" font-weight="500" fill="#c7d2fe" text-anchor="middle">Reassembled if the message spans packets</text>
-  <text x="510" y="306" font-size="10" fill="#818cf8" text-anchor="middle">Multi-Packet Reassembly (4.4)</text>
+  <rect x="370" y="270" width="280" height="46" rx="6" fill="#312e81" stroke="#6366f1" stroke-width="1.5"/>
+  <text x="510" y="290" font-size="12" font-weight="500" fill="#a5b4fc" text-anchor="middle">Reassembled if the message spans packets</text>
+  <text x="510" y="306" font-size="10" fill="#6366f1" text-anchor="middle">Multi-Packet Reassembly (4.4)</text>
 </g>
 
 <!-- Fan-out into three coexisting hazards -->
@@ -50,23 +50,23 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <text x="510" y="334" font-size="9" fill="#94a3b8" text-anchor="middle">any of these can happen along the way</text>
 
 <g>
-  <rect x="40" y="360" width="280" height="60" rx="6" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
-  <text x="180" y="382" font-size="12" font-weight="500" fill="#c7d2fe" text-anchor="middle">This QP's own receive path stalls</text>
-  <text x="180" y="398" font-size="10" fill="#818cf8" text-anchor="middle">Single-QP RX</text>
-  <text x="180" y="411" font-size="10" fill="#818cf8" text-anchor="middle">Stalls (4.5)</text>
+  <rect x="40" y="360" width="280" height="60" rx="6" fill="#312e81" stroke="#6366f1" stroke-width="1.5"/>
+  <text x="180" y="382" font-size="12" font-weight="500" fill="#a5b4fc" text-anchor="middle">This QP's own receive path stalls</text>
+  <text x="180" y="398" font-size="10" fill="#6366f1" text-anchor="middle">Single-QP RX</text>
+  <text x="180" y="411" font-size="10" fill="#6366f1" text-anchor="middle">Stalls (4.5)</text>
 </g>
 
 <g>
-  <rect x="370" y="360" width="280" height="60" rx="6" fill="#78350f" stroke="#fbbf24" stroke-width="1.5"/>
-  <text x="510" y="382" font-size="12" font-weight="500" fill="#fcd34d" text-anchor="middle">Many QPs' packets arrive interleaved</text>
-  <text x="510" y="398" font-size="10" fill="#fcd34d" text-anchor="middle">Multi-QP RX Arbitration (4.6),</text>
-  <text x="510" y="411" font-size="10" fill="#fcd34d" text-anchor="middle">Hardware-Assisted Dispatch (4.7)</text>
+  <rect x="370" y="360" width="280" height="60" rx="6" fill="#78350f" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="510" y="382" font-size="12" font-weight="500" fill="#fbbf24" text-anchor="middle">Many QPs' packets arrive interleaved</text>
+  <text x="510" y="398" font-size="10" fill="#fbbf24" text-anchor="middle">Multi-QP RX Arbitration (4.6),</text>
+  <text x="510" y="411" font-size="10" fill="#fbbf24" text-anchor="middle">Hardware-Assisted Dispatch (4.7)</text>
 </g>
 
 <g>
-  <rect x="700" y="360" width="280" height="60" rx="6" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
-  <text x="840" y="382" font-size="12" font-weight="500" fill="#c7d2fe" text-anchor="middle">QP resets, packet mid-flight</text>
-  <text x="840" y="398" font-size="10" fill="#818cf8" text-anchor="middle">Mid-Transaction</text>
-  <text x="840" y="411" font-size="10" fill="#818cf8" text-anchor="middle">RX Reset (4.8)</text>
+  <rect x="700" y="360" width="280" height="60" rx="6" fill="#312e81" stroke="#6366f1" stroke-width="1.5"/>
+  <text x="840" y="382" font-size="12" font-weight="500" fill="#a5b4fc" text-anchor="middle">QP resets, packet mid-flight</text>
+  <text x="840" y="398" font-size="10" fill="#6366f1" text-anchor="middle">Mid-Transaction</text>
+  <text x="840" y="411" font-size="10" fill="#6366f1" text-anchor="middle">RX Reset (4.8)</text>
 </g>
 </svg>

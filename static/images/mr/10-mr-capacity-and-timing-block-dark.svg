@@ -7,67 +7,67 @@
 text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-weight: 400; stroke: currentColor; stroke-width: 0.35px; paint-order: stroke fill; }
 </style></defs>
 <defs>
-  <marker id="arrMC" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#818cf8"/></marker>
-  <marker id="arrMCAmber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#fcd34d"/></marker>
+  <marker id="arrMC" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6366f1"/></marker>
+  <marker id="arrMCAmber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#fbbf24"/></marker>
 </defs>
 
 <!-- divider -->
 <line x1="490" y1="20" x2="490" y2="540" stroke="#475569" stroke-width="1.5"/>
 
 <!-- ============ LEFT PANEL: MTT scales with size ============ -->
-<text x="245" y="34" font-size="15" font-weight="500" fill="#f1f5f9" text-anchor="middle">MTT count scales with size, not existence</text>
+<text x="245" y="34" font-size="15" font-weight="500" fill="#e2e8f0" text-anchor="middle">MTT count scales with size, not existence</text>
 
 <g id="mpt-large">
-  <rect x="30" y="90" width="120" height="50" rx="4" fill="#78350f" stroke="#fbbf24" stroke-width="1.5"/>
-  <text x="90" y="120" font-size="12" font-weight="500" fill="#fcd34d" text-anchor="middle">MPT entry</text>
+  <rect x="30" y="90" width="120" height="50" rx="4" fill="#78350f" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="90" y="120" font-size="12" font-weight="500" fill="#fbbf24" text-anchor="middle">MPT entry</text>
 </g>
 <text x="90" y="160" font-size="11" fill="#94a3b8" text-anchor="middle">large registration</text>
 
 <g id="mtt-large-fan">
-  <rect x="220" y="70" width="46" height="26" rx="3" fill="#78350f" stroke="#fbbf24" stroke-width="1.2"/>
-  <rect x="220" y="102" width="46" height="26" rx="3" fill="#78350f" stroke="#fbbf24" stroke-width="1.2"/>
-  <rect x="220" y="134" width="46" height="26" rx="3" fill="#78350f" stroke="#fbbf24" stroke-width="1.2"/>
-  <rect x="280" y="70" width="46" height="26" rx="3" fill="#78350f" stroke="#fbbf24" stroke-width="1.2"/>
-  <rect x="280" y="102" width="46" height="26" rx="3" fill="#78350f" stroke="#fbbf24" stroke-width="1.2"/>
-  <rect x="280" y="134" width="46" height="26" rx="3" fill="#78350f" stroke="#fbbf24" stroke-width="1.2"/>
-  <line x1="150" y1="115" x2="216" y2="115" stroke="#fcd34d" stroke-width="1.5" marker-end="url(#arrMCAmber)"/>
+  <rect x="220" y="70" width="46" height="26" rx="3" fill="#78350f" stroke="#f59e0b" stroke-width="1.2"/>
+  <rect x="220" y="102" width="46" height="26" rx="3" fill="#78350f" stroke="#f59e0b" stroke-width="1.2"/>
+  <rect x="220" y="134" width="46" height="26" rx="3" fill="#78350f" stroke="#f59e0b" stroke-width="1.2"/>
+  <rect x="280" y="70" width="46" height="26" rx="3" fill="#78350f" stroke="#f59e0b" stroke-width="1.2"/>
+  <rect x="280" y="102" width="46" height="26" rx="3" fill="#78350f" stroke="#f59e0b" stroke-width="1.2"/>
+  <rect x="280" y="134" width="46" height="26" rx="3" fill="#78350f" stroke="#f59e0b" stroke-width="1.2"/>
+  <line x1="150" y1="115" x2="216" y2="115" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#arrMCAmber)"/>
 </g>
 <text x="273" y="178" font-size="11" fill="#94a3b8" text-anchor="middle">6 MTT entries -- one per page</text>
 
 <g id="mpt-small">
-  <rect x="30" y="240" width="120" height="50" rx="4" fill="#78350f" stroke="#fbbf24" stroke-width="1.5"/>
-  <text x="90" y="270" font-size="12" font-weight="500" fill="#fcd34d" text-anchor="middle">MPT entry</text>
+  <rect x="30" y="240" width="120" height="50" rx="4" fill="#78350f" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="90" y="270" font-size="12" font-weight="500" fill="#fbbf24" text-anchor="middle">MPT entry</text>
 </g>
 <text x="90" y="310" font-size="11" fill="#94a3b8" text-anchor="middle">small registration</text>
 
 <g id="mtt-small-fan">
-  <rect x="220" y="252" width="46" height="26" rx="3" fill="#78350f" stroke="#fbbf24" stroke-width="1.2"/>
-  <rect x="220" y="284" width="46" height="26" rx="3" fill="#78350f" stroke="#fbbf24" stroke-width="1.2"/>
-  <line x1="150" y1="265" x2="216" y2="265" stroke="#fcd34d" stroke-width="1.5" marker-end="url(#arrMCAmber)"/>
+  <rect x="220" y="252" width="46" height="26" rx="3" fill="#78350f" stroke="#f59e0b" stroke-width="1.2"/>
+  <rect x="220" y="284" width="46" height="26" rx="3" fill="#78350f" stroke="#f59e0b" stroke-width="1.2"/>
+  <line x1="150" y1="265" x2="216" y2="265" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#arrMCAmber)"/>
 </g>
 <text x="243" y="330" font-size="11" fill="#94a3b8" text-anchor="middle">2 MTT entries</text>
 
-<text x="245" y="470" font-size="12" font-weight="500" fill="#f1f5f9" text-anchor="middle">Same MPT cost either way; MTT cost tracks page count.</text>
+<text x="245" y="470" font-size="12" font-weight="500" fill="#e2e8f0" text-anchor="middle">Same MPT cost either way; MTT cost tracks page count.</text>
 <text x="245" y="488" font-size="12" fill="#94a3b8" text-anchor="middle">"Maximum MR count" only means something next to an assumed size.</text>
 
 <!-- ============ RIGHT PANEL: stage, then atomic swap ============ -->
-<text x="745" y="34" font-size="15" font-weight="500" fill="#f1f5f9" text-anchor="middle">Registration stages, then swaps in atomically</text>
+<text x="745" y="34" font-size="15" font-weight="500" fill="#e2e8f0" text-anchor="middle">Registration stages, then swaps in atomically</text>
 
 <g id="staging-area">
-  <rect x="600" y="70" width="290" height="90" rx="6" fill="#0c4a6e" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="4,3"/>
-  <text x="745" y="100" font-size="13" font-weight="500" fill="#38bdf8" text-anchor="middle">Staging area (control-plane side)</text>
-  <text x="745" y="120" font-size="11" fill="#38bdf8" text-anchor="middle">MPT entry + every MTT entry</text>
-  <text x="745" y="136" font-size="11" fill="#38bdf8" text-anchor="middle">built here first, none visible yet</text>
+  <rect x="600" y="70" width="290" height="90" rx="6" fill="#0c4a6e" stroke="#0ea5e9" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <text x="745" y="100" font-size="13" font-weight="500" fill="#0ea5e9" text-anchor="middle">Staging area (control-plane side)</text>
+  <text x="745" y="120" font-size="11" fill="#0ea5e9" text-anchor="middle">MPT entry + every MTT entry</text>
+  <text x="745" y="136" font-size="11" fill="#0ea5e9" text-anchor="middle">built here first, none visible yet</text>
 </g>
 
-<line x1="745" y1="160" x2="745" y2="230" stroke="#818cf8" stroke-width="1.5" marker-end="url(#arrMC)"/>
-<text x="800" y="200" font-size="11" fill="#818cf8" text-anchor="middle">atomic swap --</text>
-<text x="800" y="214" font-size="11" fill="#818cf8" text-anchor="middle">only once complete</text>
+<line x1="745" y1="160" x2="745" y2="230" stroke="#6366f1" stroke-width="1.5" marker-end="url(#arrMC)"/>
+<text x="800" y="200" font-size="11" fill="#6366f1" text-anchor="middle">atomic swap --</text>
+<text x="800" y="214" font-size="11" fill="#6366f1" text-anchor="middle">only once complete</text>
 
 <g id="live-structure">
-  <rect x="600" y="240" width="290" height="70" rx="6" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
-  <text x="745" y="268" font-size="13" font-weight="500" fill="#c7d2fe" text-anchor="middle">Live MPT/MTT chain</text>
-  <text x="745" y="286" font-size="11" fill="#818cf8" text-anchor="middle">what the DMA Engine actually reads</text>
+  <rect x="600" y="240" width="290" height="70" rx="6" fill="#312e81" stroke="#6366f1" stroke-width="1.5"/>
+  <text x="745" y="268" font-size="13" font-weight="500" fill="#a5b4fc" text-anchor="middle">Live MPT/MTT chain</text>
+  <text x="745" y="286" font-size="11" fill="#6366f1" text-anchor="middle">what the DMA Engine actually reads</text>
 </g>
 
 <path d="M540,360 L540,275 L596,275" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arrMC)"/>
@@ -76,6 +76,6 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <text x="540" y="412" font-size="11" fill="#94a3b8" text-anchor="middle">the prior, still-valid</text>
 <text x="540" y="428" font-size="11" fill="#94a3b8" text-anchor="middle">state -- never a partial one</text>
 
-<text x="745" y="470" font-size="12" font-weight="500" fill="#f1f5f9" text-anchor="middle">This is why a key never resolves</text>
-<text x="745" y="488" font-size="12" font-weight="500" fill="#f1f5f9" text-anchor="middle">against a half-built translation chain.</text>
+<text x="745" y="470" font-size="12" font-weight="500" fill="#e2e8f0" text-anchor="middle">This is why a key never resolves</text>
+<text x="745" y="488" font-size="12" font-weight="500" fill="#e2e8f0" text-anchor="middle">against a half-built translation chain.</text>
 </svg>

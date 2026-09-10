@@ -7,70 +7,70 @@
 text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-weight: 400; stroke: currentColor; stroke-width: 0.35px; paint-order: stroke fill; }
 </style></defs>
 <defs>
-  <marker id="arrOT1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#818cf8"/></marker>
+  <marker id="arrOT1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6366f1"/></marker>
 </defs>
 
-<text x="450" y="24" font-size="16" font-weight="500" fill="#f1f5f9" text-anchor="middle">One Transaction: RDMA Write with Immediate -- Local and Remote</text>
+<text x="450" y="24" font-size="16" font-weight="500" fill="#e2e8f0" text-anchor="middle">One Transaction: RDMA Write with Immediate -- Local and Remote</text>
 <text x="450" y="42" font-size="11" fill="#94a3b8" text-anchor="middle">Bring-up (QP in RTS, MR registered, CQ created) already complete before this timeline starts</text>
 
-<rect x="40" y="52" width="220" height="34" rx="8" fill="#0c4a6e" stroke="#38bdf8" stroke-width="1.5"/>
-<text x="150" y="74" font-size="15" font-weight="500" fill="#38bdf8" text-anchor="middle">Master (local)</text>
+<rect x="40" y="52" width="220" height="34" rx="8" fill="#0c4a6e" stroke="#0ea5e9" stroke-width="1.5"/>
+<text x="150" y="74" font-size="15" font-weight="500" fill="#0ea5e9" text-anchor="middle">Master (local)</text>
 
-<rect x="560" y="52" width="220" height="34" rx="8" fill="#0c4a6e" stroke="#38bdf8" stroke-width="1.5"/>
-<text x="670" y="74" font-size="15" font-weight="500" fill="#38bdf8" text-anchor="middle">Slave (remote)</text>
+<rect x="560" y="52" width="220" height="34" rx="8" fill="#0c4a6e" stroke="#0ea5e9" stroke-width="1.5"/>
+<text x="670" y="74" font-size="15" font-weight="500" fill="#0ea5e9" text-anchor="middle">Slave (remote)</text>
 
 <line x1="150" y1="88" x2="150" y2="680" stroke="#64748b" stroke-width="1" stroke-dasharray="4,3"/>
 <line x1="670" y1="88" x2="670" y2="680" stroke="#64748b" stroke-width="1" stroke-dasharray="4,3"/>
 
-<rect x="30" y="96" width="240" height="46" rx="6" fill="#0c4a6e" stroke="#38bdf8" stroke-width="1.5"/>
-<text x="150" y="116" font-size="12" font-weight="500" fill="#38bdf8" text-anchor="middle">App posts WRITE_IMM Work Request</text>
+<rect x="30" y="96" width="240" height="46" rx="6" fill="#0c4a6e" stroke="#0ea5e9" stroke-width="1.5"/>
+<text x="150" y="116" font-size="12" font-weight="500" fill="#0ea5e9" text-anchor="middle">App posts WRITE_IMM Work Request</text>
 <text x="150" y="133" font-size="10" fill="#94a3b8" text-anchor="middle">raddr+rkey, lkey, imm</text>
 
-<rect x="30" y="152" width="240" height="44" rx="6" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
-<text x="150" y="170" font-size="12" font-weight="500" fill="#c7d2fe" text-anchor="middle">TX engine: WQE fetch</text>
-<text x="150" y="186" font-size="10" fill="#818cf8" text-anchor="middle">lkey check vs Key Table (Part 2)</text>
+<rect x="30" y="152" width="240" height="44" rx="6" fill="#312e81" stroke="#6366f1" stroke-width="1.5"/>
+<text x="150" y="170" font-size="12" font-weight="500" fill="#a5b4fc" text-anchor="middle">TX engine: WQE fetch</text>
+<text x="150" y="186" font-size="10" fill="#6366f1" text-anchor="middle">lkey check vs Key Table (Part 2)</text>
 
-<rect x="30" y="206" width="240" height="44" rx="6" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
-<text x="150" y="224" font-size="12" font-weight="500" fill="#c7d2fe" text-anchor="middle">Build BTH+RETH+IMMDT</text>
-<text x="150" y="240" font-size="10" fill="#818cf8" text-anchor="middle">PSN=N</text>
+<rect x="30" y="206" width="240" height="44" rx="6" fill="#312e81" stroke="#6366f1" stroke-width="1.5"/>
+<text x="150" y="224" font-size="12" font-weight="500" fill="#a5b4fc" text-anchor="middle">Build BTH+RETH+IMMDT</text>
+<text x="150" y="240" font-size="10" fill="#6366f1" text-anchor="middle">PSN=N</text>
 
 <rect x="30" y="260" width="240" height="30" rx="6" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4,3"/>
 <text x="150" y="279" font-size="10" fill="#94a3b8" text-anchor="middle">rate limiter may hold/pace (Part 6)</text>
 
-<line x1="270" y1="312" x2="550" y2="312" stroke="#818cf8" stroke-width="1.5" marker-end="url(#arrOT1)"/>
-<text x="410" y="304" font-size="10" fill="#818cf8" text-anchor="middle">WRITE_ONLY_WITH_IMMEDIATE PSN=N, DQPN</text>
+<line x1="270" y1="312" x2="550" y2="312" stroke="#6366f1" stroke-width="1.5" marker-end="url(#arrOT1)"/>
+<text x="410" y="304" font-size="10" fill="#6366f1" text-anchor="middle">WRITE_ONLY_WITH_IMMEDIATE PSN=N, DQPN</text>
 
-<rect x="550" y="290" width="240" height="44" rx="6" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
-<text x="670" y="308" font-size="12" font-weight="500" fill="#c7d2fe" text-anchor="middle">RX engine</text>
-<text x="670" y="324" font-size="10" fill="#818cf8" text-anchor="middle">parse BTH, PSN compare</text>
+<rect x="550" y="290" width="240" height="44" rx="6" fill="#312e81" stroke="#6366f1" stroke-width="1.5"/>
+<text x="670" y="308" font-size="12" font-weight="500" fill="#a5b4fc" text-anchor="middle">RX engine</text>
+<text x="670" y="324" font-size="10" fill="#6366f1" text-anchor="middle">parse BTH, PSN compare</text>
 
-<rect x="550" y="344" width="240" height="44" rx="6" fill="#78350f" stroke="#fbbf24" stroke-width="1.5"/>
-<text x="670" y="362" font-size="12" font-weight="500" fill="#fcd34d" text-anchor="middle">Resolve RETH vs Key Table (Part 2)</text>
-<text x="670" y="378" font-size="10" fill="#fcd34d" text-anchor="middle">rkey: bounds + permission check</text>
+<rect x="550" y="344" width="240" height="44" rx="6" fill="#78350f" stroke="#f59e0b" stroke-width="1.5"/>
+<text x="670" y="362" font-size="12" font-weight="500" fill="#fbbf24" text-anchor="middle">Resolve RETH vs Key Table (Part 2)</text>
+<text x="670" y="378" font-size="10" fill="#fbbf24" text-anchor="middle">rkey: bounds + permission check</text>
 
-<rect x="550" y="396" width="240" height="30" rx="6" fill="#7f1d1d" stroke="#f87171" stroke-width="1.5" stroke-dasharray="4,3"/>
-<text x="670" y="415" font-size="10" fill="#f87171" text-anchor="middle">fail -&gt; NAK, responder QP -&gt; ERROR</text>
+<rect x="550" y="396" width="240" height="30" rx="6" fill="#7f1d1d" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="670" y="415" font-size="10" fill="#ef4444" text-anchor="middle">fail -&gt; NAK, responder QP -&gt; ERROR</text>
 
-<rect x="550" y="434" width="240" height="44" rx="6" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
-<text x="670" y="452" font-size="12" font-weight="500" fill="#c7d2fe" text-anchor="middle">DMA engine (Part 8)</text>
-<text x="670" y="468" font-size="10" fill="#818cf8" text-anchor="middle">places payload in host memory</text>
+<rect x="550" y="434" width="240" height="44" rx="6" fill="#312e81" stroke="#6366f1" stroke-width="1.5"/>
+<text x="670" y="452" font-size="12" font-weight="500" fill="#a5b4fc" text-anchor="middle">DMA engine (Part 8)</text>
+<text x="670" y="468" font-size="10" fill="#6366f1" text-anchor="middle">places payload in host memory</text>
 
-<rect x="550" y="486" width="240" height="48" rx="6" fill="#78350f" stroke="#fbbf24" stroke-width="1.5"/>
-<text x="670" y="504" font-size="12" font-weight="500" fill="#fcd34d" text-anchor="middle">consume RQ WQE (carries imm)</text>
-<text x="670" y="520" font-size="10" fill="#fcd34d" text-anchor="middle">post receive CQE w/ imm (Part 7)</text>
+<rect x="550" y="486" width="240" height="48" rx="6" fill="#78350f" stroke="#f59e0b" stroke-width="1.5"/>
+<text x="670" y="504" font-size="12" font-weight="500" fill="#fbbf24" text-anchor="middle">consume RQ WQE (carries imm)</text>
+<text x="670" y="520" font-size="10" fill="#fbbf24" text-anchor="middle">post receive CQE w/ imm (Part 7)</text>
 
 <rect x="550" y="542" width="240" height="38" rx="6" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
-<text x="670" y="565" font-size="11" fill="#cbd5e1" text-anchor="middle">ACK generation</text>
+<text x="670" y="565" font-size="11" fill="#94a3b8" text-anchor="middle">ACK generation</text>
 
-<line x1="670" y1="598" x2="150" y2="598" stroke="#818cf8" stroke-width="1.5" marker-end="url(#arrOT1)"/>
-<text x="410" y="590" font-size="11" fill="#818cf8" text-anchor="middle">ACK PSN=N</text>
+<line x1="670" y1="598" x2="150" y2="598" stroke="#6366f1" stroke-width="1.5" marker-end="url(#arrOT1)"/>
+<text x="410" y="590" font-size="11" fill="#6366f1" text-anchor="middle">ACK PSN=N</text>
 
-<rect x="30" y="576" width="240" height="44" rx="6" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
-<text x="150" y="594" font-size="12" font-weight="500" fill="#c7d2fe" text-anchor="middle">TX engine: match PSN</text>
-<text x="150" y="610" font-size="10" fill="#818cf8" text-anchor="middle">disarm retry timer (Part 5)</text>
+<rect x="30" y="576" width="240" height="44" rx="6" fill="#312e81" stroke="#6366f1" stroke-width="1.5"/>
+<text x="150" y="594" font-size="12" font-weight="500" fill="#a5b4fc" text-anchor="middle">TX engine: match PSN</text>
+<text x="150" y="610" font-size="10" fill="#6366f1" text-anchor="middle">disarm retry timer (Part 5)</text>
 
 <rect x="30" y="628" width="240" height="38" rx="6" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
-<text x="150" y="651" font-size="11" fill="#cbd5e1" text-anchor="middle">send CQE posted (delivered, Part 7)</text>
+<text x="150" y="651" font-size="11" fill="#94a3b8" text-anchor="middle">send CQE posted (delivered, Part 7)</text>
 
 <text x="450" y="700" font-size="12" fill="#94a3b8" text-anchor="middle">This is WRITE-with-Immediate's timeline -- a plain WRITE skips the RQ-consumption and receive-CQE step entirely.</text>
 <text x="450" y="716" font-size="12" fill="#94a3b8" text-anchor="middle">Each labeled Part owns the mechanism named at that stage; this diagram only maps where it sits in the sequence.</text>

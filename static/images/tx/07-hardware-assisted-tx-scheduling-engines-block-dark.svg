@@ -10,7 +10,7 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
   <marker id="arrTS1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/></marker>
 </defs>
 
-<text x="450" y="24" font-size="15" font-weight="500" fill="#f1f5f9" text-anchor="middle">Who runs TX scheduling: the same spectrum, with real evidence at two points</text>
+<text x="450" y="24" font-size="15" font-weight="500" fill="#e2e8f0" text-anchor="middle">Who runs TX scheduling: the same spectrum, with real evidence at two points</text>
 
 <rect x="40" y="55" width="230" height="80" rx="8" fill="#312e81" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="6,3" opacity="0.5"/>
 <text x="155" y="80" font-size="12" font-weight="500" fill="#94a3b8" text-anchor="middle" opacity="0.8">Fixed-function</text>
@@ -18,26 +18,26 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <text x="155" y="118" font-size="7.5" fill="#94a3b8" text-anchor="middle" opacity="0.9">no public evidence any real RNIC</text>
 <text x="155" y="129" font-size="7.5" fill="#94a3b8" text-anchor="middle" opacity="0.9">ships this -- spectrum completeness only</text>
 
-<rect x="310" y="55" width="230" height="80" rx="8" fill="#312e81" stroke="#818cf8" stroke-width="1.5" stroke-dasharray="8,3"/>
-<text x="425" y="80" font-size="12" font-weight="500" fill="#c7d2fe" text-anchor="middle">Programmable</text>
-<text x="425" y="97" font-size="9" fill="#818cf8" text-anchor="middle">hardware engine, firmware-tunable</text>
-<text x="425" y="118" font-size="7.5" fill="#818cf8" text-anchor="middle">NVIDIA: internal QoS policy,</text>
-<text x="425" y="129" font-size="7.5" fill="#818cf8" text-anchor="middle">firmware-adjustable (Kong et al., App. B)</text>
+<rect x="310" y="55" width="230" height="80" rx="8" fill="#312e81" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="8,3"/>
+<text x="425" y="80" font-size="12" font-weight="500" fill="#a5b4fc" text-anchor="middle">Programmable</text>
+<text x="425" y="97" font-size="9" fill="#6366f1" text-anchor="middle">hardware engine, firmware-tunable</text>
+<text x="425" y="118" font-size="7.5" fill="#6366f1" text-anchor="middle">NVIDIA: internal QoS policy,</text>
+<text x="425" y="129" font-size="7.5" fill="#6366f1" text-anchor="middle">firmware-adjustable (Kong et al., App. B)</text>
 
-<rect x="580" y="55" width="230" height="80" rx="8" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
-<text x="695" y="80" font-size="12" font-weight="500" fill="#c7d2fe" text-anchor="middle">Software-driven</text>
-<text x="695" y="97" font-size="9" fill="#818cf8" text-anchor="middle">trap per scheduling decision</text>
-<text x="695" y="118" font-size="7.5" fill="#818cf8" text-anchor="middle">Justitia: built because the targeted RNICs</text>
-<text x="695" y="129" font-size="7.5" fill="#818cf8" text-anchor="middle">had no programmable scheduler (2019/2022)</text>
+<rect x="580" y="55" width="230" height="80" rx="8" fill="#312e81" stroke="#6366f1" stroke-width="1.5"/>
+<text x="695" y="80" font-size="12" font-weight="500" fill="#a5b4fc" text-anchor="middle">Software-driven</text>
+<text x="695" y="97" font-size="9" fill="#6366f1" text-anchor="middle">trap per scheduling decision</text>
+<text x="695" y="118" font-size="7.5" fill="#6366f1" text-anchor="middle">Justitia: built because the targeted RNICs</text>
+<text x="695" y="129" font-size="7.5" fill="#6366f1" text-anchor="middle">had no programmable scheduler (2019/2022)</text>
 
 <rect x="250" y="180" width="360" height="56" rx="6" fill="#1e293b" stroke="#94a3b8" stroke-width="1.3"/>
-<text x="430" y="200" font-size="10" font-weight="500" fill="#cbd5e1" text-anchor="middle">IEEE 802.1Qaz (ETS)</text>
+<text x="430" y="200" font-size="10" font-weight="500" fill="#94a3b8" text-anchor="middle">IEEE 802.1Qaz (ETS)</text>
 <text x="430" y="214" font-size="8" fill="#94a3b8" text-anchor="middle">switch/link-level scheduling analog --</text>
 <text x="430" y="226" font-size="8" fill="#94a3b8" text-anchor="middle">NOT this chapter's mechanism</text>
 
 <line x1="430" y1="180" x2="430" y2="145" stroke="#94a3b8" stroke-width="1.3" stroke-dasharray="4,3"/>
-<line x1="410" y1="160" x2="450" y2="170" stroke="#f87171" stroke-width="1.5"/>
-<line x1="450" y1="160" x2="410" y2="170" stroke="#f87171" stroke-width="1.5"/>
+<line x1="410" y1="160" x2="450" y2="170" stroke="#ef4444" stroke-width="1.5"/>
+<line x1="450" y1="160" x2="410" y2="170" stroke="#ef4444" stroke-width="1.5"/>
 
 <text x="450" y="270" font-size="9" fill="#94a3b8" text-anchor="middle">Same shape of policy -- priority plus weighted-share hybrid -- but a different layer of the stack entirely:</text>
 <text x="450" y="283" font-size="9" fill="#94a3b8" text-anchor="middle">ETS schedules already-built Ethernet frames moving through a fabric, not WQEs before a packet exists.</text>
