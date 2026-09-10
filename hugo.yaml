@@ -30,6 +30,9 @@ params:
     displayCopyright: false
     displayPoweredBy: false
 
+  imageZoom:
+    enable: true
+
   displayUpdatedDate: true
   dateFormat: "January 2, 2006"
 
