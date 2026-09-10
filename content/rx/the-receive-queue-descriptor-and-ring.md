@@ -3,7 +3,7 @@ title: "The Receive Queue Descriptor and Ring"
 weight: 1
 date: 2026-09-09
 publishDate: 2026-09-09
-draft: true
+draft: false
 description: "A Send Queue entry tells hardware what to do. A Receive Queue entry tells hardware only where -- no opcode, no remote address, nothing to send. This chapter is the simplest descriptor in the book, and the ring that holds it in strict, unaddressed order."
 next: /rx/rx-packet-parse
 ---

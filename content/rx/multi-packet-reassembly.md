@@ -3,7 +3,7 @@ title: "Multi-Packet Reassembly"
 weight: 4
 date: 2026-09-09
 publishDate: 2026-09-09
-draft: true
+draft: false
 description: "RETH names a destination address exactly once, on a multi-packet RDMA WRITE's first packet, and never again. Every packet after it has to land somewhere that first packet never restated -- which means something has to remember, and this chapter is what that something actually holds for the RETH-seeded case specifically."
 prev: /rx/psn-check-and-out-of-order-arrival
 next: /rx/single-qp-rx-stalls

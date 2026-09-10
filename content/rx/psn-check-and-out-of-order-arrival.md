@@ -3,7 +3,7 @@ title: "PSN Check and Out-of-Order Arrival"
 weight: 3
 date: 2026-09-09
 publishDate: 2026-09-09
-draft: true
+draft: false
 description: "A packet sequence number is a transaction tag, not a timestamp -- and the three-way branch it drives (matches, too low, too high) is the single gate every parsed packet has to clear before it means anything at all. This chapter is that gate, and the one place a resolved packet actually hands off to memory."
 prev: /rx/rx-packet-parse
 next: /rx/multi-packet-reassembly

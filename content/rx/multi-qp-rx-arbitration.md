@@ -3,7 +3,7 @@ title: "Multi-QP RX Arbitration"
 weight: 6
 date: 2026-09-09
 publishDate: 2026-09-09
-draft: true
+draft: false
 description: "The wire does not ask permission before interleaving packets from a dozen different Queue Pairs. One shared parser and one shared placement stage still have to service them in some order -- the same policy question Part 3 asked of the transmit side, asked here of arrivals nothing chose to interleave in the first place."
 prev: /rx/single-qp-rx-stalls
 next: /rx/hardware-assisted-rx-dispatch-engines

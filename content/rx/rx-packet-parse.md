@@ -3,7 +3,7 @@ title: "RX Packet Parse"
 weight: 2
 date: 2026-09-09
 publishDate: 2026-09-09
-draft: true
+draft: false
 description: "Every check this chapter runs is ordered by cost, cheapest first -- a malformed header gets rejected before a single cycle goes toward the one check that actually costs something. This is the stage that takes a frame apart, in exactly the reverse order Part 3 built one."
 prev: /rx/the-receive-queue-descriptor-and-ring
 next: /rx/psn-check-and-out-of-order-arrival

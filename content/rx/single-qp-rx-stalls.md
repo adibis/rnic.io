@@ -3,7 +3,7 @@ title: "Single-QP RX Stalls"
 weight: 5
 date: 2026-09-09
 publishDate: 2026-09-09
-draft: true
+draft: false
 description: "An arriving packet can pass every check this part has covered and still not be processable -- not because anything is wrong with it, but because a resource it needs isn't there yet. This chapter is what that actually does to one Queue Pair's receive path, and what it does not do to any other."
 prev: /rx/multi-packet-reassembly
 next: /rx/multi-qp-rx-arbitration
