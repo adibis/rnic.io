@@ -7,7 +7,9 @@ cascade:
   type: docs
 ---
 
-A Queue Pair is the connection a Reliable Connection RDMA operation runs on, and everything else in this book eventually answers to one: which QP a packet belongs to, what state that QP is in, and what happens when it faults. This part covers the QP end to end -- its context field by field, the table that stores it, the on-chip cache that makes touching it cheap, the software handoff that installs one, the state machine hardware enforces around it, and what happens when one QP faults alone, when many fault together, when the cache runs out of room, and when a QP resets with an operation still in flight.
+A Queue Pair is the connection a Reliable Connection RDMA operation runs on, and everything else in this book eventually answers to one: which QP a packet belongs to, what state that QP is in, and what happens when it faults. This part covers the QP end to end -- its context field by field, the table that stores it, the on-chip cache that makes touching it cheap, the software handoff that installs one, the state machine hardware enforces around it, what happens when one QP faults alone, when many fault together, when the cache runs out of room, when a QP resets with an operation still in flight, and, closing it out, how many QPs a real chip can actually hold at once and what it costs in silicon to let them share this same structure safely.
+
+![One Queue Pair, start to finish -- what QP-owned state actually does across one operation, from creation through steady-state caching to the hazards that can interrupt it (eviction, faults, reset), closing on how many QPs can exist at once. Each step names the chapter that covers it.](/images/qp/00-qp-part-appetizer.svg)
 
 ## Chapters
 

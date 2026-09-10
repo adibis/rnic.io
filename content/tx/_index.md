@@ -11,6 +11,8 @@ Every RDMA operation described so far in this book assumed a WQE somehow becomes
 
 TX Pipeline has no state machine of its own -- it runs under the gate the QP's own state machine ([QP State Machine](/qp/qp-state-machine)) already provides. Installing a Send Queue's ring happens as part of [Installing a QP](/qp/installing-a-qp), not as a separate handoff. What this part covers instead: the WQE ring and its on-chip prefetch buffer, the scheduler that arbitrates many QPs onto one shared pipeline, and TX Packet Build -- the stage that turns a fetched WQE into the wire format [What Is RoCEv2](/overview/what-is-rocev2) already described field by field.
 
+![One WQE, from post to wire -- what the TX Pipeline does to one Work Queue Element, from posting through the ring, prefetch, and packet build, to the hazards that can interrupt it (single-QP stalls, multi-QP scheduling, mid-transaction reset). Each step names the chapter that covers it.](/images/tx/00-tx-part-appetizer.svg)
+
 ## Chapters
 
 {{< section-cards >}}
