@@ -14,27 +14,27 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 
 <text x="475" y="22" font-size="14" font-weight="500" fill="#f1f5f9" text-anchor="middle">TX Packet Build: one WQE, four inputs, one packet out</text>
 
-<rect x="40" y="50" width="150" height="56" rx="6" fill="#0f172a" stroke="#94a3b8" stroke-width="1.3" stroke-dasharray="4,3"/>
+<rect x="40" y="50" width="150" height="56" rx="6" fill="#1e293b" stroke="#94a3b8" stroke-width="1.3" stroke-dasharray="4,3"/>
 <text x="115" y="72" font-size="9" font-weight="500" fill="#cbd5e1" text-anchor="middle">QP Context</text>
 <text x="115" y="87" font-size="8" fill="#94a3b8" text-anchor="middle">dest_qp_num, sq_psn</text>
 
-<rect x="40" y="230" width="150" height="60" rx="6" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.5"/>
+<rect x="40" y="230" width="150" height="60" rx="6" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
 <text x="115" y="255" font-size="11" font-weight="500" fill="#c7d2fe" text-anchor="middle">WQE</text>
 <text x="115" y="270" font-size="8" fill="#818cf8" text-anchor="middle">opcode, sge, remote fields</text>
 
 <line x1="190" y1="90" x2="270" y2="115" stroke="#94a3b8" stroke-width="1.3" stroke-dasharray="4,3" marker-end="url(#arrPB2)"/>
-<rect x="272" y="90" width="150" height="56" rx="6" fill="#0f172a" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="272" y="90" width="150" height="56" rx="6" fill="#1e293b" stroke="#cbd5e1" stroke-width="1.5"/>
 <text x="347" y="112" font-size="10" font-weight="500" fill="#f1f5f9" text-anchor="middle">BTH</text>
 <text x="347" y="127" font-size="8" fill="#94a3b8" text-anchor="middle">opcode + dest QP + PSN</text>
 <line x1="190" y1="245" x2="272" y2="140" stroke="#cbd5e1" stroke-width="1.3" marker-end="url(#arrPB1)"/>
 
-<rect x="272" y="176" width="150" height="56" rx="6" fill="#0f172a" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="5,3"/>
+<rect x="272" y="176" width="150" height="56" rx="6" fill="#1e293b" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="5,3"/>
 <text x="347" y="196" font-size="10" font-weight="500" fill="#f1f5f9" text-anchor="middle">RETH</text>
 <text x="347" y="210" font-size="8" fill="#94a3b8" text-anchor="middle">remote addr + rkey</text>
 <text x="347" y="245" font-size="7.5" fill="#94a3b8" text-anchor="middle">FIRST/ONLY packets only (0.4)</text>
 <line x1="190" y1="255" x2="272" y2="215" stroke="#cbd5e1" stroke-width="1.3" stroke-dasharray="4,3" marker-end="url(#arrPB1)"/>
 
-<rect x="272" y="290" width="150" height="56" rx="6" fill="#0f172a" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="272" y="290" width="150" height="56" rx="6" fill="#1e293b" stroke="#cbd5e1" stroke-width="1.5"/>
 <text x="347" y="312" font-size="10" font-weight="500" fill="#f1f5f9" text-anchor="middle">Payload</text>
 <text x="347" y="327" font-size="8" fill="#94a3b8" text-anchor="middle">inline or DMA read (3.1)</text>
 <line x1="190" y1="275" x2="272" y2="308" stroke="#cbd5e1" stroke-width="1.3" marker-end="url(#arrPB1)"/>
@@ -43,13 +43,13 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <line x1="422" y1="204" x2="500" y2="210" stroke="#cbd5e1" stroke-width="1.3" marker-end="url(#arrPB1)"/>
 <line x1="422" y1="318" x2="500" y2="245" stroke="#cbd5e1" stroke-width="1.3" marker-end="url(#arrPB1)"/>
 
-<rect x="502" y="176" width="160" height="90" rx="6" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.5"/>
+<rect x="502" y="176" width="160" height="90" rx="6" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
 <text x="582" y="215" font-size="11" font-weight="500" fill="#c7d2fe" text-anchor="middle">Packet</text>
 <text x="582" y="231" font-size="11" font-weight="500" fill="#c7d2fe" text-anchor="middle">assembled</text>
 <text x="582" y="250" font-size="8" fill="#818cf8" text-anchor="middle">BTH + RETH? + payload</text>
 
 <line x1="662" y1="221" x2="712" y2="221" stroke="#cbd5e1" stroke-width="1.4" marker-end="url(#arrPB1)"/>
-<rect x="714" y="191" width="110" height="60" rx="6" fill="#0f172a" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="714" y="191" width="110" height="60" rx="6" fill="#1e293b" stroke="#cbd5e1" stroke-width="1.5"/>
 <text x="769" y="216" font-size="10" font-weight="500" fill="#f1f5f9" text-anchor="middle">ICRC</text>
 <text x="769" y="230" font-size="7.5" fill="#94a3b8" text-anchor="middle">computed last, over</text>
 <text x="769" y="242" font-size="7.5" fill="#94a3b8" text-anchor="middle">invariant fields (0.2)</text>

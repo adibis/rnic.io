@@ -14,13 +14,13 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 
 <text x="475" y="22" font-size="14" font-weight="500" fill="#f1f5f9" text-anchor="middle">Multi-QP TX Scheduling: three candidate policies, one gate</text>
 
-<rect x="40" y="50" width="190" height="38" rx="5" fill="#451a03" stroke="#fbbf24" stroke-width="1.4"/>
+<rect x="40" y="50" width="190" height="38" rx="5" fill="#78350f" stroke="#fbbf24" stroke-width="1.4"/>
 <text x="135" y="73" font-size="9" font-weight="500" fill="#fcd34d" text-anchor="middle">QP: elephant flow</text>
-<rect x="40" y="98" width="190" height="38" rx="5" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.4"/>
+<rect x="40" y="98" width="190" height="38" rx="5" fill="#312e81" stroke="#818cf8" stroke-width="1.4"/>
 <text x="135" y="121" font-size="9" font-weight="500" fill="#c7d2fe" text-anchor="middle">QP: latency-sensitive</text>
-<rect x="40" y="146" width="190" height="38" rx="5" fill="#082f49" stroke="#38bdf8" stroke-width="1.4"/>
+<rect x="40" y="146" width="190" height="38" rx="5" fill="#0c4a6e" stroke="#38bdf8" stroke-width="1.4"/>
 <text x="135" y="169" font-size="9" font-weight="500" fill="#38bdf8" text-anchor="middle">QP: control-plane (dereg)</text>
-<rect x="40" y="194" width="190" height="38" rx="5" fill="#0f172a" stroke="#94a3b8" stroke-width="1.4"/>
+<rect x="40" y="194" width="190" height="38" rx="5" fill="#1e293b" stroke="#94a3b8" stroke-width="1.4"/>
 <text x="135" y="217" font-size="9" font-weight="500" fill="#cbd5e1" text-anchor="middle">QP: ordinary</text>
 
 <line x1="230" y1="69" x2="308" y2="105" stroke="#cbd5e1" stroke-width="1.3" marker-end="url(#arrMS1)"/>
@@ -28,30 +28,30 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <line x1="230" y1="165" x2="308" y2="160" stroke="#cbd5e1" stroke-width="1.3" marker-end="url(#arrMS1)"/>
 <line x1="230" y1="213" x2="308" y2="190" stroke="#cbd5e1" stroke-width="1.3" marker-end="url(#arrMS1)"/>
 
-<rect x="310" y="70" width="100" height="140" rx="8" fill="#0f172a" stroke="#cbd5e1" stroke-width="2"/>
+<rect x="310" y="70" width="100" height="140" rx="8" fill="#1e293b" stroke="#cbd5e1" stroke-width="2"/>
 <text x="360" y="135" font-size="11" font-weight="500" fill="#f1f5f9" text-anchor="middle">TX</text>
 <text x="360" y="150" font-size="11" font-weight="500" fill="#f1f5f9" text-anchor="middle">Scheduler</text>
 
 <line x1="460" y1="95" x2="412" y2="112" stroke="#818cf8" stroke-width="1.3" stroke-dasharray="4,3" marker-end="url(#arrMS2)"/>
-<rect x="460" y="75" width="200" height="40" rx="6" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.3"/>
+<rect x="460" y="75" width="200" height="40" rx="6" fill="#312e81" stroke="#818cf8" stroke-width="1.3"/>
 <text x="560" y="99" font-size="9" font-weight="500" fill="#c7d2fe" text-anchor="middle">round-robin</text>
 
 <line x1="460" y1="150" x2="412" y2="142" stroke="#818cf8" stroke-width="1.3" stroke-dasharray="4,3" marker-end="url(#arrMS2)"/>
-<rect x="460" y="130" width="200" height="40" rx="6" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.3"/>
+<rect x="460" y="130" width="200" height="40" rx="6" fill="#312e81" stroke="#818cf8" stroke-width="1.3"/>
 <text x="560" y="154" font-size="9" font-weight="500" fill="#c7d2fe" text-anchor="middle">weighted round-robin (per-QP share)</text>
 
 <line x1="460" y1="205" x2="412" y2="172" stroke="#818cf8" stroke-width="1.3" stroke-dasharray="4,3" marker-end="url(#arrMS2)"/>
-<rect x="460" y="185" width="200" height="40" rx="6" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.3"/>
+<rect x="460" y="185" width="200" height="40" rx="6" fill="#312e81" stroke="#818cf8" stroke-width="1.3"/>
 <text x="560" y="209" font-size="9" font-weight="500" fill="#c7d2fe" text-anchor="middle">priority (control ops first)</text>
 
 <line x1="590" y1="255" x2="565" y2="228" stroke="#fcd34d" stroke-width="1.3" marker-end="url(#arrMS3)"/>
-<rect x="460" y="255" width="260" height="52" rx="6" fill="#451a03" stroke="#fbbf24" stroke-width="1.4"/>
+<rect x="460" y="255" width="260" height="52" rx="6" fill="#78350f" stroke="#fbbf24" stroke-width="1.4"/>
 <text x="590" y="275" font-size="8" fill="#fcd34d" text-anchor="middle">NVIDIA (quoted): deregistration ops get</text>
 <text x="590" y="288" font-size="8" fill="#fcd34d" text-anchor="middle">scheduled first via internal QoS policy</text>
 
-<line x1="40" y1="335" x2="860" y2="335" stroke="#334155" stroke-width="1"/>
+<line x1="40" y1="335" x2="860" y2="335" stroke="#475569" stroke-width="1"/>
 
-<rect x="680" y="350" width="180" height="44" rx="6" fill="#1e293b" stroke="#475569" stroke-width="1.3" stroke-dasharray="4,3"/>
+<rect x="680" y="350" width="180" height="44" rx="6" fill="#334155" stroke="#64748b" stroke-width="1.3" stroke-dasharray="4,3"/>
 <text x="770" y="376" font-size="9" fill="#94a3b8" text-anchor="middle">Part 6: Congestion Control</text>
 
 <line x1="680" y1="372" x2="415" y2="212" stroke="#94a3b8" stroke-width="1.3" stroke-dasharray="3,2"/>

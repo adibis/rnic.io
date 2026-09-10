@@ -18,19 +18,19 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <g transform="translate(0,24)">
 <!-- ============ TX LANE ============ -->
 <g id="block-host-desc-rings" data-role="sky" opacity="0.35">
-  <rect x="20" y="70" width="160" height="55" rx="6" fill="#082f49" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <rect x="20" y="70" width="160" height="55" rx="6" fill="#0c4a6e" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="4,3"/>
   <text x="100" y="93" font-size="17" font-weight="500" fill="#38bdf8" text-anchor="middle">Host Memory</text>
   <text x="100" y="110" font-size="14" fill="#38bdf8" text-anchor="middle">Descriptor Rings</text>
 </g>
 
 <g id="block-wqe-fetch-sched" data-role="indigo" opacity="0.35">
-  <rect x="230" y="70" width="190" height="55" rx="6" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.5"/>
+  <rect x="230" y="70" width="190" height="55" rx="6" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
   <text x="325" y="93" font-size="18" font-weight="500" fill="#c7d2fe" text-anchor="middle">WQE Fetch /</text>
   <text x="325" y="110" font-size="18" font-weight="500" fill="#c7d2fe" text-anchor="middle">TX Scheduler</text>
 </g>
 
 <g id="block-tx-packet-build" data-role="indigo" opacity="0.35">
-  <rect x="640" y="70" width="190" height="55" rx="6" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.5"/>
+  <rect x="640" y="70" width="190" height="55" rx="6" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
   <text x="735" y="93" font-size="18" font-weight="500" fill="#c7d2fe" text-anchor="middle">TX Packet Build</text>
   <text x="735" y="110" font-size="14" fill="#818cf8" text-anchor="middle">BTH+RETH/AETH, ICRC</text>
 </g>
@@ -43,31 +43,31 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
      with the backing store below it, same convention as Key Cache/DMA
      Engine below, so both incoming arrows land on the cache, not the table. -->
 <g id="block-qp-cache" data-role="amber" opacity="0.35">
-  <rect x="230" y="190" width="190" height="48" rx="6" fill="#451a03" stroke="#fbbf24" stroke-width="1.5"/>
+  <rect x="230" y="190" width="190" height="48" rx="6" fill="#78350f" stroke="#fbbf24" stroke-width="1.5"/>
   <text x="325" y="220" font-size="18" font-weight="500" fill="#fcd34d" text-anchor="middle">QP Cache</text>
 </g>
 <g id="block-qp-table" data-role="amber" opacity="0.35">
-  <rect x="230" y="248" width="190" height="48" rx="6" fill="#451a03" stroke="#fbbf24" stroke-width="1.5"/>
+  <rect x="230" y="248" width="190" height="48" rx="6" fill="#78350f" stroke="#fbbf24" stroke-width="1.5"/>
   <text x="325" y="278" font-size="18" font-weight="500" fill="#fcd34d" text-anchor="middle">QP Table</text>
 </g>
 
 <g id="block-mr-key-table" data-role="amber" opacity="0.35">
-  <rect x="230" y="350" width="190" height="48" rx="6" fill="#451a03" stroke="#fbbf24" stroke-width="1.5"/>
+  <rect x="230" y="350" width="190" height="48" rx="6" fill="#78350f" stroke="#fbbf24" stroke-width="1.5"/>
   <text x="325" y="380" font-size="18" font-weight="500" fill="#fcd34d" text-anchor="middle">MR / Key Table</text>
 </g>
 <g id="block-key-cache" data-role="amber" opacity="0.35">
-  <rect x="230" y="408" width="190" height="48" rx="6" fill="#451a03" stroke="#fbbf24" stroke-width="1.5"/>
+  <rect x="230" y="408" width="190" height="48" rx="6" fill="#78350f" stroke="#fbbf24" stroke-width="1.5"/>
   <text x="325" y="438" font-size="18" font-weight="500" fill="#fcd34d" text-anchor="middle">Key Cache</text>
 </g>
 
 <g id="block-replay-buffer" data-role="amber" opacity="0.35">
-  <rect x="230" y="510" width="190" height="53" rx="6" fill="#451a03" stroke="#fbbf24" stroke-width="1.5"/>
+  <rect x="230" y="510" width="190" height="53" rx="6" fill="#78350f" stroke="#fbbf24" stroke-width="1.5"/>
   <text x="325" y="533" font-size="18" font-weight="500" fill="#fcd34d" text-anchor="middle">Replay Buffer /</text>
   <text x="325" y="550" font-size="18" font-weight="500" fill="#fcd34d" text-anchor="middle">Retry Timer</text>
 </g>
 
 <g id="block-rate-limiter" data-role="amber" opacity="0.35">
-  <rect x="230" y="613" width="190" height="48" rx="6" fill="#451a03" stroke="#fbbf24" stroke-width="1.5"/>
+  <rect x="230" y="613" width="190" height="48" rx="6" fill="#78350f" stroke="#fbbf24" stroke-width="1.5"/>
   <text x="325" y="643" font-size="18" font-weight="500" fill="#fcd34d" text-anchor="middle">Rate Limiter</text>
 </g>
 
@@ -76,7 +76,7 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 
 <!-- ============ CENTER HUB ============ -->
 <g id="block-dma-engine" data-role="indigo" opacity="0.35">
-  <rect x="640" y="330" width="220" height="110" rx="8" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.5"/>
+  <rect x="640" y="330" width="220" height="110" rx="8" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
   <text x="750" y="375" font-size="19" font-weight="500" fill="#c7d2fe" text-anchor="middle">DMA Engine</text>
   <text x="750" y="393" font-size="14" fill="#818cf8" text-anchor="middle">Address translation,</text>
   <text x="750" y="408" font-size="14" fill="#818cf8" text-anchor="middle">scatter-gather walk</text>
@@ -87,28 +87,28 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <text x="20" y="868" font-size="15" fill="#94a3b8" text-anchor="start">in</text>
 
 <g id="block-rx-parser-reassembly" data-role="indigo" opacity="0.35">
-  <rect x="230" y="830" width="190" height="55" rx="6" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.5"/>
+  <rect x="230" y="830" width="190" height="55" rx="6" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
   <text x="325" y="853" font-size="17" font-weight="500" fill="#c7d2fe" text-anchor="middle">RX Parser /</text>
   <text x="325" y="870" font-size="17" font-weight="500" fill="#c7d2fe" text-anchor="middle">Reassembly</text>
 </g>
 
 <g id="block-rx-psn-check" data-role="indigo">
-  <rect x="460" y="830" width="170" height="55" rx="6" fill="#1e1b4b" stroke="#818cf8" stroke-width="2"/>
+  <rect x="460" y="830" width="170" height="55" rx="6" fill="#312e81" stroke="#818cf8" stroke-width="2"/>
   <text x="545" y="862" font-size="17" font-weight="500" fill="#c7d2fe" text-anchor="middle">RX PSN Check</text>
 </g>
 
 <g id="block-cqe-gen" data-role="indigo" opacity="0.35">
-  <rect x="640" y="830" width="160" height="55" rx="6" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.5"/>
+  <rect x="640" y="830" width="160" height="55" rx="6" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
   <text x="720" y="862" font-size="17" font-weight="500" fill="#c7d2fe" text-anchor="middle">CQE Gen</text>
 </g>
 
 <g id="block-cq-storage" data-role="indigo" opacity="0.35">
-  <rect x="830" y="830" width="160" height="55" rx="6" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.5"/>
+  <rect x="830" y="830" width="160" height="55" rx="6" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
   <text x="910" y="862" font-size="17" font-weight="500" fill="#c7d2fe" text-anchor="middle">CQ Storage</text>
 </g>
 
 <g id="block-host-event" data-role="sky" opacity="0.35">
-  <rect x="1030" y="830" width="170" height="55" rx="6" fill="#082f49" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <rect x="1030" y="830" width="170" height="55" rx="6" fill="#0c4a6e" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="4,3"/>
   <text x="1115" y="853" font-size="15" font-weight="500" fill="#38bdf8" text-anchor="middle">Host:</text>
   <text x="1115" y="870" font-size="15" font-weight="500" fill="#38bdf8" text-anchor="middle">Event / Interrupt</text>
 </g>

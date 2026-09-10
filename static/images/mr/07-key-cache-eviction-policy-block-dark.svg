@@ -13,7 +13,7 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 
 <text x="525" y="20" font-size="14" font-weight="500" fill="#f1f5f9" text-anchor="middle">Key Cache Eviction: two independent mechanisms, two different blast radii</text>
 
-<line x1="530" y1="36" x2="530" y2="235" stroke="#475569" stroke-width="1"/>
+<line x1="530" y1="36" x2="530" y2="235" stroke="#64748b" stroke-width="1"/>
 
 <text x="260" y="42" font-size="11" font-weight="500" fill="#f1f5f9" text-anchor="middle">Capacity pressure</text>
 <text x="800" y="42" font-size="11" font-weight="500" fill="#f1f5f9" text-anchor="middle">Deregistration</text>
@@ -23,14 +23,14 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <text x="70" y="67" font-size="8" fill="#cbd5e1" text-anchor="middle">needed, cache full</text>
 <line x1="120" y1="61" x2="176" y2="80" stroke="#cbd5e1" stroke-width="1.5" marker-end="url(#arrKE1)"/>
 
-<rect x="180" y="55" width="220" height="60" rx="6" fill="#451a03" stroke="#fbbf24" stroke-width="1.5"/>
-<rect x="190" y="65" width="48" height="34" fill="#0f172a" stroke="#fbbf24"/>
-<rect x="242" y="65" width="48" height="34" fill="#0f172a" stroke="#fbbf24"/>
-<rect x="294" y="65" width="48" height="34" fill="#450a0a" stroke="#f87171" stroke-width="2"/>
-<rect x="346" y="65" width="48" height="34" fill="#0f172a" stroke="#fbbf24"/>
+<rect x="180" y="55" width="220" height="60" rx="6" fill="#78350f" stroke="#fbbf24" stroke-width="1.5"/>
+<rect x="190" y="65" width="48" height="34" fill="#1e293b" stroke="#fbbf24"/>
+<rect x="242" y="65" width="48" height="34" fill="#1e293b" stroke="#fbbf24"/>
+<rect x="294" y="65" width="48" height="34" fill="#7f1d1d" stroke="#f87171" stroke-width="2"/>
+<rect x="346" y="65" width="48" height="34" fill="#1e293b" stroke="#fbbf24"/>
 <text x="290" y="128" font-size="7" fill="#fcd34d" text-anchor="middle">all slots occupied</text>
 
-<rect x="415" y="75" width="80" height="50" rx="6" fill="#0f172a" stroke="#94a3b8" stroke-width="1.5"/>
+<rect x="415" y="75" width="80" height="50" rx="6" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
 <text x="455" y="96" font-size="9" font-weight="500" fill="#cbd5e1" text-anchor="middle">Eviction</text>
 <text x="455" y="110" font-size="9" font-weight="500" fill="#cbd5e1" text-anchor="middle">Policy</text>
 <line x1="400" y1="90" x2="413" y2="90" stroke="#cbd5e1" stroke-width="1.5" marker-end="url(#arrKE1)"/>
@@ -48,22 +48,22 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <line x1="318" y1="99" x2="318" y2="166" stroke="#f87171" stroke-width="1.5" marker-end="url(#arrKE2)"/>
 <text x="250" y="150" font-size="7" fill="#f87171" text-anchor="middle">written back if dirty, then freed</text>
 
-<rect x="230" y="168" width="180" height="55" rx="6" fill="#451a03" stroke="#fbbf24" stroke-width="1.5"/>
+<rect x="230" y="168" width="180" height="55" rx="6" fill="#78350f" stroke="#fbbf24" stroke-width="1.5"/>
 <text x="320" y="190" font-size="11" font-weight="500" fill="#fcd34d" text-anchor="middle">MR/Key Table</text>
 <text x="320" y="205" font-size="9" fill="#fcd34d" text-anchor="middle">DRAM/HBM</text>
 
 <!-- RIGHT: deregistration -->
-<rect x="580" y="60" width="200" height="55" rx="6" fill="#082f49" stroke="#38bdf8" stroke-width="1.5"/>
+<rect x="580" y="60" width="200" height="55" rx="6" fill="#0c4a6e" stroke="#38bdf8" stroke-width="1.5"/>
 <text x="680" y="92" font-size="11" font-weight="500" fill="#38bdf8" text-anchor="middle">deregister()</text>
 
 <line x1="780" y1="88" x2="806" y2="90" stroke="#cbd5e1" stroke-width="1.5" marker-end="url(#arrKE1)"/>
 <text x="810" y="76" font-size="7" fill="#cbd5e1" text-anchor="middle">deregister lkey/rkey N</text>
 
-<rect x="820" y="55" width="200" height="60" rx="6" fill="#451a03" stroke="#fbbf24" stroke-width="1.5"/>
-<rect x="830" y="65" width="40" height="34" fill="#0f172a" stroke="#fbbf24"/>
-<rect x="874" y="65" width="40" height="34" fill="#0f172a" stroke="#fbbf24"/>
-<rect x="918" y="65" width="40" height="34" fill="#0f172a" stroke="#fbbf24"/>
-<rect x="962" y="65" width="40" height="34" fill="#0f172a" stroke="#fbbf24"/>
+<rect x="820" y="55" width="200" height="60" rx="6" fill="#78350f" stroke="#fbbf24" stroke-width="1.5"/>
+<rect x="830" y="65" width="40" height="34" fill="#1e293b" stroke="#fbbf24"/>
+<rect x="874" y="65" width="40" height="34" fill="#1e293b" stroke="#fbbf24"/>
+<rect x="918" y="65" width="40" height="34" fill="#1e293b" stroke="#fbbf24"/>
+<rect x="962" y="65" width="40" height="34" fill="#1e293b" stroke="#fbbf24"/>
 
 <rect x="810" y="45" width="220" height="80" rx="8" fill="none" stroke="#f87171" stroke-width="3"/>
 

@@ -14,17 +14,17 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <text x="450" y="22" font-size="15" font-weight="500" fill="#f1f5f9" text-anchor="middle">Two Faults, Same Instant: FIFO vs. Priority-Weighted Reporting</text>
 
 <text x="30" y="55" font-size="10" font-weight="500" fill="#cbd5e1" text-anchor="start">detected simultaneously</text>
-<rect x="20" y="65" width="150" height="34" rx="5" fill="#450a0a" stroke="#94a3b8" stroke-width="1.3"/>
+<rect x="20" y="65" width="150" height="34" rx="5" fill="#7f1d1d" stroke="#94a3b8" stroke-width="1.3"/>
 <text x="95" y="86" font-size="9" fill="#cbd5e1" text-anchor="middle">QP 12 fault (bulk-data)</text>
-<rect x="20" y="107" width="150" height="34" rx="5" fill="#450a0a" stroke="#94a3b8" stroke-width="1.3"/>
+<rect x="20" y="107" width="150" height="34" rx="5" fill="#7f1d1d" stroke="#94a3b8" stroke-width="1.3"/>
 <text x="95" y="128" font-size="9" fill="#cbd5e1" text-anchor="middle">QP 40 fault (control-plane)</text>
 
 <text x="260" y="60" font-size="10" font-weight="500" fill="#cbd5e1" text-anchor="middle">FIFO by detection order</text>
 <line x1="170" y1="82" x2="228" y2="82" stroke="#cbd5e1" stroke-width="1.3" marker-end="url(#arrMC1)"/>
-<rect x="230" y="70" width="150" height="30" rx="5" fill="#0f172a" stroke="#94a3b8" stroke-width="1.3"/>
+<rect x="230" y="70" width="150" height="30" rx="5" fill="#1e293b" stroke="#94a3b8" stroke-width="1.3"/>
 <text x="305" y="90" font-size="9" fill="#cbd5e1" text-anchor="middle">1st: QP 12 reported</text>
 <line x1="170" y1="124" x2="228" y2="124" stroke="#cbd5e1" stroke-width="1.3" marker-end="url(#arrMC1)"/>
-<rect x="230" y="112" width="150" height="30" rx="5" fill="#0f172a" stroke="#94a3b8" stroke-width="1.3"/>
+<rect x="230" y="112" width="150" height="30" rx="5" fill="#1e293b" stroke="#94a3b8" stroke-width="1.3"/>
 <text x="305" y="132" font-size="9" fill="#cbd5e1" text-anchor="middle">2nd: QP 40 reported</text>
 <text x="305" y="160" font-size="7.5" fill="#94a3b8" text-anchor="middle">simple, starvation-free in aggregate --</text>
 <text x="305" y="172" font-size="7.5" fill="#94a3b8" text-anchor="middle">no notion that QP 40 might matter more</text>
@@ -32,14 +32,14 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <text x="620" y="60" font-size="10" font-weight="500" fill="#fcd34d" text-anchor="middle">priority-weighted</text>
 <line x1="170" y1="82" x2="588" y2="112" stroke="#fcd34d" stroke-width="1.3" marker-end="url(#arrMC2)"/>
 <line x1="170" y1="124" x2="588" y2="82" stroke="#fcd34d" stroke-width="1.3" marker-end="url(#arrMC2)"/>
-<rect x="590" y="70" width="170" height="30" rx="5" fill="#451a03" stroke="#fbbf24" stroke-width="1.4"/>
+<rect x="590" y="70" width="170" height="30" rx="5" fill="#78350f" stroke="#fbbf24" stroke-width="1.4"/>
 <text x="675" y="90" font-size="9" font-weight="500" fill="#fcd34d" text-anchor="middle">1st: QP 40 reported</text>
-<rect x="590" y="112" width="170" height="30" rx="5" fill="#0f172a" stroke="#94a3b8" stroke-width="1.3"/>
+<rect x="590" y="112" width="170" height="30" rx="5" fill="#1e293b" stroke="#94a3b8" stroke-width="1.3"/>
 <text x="675" y="132" font-size="9" fill="#cbd5e1" text-anchor="middle">2nd: QP 12 reported</text>
 <text x="675" y="160" font-size="7.5" fill="#fcd34d" text-anchor="middle">control-plane jumps the queue --</text>
 <text x="675" y="172" font-size="7.5" fill="#fcd34d" text-anchor="middle">at a real starvation risk under sustained load</text>
 
-<rect x="150" y="210" width="600" height="46" rx="6" fill="#0f172a" stroke="#94a3b8" stroke-width="1.3"/>
+<rect x="150" y="210" width="600" height="46" rx="6" fill="#1e293b" stroke="#94a3b8" stroke-width="1.3"/>
 <text x="450" y="228" font-size="9" font-weight="500" fill="#cbd5e1" text-anchor="middle">neither is a free lunch</text>
 <text x="450" y="244" font-size="8" fill="#94a3b8" text-anchor="middle">a real design's choice depends on workload assumptions this chapter can't make on the reader's behalf</text>
 </svg>

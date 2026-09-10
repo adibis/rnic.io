@@ -14,32 +14,32 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 
 <text x="450" y="22" font-size="14" font-weight="500" fill="#f1f5f9" text-anchor="middle">From Software's Work Request to a Real On-Chip Packing</text>
 
-<rect x="200" y="50" width="500" height="90" rx="8" fill="#082f49" stroke="#38bdf8" stroke-width="1.5"/>
+<rect x="200" y="50" width="500" height="90" rx="8" fill="#0c4a6e" stroke="#38bdf8" stroke-width="1.5"/>
 <text x="450" y="72" font-size="12" font-weight="500" fill="#38bdf8" text-anchor="middle">software work-request descriptor</text>
 <text x="450" y="88" font-size="8" fill="#38bdf8" text-anchor="middle">what software writes, transport-agnostic</text>
-<rect x="210" y="96" width="110" height="30" fill="#0f172a" stroke="#38bdf8"/>
+<rect x="210" y="96" width="110" height="30" fill="#1e293b" stroke="#38bdf8"/>
 <text x="265" y="115" font-size="8" fill="#38bdf8" text-anchor="middle">opcode</text>
-<rect x="330" y="96" width="110" height="30" fill="#0f172a" stroke="#38bdf8"/>
+<rect x="330" y="96" width="110" height="30" fill="#1e293b" stroke="#38bdf8"/>
 <text x="385" y="115" font-size="7.5" fill="#38bdf8" text-anchor="middle">scatter-gather list</text>
-<rect x="450" y="96" width="110" height="30" fill="#0f172a" stroke="#38bdf8"/>
+<rect x="450" y="96" width="110" height="30" fill="#1e293b" stroke="#38bdf8"/>
 <text x="505" y="115" font-size="7.5" fill="#38bdf8" text-anchor="middle">remote addr / rkey</text>
-<rect x="570" y="96" width="110" height="30" fill="#0f172a" stroke="#38bdf8"/>
+<rect x="570" y="96" width="110" height="30" fill="#1e293b" stroke="#38bdf8"/>
 <text x="625" y="115" font-size="8" fill="#38bdf8" text-anchor="middle">flags</text>
 
 <line x1="450" y1="140" x2="450" y2="176" stroke="#cbd5e1" stroke-width="1.5" marker-end="url(#arrWD1)"/>
 <text x="620" y="162" font-size="9" fill="#cbd5e1" text-anchor="start">hardware translates to a</text>
 <text x="620" y="174" font-size="9" fill="#cbd5e1" text-anchor="start">vendor's on-chip packing</text>
 
-<rect x="200" y="180" width="500" height="90" rx="8" fill="#0f172a" stroke="#cbd5e1" stroke-width="2"/>
+<rect x="200" y="180" width="500" height="90" rx="8" fill="#1e293b" stroke="#cbd5e1" stroke-width="2"/>
 <text x="450" y="202" font-size="12" font-weight="500" fill="#f1f5f9" text-anchor="middle">a real RNIC's on-chip control segment</text>
 <text x="450" y="218" font-size="8" fill="#94a3b8" text-anchor="middle">one confirmed on-chip packing -- denser, not a 1:1 field match</text>
-<rect x="210" y="226" width="110" height="30" fill="#0f172a" stroke="#cbd5e1"/>
+<rect x="210" y="226" width="110" height="30" fill="#1e293b" stroke="#cbd5e1"/>
 <text x="265" y="245" font-size="8" fill="#cbd5e1" text-anchor="middle">opcode</text>
-<rect x="330" y="226" width="110" height="30" fill="#0f172a" stroke="#cbd5e1"/>
+<rect x="330" y="226" width="110" height="30" fill="#1e293b" stroke="#cbd5e1"/>
 <text x="385" y="245" font-size="8" fill="#cbd5e1" text-anchor="middle">seg. count</text>
-<rect x="450" y="226" width="110" height="30" fill="#0f172a" stroke="#cbd5e1"/>
+<rect x="450" y="226" width="110" height="30" fill="#1e293b" stroke="#cbd5e1"/>
 <text x="505" y="245" font-size="8" fill="#cbd5e1" text-anchor="middle">flags</text>
-<rect x="570" y="226" width="110" height="30" fill="#0f172a" stroke="#cbd5e1"/>
+<rect x="570" y="226" width="110" height="30" fill="#1e293b" stroke="#cbd5e1"/>
 <text x="625" y="245" font-size="8" fill="#cbd5e1" text-anchor="middle">vendor meta</text>
 <text x="385" y="269" font-size="7" fill="#94a3b8" text-anchor="middle">DS count: 6 bits, max 63 segments</text>
 
@@ -52,11 +52,11 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <line x1="450" y1="320" x2="640" y2="378" stroke="#94a3b8" stroke-width="1.4" marker-end="url(#arrWD3)"/>
 <text x="570" y="352" font-size="8" font-weight="500" fill="#94a3b8" text-anchor="middle">&gt; 28B</text>
 
-<rect x="140" y="380" width="220" height="60" rx="6" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.5"/>
+<rect x="140" y="380" width="220" height="60" rx="6" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
 <text x="250" y="405" font-size="11" font-weight="500" fill="#c7d2fe" text-anchor="middle">inline payload</text>
 <text x="250" y="421" font-size="8" fill="#818cf8" text-anchor="middle">carried directly in the WQE itself</text>
 
-<rect x="540" y="380" width="220" height="60" rx="6" fill="#1e293b" stroke="#475569" stroke-width="1.3" stroke-dasharray="4,3"/>
+<rect x="540" y="380" width="220" height="60" rx="6" fill="#334155" stroke="#64748b" stroke-width="1.3" stroke-dasharray="4,3"/>
 <text x="650" y="405" font-size="11" fill="#94a3b8" text-anchor="middle">DMA Engine</text>
 <text x="650" y="421" font-size="8" fill="#94a3b8" text-anchor="middle">separate read required (Part 8)</text>
 

@@ -12,21 +12,21 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 
 <text x="450" y="24" font-size="15" font-weight="500" fill="#f1f5f9" text-anchor="middle">Who runs the eviction decision: a spectrum, not a binary choice</text>
 
-<rect x="60" y="55" width="220" height="70" rx="8" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.5"/>
+<rect x="60" y="55" width="220" height="70" rx="8" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
 <text x="170" y="82" font-size="12" font-weight="500" fill="#c7d2fe" text-anchor="middle">Fixed-function</text>
 <text x="170" y="98" font-size="12" font-weight="500" fill="#c7d2fe" text-anchor="middle">hardware</text>
 <text x="170" y="114" font-size="9" fill="#818cf8" text-anchor="middle">hardwired state machine</text>
 
-<rect x="340" y="55" width="220" height="70" rx="8" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.5" stroke-dasharray="8,3"/>
+<rect x="340" y="55" width="220" height="70" rx="8" fill="#312e81" stroke="#818cf8" stroke-width="1.5" stroke-dasharray="8,3"/>
 <text x="450" y="82" font-size="12" font-weight="500" fill="#c7d2fe" text-anchor="middle">Programmable</text>
 <text x="450" y="98" font-size="12" font-weight="500" fill="#c7d2fe" text-anchor="middle">hardware engine</text>
 <text x="450" y="114" font-size="9" fill="#818cf8" text-anchor="middle">sequencer + weight registers</text>
 
-<rect x="600" y="55" width="180" height="70" rx="8" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.5"/>
+<rect x="600" y="55" width="180" height="70" rx="8" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
 <text x="690" y="82" font-size="12" font-weight="500" fill="#c7d2fe" text-anchor="middle">Software-driven</text>
 <text x="690" y="98" font-size="9" fill="#818cf8" text-anchor="middle">trap on cache pressure</text>
 <line x1="782" y1="90" x2="810" y2="90" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4,3"/>
-<rect x="812" y="65" width="80" height="50" rx="4" fill="#0f172a" stroke="#94a3b8"/>
+<rect x="812" y="65" width="80" height="50" rx="4" fill="#1e293b" stroke="#94a3b8"/>
 <text x="852" y="86" font-size="9" fill="#cbd5e1" text-anchor="middle">firmware /</text>
 <text x="852" y="98" font-size="9" fill="#cbd5e1" text-anchor="middle">driver</text>
 <text x="852" y="110" font-size="8" fill="#94a3b8" text-anchor="middle">(off-chip)</text>

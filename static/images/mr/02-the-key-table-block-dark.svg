@@ -18,15 +18,15 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <line x1="170" y1="52" x2="298" y2="167" stroke="#38bdf8" stroke-width="1.5" marker-end="url(#arrKT3)"/>
 
 <!-- Key Cache overlay, drawn first so box labels stay legible on top -->
-<rect x="60" y="86" width="780" height="20" rx="8" fill="#1e1b4b" opacity="0.95" stroke="#818cf8" stroke-width="1.5" stroke-dasharray="6,3"/>
+<rect x="60" y="86" width="780" height="20" rx="8" fill="#312e81" opacity="0.95" stroke="#818cf8" stroke-width="1.5" stroke-dasharray="6,3"/>
 <text x="450" y="100" font-size="11" font-weight="500" fill="#c7d2fe" text-anchor="middle">Key Cache (chapter 2.3) -- the working set actually consulted first</text>
 
 <!-- MPT -->
-<rect x="60" y="100" width="280" height="240" rx="8" fill="#0f172a" stroke="#94a3b8" stroke-width="1.5"/>
+<rect x="60" y="100" width="280" height="240" rx="8" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
 <text x="200" y="122" font-size="12" font-weight="500" fill="#cbd5e1" text-anchor="middle">MPT (Memory Protection Table)</text>
 <text x="200" y="136" font-size="9" fill="#94a3b8" text-anchor="middle">DRAM / HBM</text>
 
-<rect x="76" y="146" width="248" height="50" fill="#0f172a" stroke="#94a3b8"/>
+<rect x="76" y="146" width="248" height="50" fill="#1e293b" stroke="#94a3b8"/>
 <circle cx="94" cy="171" r="6" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
 <line x1="100" y1="171" x2="116" y2="171" stroke="#94a3b8" stroke-width="1.5"/>
 <line x1="110" y1="171" x2="110" y2="176" stroke="#94a3b8" stroke-width="1.5"/>
@@ -34,7 +34,7 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <text x="216" y="166" font-size="10" font-weight="500" fill="#cbd5e1" text-anchor="middle">MPT entry</text>
 <text x="216" y="180" font-size="8" fill="#94a3b8" text-anchor="middle">0x7F2A</text>
 
-<rect x="76" y="204" width="248" height="50" fill="#0f172a" stroke="#94a3b8"/>
+<rect x="76" y="204" width="248" height="50" fill="#1e293b" stroke="#94a3b8"/>
 <circle cx="94" cy="229" r="6" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
 <line x1="100" y1="229" x2="116" y2="229" stroke="#94a3b8" stroke-width="1.5"/>
 <line x1="110" y1="229" x2="110" y2="234" stroke="#94a3b8" stroke-width="1.5"/>
@@ -42,27 +42,27 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <text x="216" y="224" font-size="10" font-weight="500" fill="#cbd5e1" text-anchor="middle">MPT entry</text>
 <text x="216" y="238" font-size="8" fill="#94a3b8" text-anchor="middle">0x9C15</text>
 
-<rect x="76" y="262" width="248" height="50" fill="#1e293b" stroke="#475569" stroke-dasharray="3,2"/>
+<rect x="76" y="262" width="248" height="50" fill="#334155" stroke="#64748b" stroke-dasharray="3,2"/>
 <text x="200" y="292" font-size="13" fill="#94a3b8" text-anchor="middle">...</text>
 
 <text x="200" y="356" font-size="9" fill="#94a3b8" text-anchor="middle">address, length, permissions --</text>
 <text x="200" y="369" font-size="9" fill="#94a3b8" text-anchor="middle">one entry per registration (chapter 2.1)</text>
 
 <!-- MTT -->
-<rect x="560" y="100" width="280" height="240" rx="8" fill="#0f172a" stroke="#94a3b8" stroke-width="1.5"/>
+<rect x="560" y="100" width="280" height="240" rx="8" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
 <text x="700" y="122" font-size="12" font-weight="500" fill="#cbd5e1" text-anchor="middle">MTT (Memory Translation Table)</text>
 <text x="700" y="136" font-size="9" fill="#94a3b8" text-anchor="middle">DRAM / HBM</text>
 
-<rect x="576" y="146" width="248" height="38" fill="#0f172a" stroke="#94a3b8"/>
+<rect x="576" y="146" width="248" height="38" fill="#1e293b" stroke="#94a3b8"/>
 <text x="700" y="169" font-size="9" font-weight="500" fill="#cbd5e1" text-anchor="middle">MTT entry -- page 0</text>
 
-<rect x="576" y="192" width="248" height="38" fill="#0f172a" stroke="#94a3b8"/>
+<rect x="576" y="192" width="248" height="38" fill="#1e293b" stroke="#94a3b8"/>
 <text x="700" y="215" font-size="9" font-weight="500" fill="#cbd5e1" text-anchor="middle">MTT entry -- page 1</text>
 
-<rect x="576" y="238" width="248" height="38" fill="#0f172a" stroke="#94a3b8"/>
+<rect x="576" y="238" width="248" height="38" fill="#1e293b" stroke="#94a3b8"/>
 <text x="700" y="261" font-size="9" font-weight="500" fill="#cbd5e1" text-anchor="middle">MTT entry -- page 0</text>
 
-<rect x="576" y="284" width="248" height="38" fill="#1e293b" stroke="#475569" stroke-dasharray="3,2"/>
+<rect x="576" y="284" width="248" height="38" fill="#334155" stroke="#64748b" stroke-dasharray="3,2"/>
 <text x="700" y="307" font-size="12" fill="#94a3b8" text-anchor="middle">...</text>
 
 <text x="700" y="356" font-size="9" fill="#94a3b8" text-anchor="middle">one or more physical-page translations per registration</text>

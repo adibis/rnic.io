@@ -16,21 +16,21 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 
 <!-- Main spine -->
 <g>
-  <rect x="435" y="60" width="280" height="46" rx="6" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.5"/>
+  <rect x="435" y="60" width="280" height="46" rx="6" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
   <text x="575" y="80" font-size="12" font-weight="500" fill="#c7d2fe" text-anchor="middle">Software registers a region</text>
   <text x="575" y="96" font-size="10" fill="#818cf8" text-anchor="middle">Registering a Memory Region (2.4)</text>
 </g>
 <line x1="575" y1="106" x2="575" y2="130" stroke="#818cf8" stroke-width="1.5" marker-end="url(#arrAppz2)"/>
 
 <g>
-  <rect x="435" y="130" width="280" height="46" rx="6" fill="#451a03" stroke="#fbbf24" stroke-width="1.5"/>
+  <rect x="435" y="130" width="280" height="46" rx="6" fill="#78350f" stroke="#fbbf24" stroke-width="1.5"/>
   <text x="575" y="150" font-size="12" font-weight="500" fill="#fcd34d" text-anchor="middle">Descriptor written, entry lands in the table</text>
   <text x="575" y="166" font-size="10" fill="#fcd34d" text-anchor="middle">MR Descriptor (2.1), The Key Table (2.2)</text>
 </g>
 <line x1="575" y1="176" x2="575" y2="200" stroke="#818cf8" stroke-width="1.5" marker-end="url(#arrAppz2)"/>
 
 <g>
-  <rect x="435" y="200" width="280" height="54" rx="6" fill="#451a03" stroke="#fbbf24" stroke-width="1.5"/>
+  <rect x="435" y="200" width="280" height="54" rx="6" fill="#78350f" stroke="#fbbf24" stroke-width="1.5"/>
   <text x="575" y="220" font-size="12" font-weight="500" fill="#fcd34d" text-anchor="middle">Every DMA: cache hit or miss</text>
   <text x="575" y="236" font-size="10" fill="#fcd34d" text-anchor="middle">Key Caching (2.3)</text>
   <text x="575" y="249" font-size="9" fill="#94a3b8" text-anchor="middle">repeats for as long as the region stays valid</text>
@@ -47,28 +47,28 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <text x="575" y="274" font-size="9" fill="#94a3b8" text-anchor="middle">any of these can happen from steady state</text>
 
 <g>
-  <rect x="0" y="300" width="280" height="60" rx="6" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.5"/>
+  <rect x="0" y="300" width="280" height="60" rx="6" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
   <text x="140" y="322" font-size="12" font-weight="500" fill="#c7d2fe" text-anchor="middle">Key or bounds don't match</text>
   <text x="140" y="338" font-size="10" fill="#818cf8" text-anchor="middle">Permission and Bounds</text>
   <text x="140" y="351" font-size="10" fill="#818cf8" text-anchor="middle">Violations (2.5)</text>
 </g>
 
 <g>
-  <rect x="290" y="300" width="280" height="60" rx="6" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.5"/>
+  <rect x="290" y="300" width="280" height="60" rx="6" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
   <text x="430" y="322" font-size="12" font-weight="500" fill="#c7d2fe" text-anchor="middle">Many QPs address the same region</text>
   <text x="430" y="338" font-size="10" fill="#818cf8" text-anchor="middle">Shared-MR</text>
   <text x="430" y="351" font-size="10" fill="#818cf8" text-anchor="middle">Arbitration (2.6)</text>
 </g>
 
 <g>
-  <rect x="580" y="300" width="280" height="60" rx="6" fill="#451a03" stroke="#fbbf24" stroke-width="1.5"/>
+  <rect x="580" y="300" width="280" height="60" rx="6" fill="#78350f" stroke="#fbbf24" stroke-width="1.5"/>
   <text x="720" y="322" font-size="12" font-weight="500" fill="#fcd34d" text-anchor="middle">Cache full: which entry goes?</text>
   <text x="720" y="338" font-size="10" fill="#fcd34d" text-anchor="middle">Key Cache Eviction Policy (2.7),</text>
   <text x="720" y="351" font-size="10" fill="#fcd34d" text-anchor="middle">Hardware-Assisted Eviction (2.8)</text>
 </g>
 
 <g>
-  <rect x="870" y="300" width="280" height="60" rx="6" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.5"/>
+  <rect x="870" y="300" width="280" height="60" rx="6" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
   <text x="1010" y="322" font-size="12" font-weight="500" fill="#c7d2fe" text-anchor="middle">Region deregisters mid-burst</text>
   <text x="1010" y="338" font-size="10" fill="#818cf8" text-anchor="middle">Mid-Transaction</text>
   <text x="1010" y="351" font-size="10" fill="#818cf8" text-anchor="middle">Deregistration (2.9)</text>
@@ -82,7 +82,7 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <line x1="575" y1="390" x2="575" y2="410" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrAppz2)"/>
 
 <g>
-  <rect x="295" y="410" width="560" height="50" rx="6" fill="#0f172a" stroke="#cbd5e1" stroke-width="1.5"/>
+  <rect x="295" y="410" width="560" height="50" rx="6" fill="#1e293b" stroke="#cbd5e1" stroke-width="1.5"/>
   <text x="575" y="431" font-size="12" font-weight="500" fill="#cbd5e1" text-anchor="middle">Zooming out: how many regions can exist, and how fast does this run</text>
   <text x="575" y="447" font-size="10" fill="#94a3b8" text-anchor="middle">MR Capacity and Timing (2.10)</text>
 </g>

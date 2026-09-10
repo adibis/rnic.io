@@ -12,52 +12,52 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 
 <text x="450" y="26" font-size="16" font-weight="500" fill="#f1f5f9" text-anchor="middle">SEND / RECV: Local and Remote Sequence</text>
 
-<rect x="40" y="46" width="220" height="36" rx="8" fill="#082f49" stroke="#38bdf8" stroke-width="1.5"/>
+<rect x="40" y="46" width="220" height="36" rx="8" fill="#0c4a6e" stroke="#38bdf8" stroke-width="1.5"/>
 <text x="150" y="69" font-size="16" font-weight="500" fill="#38bdf8" text-anchor="middle">Master (local)</text>
 
-<rect x="560" y="46" width="220" height="36" rx="8" fill="#082f49" stroke="#38bdf8" stroke-width="1.5"/>
+<rect x="560" y="46" width="220" height="36" rx="8" fill="#0c4a6e" stroke="#38bdf8" stroke-width="1.5"/>
 <text x="670" y="69" font-size="16" font-weight="500" fill="#38bdf8" text-anchor="middle">Slave (remote)</text>
 
-<line x1="150" y1="82" x2="150" y2="494" stroke="#475569" stroke-width="1" stroke-dasharray="4,3"/>
-<line x1="670" y1="82" x2="670" y2="494" stroke="#475569" stroke-width="1" stroke-dasharray="4,3"/>
+<line x1="150" y1="82" x2="150" y2="494" stroke="#64748b" stroke-width="1" stroke-dasharray="4,3"/>
+<line x1="670" y1="82" x2="670" y2="494" stroke="#64748b" stroke-width="1" stroke-dasharray="4,3"/>
 
-<rect x="540" y="90" width="260" height="34" rx="6" fill="#451a03" stroke="#fbbf24" stroke-width="1.5"/>
+<rect x="540" y="90" width="260" height="34" rx="6" fill="#78350f" stroke="#fbbf24" stroke-width="1.5"/>
 <text x="670" y="111" font-size="10" fill="#fcd34d" text-anchor="middle">Receive WQE posted ahead of time</text>
 
-<rect x="30" y="140" width="240" height="46" rx="6" fill="#082f49" stroke="#38bdf8" stroke-width="1.5"/>
+<rect x="30" y="140" width="240" height="46" rx="6" fill="#0c4a6e" stroke="#38bdf8" stroke-width="1.5"/>
 <text x="150" y="160" font-size="13" font-weight="500" fill="#38bdf8" text-anchor="middle">App posts SEND Work Request</text>
 <text x="150" y="177" font-size="10" fill="#94a3b8" text-anchor="middle">no remote address named</text>
 
-<rect x="30" y="200" width="240" height="44" rx="6" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.5"/>
+<rect x="30" y="200" width="240" height="44" rx="6" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
 <text x="150" y="218" font-size="12" font-weight="500" fill="#c7d2fe" text-anchor="middle">TX engine</text>
 <text x="150" y="234" font-size="10" fill="#818cf8" text-anchor="middle">DMA read src (lkey), PSN=N</text>
 
 <line x1="270" y1="222" x2="550" y2="222" stroke="#818cf8" stroke-width="1.5" marker-end="url(#arrSeqFwd)"/>
 <text x="410" y="214" font-size="11" fill="#818cf8" text-anchor="middle">SEND(Only) PSN=N, DQPN</text>
 
-<rect x="550" y="200" width="240" height="44" rx="6" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.5"/>
+<rect x="550" y="200" width="240" height="44" rx="6" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
 <text x="670" y="218" font-size="12" font-weight="500" fill="#c7d2fe" text-anchor="middle">RX engine</text>
 <text x="670" y="234" font-size="10" fill="#818cf8" text-anchor="middle">parse BTH, PSN compare</text>
 
-<rect x="550" y="252" width="240" height="34" rx="6" fill="#450a0a" stroke="#f87171" stroke-width="1.5" stroke-dasharray="4,3"/>
+<rect x="550" y="252" width="240" height="34" rx="6" fill="#7f1d1d" stroke="#f87171" stroke-width="1.5" stroke-dasharray="4,3"/>
 <text x="670" y="266" font-size="10" fill="#f87171" text-anchor="middle">else: gap -&gt; NAK(seq err)</text>
 <text x="670" y="280" font-size="10" fill="#f87171" text-anchor="middle">RQ empty -&gt; RNR NAK(delay)</text>
 
-<rect x="550" y="296" width="240" height="44" rx="6" fill="#451a03" stroke="#fbbf24" stroke-width="1.5"/>
+<rect x="550" y="296" width="240" height="44" rx="6" fill="#78350f" stroke="#fbbf24" stroke-width="1.5"/>
 <text x="670" y="314" font-size="12" font-weight="500" fill="#fcd34d" text-anchor="middle">pop RQ WQE (in order)</text>
 <text x="670" y="330" font-size="10" fill="#fcd34d" text-anchor="middle">DMA payload into buffer</text>
 
-<rect x="550" y="350" width="240" height="38" rx="6" fill="#0f172a" stroke="#94a3b8" stroke-width="1.5"/>
+<rect x="550" y="350" width="240" height="38" rx="6" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
 <text x="670" y="373" font-size="12" fill="#cbd5e1" text-anchor="middle">post receive CQE</text>
 
 <line x1="670" y1="396" x2="150" y2="396" stroke="#818cf8" stroke-width="1.5" marker-end="url(#arrSeqFwd)"/>
 <text x="410" y="388" font-size="11" fill="#818cf8" text-anchor="middle">ACK PSN=N</text>
 
-<rect x="30" y="404" width="240" height="44" rx="6" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.5"/>
+<rect x="30" y="404" width="240" height="44" rx="6" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
 <text x="150" y="422" font-size="12" font-weight="500" fill="#c7d2fe" text-anchor="middle">TX engine</text>
 <text x="150" y="438" font-size="10" fill="#818cf8" text-anchor="middle">match PSN, disarm retry timer</text>
 
-<rect x="30" y="456" width="240" height="38" rx="6" fill="#0f172a" stroke="#94a3b8" stroke-width="1.5"/>
+<rect x="30" y="456" width="240" height="38" rx="6" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
 <text x="150" y="479" font-size="11" fill="#cbd5e1" text-anchor="middle">send CQE posted (delivered)</text>
 
 <text x="450" y="522" font-size="13" fill="#94a3b8" text-anchor="middle">Coordination is pre-posting discipline, not a runtime handshake: SEND consumes the RQ's head WQE in strict order.</text>

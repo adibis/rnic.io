@@ -19,8 +19,11 @@ Boxes that already have a chapter written are clickable -- click one to go strai
 
 ---
 
-<div class="master-diagram-wrap">
+<div class="master-diagram-wrap master-diagram-light">
 {{< inline-svg "static/images/overview/00-master-diagram-linked.svg" >}}
+</div>
+<div class="master-diagram-wrap master-diagram-dark">
+{{< inline-svg "static/images/overview/00-master-diagram-linked-dark.svg" >}}
 </div>
 
 ## Chapters

@@ -33,3 +33,18 @@
 .master-diagram-link {
   text-decoration: none;
 }
+
+/* The Overview page inlines two copies of the master diagram (light and
+   dark palette) since an inlined SVG is fixed at build time and can't
+   react to prefers-color-scheme the way an <img>'s swapped src can --
+   pure CSS toggles which one is visible, off the same .dark class the
+   theme toggle already sets on <html>. */
+.master-diagram-dark {
+  display: none;
+}
+.dark .master-diagram-light {
+  display: none;
+}
+.dark .master-diagram-dark {
+  display: block;
+}

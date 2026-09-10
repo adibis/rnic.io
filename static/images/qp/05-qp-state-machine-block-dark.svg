@@ -16,16 +16,16 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <text x="450" y="26" font-size="16" font-weight="500" fill="#f1f5f9" text-anchor="middle">QP State Machine (RC)</text>
 
 <!-- core path nodes -->
-<circle cx="80" cy="130" r="42" fill="#0f172a" stroke="#94a3b8" stroke-width="1.5"/>
+<circle cx="80" cy="130" r="42" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
 <text x="80" y="135" font-size="13" font-weight="500" fill="#cbd5e1" text-anchor="middle">RESET</text>
 
-<circle cx="240" cy="130" r="42" fill="#0f172a" stroke="#94a3b8" stroke-width="1.5"/>
+<circle cx="240" cy="130" r="42" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
 <text x="240" y="135" font-size="13" font-weight="500" fill="#cbd5e1" text-anchor="middle">INIT</text>
 
-<circle cx="400" cy="130" r="42" fill="#0f172a" stroke="#94a3b8" stroke-width="1.5"/>
+<circle cx="400" cy="130" r="42" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
 <text x="400" y="135" font-size="13" font-weight="500" fill="#cbd5e1" text-anchor="middle">RTR</text>
 
-<circle cx="560" cy="130" r="42" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.5"/>
+<circle cx="560" cy="130" r="42" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
 <text x="560" y="135" font-size="13" font-weight="500" fill="#c7d2fe" text-anchor="middle">RTS</text>
 
 <!-- forward arrows -->
@@ -41,11 +41,11 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <text x="480" y="150" font-size="8" fill="#818cf8" text-anchor="middle">retry, rnr-retry, timeout</text>
 
 <!-- SQD satellite -->
-<rect x="500" y="220" width="180" height="80" rx="8" fill="#0f172a" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5,3"/>
+<rect x="500" y="220" width="180" height="80" rx="8" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5,3"/>
 <text x="590" y="238" font-size="12" font-weight="500" fill="#cbd5e1" text-anchor="middle">SQD</text>
-<rect x="515" y="246" width="70" height="24" rx="4" fill="#0f172a" stroke="#94a3b8"/>
+<rect x="515" y="246" width="70" height="24" rx="4" fill="#1e293b" stroke="#94a3b8"/>
 <text x="550" y="262" font-size="9" fill="#cbd5e1" text-anchor="middle">draining</text>
-<rect x="595" y="246" width="70" height="24" rx="4" fill="#0f172a" stroke="#94a3b8"/>
+<rect x="595" y="246" width="70" height="24" rx="4" fill="#1e293b" stroke="#94a3b8"/>
 <text x="630" y="262" font-size="9" fill="#cbd5e1" text-anchor="middle">drained</text>
 <line x1="586" y1="258" x2="594" y2="258" stroke="#94a3b8" stroke-width="1" marker-end="url(#arrSMsqd)"/>
 <text x="590" y="288" font-size="9" fill="#94a3b8" text-anchor="middle">software-requested, clean quiesce</text>
@@ -55,7 +55,7 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <text x="480" y="196" font-size="9" fill="#94a3b8" text-anchor="middle">RTS &lt;-&gt; SQD</text>
 
 <!-- ERROR node -->
-<circle cx="400" cy="360" r="42" fill="#450a0a" stroke="#f87171" stroke-width="1.5"/>
+<circle cx="400" cy="360" r="42" fill="#7f1d1d" stroke="#f87171" stroke-width="1.5"/>
 <text x="400" y="365" font-size="13" font-weight="500" fill="#f87171" text-anchor="middle">ERROR</text>
 
 <!-- fault arrows converging into ERROR -->

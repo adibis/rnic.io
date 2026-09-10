@@ -14,20 +14,20 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 
 <!-- Timeline A: decide on miss -->
 <text x="450" y="50" font-size="11" font-weight="500" fill="#94a3b8" text-anchor="middle">without precomputation</text>
-<line x1="40" y1="80" x2="860" y2="80" stroke="#475569" stroke-width="1.5" marker-end="url(#arrPre)"/>
+<line x1="40" y1="80" x2="860" y2="80" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrPre)"/>
 <circle cx="90" cy="80" r="4" fill="#94a3b8"/>
 <circle cx="150" cy="80" r="4" fill="#94a3b8"/>
 <circle cx="210" cy="80" r="4" fill="#94a3b8"/>
 <text x="150" y="102" font-size="10" fill="#94a3b8" text-anchor="middle">ordinary hits</text>
 
-<rect x="280" y="60" width="90" height="40" rx="4" fill="#450a0a" stroke="#f87171" stroke-width="1.5"/>
+<rect x="280" y="60" width="90" height="40" rx="4" fill="#7f1d1d" stroke="#f87171" stroke-width="1.5"/>
 <text x="325" y="84" font-size="11" font-weight="500" fill="#f87171" text-anchor="middle">MISS</text>
 
-<rect x="400" y="60" width="140" height="40" rx="4" fill="#451a03" stroke="#fbbf24" stroke-width="1.5"/>
+<rect x="400" y="60" width="140" height="40" rx="4" fill="#78350f" stroke="#fbbf24" stroke-width="1.5"/>
 <text x="470" y="78" font-size="10" font-weight="500" fill="#fcd34d" text-anchor="middle">decide victim</text>
 <text x="470" y="92" font-size="9" fill="#fcd34d" text-anchor="middle">on the critical path</text>
 
-<rect x="570" y="60" width="140" height="40" rx="4" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.5"/>
+<rect x="570" y="60" width="140" height="40" rx="4" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
 <text x="640" y="78" font-size="10" font-weight="500" fill="#c7d2fe" text-anchor="middle">evict + refill</text>
 <text x="640" y="92" font-size="9" fill="#818cf8" text-anchor="middle">write-back, then fill</text>
 
@@ -35,20 +35,20 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 
 <!-- Timeline B: precomputed -->
 <text x="450" y="135" font-size="11" font-weight="500" fill="#94a3b8" text-anchor="middle">with precomputation</text>
-<line x1="40" y1="180" x2="860" y2="180" stroke="#475569" stroke-width="1.5" marker-end="url(#arrPre)"/>
+<line x1="40" y1="180" x2="860" y2="180" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrPre)"/>
 
-<rect x="60" y="160" width="80" height="40" rx="4" fill="#0f172a" stroke="#94a3b8" stroke-width="1.2"/>
+<rect x="60" y="160" width="80" height="40" rx="4" fill="#1e293b" stroke="#94a3b8" stroke-width="1.2"/>
 <text x="100" y="182" font-size="9" fill="#cbd5e1" text-anchor="middle">hit, update</text>
-<rect x="150" y="160" width="80" height="40" rx="4" fill="#0f172a" stroke="#94a3b8" stroke-width="1.2"/>
+<rect x="150" y="160" width="80" height="40" rx="4" fill="#1e293b" stroke="#94a3b8" stroke-width="1.2"/>
 <text x="190" y="182" font-size="9" fill="#cbd5e1" text-anchor="middle">hit, update</text>
-<rect x="240" y="160" width="80" height="40" rx="4" fill="#0f172a" stroke="#94a3b8" stroke-width="1.2"/>
+<rect x="240" y="160" width="80" height="40" rx="4" fill="#1e293b" stroke="#94a3b8" stroke-width="1.2"/>
 <text x="280" y="182" font-size="9" fill="#cbd5e1" text-anchor="middle">hit, update</text>
 <text x="190" y="222" font-size="9" fill="#94a3b8" text-anchor="middle">"if a line has to go, this is the one" kept current in the background</text>
 
-<rect x="400" y="160" width="90" height="40" rx="4" fill="#450a0a" stroke="#f87171" stroke-width="1.5"/>
+<rect x="400" y="160" width="90" height="40" rx="4" fill="#7f1d1d" stroke="#f87171" stroke-width="1.5"/>
 <text x="445" y="184" font-size="11" font-weight="500" fill="#f87171" text-anchor="middle">MISS</text>
 
-<rect x="520" y="160" width="140" height="40" rx="4" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.5"/>
+<rect x="520" y="160" width="140" height="40" rx="4" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
 <text x="590" y="178" font-size="10" font-weight="500" fill="#c7d2fe" text-anchor="middle">evict + refill</text>
 <text x="590" y="192" font-size="9" fill="#818cf8" text-anchor="middle">victim already known</text>
 

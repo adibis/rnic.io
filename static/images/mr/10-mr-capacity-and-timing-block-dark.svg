@@ -12,37 +12,37 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 </defs>
 
 <!-- divider -->
-<line x1="490" y1="20" x2="490" y2="540" stroke="#334155" stroke-width="1.5"/>
+<line x1="490" y1="20" x2="490" y2="540" stroke="#475569" stroke-width="1.5"/>
 
 <!-- ============ LEFT PANEL: MTT scales with size ============ -->
 <text x="245" y="34" font-size="15" font-weight="500" fill="#f1f5f9" text-anchor="middle">MTT count scales with size, not existence</text>
 
 <g id="mpt-large">
-  <rect x="30" y="90" width="120" height="50" rx="4" fill="#451a03" stroke="#fbbf24" stroke-width="1.5"/>
+  <rect x="30" y="90" width="120" height="50" rx="4" fill="#78350f" stroke="#fbbf24" stroke-width="1.5"/>
   <text x="90" y="120" font-size="12" font-weight="500" fill="#fcd34d" text-anchor="middle">MPT entry</text>
 </g>
 <text x="90" y="160" font-size="11" fill="#94a3b8" text-anchor="middle">large registration</text>
 
 <g id="mtt-large-fan">
-  <rect x="220" y="70" width="46" height="26" rx="3" fill="#451a03" stroke="#fbbf24" stroke-width="1.2"/>
-  <rect x="220" y="102" width="46" height="26" rx="3" fill="#451a03" stroke="#fbbf24" stroke-width="1.2"/>
-  <rect x="220" y="134" width="46" height="26" rx="3" fill="#451a03" stroke="#fbbf24" stroke-width="1.2"/>
-  <rect x="280" y="70" width="46" height="26" rx="3" fill="#451a03" stroke="#fbbf24" stroke-width="1.2"/>
-  <rect x="280" y="102" width="46" height="26" rx="3" fill="#451a03" stroke="#fbbf24" stroke-width="1.2"/>
-  <rect x="280" y="134" width="46" height="26" rx="3" fill="#451a03" stroke="#fbbf24" stroke-width="1.2"/>
+  <rect x="220" y="70" width="46" height="26" rx="3" fill="#78350f" stroke="#fbbf24" stroke-width="1.2"/>
+  <rect x="220" y="102" width="46" height="26" rx="3" fill="#78350f" stroke="#fbbf24" stroke-width="1.2"/>
+  <rect x="220" y="134" width="46" height="26" rx="3" fill="#78350f" stroke="#fbbf24" stroke-width="1.2"/>
+  <rect x="280" y="70" width="46" height="26" rx="3" fill="#78350f" stroke="#fbbf24" stroke-width="1.2"/>
+  <rect x="280" y="102" width="46" height="26" rx="3" fill="#78350f" stroke="#fbbf24" stroke-width="1.2"/>
+  <rect x="280" y="134" width="46" height="26" rx="3" fill="#78350f" stroke="#fbbf24" stroke-width="1.2"/>
   <line x1="150" y1="115" x2="216" y2="115" stroke="#fcd34d" stroke-width="1.5" marker-end="url(#arrMCAmber)"/>
 </g>
 <text x="273" y="178" font-size="11" fill="#94a3b8" text-anchor="middle">6 MTT entries -- one per page</text>
 
 <g id="mpt-small">
-  <rect x="30" y="240" width="120" height="50" rx="4" fill="#451a03" stroke="#fbbf24" stroke-width="1.5"/>
+  <rect x="30" y="240" width="120" height="50" rx="4" fill="#78350f" stroke="#fbbf24" stroke-width="1.5"/>
   <text x="90" y="270" font-size="12" font-weight="500" fill="#fcd34d" text-anchor="middle">MPT entry</text>
 </g>
 <text x="90" y="310" font-size="11" fill="#94a3b8" text-anchor="middle">small registration</text>
 
 <g id="mtt-small-fan">
-  <rect x="220" y="252" width="46" height="26" rx="3" fill="#451a03" stroke="#fbbf24" stroke-width="1.2"/>
-  <rect x="220" y="284" width="46" height="26" rx="3" fill="#451a03" stroke="#fbbf24" stroke-width="1.2"/>
+  <rect x="220" y="252" width="46" height="26" rx="3" fill="#78350f" stroke="#fbbf24" stroke-width="1.2"/>
+  <rect x="220" y="284" width="46" height="26" rx="3" fill="#78350f" stroke="#fbbf24" stroke-width="1.2"/>
   <line x1="150" y1="265" x2="216" y2="265" stroke="#fcd34d" stroke-width="1.5" marker-end="url(#arrMCAmber)"/>
 </g>
 <text x="243" y="330" font-size="11" fill="#94a3b8" text-anchor="middle">2 MTT entries</text>
@@ -54,7 +54,7 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <text x="745" y="34" font-size="15" font-weight="500" fill="#f1f5f9" text-anchor="middle">Registration stages, then swaps in atomically</text>
 
 <g id="staging-area">
-  <rect x="600" y="70" width="290" height="90" rx="6" fill="#082f49" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <rect x="600" y="70" width="290" height="90" rx="6" fill="#0c4a6e" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="4,3"/>
   <text x="745" y="100" font-size="13" font-weight="500" fill="#38bdf8" text-anchor="middle">Staging area (control-plane side)</text>
   <text x="745" y="120" font-size="11" fill="#38bdf8" text-anchor="middle">MPT entry + every MTT entry</text>
   <text x="745" y="136" font-size="11" fill="#38bdf8" text-anchor="middle">built here first, none visible yet</text>
@@ -65,7 +65,7 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <text x="800" y="214" font-size="11" fill="#818cf8" text-anchor="middle">only once complete</text>
 
 <g id="live-structure">
-  <rect x="600" y="240" width="290" height="70" rx="6" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.5"/>
+  <rect x="600" y="240" width="290" height="70" rx="6" fill="#312e81" stroke="#818cf8" stroke-width="1.5"/>
   <text x="745" y="268" font-size="13" font-weight="500" fill="#c7d2fe" text-anchor="middle">Live MPT/MTT chain</text>
   <text x="745" y="286" font-size="11" fill="#818cf8" text-anchor="middle">what the DMA Engine actually reads</text>
 </g>
