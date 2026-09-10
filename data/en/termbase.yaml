@@ -1,0 +1,194 @@
+---
+# Glossary for rnic.io, used by the {{< term "..." >}} shortcode
+# (theme docs: https://imfing.github.io/hextra/docs/guide/shortcodes/term/).
+# Each entry renders as <abbr title="definition">TEXT</abbr> wherever a
+# chapter wraps that text in the shortcode -- not applied automatically.
+# Matching is case-insensitive against either `abbr` or `term`.
+
+- term: remote direct memory access
+  abbr: RDMA
+  definition: "Moving bytes directly into or out of a remote machine's memory from a NIC, with no syscall, no remote CPU involvement, and no unauthorized byte moved."
+- term: RDMA over Converged Ethernet version 2
+  abbr: RoCEv2
+  definition: "The wire protocol this book treats concretely throughout: RDMA transport packets carried inside ordinary UDP/IP, routable like any other Ethernet traffic."
+- term: RDMA-capable network interface card
+  abbr: RNIC
+  definition: "A NIC built to execute RDMA operations in hardware -- the subject of this entire book."
+- term: network interface card
+  abbr: NIC
+  definition: "The hardware that moves frames between a wire and host memory."
+
+- term: queue pair
+  abbr: QP
+  definition: "The RNIC's per-connection state: one send queue and one receive queue, tracked as a matched pair."
+- term: queue pair context
+  abbr: QPC
+  definition: "The complete set of per-QP state a QP Table/Cache entry holds -- connection state, sequence numbers, outstanding-operation ceilings, and everything else a QP needs to send and receive correctly."
+- term: work queue element
+  abbr: WQE
+  definition: "One posted unit of work sitting in a Send Queue or Receive Queue ring, waiting to be fetched and executed."
+- term: send queue
+  abbr: SQ
+  definition: "The ring holding a QP's posted outbound work (SENDs, WRITEs, READs, Atomics)."
+- term: receive queue
+  abbr: RQ
+  definition: "The ring holding a QP's posted receive buffers, consumed in order by incoming SEND messages."
+- term: shared receive queue
+  abbr: SRQ
+  definition: "One receive-buffer pool shared across multiple QPs, instead of each QP owning a private Receive Queue."
+- term: completion queue
+  abbr: CQ
+  definition: "Where finished work gets reported back to software, decoupled from any single QP."
+- term: completion queue entry
+  abbr: CQE
+  definition: "One record posted to a Completion Queue describing a finished send or receive operation."
+- term: completion queue context
+  abbr: CQC
+  definition: "The per-CQ state a caching structure has to hold, alongside QPC and MTT/MPT, in the RNIC's shared on-chip cache."
+- term: event queue context
+  abbr: EQC
+  definition: "The per-event-queue state a caching structure has to hold, alongside QPC/MTT/MPT/CQC, in the RNIC's shared on-chip cache."
+
+- term: memory region
+  abbr: MR
+  definition: "A range of host memory registered with the RNIC, described by a descriptor and addressed remotely via a key."
+- term: memory translation table
+  abbr: MTT
+  definition: "The structure mapping a registered Memory Region's virtual or I/O address space to physical pages."
+- term: memory protection table
+  abbr: MPT
+  definition: "The structure holding a Memory Region's permission and bounds metadata, checked on every remote access against that region's key."
+- term: protection domain
+  abbr: PD
+  definition: "A grouping boundary that scopes which QPs may use which Memory Regions -- a QP and an MR must share a PD before the MR's keys are valid against that QP."
+- term: on-demand paging
+  abbr: ODP
+  definition: "Registering a Memory Region without pinning its pages up front, resolving physical pages lazily on first touch instead."
+
+- term: local key
+  abbr: lkey
+  definition: "The key a QP presents to authorize its own local access to a registered Memory Region."
+- term: remote key
+  abbr: rkey
+  definition: "The key a remote peer presents in an incoming RDMA operation to authorize access to a Memory Region on this side."
+
+- term: base transport header
+  abbr: BTH
+  definition: "The header present on every RoCEv2 packet, carrying the opcode, destination QP, and packet sequence number."
+- term: RDMA extended transport header
+  abbr: RETH
+  definition: "Carries a Memory Region's virtual address, rkey, and DMA length -- present only on RDMA WRITE/READ FIRST or ONLY packets."
+- term: ACK extended transport header
+  abbr: AETH
+  definition: "Carries acknowledgment syndrome and credit information on ACK packets."
+- term: invalidate extended transport header
+  abbr: IETH
+  definition: "Carries the rkey to invalidate on a SEND ...WITH_INVALIDATE operation."
+- term: immediate data extended header
+  abbr: IMMDT
+  definition: "Carries 32 bits of immediate data delivered alongside a SEND or WRITE ...WITH_IMMEDIATE operation."
+- term: atomic extended transport header
+  abbr: ATMETH
+  definition: "Carries the remote address, comparand, and swap/add operand for a COMPARE_SWAP or FETCH_ADD atomic operation -- structurally distinct from RETH."
+- term: invariant cyclic redundancy check
+  abbr: ICRC
+  definition: "The RoCEv2 checksum covering only the fields that don't change in transit, letting routers modify TTL/checksum fields without invalidating it."
+- term: cyclic redundancy check
+  abbr: CRC
+  definition: "A checksum used to detect transmission errors."
+- term: packet sequence number
+  abbr: PSN
+  definition: "The per-QP, per-direction counter that orders packets and drives gap detection and retransmission."
+
+- term: reliable connection
+  abbr: RC
+  definition: "The transport type this book assumes throughout: acknowledged, ordered, retried delivery between exactly one pair of QPs."
+- term: unreliable connection
+  abbr: UC
+  definition: "A connected transport type with no acknowledgment or retry machinery."
+- term: unreliable datagram
+  abbr: UD
+  definition: "A connectionless transport type: one QP can address many peers, with no acknowledgment or retry machinery."
+- term: receiver not ready
+  abbr: RNR
+  definition: "The NAK a responder sends when a SEND arrives against an empty Receive Queue -- nothing posted to consume it."
+- term: negative acknowledgment
+  abbr: NAK
+  definition: "A responder's signal that a request failed or can't be serviced yet, carrying a syndrome describing why."
+- term: acknowledgment
+  abbr: ACK
+  definition: "A responder's signal that a request completed successfully."
+
+- term: ready to receive
+  abbr: RTR
+  definition: "The QP state reached after supplying peer address and receive-side parameters -- the QP can receive but not yet send."
+- term: ready to send
+  abbr: RTS
+  definition: "The QP state reached after supplying send-side parameters -- the QP can now carry live traffic in both directions."
+- term: send queue error
+  abbr: SQE
+  definition: "A UC/UD-only recovery state that isolates a fault to the send side alone, letting software recover it directly back to RTS without a full QP rebuild -- RC has no equivalent state."
+- term: send queue drain
+  abbr: SQD
+  definition: "A deliberate, software-requested quiesce of new sends, with a defined drain-complete signal -- unlike ERROR, which is neither requested nor drains cleanly."
+
+- term: direct memory access
+  abbr: DMA
+  definition: "Hardware moving bytes to or from host memory without CPU involvement in the transfer itself."
+- term: static random-access memory
+  abbr: SRAM
+  definition: "The fast, on-chip memory technology used for the RNIC's working-set caches."
+- term: dynamic random-access memory
+  abbr: DRAM
+  definition: "The higher-capacity, higher-latency memory technology typically backing an RNIC's full QP/MR tables beyond what fits on-chip."
+- term: high bandwidth memory
+  abbr: HBM
+  definition: "A high-throughput memory technology sometimes used to back an RNIC's full tables in place of conventional DRAM."
+- term: least recently used
+  abbr: LRU
+  definition: "An eviction policy that discards the entry least recently touched when a cache or table is full."
+- term: translation lookaside buffer
+  abbr: TLB
+  definition: "A CPU cache for address translations -- the architectural analogy this book uses repeatedly for RNIC caching structures."
+- term: memory management unit
+  abbr: MMU
+  definition: "The CPU-side hardware that walks page tables and enforces memory protection -- another recurring analogy for RNIC table/cache behavior."
+
+- term: data center quantized congestion notification
+  abbr: DCQCN
+  definition: "The rate-based congestion control scheme this book's Congestion Control Engine Part covers, combining ECN marking with a per-QP rate limiter."
+- term: explicit congestion notification
+  abbr: ECN
+  definition: "IP-layer marking that signals congestion without dropping the packet, feeding DCQCN's rate-control loop."
+- term: priority flow control
+  abbr: PFC
+  definition: "A link-layer, per-priority pause mechanism used alongside ECN in lossless Ethernet fabrics carrying RoCEv2."
+
+- term: scatter-gather element
+  abbr: SGE
+  definition: "One entry in a WQE's scatter-gather list, describing one contiguous local buffer segment."
+- term: user datagram protocol
+  abbr: UDP
+  definition: "The transport RoCEv2 packets are carried inside, making RDMA traffic routable like ordinary IP traffic."
+- term: internet protocol
+  abbr: IP
+  definition: "The routable network layer RoCEv2 rides on top of, unlike RoCEv1's raw-Ethernet-only reach."
+- term: central processing unit
+  abbr: CPU
+  definition: "The host processor -- referenced mainly for architectural analogies (TLB, MMU, cache hierarchies) applied to RNIC structures."
+- term: memory-mapped I/O
+  abbr: MMIO
+  definition: "Device registers addressed as if they were memory locations -- how software rings an RNIC's doorbell."
+- term: first in, first out
+  abbr: FIFO
+  definition: "A queue discipline where entries are serviced in the order they arrived."
+- term: user access region
+  abbr: UAR
+  definition: "Device memory mapped for direct userspace access, used by some doorbell-bypass optimizations to write a WQE's bytes directly rather than through the ordinary ring."
+
+- term: InfiniBand Trade Association
+  abbr: IBTA
+  definition: "The standards body whose InfiniBand Architecture Specification defines RDMA's transport semantics, including RoCEv2's RC state machine and header formats."
+- term: request for comments
+  abbr: RFC
+  definition: "An IETF standards document -- cited in this book wherever a mechanism (UDP/IP encapsulation, ECN) is IETF-defined rather than IBTA-defined."
