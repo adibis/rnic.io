@@ -16,7 +16,7 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 
 <rect x="40" y="50" width="150" height="56" rx="6" fill="#34383d" stroke="#94a3b8" stroke-width="1.3" stroke-dasharray="4,3"/>
 <text x="115" y="72" font-size="9" font-weight="500" fill="#949ca8" text-anchor="middle">QP Context</text>
-<text x="115" y="87" font-size="8" fill="#949ca8" text-anchor="middle">dest_qp_num, sq_psn</text>
+<text x="115" y="87" font-size="8" fill="#949ca8" text-anchor="middle">dest-QP field, send-side PSN</text>
 
 <rect x="40" y="230" width="150" height="60" rx="6" fill="#272f49" stroke="#928dce" stroke-width="1.5"/>
 <text x="115" y="255" font-size="11" font-weight="500" fill="#8f8dce" text-anchor="middle">WQE</text>
