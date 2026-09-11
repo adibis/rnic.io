@@ -34,6 +34,8 @@ Two fields deserve pulling out before the full list: they're the most commonly m
 
 These are independently negotiated, apply to opposite directions of the same connection, and are very often asymmetric -- a QP that mostly issues reads and rarely serves them might run a high requester-side ceiling and a low responder-side ceiling.
 
+"Outstanding" means issued and unanswered, not merely queued -- a distinction worth walking through with actual numbers. Say this QP's requester-side ceiling is 4, and software posts eight READ WQEs back to back. Hardware issues the first four right away, as four separate READ REQUEST packets; each one occupies a slot until its READ RESPONSE data comes back from the remote peer. WQEs five through eight sit fully formed and ready in the Send Queue, but hardware doesn't touch them yet -- issuing a fifth would mean tracking five in-flight responses against a ceiling of four. The moment WQE #1's response arrives and that read completes, its slot frees up, and hardware issues WQE #5. Two things are bounded here, and they're not the same thing: the ceiling bounds how many reads can be in flight at once (four), while the Send Queue's own depth -- a separate resource, covered in [The Send Queue Ring](/tx/the-send-queue-ring) -- bounds how many WQEs can be queued up waiting their turn behind it.
+
 > [!NOTE] Concept
 > Requester-side ceiling = what *this QP has sent* (bounds its own read/atomic pipeline). Responder-side ceiling = what *this QP will accept* (bounds the peer's read/atomic requests against it). Same shape, opposite direction, independently sized.
 
