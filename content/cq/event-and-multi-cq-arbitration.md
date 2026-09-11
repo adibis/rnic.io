@@ -6,6 +6,7 @@ publishDate: 2026-09-04
 draft: false
 description: "Multi-QP Error Arbitration named this Part as the place a real, documented storm scenario gets its general answer: many QPs forced to ERROR by one shared fault, all needing to report at once through what is, at that instant, one serialized path. This chapter is that answer -- and its quieter, steady-state counterpart on the notification side."
 prev: /cq/cq-overflow
+next: /cq/mid-transaction-cq-reset
 ---
 
 ## Overview
