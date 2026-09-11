@@ -49,16 +49,30 @@
   display: block;
 }
 
-/* Dark-mode-only link color override. The site's plum accent (see
-   head-end.html) is tuned dark on purpose -- it reads as a rich, grounded
-   brand color for the sidebar's filled active-item pill and the favicon,
-   both of which get their contrast from a background-vs-page difference,
-   not the color's own brightness. Inline link TEXT has no such background;
-   its own lightness has to stand apart from the page. That same dark plum
-   measures ~1.8:1 against the near-black dark-mode background (WCAG wants
-   4.5:1+) -- fine against light mode's white page (~10:1), broken against
-   dark mode's. This lightens dark-mode links only, same hue, without
-   touching the sidebar/pill treatment or light mode at all. */
+/* Link color, both modes -- separate from the sidebar's plum entirely.
+   The sidebar's active-item pill gets its legibility from a background-
+   vs-page difference, so the dark, brand-true plum (head-end.html) works
+   fine there. Inline link TEXT has no such background: what matters is
+   its contrast against the *surrounding body text*, not just the page.
+   Light mode's original link color (the same dark plum, ~29% lightness)
+   measured only ~2:1 against pure-black body text -- it read against
+   white fine (10:1) but merged into the prose next to it. Dark mode's
+   version measured ~1.8:1 against the near-black page, worse. Both get
+   a lighter, more vivid step of the same hue here, tuned for separation
+   from adjacent text rather than just legibility against the page. */
+.content :where(a):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  color: #b9468f;
+}
 .dark .content :where(a):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  color: #cb76ac;
+}
+
+/* The sidebar's active-item text in dark mode inherits the same dark,
+   ~29%-lightness plum used for its light-mode counterpart (which works
+   fine on light-mode's pale pill background) -- but dark mode's pill is
+   a faint tint over a near-black page, and that same dark text is nearly
+   unreadable on it. Lightened independently of the general link fix
+   above and of the pill background, which stays as-is. */
+.dark .hextra-sidebar-active-item {
   color: #cb76ac;
 }
