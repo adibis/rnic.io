@@ -3,7 +3,7 @@ title: "Replay Buffer Capacity and Backpressure"
 weight: 7
 date: 2026-09-09
 publishDate: 2026-09-09
-draft: true
+draft: false
 description: "Every other cache in this book answers capacity pressure by evicting something. This one can't -- evicting an unacknowledged entry doesn't cost a future re-fetch, it costs correctness. This chapter is what governs capacity instead."
 prev: /reliability/multi-qp-retry-arbitration
 next: /reliability/mid-transaction-reliability-reset

@@ -3,7 +3,7 @@ title: "Go-Back-N Retransmission"
 weight: 5
 date: 2026-09-09
 publishDate: 2026-09-09
-draft: true
+draft: false
 description: "When a retry fires, hardware doesn't need to know exactly which packet was lost -- only where to resume from. That's cheaper to build than it sounds, and the price is wasted bandwidth on packets that technically already arrived."
 prev: /reliability/the-retry-and-rnr-timeout-state-machines
 next: /reliability/multi-qp-retry-arbitration

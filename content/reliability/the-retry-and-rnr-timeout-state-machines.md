@@ -3,7 +3,7 @@ title: "The Retry and RNR Timeout State Machines"
 weight: 4
 date: 2026-09-09
 publishDate: 2026-09-09
-draft: true
+draft: false
 description: "A lost packet and a full receive queue are not the same failure, and Reliable Connection doesn't treat them the same way -- two parallel timeout branches, counted independently, both capable of driving a Queue Pair to the same terminal state."
 prev: /reliability/replay-buffer-caching
 next: /reliability/go-back-n-retransmission

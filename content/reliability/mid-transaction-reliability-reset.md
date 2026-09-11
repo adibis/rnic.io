@@ -3,7 +3,7 @@ title: "Mid-Transaction Reliability Reset"
 weight: 8
 date: 2026-09-09
 publishDate: 2026-09-09
-draft: true
+draft: false
 description: "Mid-Transaction QP Reset named replay-buffer contents and armed timers among the leftovers RESET has to reconcile, and left both unresolved. This chapter resolves them, and finds one hazard neither chapter can fully close."
 prev: /reliability/replay-buffer-capacity-and-backpressure
 ---

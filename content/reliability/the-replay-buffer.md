@@ -3,7 +3,7 @@ title: "The Replay Buffer"
 weight: 2
 date: 2026-09-09
 publishDate: 2026-09-09
-draft: true
+draft: false
 description: "A reliable sender can't forget what it sent the instant it sends it -- only once something confirms the other side actually has it. This chapter is where that in-between state actually lives, and what it costs to hold it."
 prev: /reliability/retry-and-timeout-state
 next: /reliability/replay-buffer-caching

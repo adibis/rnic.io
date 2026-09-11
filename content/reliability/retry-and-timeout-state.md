@@ -3,7 +3,7 @@ title: "Retry and Timeout State"
 weight: 1
 date: 2026-09-09
 publishDate: 2026-09-09
-draft: true
+draft: false
 description: "QP Context named four fields and stopped, deferring them to a part of the book that didn't exist yet. This is that part, and these are the fields -- plus the live state built on top of them that no field name alone can carry."
 next: /reliability/the-replay-buffer
 ---

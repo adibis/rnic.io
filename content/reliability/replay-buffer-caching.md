@@ -3,7 +3,7 @@ title: "Replay Buffer Caching"
 weight: 3
 date: 2026-09-09
 publishDate: 2026-09-09
-draft: true
+draft: false
 description: "Every other cached resource in this book competes for the same shared SRAM. The Replay Buffer is no exception, and its own working set is shaped by something neither the QP Cache nor the Key Cache has to think about: how fast acknowledgments actually come back."
 prev: /reliability/the-replay-buffer
 next: /reliability/the-retry-and-rnr-timeout-state-machines
