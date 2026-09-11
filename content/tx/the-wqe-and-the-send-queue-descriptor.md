@@ -59,11 +59,26 @@ Every field a Work Request carries, and how much of each one IBTA-V1 actually pi
 |---|---|---|
 | **WR ID** | opaque value, echoed back on the matching completion | architect's choice -- IBTA-V1 requires a completion be traceable to its request, not this exact mechanism |
 | **next** | pointer chaining several Work Requests into one post call | architect's choice |
-| **opcode** | which operation this WR requests | IBTA-V1 -- [The Operation Catalog](/overview/operation-catalog) enumerates the full set |
+| **opcode** | which operation this WR requests -- broken out below, not repeated here | see below |
 | **SGE list** | local source bytes: address, length, `lkey` -- absent entirely if inline is set | IBTA-V1 requires the semantic content (source bytes, a checkable permission); this exact shape is architect's choice |
 | **remote addr / rkey** | where an RDMA operation lands on the responder | IBTA-V1 -- mirrored directly in RETH on the wire |
 | **immediate data / invalidate rkey** | one union value, which one depends on the opcode | IBTA-V1 |
 | **flags** | four independent per-WR requests -- broken out below, not repeated here | see below |
+
+**What's inside `opcode`.** A Work Request's opcode selects one operation family, not a specific wire packet -- there's no FIRST/MIDDLE/LAST/ONLY choice at this level, because hardware decides packet framing once it knows the payload's length, not software at post time. [The Operation Catalog](/overview/operation-catalog)'s wire-level table is what each of these expands into.
+
+| Opcode | Requests | Expands into (wire family) |
+|---|---|---|
+| **SEND** | an ordinary two-sided message, consuming a Receive Request at the responder | `SEND_FIRST`/`MIDDLE`/`LAST`/`ONLY` |
+| **SEND with immediate** | the same, plus a 32-bit value the responder's software sees on completion | `SEND_..._WITH_IMMEDIATE` |
+| **SEND with invalidate** | the same, plus revoking an rkey at the responder on completion | `SEND_..._WITH_INVALIDATE` |
+| **RDMA WRITE** | a one-sided placement into memory the responder already registered | `RDMA_WRITE_FIRST`/`MIDDLE`/`LAST`/`ONLY` |
+| **RDMA WRITE with immediate** | the same, plus a value the responder's software is notified of | `RDMA_WRITE_..._WITH_IMMEDIATE` |
+| **RDMA READ** | pull bytes from the responder's memory back to this side | `RDMA_READ_REQUEST`, answered with `RDMA_READ_RESPONSE_*` |
+| **COMPARE_SWAP** (atomic) | conditional swap against a 64-bit remote word | `COMPARE_SWAP` -- always one packet |
+| **FETCH_ADD** (atomic) | add to a 64-bit remote word, return the prior value | `FETCH_ADD` -- always one packet |
+
+`ACKNOWLEDGE` and `ATOMIC_ACKNOWLEDGE` don't appear above -- hardware generates both automatically as part of the reliability protocol; software never posts a Work Request asking for one directly.
 
 **What's inside `flags`.** The flags field above contains the following four requests:
 
@@ -79,3 +94,4 @@ Every field a Work Request carries, and how much of each one IBTA-V1 actually pi
 - InfiniBand Trade Association, *InfiniBand™ Architecture Specification*, Volume 1 (General Specifications).
 - The control-segment/data-segment split is sourced to a vendor-manual-citing technical analysis (Alibaba Cloud's developer blog, itself citing NVIDIA's own hardware manual for a real WQE's two-part shape), not IBTA-V1 -- consistent with, but independent of, Kong et al.'s field-count figures elsewhere in this chapter.
 - This chapter's fence, completion-signaling, and inline-request descriptions are grounded in verbs-level documentation (RDMAmojo and the public `ibv_post_send` manual pages) of the behavior, not a direct quotation of IBTA-V1's own text -- the underlying semantic requirement (a Work Request interface capable of expressing ordering, completion-selection, and inline-placement intent) is consistent with, but not verified word-for-word against, the standard's own Work Request definition. The solicited-event request is the one of the four with a direct wire-visible consequence: it sets BTH's SE bit, a field IBTA-V1 does define.
+- The WQE-level opcode set (one entry per operation family, no FIRST/MIDDLE/LAST/ONLY choice at this level) is confirmed against the same public verbs-level enum documentation as the flags above, not IBTA-V1's text directly -- it matches [The Operation Catalog](/overview/operation-catalog)'s own eight-family scope exactly, minus the two hardware-generated acknowledgement opcodes no Work Request ever requests directly.
