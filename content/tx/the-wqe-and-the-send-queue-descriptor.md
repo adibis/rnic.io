@@ -63,10 +63,16 @@ Every field a Work Request carries, and how much of each one IBTA-V1 actually pi
 | **SGE list** | local source bytes: address, length, `lkey` -- absent entirely if inline is set | IBTA-V1 requires the semantic content (source bytes, a checkable permission); this exact shape is architect's choice |
 | **remote addr / rkey** | where an RDMA operation lands on the responder | IBTA-V1 -- mirrored directly in RETH on the wire |
 | **immediate data / invalidate rkey** | one union value, which one depends on the opcode | IBTA-V1 |
+| **flags** | four independent per-WR requests -- broken out below, not repeated here | see below |
+
+**What's inside `flags`.** Not a fifth top-level field alongside the six above -- one field, packing four independent requests:
+
+| Flag | Requests | Standard's role |
+|---|---|---|
 | **fence** | hold this WR's issue until every earlier read/atomic on the same Send Queue completes | IBTA-V1 requires the ordering guarantee be expressible; this flag shape is architect's choice |
-| **signal** | request this WR generate a completion at all | IBTA-V1 requires selective completion generation be possible; this flag shape is architect's choice |
-| **solicit** | request the responder wake its application via an event, not a silent completion | IBTA-V1 -- sets BTH's SE bit, a defined wire field |
-| **inline** | request the payload be copied into the WQE itself, skipping the `lkey` check and a later DMA read | architect's choice -- a real optimization no source ties to IBTA-V1's own text |
+| **signal** | this WR generate a completion at all | IBTA-V1 requires selective completion generation be possible; this flag shape is architect's choice |
+| **solicit** | the responder wake its application via an event, not a silent completion | IBTA-V1 -- sets BTH's SE bit, a defined wire field |
+| **inline** | the payload be copied into the WQE itself, skipping the `lkey` check and a later DMA read | architect's choice -- a real optimization no source ties to IBTA-V1's own text |
 
 ## References
 
