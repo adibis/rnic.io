@@ -37,7 +37,7 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 
 <rect x="76" y="124" width="350" height="34" fill="#ffffff" stroke="#0369a1"/>
 <text x="251" y="141" font-size="8.5" font-weight="500" fill="#0369a1" text-anchor="middle">remote addr / rkey</text>
-<text x="251" y="152" font-size="6.5" fill="#0369a1" text-anchor="middle">where this lands on the responder -- RDMA ops only</text>
+<text x="251" y="152" font-size="6.5" fill="#0369a1" text-anchor="middle">responder target -- dest. for WRITE, source for READ</text>
 
 <rect x="434" y="124" width="350" height="34" fill="#ffffff" stroke="#0369a1"/>
 <text x="609" y="141" font-size="8.5" font-weight="500" fill="#0369a1" text-anchor="middle">immediate data / invalidate rkey</text>
