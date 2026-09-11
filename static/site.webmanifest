@@ -1,12 +1,12 @@
 {
-  "name": "rnic.io",
-  "short_name": "rnic.io",
+  "name": "RNIC",
+  "short_name": "RNIC",
   "icons": [
     { "src": "/favicon-16x16.png", "sizes": "16x16", "type": "image/png" },
     { "src": "/favicon-32x32.png", "sizes": "32x32", "type": "image/png" },
     { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
   ],
-  "theme_color": "#1065c6",
+  "theme_color": "#762d5b",
   "background_color": "#111111",
   "display": "standalone"
 }

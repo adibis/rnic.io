@@ -1,6 +1,6 @@
 baseURL: https://rnic.io/
 locale: en-us
-title: rnic.io
+title: RNIC
 theme: hextra
 
 enableRobotsTXT: true
