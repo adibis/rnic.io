@@ -6,6 +6,7 @@ publishDate: 2026-09-04
 draft: false
 description: "Nothing else in this Part is fed by both the TX and RX pipelines at once. This chapter is the convergence point -- and the one place a real, asymmetric rule decides whether a completion gets written at all: every receive-side event does, unconditionally, while a send-side event only does if something actually asked for it."
 prev: /cq/creating-a-completion-queue
+next: /cq/cq-overflow
 ---
 
 ## Overview
