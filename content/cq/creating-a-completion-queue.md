@@ -6,6 +6,7 @@ publishDate: 2026-09-04
 draft: false
 description: "Installing a QP needs a state machine. Registering a Memory Region needs a Protection Domain. Creating a Completion Queue needs neither -- just a depth request and, optionally, a way to be told about new entries instead of having to go looking for them."
 prev: /cq/the-completion-queue
+next: /cq/cqe-generation
 ---
 
 ## Overview
