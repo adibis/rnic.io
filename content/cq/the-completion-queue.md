@@ -6,6 +6,7 @@ publishDate: 2026-09-04
 draft: false
 description: "A Send Queue is software producing, hardware consuming. A Completion Queue is the exact same ring shape with both roles swapped -- hardware produces, software consumes -- and it's usually not even feeding from one QP: many QPs' completions land in the same ring, interleaved in whatever order they actually finish in."
 prev: /cq/the-cqe
+next: /cq/creating-a-completion-queue
 ---
 
 ## Overview
