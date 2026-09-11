@@ -23,7 +23,7 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 
 <rect x="300" y="55" width="260" height="50" fill="#272f49" stroke="#928dce" stroke-width="1.5"/>
 <text x="430" y="76" font-size="9" font-weight="500" fill="#8f8dce" text-anchor="middle">Dest QPN word</text>
-<text x="430" y="90" font-size="7" fill="#928dce" text-anchor="middle">24-bit dest. QP number + reserved bit</text>
+<text x="430" y="90" font-size="7" fill="#928dce" text-anchor="middle">24-bit dest. QP number + reserved byte</text>
 
 <rect x="560" y="55" width="260" height="50" fill="#272f49" stroke="#928dce" stroke-width="1.5"/>
 <text x="690" y="76" font-size="9" font-weight="500" fill="#8f8dce" text-anchor="middle">PSN word</text>
