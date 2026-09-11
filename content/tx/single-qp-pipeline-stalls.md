@@ -36,6 +36,8 @@ A QP's WQE can be sitting on-chip, fully prefetched, and still not be ready to b
 > [!CAUTION] Gotcha
 > Don't carry [Queue Pair Management](/qp/)'s fault-isolation guarantee forward into a context it was never meant to cover. Fault isolation and throughput isolation are different guarantees -- one holds here, the other, measurably, often doesn't without an explicit scheduling policy intervening.
 
+**A different kind of stall, worth keeping distinct from everything measured above.** Every stall this chapter has named so far is something that happens *to* a QP -- contention for a scarce, shared resource it didn't ask for and can't avoid by behaving well. A fenced Work Request stalls for a completely different reason: the QP's own software explicitly asked for this wait, holding one Work Request's issue until every earlier RDMA read and atomic operation posted to the *same* Send Queue has completed ([The WQE and the Send Queue Descriptor](/tx/the-wqe-and-the-send-queue-descriptor) names the flag that requests it). Nothing else is contending for anything here -- this QP would stall exactly the same way running completely alone on an otherwise idle adapter. The practical consequence lands the same way, though: because a Send Queue is consumed strictly in order, every Work Request queued behind a fenced one waits too, whether or not it has any dependency on what the fence is actually waiting for.
+
 **What happens next.** Whether -- and how -- a real design can prevent one QP's legitimate traffic from stalling another's is exactly [Multi-QP TX Scheduling](/tx/multi-qp-tx-scheduling)'s subject, next: the same measured anomaly this chapter names is the concrete motivating problem that chapter's scheduling policies exist to address.
 
 > [!TIP] Why
