@@ -14,13 +14,13 @@ A Receive Queue entry is the simplest descriptor this book has covered. Where a 
 
 ## Locator
 
-![The master RNIC block diagram with Host Memory / Descriptor Rings and RX Parser / Reassembly both highlighted, mirroring Part 3's Send Queue Ring locator on the opposite side of the pipeline -- this chapter covers what one Receive Queue entry contains and the ring holding it, not the parsing stage that consumes it.](/images/rx/01-the-receive-queue-descriptor-and-ring-locator.svg)
+![The master RNIC block diagram with Host Memory / Descriptor Rings and RX Parser / Reassembly both highlighted, mirroring TX Pipeline's Send Queue Ring locator on the opposite side of the pipeline -- this chapter covers what one Receive Queue entry contains and the ring holding it, not the parsing stage that consumes it.](/images/rx/01-the-receive-queue-descriptor-and-ring-locator.svg)
 
 [One Transaction, Start to Finish](/overview/one-transaction-start-to-finish) already named a Receive Queue in passing -- a place software provisions buffers "ahead of expected traffic." This chapter opens that structure the same way [The WQE and the Send Queue Descriptor](/tx/the-wqe-and-the-send-queue-descriptor) opened the Send Queue's: what one entry actually contains, and the ring holding every entry for one Receive Queue.
 
 ## Block diagram
 
-![A Receive Queue ring holding posted buffer descriptors (SGE list only, no opcode field, no remote-address field) between a producer index software advances and a consumer index hardware advances, with a doorbell path running in the reverse direction from Part 3's Send Queue Ring diagram -- software telling hardware how many new buffers exist, not how much new work is ready.](/images/rx/01-the-receive-queue-descriptor-and-ring-block.svg)
+![A Receive Queue ring holding posted buffer descriptors (SGE list only, no opcode field, no remote-address field) between a producer index software advances and a consumer index hardware advances, with a doorbell path running in the reverse direction from TX Pipeline's Send Queue Ring diagram -- software telling hardware how many new buffers exist, not how much new work is ready.](/images/rx/01-the-receive-queue-descriptor-and-ring-block.svg)
 
 ## Deep walkthrough
 

@@ -7,6 +7,6 @@ cascade:
   type: docs
 ---
 
-Every Queue Pair that sends traffic carries live congestion-control state alongside it: a current injection rate, and the ECN-marked feedback that rate reacts to. This part opens that state up -- the table it lives in, the working set that makes touching it on every packet affordable, and the same eviction questions [Part 1](/qp/) (Queue Pair Management) and [Part 5](/reliability/) (Reliability Engine) already asked of a QP context and a replay buffer, asked here of a fourth resource.
+Every Queue Pair that sends traffic carries live congestion-control state alongside it: a current injection rate, and the ECN-marked feedback that rate reacts to. This part opens that state up -- the table it lives in, the working set that makes touching it on every packet affordable, and the same eviction questions [Queue Pair Management](/qp/) and [Reliability Engine](/reliability/) already asked of a QP context and a replay buffer, asked here of a fourth resource.
 
 Chapters for this part haven't been written yet.

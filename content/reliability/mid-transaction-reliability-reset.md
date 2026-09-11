@@ -41,7 +41,7 @@ RESET is legal from any state a Reliable Connection Queue Pair can be in, includ
 > [!TIP] Why
 > Freeing Replay Buffer entries outright rather than attempting any kind of graceful drain is the cheap, correct answer specifically because there's no safe alternative it would be trading against -- unlike an evicted cache entry, which has a real reason to be written back before its slot is reused, a reset QP's replay state has no destination worth preserving it for. Building a drain path anyway, on the theory that some future acknowledgment might still arrive and ought to be honored, would mean holding state for a connection that no longer exists in any form software can act on, indefinitely, against acknowledgments that arrive rarely if ever. The cost of getting this wrong in the other direction -- a stale acknowledgment resolving against reused state after RESET -- is an open hazard this chapter names rather than solves, but building elaborate protection against it inside the Replay Buffer specifically, rather than at the PSN-reuse boundary [The QP Table](/qp/the-qp-table) already identified as the actual source of the ambiguity, would be solving the problem in the wrong place.
 
-This closes Part 5. Part 6 (Congestion Control Engine) is next.
+This closes [Reliability Engine](/reliability/). [Congestion Control Engine](/congestion/) is next.
 
 ## References
 

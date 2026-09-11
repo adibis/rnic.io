@@ -4,7 +4,7 @@ weight: 2
 date: 2026-09-09
 publishDate: 2026-09-09
 draft: false
-description: "Every check this chapter runs is ordered by cost, cheapest first -- a malformed header gets rejected before a single cycle goes toward the one check that actually costs something. This is the stage that takes a frame apart, in exactly the reverse order Part 3 built one."
+description: "Every check this chapter runs is ordered by cost, cheapest first -- a malformed header gets rejected before a single cycle goes toward the one check that actually costs something. This is the stage that takes a frame apart, in exactly the reverse order [TX Pipeline](/tx/) built one."
 prev: /rx/the-receive-queue-descriptor-and-ring
 next: /rx/psn-check-and-out-of-order-arrival
 ---
@@ -21,7 +21,7 @@ A parser is a decode-and-dispatch front end: it does not decide what an operatio
 
 ## Locator
 
-![The master RNIC block diagram with RX Parser / Reassembly highlighted and every other block dimmed -- this chapter covers the stage that takes an arriving frame apart, the direct mirror of Part 3's TX Packet Build running in reverse.](/images/rx/02-rx-packet-parse-locator.svg)
+![The master RNIC block diagram with RX Parser / Reassembly highlighted and every other block dimmed -- this chapter covers the stage that takes an arriving frame apart, the direct mirror of TX Pipeline's TX Packet Build running in reverse.](/images/rx/02-rx-packet-parse-locator.svg)
 
 [What Is RoCEv2](/overview/what-is-rocev2) already described the wire format this chapter takes apart, field by field. This chapter is not a second pass over that layout -- it is the pipeline stage that consumes it, and the specific order in which a real implementation has every reason to run its checks.
 

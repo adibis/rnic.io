@@ -15,7 +15,7 @@ A FIRST packet opens a message; however many MIDDLE packets continue it; a LAST 
 
 ## Locator
 
-![The master RNIC block diagram with RX Parser / Reassembly highlighted, the same block Chapter 4.2 targets, this time zoomed to the state that persists across packets rather than the parsing logic that runs once per packet.](/images/rx/04-multi-packet-reassembly-locator.svg)
+![The master RNIC block diagram with RX Parser / Reassembly highlighted, the same block RX Packet Parse targets, this time zoomed to the state that persists across packets rather than the parsing logic that runs once per packet.](/images/rx/04-multi-packet-reassembly-locator.svg)
 
 [PSN Check and Out-of-Order Arrival](/rx/psn-check-and-out-of-order-arrival) covered a single packet's admission gate. This chapter covers what a *message* needs -- state that outlives any one packet, because a message can span several of them.
 
@@ -38,7 +38,7 @@ A FIRST packet opens a message; however many MIDDLE packets continue it; a LAST 
 **What happens to this state when a message never closes.** A message opened by FIRST and never completed by a matching LAST -- because the sender stalled, because something downstream of this chapter's scope went wrong -- leaves this state open indefinitely unless something notices and reclaims it. No source this book found documents the specific mechanism a real implementation uses to detect and clean up an abandoned reassembly context under ordinary operation, distinct from the QP-reset case [Mid-Transaction RX Reset](/rx/mid-transaction-rx-reset) covers later in this part. This is an open question rather than a settled fact, named honestly rather than filled with a plausible-sounding guess.
 
 > [!IMPORTANT] Food for Thought
-> If you were adding a timeout to reclaim an abandoned reassembly context, what would you key it against -- wall-clock time since FIRST arrived, or something tied to the QP's own retry/timeout state in Part 5? What would a real implementation risk getting wrong either way?
+> If you were adding a timeout to reclaim an abandoned reassembly context, what would you key it against -- wall-clock time since FIRST arrived, or something tied to the QP's own retry/timeout state in [Reliability Engine](/reliability/)? What would a real implementation risk getting wrong either way?
 
 **What happens next.** A packet that updates this chapter's state successfully -- landing at the address this context currently holds, advancing it correctly -- has done everything this part's ordering and addressing logic requires of it. What can still go wrong for that one Queue Pair specifically, and how that failure stays contained to it, is [Single-QP RX Stalls](/rx/single-qp-rx-stalls)'s subject, immediately next.
 
