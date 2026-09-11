@@ -65,7 +65,7 @@ Every field a Work Request carries, and how much of each one IBTA-V1 actually pi
 | **immediate data / invalidate rkey** | one union value, which one depends on the opcode | IBTA-V1 |
 | **flags** | four independent per-WR requests -- broken out below, not repeated here | see below |
 
-**What's inside `flags`.** Not a fifth top-level field alongside the six above -- one field, packing four independent requests:
+**What's inside `flags`.** The flags field above contains the following four requests:
 
 | Flag | Requests | Standard's role |
 |---|---|---|
