@@ -6,6 +6,7 @@ publishDate: 2026-09-04
 draft: false
 description: "The Replay Buffer can't safely evict, so hardware enforces admission control instead. A Completion Queue's overflow story is starker than that: the specification doesn't require hardware to protect against it at all. Provisioning correctly is a software responsibility, stated plainly as one."
 prev: /cq/cqe-generation
+next: /cq/event-and-multi-cq-arbitration
 ---
 
 ## Overview
