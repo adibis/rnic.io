@@ -34,6 +34,25 @@ This is a shape to expect, not a checklist every chapter is forced through -- a 
 
 Part 1, chapter 1 — *QP Context* — is where that shape starts, and where this book's real depth begins.
 
+## The five callout colors
+
+Every chapter draws on the same five color-coded boxes, each one a different kind of aside from the main text. Not every chapter uses all five, or any of them — a box only appears where it earns its place.
+
+> [!NOTE] Concept
+> Blue. A definition or idea worth carrying forward verbatim -- the kind of statement you'd want to remember exactly, not just in spirit.
+
+> [!TIP] Why
+> Green. Design rationale: why a structure got built this way, and what got traded off to get there. This is the one place the book allows itself a narrative voice; everything outside these boxes stays datasheet-plain.
+
+> [!WARNING] Analogy
+> Amber. A CPU or SoC-side comparison, pulled out of the main text into its own box -- useful for building intuition, never load-bearing for the actual RNIC-side claim being made.
+
+> [!CAUTION] Gotcha
+> Red. A trap, a common misreading, or a place this book's own reasoning could mislead you if you generalized it past where it actually applies.
+
+> [!IMPORTANT] Food for Thought
+> Purple. An open question, usually one this book can't fully answer from public sources -- worth sitting with rather than skimming past.
+
 ## References
 
 This chapter is organizational, not technical -- it names a pattern in how this book is structured, not a wire format or hardware behavior, so no standards document applies. Every other chapter closes with one.
