@@ -3,7 +3,7 @@ title: "Single-QP Error Handling"
 weight: 6
 date: 2026-09-04
 publishDate: 2026-09-04
-draft: true
+draft: false
 description: "A QP in ERROR doesn't fail loudly and stop -- it fails loudly and keeps going, flushing every queued work request through the completion queue with a status that says none of this actually happened. Here's what that flush actually does, and why the QP sitting next to it never even notices."
 prev: /qp/qp-state-machine
 next: /qp/multi-qp-error-arbitration

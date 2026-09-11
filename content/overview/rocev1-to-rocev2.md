@@ -3,7 +3,7 @@ title: "RoCEv1 → RoCEv2"
 weight: 3
 date: 2026-09-04
 publishDate: 2026-09-04
-draft: true
+draft: false
 description: "RoCEv1 could only run inside one Ethernet broadcast domain. RoCEv2 fixed that by wrapping the exact same transport headers in a real IP/UDP packet — and that one change put a header-construction datapath in the NIC that RoCEv1 hardware never needed."
 prev: /overview/what-is-rocev2
 next: /overview/operation-catalog

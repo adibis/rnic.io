@@ -3,7 +3,7 @@ title: "QP Caching"
 weight: 3
 date: 2026-09-04
 publishDate: 2026-09-04
-draft: true
+draft: false
 description: "A NIC will sell you far more queue pairs than it can actually keep fast. This chapter is about the gap between those two numbers, and the on-chip cache that decides which QPs live on the right side of it."
 prev: /qp/the-qp-table
 next: /qp/installing-a-qp

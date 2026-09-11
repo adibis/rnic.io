@@ -3,7 +3,7 @@ title: "The Operation Catalog"
 weight: 4
 date: 2026-09-04
 publishDate: 2026-09-04
-draft: true
+draft: false
 description: "Every Reliable Connection opcode, First/Middle/Last/Only variant included, with the one thing each family actually asks new of the hardware: a Receive Request here, an in-place memory write there, a read-modify-write somewhere else entirely."
 prev: /overview/rocev1-to-rocev2
 next: /overview/one-transaction-start-to-finish

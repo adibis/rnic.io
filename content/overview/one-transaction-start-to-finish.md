@@ -3,7 +3,7 @@ title: "One Transaction, Start to Finish"
 weight: 5
 date: 2026-09-04
 publishDate: 2026-09-04
-draft: true
+draft: false
 description: "Every mechanism in this book gets its own chapter, in isolation. This is the one place they run together — one RDMA Write, start to finish, with a map of exactly which later chapter owns each stage it passes through."
 prev: /overview/operation-catalog
 next: /overview/how-to-read-this-guide

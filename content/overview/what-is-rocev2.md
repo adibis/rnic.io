@@ -3,7 +3,7 @@ title: "What Is RoCEv2"
 weight: 2
 date: 2026-09-04
 publishDate: 2026-09-04
-draft: true
+draft: false
 description: "A RoCEv2 packet looks like an ordinary UDP datagram to everything sitting between two endpoints, and nothing like one to either end running verbs -- what's actually packed inside is where this book's build-by-block depth begins."
 prev: /overview/what-is-rdma
 next: /overview/rocev1-to-rocev2

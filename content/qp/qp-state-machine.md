@@ -3,7 +3,7 @@ title: "QP State Machine"
 weight: 5
 date: 2026-09-04
 publishDate: 2026-09-04
-draft: true
+draft: false
 description: "Every QP state transition is a contract: software supplies a fixed set of attributes, hardware refuses the transition if even one is missing. Reliable Connection's contract is the strictest of the three transports it's enforced against, and that's not incidental -- it's every parameter the reliability engine needs, collected at the one moment hardware can still refuse to proceed without it."
 prev: /qp/installing-a-qp
 next: /qp/single-qp-error-handling

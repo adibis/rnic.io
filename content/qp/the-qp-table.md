@@ -3,7 +3,7 @@ title: "The QP Table"
 weight: 2
 date: 2026-09-04
 publishDate: 2026-09-04
-draft: true
+draft: false
 description: "A QP number isn't a name, it's an address. This chapter is about the structure that address indexes into, and why a page-table-shaped answer fits a problem the public record barely documents."
 prev: /qp/qp-context
 next: /qp/qp-caching

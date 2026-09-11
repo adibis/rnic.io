@@ -3,7 +3,7 @@ title: "What Is RDMA"
 weight: 1
 date: 2026-09-04
 publishDate: 2026-09-04
-draft: true
+draft: false
 description: "A normal NIC hands a frame to software and stops there. An RDMA-capable NIC is handed a virtual address and a remote key and is expected to move bytes into another machine's memory without a syscall, without the remote CPU, and without a single unverified byte -- this book is about what building that actually takes in hardware."
 next: /overview/what-is-rocev2
 ---

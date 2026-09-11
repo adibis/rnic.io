@@ -3,7 +3,7 @@ title: "QP Context"
 weight: 1
 date: 2026-09-04
 publishDate: 2026-09-04
-draft: true
+draft: false
 description: "Two fields on every RC Queue Pair count outstanding RDMA reads and atomics -- one for what this QP has sent, one for what it will accept -- and confusing them is the single most common misreading of a QP's context. Here's the full field list, wire-format ties included, and which fields hardware updates on its own without a single software write."
 next: /qp/the-qp-table
 ---

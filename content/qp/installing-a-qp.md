@@ -3,7 +3,7 @@ title: "Installing a QP"
 weight: 4
 date: 2026-09-04
 publishDate: 2026-09-04
-draft: true
+draft: false
 description: "A QP exists in hardware before it can send or receive anything at all. This chapter covers the two steps that get it there: allocating its table entry, and the one transition that turns an allocated-but-inert entry into something bound to a port with its access rules already fixed."
 prev: /qp/qp-caching
 next: /qp/qp-state-machine

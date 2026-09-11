@@ -3,7 +3,7 @@ title: "Multi-QP Error Arbitration"
 weight: 7
 date: 2026-09-04
 publishDate: 2026-09-04
-draft: true
+draft: false
 description: "One QP faulting is a contained event with a clean isolation boundary. A hundred QPs faulting in the same instant, from the same shared cause, all need to tell software about it through the same narrow channel -- and no public source says how a real RNIC decides who goes first."
 prev: /qp/single-qp-error-handling
 next: /qp/eviction-policy

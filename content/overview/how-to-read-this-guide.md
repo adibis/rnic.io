@@ -3,7 +3,7 @@ title: "How to Read This Guide"
 weight: 6
 date: 2026-09-04
 publishDate: 2026-09-04
-draft: true
+draft: false
 description: "The same ten-item checklist gets applied to a different hardware resource four times in this book. Naming it once here, before Part 1 shows the fullest version of it, saves you from re-discovering it by coincidence four parts later."
 prev: /overview/one-transaction-start-to-finish
 ---

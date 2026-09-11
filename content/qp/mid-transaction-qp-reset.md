@@ -3,7 +3,7 @@ title: "Mid-Transaction QP Reset"
 weight: 10
 date: 2026-09-04
 publishDate: 2026-09-04
-draft: true
+draft: false
 description: "RESET clears a QP's leftovers -- that much is documented. What counts as a leftover when a multi-packet message is half-arrived, a replay-buffer entry is still waiting on an ACK, and a DMA write is mid-burst is not, and this chapter says so plainly before reasoning through it anyway."
 prev: /qp/hardware-assisted-eviction-engines
 next: /qp/qp-capacity-and-timing

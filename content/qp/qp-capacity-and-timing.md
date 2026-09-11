@@ -3,7 +3,7 @@ title: "QP Capacity and Timing"
 weight: 11
 date: 2026-09-09
 publishDate: 2026-09-09
-draft: true
+draft: false
 description: "Every earlier chapter in this part answered a question about one QP. This one asks how many QPs a real chip can actually hold at once, what really sets that number, and what it costs in silicon to let a slow control-plane write and a per-packet lookup safely touch the same structure."
 prev: /qp/mid-transaction-qp-reset
 ---

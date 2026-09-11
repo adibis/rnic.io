@@ -3,7 +3,7 @@ title: "Hardware-Assisted Eviction Engines"
 weight: 9
 date: 2026-09-04
 publishDate: 2026-09-04
-draft: true
+draft: false
 description: "Deciding which QP to evict is one question. Deciding what actually runs that decision -- fixed silicon, a programmable engine, or a trap to software -- is a separate one, and it's where the cost of flexibility gets paid in latency, not complexity."
 prev: /qp/eviction-policy
 next: /qp/mid-transaction-qp-reset
