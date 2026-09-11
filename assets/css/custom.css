@@ -48,3 +48,17 @@
 .dark .master-diagram-dark {
   display: block;
 }
+
+/* Dark-mode-only link color override. The site's plum accent (see
+   head-end.html) is tuned dark on purpose -- it reads as a rich, grounded
+   brand color for the sidebar's filled active-item pill and the favicon,
+   both of which get their contrast from a background-vs-page difference,
+   not the color's own brightness. Inline link TEXT has no such background;
+   its own lightness has to stand apart from the page. That same dark plum
+   measures ~1.8:1 against the near-black dark-mode background (WCAG wants
+   4.5:1+) -- fine against light mode's white page (~10:1), broken against
+   dark mode's. This lightens dark-mode links only, same hue, without
+   touching the sidebar/pill treatment or light mode at all. */
+.dark .content :where(a):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  color: #cb76ac;
+}
