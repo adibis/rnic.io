@@ -42,21 +42,40 @@ params:
   displayUpdatedDate: true
   dateFormat: "January 2, 2006"
 
+  comments:
+    enable: false # site-wide default stays off; content/blog/_index.md's
+                  # cascade turns this on for blog posts only, never for
+                  # book chapters.
+    type: giscus
+    # giscus:
+    #   repo: "adibis/rnic.io"
+    #   repoId: ""
+    #   category: ""
+    #   categoryId: ""
+    # TODO: uncomment and fill in once rnic.io is pushed to GitHub,
+    # Discussions is enabled, the giscus GitHub App is installed, and
+    # https://giscus.app's config tool has generated real repoId/
+    # categoryId values. Until then this fails safe at build time
+    # ("giscus is not configured"), not a broken widget in production.
+
 
 menu:
   main:
     - name: RDMA
       pageRef: /overview/
       weight: 1
+    - name: Blog
+      pageRef: /blog
+      weight: 2
     - name: About
       pageRef: /about
-      weight: 2
-    - name: search
       weight: 3
+    - name: search
+      weight: 4
       params:
         type: search
     - name: theme-toggle
-      weight: 4
+      weight: 5
       params:
         type: theme-toggle
 
