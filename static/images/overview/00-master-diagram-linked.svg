@@ -72,6 +72,12 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
   <text x="325" y="643" font-size="18" font-weight="500" fill="#b45309" text-anchor="middle">Rate Limiter</text>
 </g>
 
+<g id="block-cnp-gen" data-role="indigo">
+  <rect x="230" y="900" width="190" height="50" rx="6" fill="#eef2ff" stroke="#4338ca" stroke-width="1.5"/>
+  <text x="325" y="920" font-size="15" font-weight="500" fill="#312e81" text-anchor="middle">CNP Generation</text>
+  <text x="325" y="936" font-size="12" fill="#4338ca" text-anchor="middle">receive side, on ECN mark</text>
+</g>
+
 <text x="325" y="695" font-size="14" fill="#94a3b8" text-anchor="middle">four instances of the same</text>
 <text x="325" y="710" font-size="14" fill="#94a3b8" text-anchor="middle">table + working-set + eviction shape</text>
 
@@ -193,6 +199,11 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 
 <g id="arrow-cq-storage__host-event">
   <line x1="990" y1="857" x2="1026" y2="857" stroke="#0369a1" stroke-width="1.5" marker-end="url(#arrSky)"/>
+</g>
+
+<g id="arrow-rx-parser-reassembly__cnp-gen">
+  <line x1="325" y1="885" x2="325" y2="896" stroke="#4338ca" stroke-width="1.5" marker-end="url(#arrIndigo)"/>
+  <text x="380" y="893" font-size="12" fill="#64748b" text-anchor="start">ECN mark seen</text>
 </g>
 </g>
 </svg>
