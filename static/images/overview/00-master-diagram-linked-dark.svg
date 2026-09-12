@@ -128,6 +128,11 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
   <line x1="420" y1="85" x2="636" y2="85" stroke="#928dce" stroke-width="1.5" marker-end="url(#arrIndigo)"/>
 </g>
 
+<g id="arrow-wqe-fetch-sched__rate-limiter">
+  <path d="M230,97 L205,97 L205,637 L226,637" fill="none" stroke="#928dce" stroke-width="1.5" marker-end="url(#arrIndigo)"/>
+  <text x="190" y="367" font-size="13" fill="#949ca8" text-anchor="middle" transform="rotate(-90, 190, 367)">rate check</text>
+</g>
+
 <g id="arrow-rate-limiter__tx-packet-build">
   <path d="M420,637 L530,637 L530,110 L636,110" fill="none" stroke="#cea98d" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arrAmber)"/>
   <text x="540" y="160" font-size="13" fill="#cea98d" text-anchor="middle" transform="rotate(-90, 540, 160)">gates</text>
