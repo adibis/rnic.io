@@ -30,12 +30,12 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <text x="150" y="170" font-size="12" font-weight="500" fill="#312e81" text-anchor="middle">TX engine: WQE fetch</text>
 <text x="150" y="186" font-size="10" fill="#4338ca" text-anchor="middle">lkey check vs Key Table (Part 2)</text>
 
-<rect x="30" y="206" width="240" height="44" rx="6" fill="#eef2ff" stroke="#4338ca" stroke-width="1.5"/>
-<text x="150" y="224" font-size="12" font-weight="500" fill="#312e81" text-anchor="middle">Build BTH+RETH+IMMDT</text>
-<text x="150" y="240" font-size="10" fill="#4338ca" text-anchor="middle">PSN=N</text>
+<rect x="30" y="206" width="240" height="30" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="150" y="225" font-size="10" fill="#64748b" text-anchor="middle">rate limiter gates dispatch (Part 6)</text>
 
-<rect x="30" y="260" width="240" height="30" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4,3"/>
-<text x="150" y="279" font-size="10" fill="#64748b" text-anchor="middle">rate limiter may hold/pace (Part 6)</text>
+<rect x="30" y="246" width="240" height="44" rx="6" fill="#eef2ff" stroke="#4338ca" stroke-width="1.5"/>
+<text x="150" y="264" font-size="12" font-weight="500" fill="#312e81" text-anchor="middle">Build BTH+RETH+IMMDT</text>
+<text x="150" y="280" font-size="10" fill="#4338ca" text-anchor="middle">PSN=N</text>
 
 <line x1="270" y1="312" x2="550" y2="312" stroke="#4338ca" stroke-width="1.5" marker-end="url(#arrOT1)"/>
 <text x="410" y="304" font-size="10" fill="#4338ca" text-anchor="middle">WRITE_ONLY_WITH_IMMEDIATE PSN=N, DQPN</text>
