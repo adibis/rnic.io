@@ -1,3 +1,8 @@
+{{- /* Site-level override of the Hextra theme's navbar: splits the single
+  row into two -- row 1 (logo, centered search, Blog/About, utility icons)
+  and row 2 (book tabs, underline active state) -- mirroring chipdv.io's
+  own navbar.html override on the same theme. */ -}}
+
 {{- $navWidth := "hx:max-w-[90rem]" -}}
 {{- with .Site.Params.navbar.width -}}
   {{ if eq . "normal" -}}
@@ -9,12 +14,24 @@
 
 {{- $page := . -}}
 {{- $iconHeight := 24 -}}
+{{- $currentPage := . -}}
+
+{{- $tabs := slice -}}
+{{- $rightItems := slice -}}
+{{- range .Site.Menus.main -}}
+  {{- if .Params.tab -}}
+    {{- $tabs = $tabs | append . -}}
+  {{- else -}}
+    {{- $rightItems = $rightItems | append . -}}
+  {{- end -}}
+{{- end -}}
 
 <div class="hextra-nav-container hx:sticky hx:top-0 hx:z-20 hx:w-full hx:bg-transparent hx:print:hidden">
   <div
     class="hextra-nav-container-blur hx:pointer-events-none hx:absolute hx:z-[-1] hx:h-full hx:w-full hx:bg-white hx:dark:bg-dark hx:shadow-[0_2px_4px_rgba(0,0,0,.02),0_1px_0_rgba(0,0,0,.06)] hx:contrast-more:shadow-[0_0_0_1px_#000] hx:dark:shadow-[0_-1px_0_rgba(255,255,255,.1)_inset] hx:contrast-more:dark:shadow-[0_0_0_1px_#fff]"
   ></div>
 
+  {{- /* Row 1: logo, centered search, Blog/About + utility icons on the right. */ -}}
   <nav class="hextra-max-navbar-width hx:mx-auto hx:flex hx:items-center hx:gap-1 hx:md:gap-2 hx:h-[var(--hextra-navbar-height)] hx:px-6">
     {{ partial "navbar-title.html" . }}
 
@@ -22,9 +39,8 @@
       {{- partial "search.html" (dict "icon" "") -}}
     </div>
 
-    {{- $currentPage := . -}}
     <div class="hx:flex hx:items-center hx:gap-1 hx:md:gap-2">
-    {{- range .Site.Menus.main -}}
+    {{- range $rightItems -}}
       {{- if eq .Params.type "search" -}}
         {{- /* rendered centered above, skip here */ -}}
       {{- else -}}
@@ -61,4 +77,24 @@
       {{- partial "utils/icon.html" (dict "name" "hamburger-menu" "attributes" (printf "height=%d" $iconHeight)) -}}
     </button>
   </nav>
+
+  {{- /* Row 2: book tabs, left-aligned, underline active state. Skipped on
+    the homepage -- it's a bare redirect to /overview/, never actually
+    seen, so there's nothing for a tab row to duplicate or highlight. */ -}}
+  {{- if not .IsHome -}}
+  <nav class="rnic-tab-row hextra-max-navbar-width hx:mx-auto hx:flex hx:items-center hx:gap-1 hx:px-6 hx:border-t hx:border-gray-200 hx:dark:border-neutral-800">
+    {{- range $tabs -}}
+      {{- $link := .URL -}}
+      {{- with .PageRef -}}
+        {{- if hasPrefix . "/" -}}
+          {{- $link = relLangURL (strings.TrimPrefix "/" .) -}}
+        {{- end -}}
+      {{- end -}}
+      {{- $active := or ($currentPage.HasMenuCurrent "main" .) ($currentPage.IsMenuCurrent "main" .) -}}
+      <a href="{{ $link }}" class="rnic-tab-link hx:text-sm hx:py-2.5 hx:px-3 hx:-mb-px hx:border-b-2 {{ if $active }}rnic-tab-active hx:border-current hx:font-medium{{ else }}hx:border-transparent hx:text-gray-600 hx:hover:text-gray-800 hx:dark:text-gray-400 hx:dark:hover:text-gray-200{{ end }}">
+        {{- .Name -}}
+      </a>
+    {{- end -}}
+  </nav>
+  {{- end -}}
 </div>

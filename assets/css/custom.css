@@ -48,3 +48,43 @@
 .dark .master-diagram-dark {
   display: block;
 }
+
+/* Second navbar row (layouts/_partials/navbar.html): book tabs, one per
+   menu item flagged params.tab: true in hugo.yaml -- mirrors chipdv.io's
+   own tab row on the same theme. */
+.rnic-tab-row {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.rnic-tab-row::-webkit-scrollbar {
+  display: none;
+}
+
+.rnic-tab-link {
+  white-space: nowrap;
+}
+
+.rnic-tab-active {
+  color: var(--color-primary-600);
+  border-color: var(--color-primary-600) !important;
+}
+
+/* The theme's --hextra-navbar-height (3.5rem) sizes row 1 alone, and the
+   sidebar/TOC both use that same variable for their own sticky top-offset
+   and height calc, assuming a single-row nav. Redefining the variable
+   itself isn't safe -- row 1's own height class also reads it, so
+   inflating it would make row 1 taller too. Instead, add the second row's
+   measured height (~43px rendered, 2.75rem with a little headroom) only
+   where the sidebar and TOC compute their own position, scoped narrowly
+   so unrelated .hextra-scrollbar uses elsewhere aren't affected. */
+.hextra-sidebar-container {
+  top: calc(var(--hextra-navbar-height) + 2.75rem);
+}
+.hextra-sidebar-container .hextra-scrollbar {
+  height: calc(100vh - var(--hextra-navbar-height) - 2.75rem - var(--menu-height));
+}
+.hextra-toc .hextra-scrollbar {
+  top: calc(var(--hextra-navbar-height) + 2.75rem);
+  max-height: calc(100vh - var(--hextra-navbar-height) - 2.75rem - env(safe-area-inset-bottom));
+}

@@ -64,6 +64,8 @@ menu:
     - name: RDMA
       pageRef: /overview/
       weight: 1
+      params:
+        tab: true
     - name: Blog
       pageRef: /blog
       weight: 2
