@@ -4,14 +4,14 @@ weight: 6
 date: 2026-09-04
 publishDate: 2026-09-04
 draft: false
-description: "Multi-QP Error Arbitration named this Part as the place a real, documented storm scenario gets its general answer: many QPs forced to ERROR by one shared fault, all needing to report at once through what is, at that instant, one serialized path. This chapter is that answer -- and its quieter, steady-state counterpart on the notification side."
+description: "Multi-QP Error Arbitration named this Part as the place a real, documented storm scenario gets its general treatment: many QPs forced to ERROR by one shared fault, all needing to report at once through what is, at that instant, one serialized path. This chapter names that problem in full -- and its quieter, steady-state counterpart on the notification side -- without a citation pinning down which policy a real RNIC actually runs for either."
 prev: /cq/cq-overflow
 next: /cq/mid-transaction-cq-reset
 ---
 
 ## Overview
 
-[Multi-QP Error Arbitration](/qp/multi-qp-error-arbitration) already established a real, documented scenario as fact: when a Completion Queue or Shared Receive Queue itself hits an error, every QP associated with it transitions to ERROR and fires a QP-fatal event simultaneously, not one at a time. That chapter named the shape of the problem this Part would have to answer -- many simultaneous producers, one serialized reporting structure -- without answering it. This chapter is where it gets answered, alongside a related but distinct question: many Completion Queues, sharing one notification channel, competing for the same interrupt.
+[Multi-QP Error Arbitration](/qp/multi-qp-error-arbitration) already established a real, documented scenario as fact: when a Completion Queue or Shared Receive Queue itself hits an error, every QP associated with it transitions to ERROR and fires a QP-fatal event simultaneously, not one at a time. That chapter named the shape of the problem this Part would have to answer -- many simultaneous producers, one serialized reporting structure -- without answering it. This chapter is where that shape gets named in full, alongside a related but distinct question: many Completion Queues, sharing one notification channel, competing for the same interrupt.
 
 ## Locator
 
