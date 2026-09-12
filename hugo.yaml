@@ -66,6 +66,50 @@ menu:
       weight: 1
       params:
         tab: true
+    # Children exist only so the mobile hamburger drawer treats RDMA as a
+    # group label over all nine Parts, not as an alias for whichever page
+    # its own pageRef points at -- without these, Hextra's mobile menu
+    # logic resolves RDMA straight to the Overview page and pulls in
+    # Overview's own sub-chapters and in-page TOC as if they were RDMA's,
+    # with no "Overview" heading in between. Desktop's tab row and left
+    # sidebar both use separate code paths that never look at menu
+    # children, so this list is mobile-only in effect.
+    - name: Overview
+      pageRef: /overview/
+      parent: RDMA
+      weight: 1
+    - name: Queue Pair Management
+      pageRef: /qp/
+      parent: RDMA
+      weight: 2
+    - name: Memory Region / Key Table
+      pageRef: /mr/
+      parent: RDMA
+      weight: 3
+    - name: TX Pipeline
+      pageRef: /tx/
+      parent: RDMA
+      weight: 4
+    - name: RX Pipeline
+      pageRef: /rx/
+      parent: RDMA
+      weight: 5
+    - name: Reliability Engine
+      pageRef: /reliability/
+      parent: RDMA
+      weight: 6
+    - name: Congestion Control Engine
+      pageRef: /congestion/
+      parent: RDMA
+      weight: 7
+    - name: Completion Queue / Event Management
+      pageRef: /cq/
+      parent: RDMA
+      weight: 8
+    - name: DMA Engine
+      pageRef: /dma/
+      parent: RDMA
+      weight: 9
     - name: Blog
       pageRef: /blog
       weight: 2
