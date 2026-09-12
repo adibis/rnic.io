@@ -4,7 +4,7 @@ weight: 8
 date: 2026-09-04
 publishDate: 2026-09-04
 draft: false
-description: "Mid-Transaction QP Reset closed [Queue Pair Management](/qp/) asking what happens to a DMA write already mid-burst when RESET lands. This chapter asks the TX-pipeline-specific version of the same question -- and unlike that chapter, it has a named, shipped RNIC on record as simply unable to answer it in hardware at all."
+description: "Mid-Transaction QP Reset closed Queue Pair Management asking what happens to a DMA write already mid-burst when RESET lands. This chapter asks the TX-pipeline-specific version of the same question -- and unlike that chapter, it has a named, shipped RNIC on record as simply unable to answer it in hardware at all."
 prev: /tx/hardware-assisted-tx-scheduling-engines
 ---
 

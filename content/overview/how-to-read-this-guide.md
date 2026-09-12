@@ -4,7 +4,7 @@ weight: 6
 date: 2026-09-04
 publishDate: 2026-09-04
 draft: false
-description: "Every chapter from [Queue Pair Management](/qp/) onward follows the same template and draws on the same five color-coded callouts. Both are named here once, before [Queue Pair Management](/qp/) starts."
+description: "Every chapter from Queue Pair Management onward follows the same template and draws on the same five color-coded callouts. Both are named here once, before Queue Pair Management starts."
 prev: /overview/one-transaction-start-to-finish
 ---
 

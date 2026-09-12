@@ -4,7 +4,7 @@ weight: 4
 date: 2026-09-04
 publishDate: 2026-09-04
 draft: false
-description: "Every other chapter in this part is about getting a WQE on-chip. This one is about what happens the instant it is: the stage that actually turns a fetched descriptor into the BTH/RETH packet this book described field by field back in [Overview](/overview/), and closes it out with an ICRC covering exactly the fields that survive the trip unchanged."
+description: "Every other chapter in this part is about getting a WQE on-chip. This one is about what happens the instant it is: the stage that actually turns a fetched descriptor into the BTH/RETH packet this book described field by field back in Overview, and closes it out with an ICRC covering exactly the fields that survive the trip unchanged."
 prev: /tx/wqe-prefetch
 next: /tx/single-qp-pipeline-stalls
 ---

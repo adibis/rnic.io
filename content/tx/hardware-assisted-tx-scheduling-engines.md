@@ -4,7 +4,7 @@ weight: 7
 date: 2026-09-04
 publishDate: 2026-09-04
 draft: false
-description: "[Queue Pair Management](/qp/) asked whether an eviction policy runs as fixed silicon, a programmable engine, or a software trap. This chapter asks the same question of TX scheduling -- and unlike [Queue Pair Management](/qp/)'s version, it has dated, concrete evidence that at least some shipped RNICs sit at the software-driven end of that spectrum, not by choice so much as by not having built the alternative yet."
+description: "Queue Pair Management asked whether an eviction policy runs as fixed silicon, a programmable engine, or a software trap. This chapter asks the same question of TX scheduling -- and unlike Queue Pair Management's version, it has dated, concrete evidence that at least some shipped RNICs sit at the software-driven end of that spectrum, not by choice so much as by not having built the alternative yet."
 prev: /tx/multi-qp-tx-scheduling
 next: /tx/mid-transaction-tx-reset
 ---

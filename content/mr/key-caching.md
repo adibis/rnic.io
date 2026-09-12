@@ -4,7 +4,7 @@ weight: 3
 date: 2026-09-04
 publishDate: 2026-09-04
 draft: false
-description: "The RNIC's on-chip cache doesn't have an MTT-only section -- it's the exact same SRAM [Queue Pair Management](/qp/) already showed you caching QP context. A memory-region-heavy workload and a QP-heavy workload are fighting over the same shelf space, and losing that fight is a confirmed cost on shipped hardware, not a hypothetical one."
+description: "The RNIC's on-chip cache doesn't have an MTT-only section -- it's the exact same SRAM Queue Pair Management already showed you caching QP context. A memory-region-heavy workload and a QP-heavy workload are fighting over the same shelf space, and losing that fight is a confirmed cost on shipped hardware, not a hypothetical one."
 prev: /mr/the-key-table
 next: /mr/registering-a-memory-region
 ---

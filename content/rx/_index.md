@@ -1,7 +1,7 @@
 ---
 title: "RX Pipeline"
 weight: 5
-description: "A packet arriving at the wire is bytes, nothing more, until something takes it apart, decides whether it is even allowed to exist yet, and turns it into bytes sitting correctly in host memory. This part is that datapath, run in the direction [TX Pipeline](/tx/) built."
+description: "A packet arriving at the wire is bytes, nothing more, until something takes it apart, decides whether it is even allowed to exist yet, and turns it into bytes sitting correctly in host memory. This part is that datapath, run in the direction TX Pipeline built."
 icon: inbox-in
 cascade:
   type: docs

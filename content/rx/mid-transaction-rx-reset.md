@@ -4,7 +4,7 @@ weight: 8
 date: 2026-09-09
 publishDate: 2026-09-09
 draft: false
-description: "Mid-Transaction TX Reset closed [TX Pipeline](/tx/) asking what becomes of a WQE caught mid-build when RESET lands. This chapter closes [RX Pipeline](/rx/) asking the receiving side's version of the same question -- and finds it sharper, because this part's own reassembly state can leave a partial write sitting in memory with nothing downstream aware it is incomplete."
+description: "Mid-Transaction TX Reset closed TX Pipeline asking what becomes of a WQE caught mid-build when RESET lands. This chapter closes RX Pipeline asking the receiving side's version of the same question -- and finds it sharper, because this part's own reassembly state can leave a partial write sitting in memory with nothing downstream aware it is incomplete."
 prev: /rx/hardware-assisted-rx-dispatch-engines
 ---
 

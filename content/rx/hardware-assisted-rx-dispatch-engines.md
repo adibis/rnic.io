@@ -4,7 +4,7 @@ weight: 7
 date: 2026-09-09
 publishDate: 2026-09-09
 draft: false
-description: "The receive path has a constraint the transmit side never faces: a packet already crossed the wire before this pipeline gets a say in when it arrives. This chapter asks the same fixed-versus-programmable question [TX Pipeline](/tx/) asked of transmit scheduling, and finds a real structural reason the honest answer may differ."
+description: "The receive path has a constraint the transmit side never faces: a packet already crossed the wire before this pipeline gets a say in when it arrives. This chapter asks the same fixed-versus-programmable question TX Pipeline asked of transmit scheduling, and finds a real structural reason the honest answer may differ."
 prev: /rx/multi-qp-rx-arbitration
 next: /rx/mid-transaction-rx-reset
 ---
