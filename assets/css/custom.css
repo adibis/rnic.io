@@ -78,11 +78,18 @@
    measured height (~43px rendered, 2.75rem with a little headroom) only
    where the sidebar and TOC compute their own position, scoped narrowly
    so unrelated .hextra-scrollbar uses elsewhere aren't affected. */
-.hextra-sidebar-container {
-  top: calc(var(--hextra-navbar-height) + 2.75rem);
-}
-.hextra-sidebar-container .hextra-scrollbar {
-  height: calc(100vh - var(--hextra-navbar-height) - 2.75rem - var(--menu-height));
+/* Sidebar's sticky top-offset is a desktop-only concern -- below md it's a
+   position:fixed slide-in drawer (theme base rule) that relies on a bare
+   top:0 plus a translateY(-100%) to sit fully off-screen when closed.
+   Applying the offset there too shifts that box down and breaks the
+   translate math, leaving a sliver of the closed drawer visible. */
+@media (min-width: 768px) {
+  .hextra-sidebar-container {
+    top: calc(var(--hextra-navbar-height) + 2.75rem);
+  }
+  .hextra-sidebar-container .hextra-scrollbar {
+    height: calc(100vh - var(--hextra-navbar-height) - 2.75rem - var(--menu-height));
+  }
 }
 .hextra-toc .hextra-scrollbar {
   top: calc(var(--hextra-navbar-height) + 2.75rem);

@@ -80,7 +80,12 @@
 
   {{- /* Row 2: book tabs, left-aligned, underline active state. Skipped on
     the homepage -- it's a bare redirect to /overview/, never actually
-    seen, so there's nothing for a tab row to duplicate or highlight. */ -}}
+    seen, so there's nothing for a tab row to duplicate or highlight.
+    Matches chipdv.io's own navbar.html exactly here: always flex, no
+    responsive hide -- this theme ships a precompiled, tree-shaken CSS
+    bundle (not a live Tailwind build), so a class combination the theme
+    never used itself (e.g. hx:md:flex) silently has no rule at all and
+    breaks at every breakpoint instead of just the one being targeted. */ -}}
   {{- if not .IsHome -}}
   <nav class="rnic-tab-row hextra-max-navbar-width hx:mx-auto hx:flex hx:items-center hx:gap-1 hx:px-6 hx:border-t hx:border-gray-200 hx:dark:border-neutral-800">
     {{- range $tabs -}}
