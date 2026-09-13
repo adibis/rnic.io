@@ -71,6 +71,12 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
   <text x="325" y="643" font-size="18" font-weight="500" fill="#cea98d" text-anchor="middle">Rate Limiter</text>
 </g>
 
+<g id="block-cnp-gen" data-role="indigo" opacity="0.35">
+  <rect x="230" y="900" width="190" height="50" rx="6" fill="#272f49" stroke="#928dce" stroke-width="1.5"/>
+  <text x="325" y="920" font-size="15" font-weight="500" fill="#8f8dce" text-anchor="middle">CNP Generation</text>
+  <text x="325" y="936" font-size="12" fill="#928dce" text-anchor="middle">receive side, on ECN mark</text>
+</g>
+
 <text x="325" y="695" font-size="14" fill="#94a3b8" text-anchor="middle">four instances of the same</text>
 <text x="325" y="710" font-size="14" fill="#94a3b8" text-anchor="middle">table + working-set + eviction shape</text>
 
@@ -83,34 +89,34 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 </g>
 
 <!-- ============ RX LANE ============ -->
-<text x="20" y="853" font-size="15" fill="#949ca8" text-anchor="start">wire</text>
-<text x="20" y="868" font-size="15" fill="#949ca8" text-anchor="start">in</text>
+<text x="20" y="793" font-size="15" fill="#949ca8" text-anchor="start">wire</text>
+<text x="20" y="808" font-size="15" fill="#949ca8" text-anchor="start">in</text>
 
 <g id="block-rx-parser-reassembly" data-role="indigo" opacity="0.35">
-  <rect x="230" y="830" width="190" height="55" rx="6" fill="#272f49" stroke="#928dce" stroke-width="1.5"/>
-  <text x="325" y="853" font-size="17" font-weight="500" fill="#8f8dce" text-anchor="middle">RX Parser /</text>
-  <text x="325" y="870" font-size="17" font-weight="500" fill="#8f8dce" text-anchor="middle">Reassembly</text>
+  <rect x="230" y="770" width="190" height="55" rx="6" fill="#272f49" stroke="#928dce" stroke-width="1.5"/>
+  <text x="325" y="793" font-size="17" font-weight="500" fill="#8f8dce" text-anchor="middle">RX Parser /</text>
+  <text x="325" y="810" font-size="17" font-weight="500" fill="#8f8dce" text-anchor="middle">Reassembly</text>
 </g>
 
 <g id="block-rx-psn-check" data-role="indigo" opacity="0.35">
-  <rect x="460" y="830" width="170" height="55" rx="6" fill="#272f49" stroke="#928dce" stroke-width="1.5"/>
-  <text x="545" y="862" font-size="17" font-weight="500" fill="#8f8dce" text-anchor="middle">RX PSN Check</text>
+  <rect x="460" y="770" width="170" height="55" rx="6" fill="#272f49" stroke="#928dce" stroke-width="1.5"/>
+  <text x="545" y="802" font-size="17" font-weight="500" fill="#8f8dce" text-anchor="middle">RX PSN Check</text>
 </g>
 
 <g id="block-cqe-gen" data-role="indigo" opacity="0.35">
-  <rect x="640" y="830" width="160" height="55" rx="6" fill="#272f49" stroke="#928dce" stroke-width="1.5"/>
-  <text x="720" y="862" font-size="17" font-weight="500" fill="#8f8dce" text-anchor="middle">CQE Gen</text>
+  <rect x="640" y="770" width="160" height="55" rx="6" fill="#272f49" stroke="#928dce" stroke-width="1.5"/>
+  <text x="720" y="802" font-size="17" font-weight="500" fill="#8f8dce" text-anchor="middle">CQE Gen</text>
 </g>
 
 <g id="block-cq-storage" data-role="indigo" opacity="0.35">
-  <rect x="830" y="830" width="160" height="55" rx="6" fill="#272f49" stroke="#928dce" stroke-width="1.5"/>
-  <text x="910" y="862" font-size="17" font-weight="500" fill="#8f8dce" text-anchor="middle">CQ Storage</text>
+  <rect x="830" y="770" width="160" height="55" rx="6" fill="#272f49" stroke="#928dce" stroke-width="1.5"/>
+  <text x="910" y="802" font-size="17" font-weight="500" fill="#8f8dce" text-anchor="middle">CQ Storage</text>
 </g>
 
 <g id="block-host-event" data-role="sky" opacity="0.35">
-  <rect x="1030" y="830" width="170" height="55" rx="6" fill="#273b49" stroke="#8db7ce" stroke-width="1.5" stroke-dasharray="4,3"/>
-  <text x="1115" y="853" font-size="15" font-weight="500" fill="#8db7ce" text-anchor="middle">Host:</text>
-  <text x="1115" y="870" font-size="15" font-weight="500" fill="#8db7ce" text-anchor="middle">Event / Interrupt</text>
+  <rect x="1030" y="770" width="170" height="55" rx="6" fill="#273b49" stroke="#8db7ce" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <text x="1115" y="793" font-size="15" font-weight="500" fill="#8db7ce" text-anchor="middle">Host:</text>
+  <text x="1115" y="810" font-size="15" font-weight="500" fill="#8db7ce" text-anchor="middle">Event / Interrupt</text>
 </g>
 
 <!-- ============ CONNECTORS ============ -->
@@ -125,6 +131,11 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 
 <g id="arrow-wqe-fetch-sched__tx-packet-build">
   <line x1="420" y1="85" x2="636" y2="85" stroke="#928dce" stroke-width="2" marker-end="url(#arrIndigo)"/>
+</g>
+
+<g id="arrow-wqe-fetch-sched__rate-limiter" opacity="0.35">
+  <path d="M230,97 L205,97 L205,637 L226,637" fill="none" stroke="#928dce" stroke-width="1.5" marker-end="url(#arrIndigo)"/>
+  <text x="190" y="367" font-size="13" fill="#949ca8" text-anchor="middle" transform="rotate(-90, 190, 367)">rate check</text>
 </g>
 
 <g id="arrow-rate-limiter__tx-packet-build">
@@ -148,45 +159,50 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 </g>
 
 <g id="arrow-tx-packet-build__cqe-gen">
-  <path d="M765,125 L765,180 L910,180 L910,795 L690,795 L690,826" fill="none" stroke="#928dce" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#arrIndigo)"/>
-  <text x="920" y="487" font-size="13" fill="#949ca8" text-anchor="middle" transform="rotate(-90, 920, 487)">send completion (if signaled)</text>
+  <path d="M765,125 L765,180 L910,180 L910,735 L690,735 L690,766" fill="none" stroke="#928dce" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#arrIndigo)"/>
+  <text x="920" y="457" font-size="13" fill="#949ca8" text-anchor="middle" transform="rotate(-90, 920, 457)">send completion (if signaled)</text>
 </g>
 
 <g id="arrow-wire-in__rx-parser-reassembly" opacity="0.35">
-  <line x1="55" y1="857" x2="226" y2="857" stroke="#928dce" stroke-width="1.5" marker-end="url(#arrIndigo)"/>
+  <line x1="55" y1="797" x2="226" y2="797" stroke="#928dce" stroke-width="1.5" marker-end="url(#arrIndigo)"/>
 </g>
 
 <g id="arrow-rx-parser-reassembly__qp-cache" opacity="0.35">
-  <path d="M325,830 L325,795 L120,795 L120,214 L226,214" fill="none" stroke="#928dce" stroke-width="1.5" marker-end="url(#arrIndigo)"/>
+  <path d="M325,770 L325,735 L120,735 L120,214 L226,214" fill="none" stroke="#928dce" stroke-width="1.5" marker-end="url(#arrIndigo)"/>
   <text x="15" y="560" font-size="13" fill="#949ca8">dest QP</text>
   <text x="15" y="574" font-size="13" fill="#949ca8">from BTH</text>
 </g>
 
 <g id="arrow-rx-parser-reassembly__rx-psn-check" opacity="0.35">
-  <line x1="420" y1="857" x2="456" y2="857" stroke="#928dce" stroke-width="1.5" marker-end="url(#arrIndigo)"/>
+  <line x1="420" y1="797" x2="456" y2="797" stroke="#928dce" stroke-width="1.5" marker-end="url(#arrIndigo)"/>
 </g>
 
 <g id="arrow-rx-psn-check__replay-buffer" opacity="0.35">
-  <path d="M510,830 L510,548 L420,548" fill="none" stroke="#cea98d" stroke-width="1.5" marker-end="url(#arrAmber)"/>
-  <text x="520" y="700" font-size="13" fill="#949ca8" text-anchor="middle" transform="rotate(-90, 520, 700)">ack matching</text>
+  <path d="M510,770 L510,548 L420,548" fill="none" stroke="#cea98d" stroke-width="1.5" marker-end="url(#arrAmber)"/>
+  <text x="520" y="670" font-size="13" fill="#949ca8" text-anchor="middle" transform="rotate(-90, 520, 670)">ack matching</text>
 </g>
 
 <g id="arrow-rx-psn-check__dma-engine" opacity="0.35">
-  <path d="M580,830 L580,780 L610,780 L610,470 L636,407" fill="none" stroke="#928dce" stroke-width="1.5" marker-end="url(#arrIndigo)"/>
-  <text x="625" y="550" font-size="13" fill="#949ca8" text-anchor="middle" transform="rotate(-90, 625, 550)">accepted -&gt; DMA write</text>
+  <path d="M580,770 L580,720 L610,720 L610,470 L636,407" fill="none" stroke="#928dce" stroke-width="1.5" marker-end="url(#arrIndigo)"/>
+  <text x="625" y="540" font-size="13" fill="#949ca8" text-anchor="middle" transform="rotate(-90, 625, 540)">accepted -&gt; DMA write</text>
 </g>
 
 <g id="arrow-dma-engine__cqe-gen" opacity="0.35">
-  <path d="M750,440 L750,826" fill="none" stroke="#928dce" stroke-width="1.5" marker-end="url(#arrIndigo)"/>
-  <text x="760" y="633" font-size="13" fill="#949ca8" text-anchor="middle" transform="rotate(-90, 760, 633)">receive completion</text>
+  <path d="M750,440 L750,766" fill="none" stroke="#928dce" stroke-width="1.5" marker-end="url(#arrIndigo)"/>
+  <text x="760" y="603" font-size="13" fill="#949ca8" text-anchor="middle" transform="rotate(-90, 760, 603)">receive completion</text>
 </g>
 
 <g id="arrow-cqe-gen__cq-storage" opacity="0.35">
-  <line x1="800" y1="857" x2="826" y2="857" stroke="#928dce" stroke-width="1.5" marker-end="url(#arrIndigo)"/>
+  <line x1="800" y1="797" x2="826" y2="797" stroke="#928dce" stroke-width="1.5" marker-end="url(#arrIndigo)"/>
 </g>
 
 <g id="arrow-cq-storage__host-event" opacity="0.35">
-  <line x1="990" y1="857" x2="1026" y2="857" stroke="#8db7ce" stroke-width="1.5" marker-end="url(#arrSky)"/>
+  <line x1="990" y1="797" x2="1026" y2="797" stroke="#8db7ce" stroke-width="1.5" marker-end="url(#arrSky)"/>
+</g>
+
+<g id="arrow-rx-parser-reassembly__cnp-gen" opacity="0.35">
+  <line x1="325" y1="825" x2="325" y2="896" stroke="#928dce" stroke-width="1.5" marker-end="url(#arrIndigo)"/>
+  <text x="345" y="864" font-size="12" fill="#949ca8" text-anchor="start">ECN mark seen</text>
 </g>
 </g>
 </svg>
