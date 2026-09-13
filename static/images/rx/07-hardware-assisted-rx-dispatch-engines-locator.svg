@@ -77,8 +77,8 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
   <text x="325" y="936" font-size="12" fill="#4338ca" text-anchor="middle">receive side, on ECN mark</text>
 </g>
 
-<text x="325" y="695" font-size="14" fill="#94a3b8" text-anchor="middle">four instances of the same</text>
-<text x="325" y="710" font-size="14" fill="#94a3b8" text-anchor="middle">table + working-set + eviction shape</text>
+<text x="325" y="676" font-size="14" fill="#94a3b8" text-anchor="middle">four instances of the same</text>
+<text x="325" y="691" font-size="14" fill="#94a3b8" text-anchor="middle">table + working-set + eviction shape</text>
 
 <!-- ============ CENTER HUB ============ -->
 <g id="block-dma-engine" data-role="indigo" opacity="0.35">
@@ -179,7 +179,7 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 
 <g id="arrow-rx-psn-check__replay-buffer" opacity="0.35">
   <path d="M510,770 L510,548 L420,548" fill="none" stroke="#b45309" stroke-width="1.5" marker-end="url(#arrAmber)"/>
-  <text x="520" y="670" font-size="13" fill="#64748b" text-anchor="middle" transform="rotate(-90, 520, 670)">ack matching</text>
+  <text x="520" y="705" font-size="13" fill="#64748b" text-anchor="middle" transform="rotate(-90, 520, 705)">ack matching</text>
 </g>
 
 <g id="arrow-rx-psn-check__dma-engine" opacity="0.35">
@@ -202,7 +202,7 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 
 <g id="arrow-rx-parser-reassembly__cnp-gen">
   <line x1="325" y1="825" x2="325" y2="896" stroke="#4338ca" stroke-width="2" marker-end="url(#arrIndigo)"/>
-  <text x="345" y="864" font-size="12" fill="#64748b" text-anchor="start">ECN mark seen</text>
+  <text x="332" y="864" font-size="12" fill="#64748b" text-anchor="start">ECN mark seen</text>
 </g>
 </g>
 </svg>
