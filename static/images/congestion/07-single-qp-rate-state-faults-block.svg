@@ -13,14 +13,16 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <text x="450" y="24" font-size="14" font-weight="500" fill="#0f172a" text-anchor="middle">Two Failure Paths, Neither Owned by This Part</text>
 
 <rect x="50" y="50" width="330" height="50" rx="6" fill="#f8fafc" stroke="#334155" stroke-width="1.3"/>
-<text x="215" y="70" font-size="10" font-weight="500" fill="#334155" text-anchor="middle">Malformed CNP arrives</text>
-<text x="215" y="86" font-size="8.5" fill="#64748b" text-anchor="middle">wrong opcode, bad PSN, unknown DestQP</text>
+<text x="215" y="70" font-size="10" font-weight="500" fill="#334155" text-anchor="middle">Bad PSN or unknown DestQP</text>
+<text x="215" y="86" font-size="8.5" fill="#64748b" text-anchor="middle">covered elsewhere, not a new problem</text>
 
 <line x1="380" y1="75" x2="430" y2="75" stroke="#334155" stroke-width="1.3" marker-end="url(#arrSQF1)"/>
 
 <rect x="430" y="50" width="250" height="50" rx="6" fill="#eef2ff" stroke="#4338ca" stroke-width="1.5"/>
-<text x="555" y="70" font-size="10" font-weight="500" fill="#312e81" text-anchor="middle">RX Pipeline's own validation</text>
+<text x="555" y="70" font-size="10" font-weight="500" fill="#312e81" text-anchor="middle">RX Pipeline / QP Table</text>
 <text x="555" y="86" font-size="8.5" fill="#4338ca" text-anchor="middle">same path, any malformed packet</text>
+
+<text x="215" y="112" font-size="8" font-style="italic" fill="#b45309" text-anchor="middle">a corrupted opcode is a real, unfilled gap -- not covered here either</text>
 
 <rect x="50" y="140" width="330" height="60" rx="6" fill="#f8fafc" stroke="#334155" stroke-width="1.3"/>
 <text x="215" y="160" font-size="10" font-weight="500" fill="#334155" text-anchor="middle">Valid CNP, but DestQP is</text>

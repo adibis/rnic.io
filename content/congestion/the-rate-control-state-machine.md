@@ -21,7 +21,7 @@ next: /congestion/single-qp-rate-state-faults
 
 ## Block diagram
 
-![A Congestion Notification Packet arriving cuts the rate immediately and resets both stage counts to zero. From there, every timer or byte-counter expiry increments its own stage count, and the smaller of the two (or a comparison against a fixed threshold) picks one of three phases: fast recovery while both counts are still low, additive increase once they've cleared the threshold, and hyper increase if a long enough gap with no new CNP suggests the network has been clear for a while.](/images/congestion/06-the-rate-control-state-machine-block.svg)
+![A Congestion Notification Packet arriving cuts the rate immediately and resets both stage counts to zero. From there, every timer or byte-counter expiry increments its own stage count, and comparing the larger and smaller of the two against a fixed threshold picks one of three phases: fast recovery while both counts are still below it, additive increase once one has crossed but the other hasn't, and hyper increase once both have run well past it with no new CNP.](/images/congestion/06-the-rate-control-state-machine-block.svg)
 
 ## Deep walkthrough
 
@@ -32,9 +32,12 @@ next: /congestion/single-qp-rate-state-faults
 
 **Two independent triggers, two independent stage counts.** [Rate-Limiter Context](/congestion/rate-limiter-context) already named the asymmetry worth repeating here: a timer and a byte counter both run at once, and either firing advances only its own stage count, on its own schedule. A QP sending a high rate of small messages can advance its byte-counter stage well ahead of its timer-based stage; the reverse holds for a QP sending large, infrequent bursts. Neither stage count on its own decides anything -- it's the *comparison* between them, described next, that actually selects a phase.
 
-**Phase one: fast recovery.** While the smaller of the two stage counts is still below a fixed threshold, the current rate leaps directly toward the target: each expiry sets the current rate to the midpoint between itself and the target, roughly halving the remaining distance every step. One documented deployment fixes this threshold at five steps; a second, independent implementation defaults to three -- the same evidence this Part has already used elsewhere that these specific numbers are tuned parameters, not fixed constants.
+**Phase one: fast recovery.** While the *larger* of the two stage counts is still below a fixed threshold -- meaning both counts are still low, since neither trigger has fired many times yet -- the current rate leaps directly toward the target: each expiry sets the current rate to the midpoint between itself and the target, roughly halving the remaining distance every step. One documented deployment fixes this threshold at five steps; a second, independent implementation defaults to three -- the same evidence this Part has already used elsewhere that these specific numbers are tuned parameters, not fixed constants.
 
-**Phase two: additive increase.** Once the smaller stage count clears that threshold, the climb changes character: instead of chasing an already-fixed target, the target itself starts climbing, by a fixed step each cycle, with the current rate continuing to close half the distance to it. This is the steady-state phase -- slower, more cautious, and where a QP spends most of its time recovering after the initial fast-recovery burst has closed most of the gap.
+> [!CAUTION] Gotcha
+> This is checked against the *larger* stage count, not the smaller one -- both counts have to still be low for fast recovery to apply. A QP sending small messages fast can advance its byte-counter stage well past the threshold while its timer-based stage is still low; checking only the smaller count would keep that QP in fast recovery based on the trigger that's barely fired, ignoring the one that's already fired many times. The state machine cares whether *either* trigger has accumulated enough firings to signal the burst is over, not whether *both* have.
+
+**Phase two: additive increase.** Once one stage count has crossed the threshold but the other hasn't -- exactly the straddling case the Gotcha above describes -- the climb changes character: instead of chasing an already-fixed target, the target itself starts climbing, by a fixed step each cycle, with the current rate continuing to close half the distance to it. This is the steady-state phase -- slower, more cautious, and where a QP spends most of its time recovering after the initial fast-recovery burst has closed most of the gap.
 
 > [!TIP] Why
 > Two phases, not one, because the two halves of recovery have opposite priorities. Immediately after a cut, the current rate is likely still far below what the link can actually sustain -- fast recovery's job is closing that gap quickly, accepting a coarser step size because there's a lot of ground to cover and low risk of overshooting a target that hasn't moved. Once the current rate is already close to the target, the same coarse step size would risk oscillating past a ceiling the network only just confirmed it could sustain -- additive increase's smaller, target-advancing steps trade recovery speed for stability once stability is the thing actually worth optimizing for.
@@ -51,9 +54,9 @@ next: /congestion/single-qp-rate-state-faults
 | Phase | Trigger condition | Effect | Source |
 |---|---|---|---|
 | **Rate cut** | CNP arrives | current rate cut, scaled by reaction factor; both stage counts reset to 0 | DCQCN paper |
-| **Fast recovery** | smaller stage count below threshold `F` | current rate set to midpoint of itself and target | DCQCN paper (`F`=5); a second, independent implementation defaults to 3 |
-| **Additive increase** | smaller stage count at or past `F`, no new CNP | target rate climbs by a fixed step; current rate closes half the remaining distance | DCQCN paper |
-| **Hyper increase** | both stage counts well past `F`, no new CNP for an extended period | an aggressive ramp beyond additive increase's fixed step | formula deferred to an underlying spec by the sourced algorithm itself; at least one real vendor replaced this phase entirely in shipped hardware |
+| **Fast recovery** | larger stage count still below threshold `F` (both counts low) | current rate set to midpoint of itself and target | DCQCN paper (`F`=5); a second, independent implementation defaults to 3 |
+| **Additive increase** | one stage count past `F`, the other not yet, no new CNP | target rate climbs by a fixed step; current rate closes half the remaining distance | DCQCN paper |
+| **Hyper increase** | smaller stage count also past `F` (both counts past it), no new CNP for an extended period | an aggressive ramp beyond additive increase's fixed step | formula deferred to an underlying spec by the sourced algorithm itself; at least one real vendor replaced this phase entirely in shipped hardware |
 
 ## References
 

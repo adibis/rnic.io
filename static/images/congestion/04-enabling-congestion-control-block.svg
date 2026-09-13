@@ -16,7 +16,7 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 
 <rect x="60" y="60" width="150" height="46" rx="6" fill="#eef2ff" stroke="#4338ca" stroke-width="1.5"/>
 <text x="135" y="80" font-size="10" font-weight="500" fill="#312e81" text-anchor="middle">Traffic Class</text>
-<text x="135" y="95" font-size="8.5" fill="#4338ca" text-anchor="middle">set at RESET-&gt;INIT</text>
+<text x="135" y="95" font-size="8.5" fill="#4338ca" text-anchor="middle">set at INIT-&gt;RTR</text>
 
 <line x1="210" y1="83" x2="250" y2="83" stroke="#334155" stroke-width="1.3" marker-end="url(#arrECC1)"/>
 <text x="230" y="74" font-size="8" fill="#64748b" text-anchor="middle">Annex A17</text>
@@ -29,13 +29,13 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 
 <text x="675" y="48" font-size="11" font-weight="500" fill="#b45309" text-anchor="middle">Rate-limiter starting values -- sourced</text>
 
-<rect x="550" y="60" width="130" height="46" rx="6" fill="#fffbeb" stroke="#df8e1d" stroke-width="1.5"/>
-<text x="615" y="80" font-size="10" font-weight="500" fill="#b45309" text-anchor="middle">R_C = full line rate</text>
-<text x="615" y="95" font-size="8.5" fill="#b45309" text-anchor="middle">no slow start</text>
+<rect x="550" y="60" width="160" height="46" rx="6" fill="#fffbeb" stroke="#df8e1d" stroke-width="1.5"/>
+<text x="630" y="80" font-size="10" font-weight="500" fill="#b45309" text-anchor="middle">R_C = full line rate*</text>
+<text x="630" y="95" font-size="7.5" fill="#b45309" text-anchor="middle">*if no other flow active, this host</text>
 
-<rect x="690" y="60" width="130" height="46" rx="6" fill="#fffbeb" stroke="#df8e1d" stroke-width="1.5"/>
-<text x="755" y="80" font-size="10" font-weight="500" fill="#b45309" text-anchor="middle">alpha = 1</text>
-<text x="755" y="95" font-size="8.5" fill="#b45309" text-anchor="middle">DCQCN paper, footnote</text>
+<rect x="720" y="60" width="100" height="46" rx="6" fill="#fffbeb" stroke="#df8e1d" stroke-width="1.5"/>
+<text x="770" y="80" font-size="10" font-weight="500" fill="#b45309" text-anchor="middle">alpha = 1</text>
+<text x="770" y="95" font-size="7.5" fill="#b45309" text-anchor="middle">DCQCN, footnote</text>
 
 <line x1="450" y1="55" x2="450" y2="140" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4,3"/>
 
