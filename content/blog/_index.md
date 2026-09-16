@@ -1,5 +1,7 @@
 ---
 title: "Blog"
+sidebar:
+  hideFromTree: true
 cascade:
   comments: true
 ---

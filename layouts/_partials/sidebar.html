@@ -1,17 +1,30 @@
-{{- /* Site-level override of the Hextra theme's sidebar.html. The only
-  change from the theme's own file: a menu item with Hugo-menu children
-  (like RDMA, given nine Part children in hugo.yaml so the mobile drawer
-  treats it as a group label instead of an alias for whatever page its own
-  pageRef points at) renders those children as plain flat leaf links in
-  the theme's stock version -- fine for something like a language switcher,
-  but it means a Part's own chapters become unreachable from the mobile
-  menu. Each child that resolves to a real page now renders exactly like
-  the normal top-level "page" entry does: its own expand state, its own
-  in-page TOC when active, and a full recursive sidebar-tree call so its
-  chapters show up nested underneath, matching the desktop sidebar. Only
-  a child with no resolvable page (a bare URL) still falls back to the
-  original flat link. Every other line here is unchanged from the theme
-  default. */ -}}
+{{- /* Site-level override of the Hextra theme's sidebar.html. Two changes
+  from the theme's own file:
+
+  1. A menu item with Hugo-menu children (like RDMA, given nine Part
+  children in hugo.yaml so the mobile drawer treats it as a group label
+  instead of an alias for whatever page its own pageRef points at) renders
+  those children as plain flat leaf links in the theme's stock version --
+  fine for something like a language switcher, but it means a Part's own
+  chapters become unreachable from the mobile menu. Each child that
+  resolves to a real page now renders exactly like the normal top-level
+  "page" entry does: its own expand state, its own in-page TOC when
+  active, and a full recursive sidebar-tree call so its chapters show up
+  nested underneath, matching the desktop sidebar. Only a child with no
+  resolvable page (a bare URL) still falls back to the original flat link.
+
+  2. A page can set `sidebar.hideFromTree: true` in front matter to drop
+  out of the desktop tree ($items below) while staying reachable from the
+  mobile hamburger drawer, which is driven entirely by site.Menus.main and
+  never consults $items -- these are genuinely separate render paths, not
+  two views of one list. Used for About and Blog: both belong in the
+  mobile menu (there's no left sidebar there to find them in otherwise),
+  but don't belong as root-level siblings of the book's own Parts in the
+  desktop tree, where the top navbar already links them. The theme's own
+  `sidebar.exclude` can't do this job -- it's checked by both render paths
+  and would remove a page from the mobile menu too.
+
+  Every other line here is unchanged from the theme default. */ -}}
 
 {{- $context := .context -}}
 
@@ -89,7 +102,7 @@
   {{- $useMainMenu := and (eq $level 0) $toc -}}
   {{- $mainMenuEntries := slice -}}
 
-  {{- $items := where (union .context.RegularPages .context.Sections) "Params.sidebar.exclude" "!=" true -}}
+  {{- $items := where (where (union .context.RegularPages .context.Sections) "Params.sidebar.exclude" "!=" true) "Params.sidebar.hideFromTree" "!=" true -}}
   {{- if $useMainMenu -}}
     {{- range $menuItem := site.Menus.main -}}
       {{- $menuType := $menuItem.Params.type | default "" -}}
