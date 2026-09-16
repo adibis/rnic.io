@@ -18,7 +18,7 @@ Neither address [Target Selection](/dma/target-selection) names is usable yet --
 
 ## Locator
 
-![The master RNIC block diagram with DMA Engine and Key Cache both highlighted -- this chapter is the one place this Part's own flow reaches directly into Part 2's territory.](/images/dma/03-address-translation-handoff-locator.svg)
+![The master RNIC block diagram with DMA Engine and Key Cache both highlighted -- this chapter is the one place this Part's own flow reaches directly into Memory Region / Key Table's territory.](/images/dma/03-address-translation-handoff-locator.svg)
 
 ## Block diagram
 
