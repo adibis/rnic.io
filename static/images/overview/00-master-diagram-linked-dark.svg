@@ -67,16 +67,16 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
   <text x="325" y="550" font-size="18" font-weight="500" fill="#cea98d" text-anchor="middle">Retry Timer</text>
 </g></a>
 
-<g id="block-rate-limiter" data-role="amber">
+<a href="/congestion/the-rate-limiter-table/" class="master-diagram-link"><g id="block-rate-limiter" data-role="amber">
   <rect x="230" y="613" width="190" height="48" rx="6" fill="#494227" stroke="#ceb38d" stroke-width="1.5"/>
   <text x="325" y="643" font-size="18" font-weight="500" fill="#cea98d" text-anchor="middle">Rate Limiter</text>
-</g>
+</g></a>
 
-<g id="block-cnp-gen" data-role="indigo">
+<a href="/congestion/cnp-generation/" class="master-diagram-link"><g id="block-cnp-gen" data-role="indigo">
   <rect x="230" y="900" width="190" height="50" rx="6" fill="#272f49" stroke="#928dce" stroke-width="1.5"/>
   <text x="325" y="920" font-size="15" font-weight="500" fill="#8f8dce" text-anchor="middle">CNP Generation</text>
   <text x="325" y="936" font-size="12" fill="#928dce" text-anchor="middle">receive side, on ECN mark</text>
-</g>
+</g></a>
 
 <text x="325" y="676" font-size="14" fill="#94a3b8" text-anchor="middle">four instances of the same</text>
 <text x="325" y="691" font-size="14" fill="#94a3b8" text-anchor="middle">table + working-set + eviction shape</text>
@@ -104,21 +104,21 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
   <text x="545" y="802" font-size="17" font-weight="500" fill="#8f8dce" text-anchor="middle">RX PSN Check</text>
 </g></a>
 
-<g id="block-cqe-gen" data-role="indigo">
+<a href="/cq/cqe-generation/" class="master-diagram-link"><g id="block-cqe-gen" data-role="indigo">
   <rect x="640" y="770" width="160" height="55" rx="6" fill="#272f49" stroke="#928dce" stroke-width="1.5"/>
   <text x="720" y="802" font-size="17" font-weight="500" fill="#8f8dce" text-anchor="middle">CQE Gen</text>
-</g>
+</g></a>
 
-<g id="block-cq-storage" data-role="indigo">
+<a href="/cq/the-completion-queue/" class="master-diagram-link"><g id="block-cq-storage" data-role="indigo">
   <rect x="830" y="770" width="160" height="55" rx="6" fill="#272f49" stroke="#928dce" stroke-width="1.5"/>
   <text x="910" y="802" font-size="17" font-weight="500" fill="#8f8dce" text-anchor="middle">CQ Storage</text>
-</g>
+</g></a>
 
-<g id="block-host-event" data-role="sky">
+<a href="/cq/event-and-multi-cq-arbitration/" class="master-diagram-link"><g id="block-host-event" data-role="sky">
   <rect x="1030" y="770" width="170" height="55" rx="6" fill="#273b49" stroke="#8db7ce" stroke-width="1.5" stroke-dasharray="4,3"/>
   <text x="1115" y="793" font-size="15" font-weight="500" fill="#8db7ce" text-anchor="middle">Host:</text>
   <text x="1115" y="810" font-size="15" font-weight="500" fill="#8db7ce" text-anchor="middle">Event / Interrupt</text>
-</g>
+</g></a>
 
 <!-- ============ CONNECTORS ============ -->
 <g id="arrow-host-desc-rings__wqe-fetch-sched">
