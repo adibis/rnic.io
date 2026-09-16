@@ -149,6 +149,11 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
   <text x="425" y="461" font-size="13" fill="#64748b">resolved here</text>
 </g>
 
+<g id="arrow-dma-engine__tx-packet-build" opacity="0.35">
+  <line x1="680" y1="330" x2="680" y2="129" stroke="#4338ca" stroke-width="1.5" marker-end="url(#arrIndigo)"/>
+  <text x="693" y="227" font-size="13" fill="#64748b" text-anchor="middle" transform="rotate(-90, 693, 227)">gathered payload</text>
+</g>
+
 <g id="arrow-tx-packet-build__wire-out" opacity="0.35">
   <line x1="830" y1="97" x2="976" y2="97" stroke="#4338ca" stroke-width="1.5" marker-end="url(#arrIndigo)"/>
 </g>
