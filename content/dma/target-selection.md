@@ -24,7 +24,7 @@ Target selection happens before [Address Translation Handoff](/dma/address-trans
 
 ## Block diagram
 
-![A decision point keyed on opcode and direction: SEND source, WRITE source, and a READ response's source at the responder all resolve against a WQE's own SGE list (software-named, lkey); a WRITE's destination and a READ request's source at the responder both resolve against RETH's virtual address (wire-named, rkey); RECEIVE's destination and a READ response's destination at the requester resolve against the posted or original WQE's own SGE list (software-named, lkey) -- drawn as two converging paths into one shared translation stage.](/images/dma/02-target-selection-block.svg)
+![A decision point keyed on opcode and direction: SEND source, WRITE source, RECEIVE destination, a READ response's destination at the requester, and an Atomic's return-value destination all resolve against a WQE's own SGE list or buffer (software-named, lkey); a WRITE's destination and a READ request's source at the responder both resolve against RETH's virtual address (wire-named, rkey) -- drawn as two converging paths into one shared translation stage.](/images/dma/02-target-selection-block.svg)
 
 ## Deep walkthrough
 
