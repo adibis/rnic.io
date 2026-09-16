@@ -45,8 +45,8 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 
 <line x1="700" y1="223" x2="700" y2="247" stroke="#ce8d8d" stroke-width="1.3" marker-end="url(#arrSB3)"/>
 <rect x="565" y="250" width="270" height="38" rx="6" fill="#492727" stroke="#ce8d8d" stroke-width="1.5"/>
-<text x="700" y="265" font-size="10" font-weight="500" fill="#ce8d8d" text-anchor="middle">Third local fault class --</text>
-<text x="700" y="278" font-size="10" font-weight="500" fill="#ce8d8d" text-anchor="middle">distinct from this book's other two</text>
+<text x="700" y="265" font-size="10" font-weight="500" fill="#ce8d8d" text-anchor="middle">New local fault class --</text>
+<text x="700" y="278" font-size="10" font-weight="500" fill="#ce8d8d" text-anchor="middle">distinct from its two packet-triggered causes</text>
 
 <text x="450" y="308" font-size="9" fill="#949ca8" text-anchor="middle">Left: a real stall, but not a fault -- nothing about it reaches a completion status. Right: this Part's one genuinely new fault surface.</text>
 </svg>
