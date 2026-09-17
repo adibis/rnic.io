@@ -35,7 +35,7 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <text x="350" y="240" font-size="11.5" font-weight="500" fill="#b45309" text-anchor="middle">Key Table</text>
 <text x="350" y="256" font-size="9.5" fill="#b45309" text-anchor="middle">backing store</text>
 
-<path d="M440,245 L560,245 L560,160" fill="none" stroke="#df8e1d" stroke-width="1.5" marker-end="url(#arrATH2)"/>
+<path d="M440,245 L596,245 L596,160" fill="none" stroke="#df8e1d" stroke-width="1.5" marker-end="url(#arrATH2)"/>
 
 <rect x="600" y="80" width="260" height="150" rx="8" fill="#eef2ff" stroke="#4338ca" stroke-width="2"/>
 <text x="730" y="115" font-size="13" font-weight="500" fill="#312e81" text-anchor="middle">Physical address +</text>
