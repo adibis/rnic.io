@@ -54,7 +54,7 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <text x="410" y="250" font-size="10" fill="#b45309" text-anchor="middle">RETH virtual address, rkey</text>
 
 <!-- WRITE w/ Immediate's second, separate arrow: routed above the software-named box, not through it -->
-<path d="M210,133 L210,88 L735,88 L735,101" fill="none" stroke="#df8e1d" stroke-width="1.3" stroke-dasharray="4,3" marker-end="url(#arrSP3)"/>
+<path d="M200,133 L210,133 L210,88 L735,88 L735,101" fill="none" stroke="#df8e1d" stroke-width="1.3" stroke-dasharray="4,3" marker-end="url(#arrSP3)"/>
 
 <rect x="600" y="105" width="270" height="60" rx="6" fill="#fffbeb" stroke="#df8e1d" stroke-width="1.5" stroke-dasharray="4,3"/>
 <text x="735" y="126" font-size="10.5" font-weight="500" fill="#b45309" text-anchor="middle">Consumed RQ WQE</text>
