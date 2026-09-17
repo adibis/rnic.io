@@ -88,6 +88,12 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
   <text x="750" y="408" font-size="14" fill="#928dce" text-anchor="middle">scatter-gather walk</text>
 </g>
 
+<g id="block-system-iommu" data-role="sky" opacity="0.35">
+  <rect x="940" y="315" width="240" height="60" rx="6" fill="#273b49" stroke="#8db7ce" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <text x="1060" y="338" font-size="15" font-weight="500" fill="#8db7ce" text-anchor="middle">System IOMMU / SMMU</text>
+  <text x="1060" y="356" font-size="11.5" fill="#8db7ce" text-anchor="middle">outside the RNIC, if present</text>
+</g>
+
 <!-- ============ RX LANE ============ -->
 <text x="20" y="793" font-size="15" fill="#949ca8" text-anchor="start">wire</text>
 <text x="20" y="808" font-size="15" fill="#949ca8" text-anchor="start">in</text>
@@ -195,6 +201,10 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <g id="arrow-dma-engine__cqe-gen" opacity="0.35">
   <path d="M750,440 L750,766" fill="none" stroke="#928dce" stroke-width="1.5" marker-end="url(#arrIndigo)"/>
   <text x="760" y="603" font-size="13" fill="#949ca8" text-anchor="middle" transform="rotate(-90, 760, 603)">receive completion</text>
+</g>
+
+<g id="arrow-dma-engine__system-iommu" opacity="0.35">
+  <line x1="864" y1="345" x2="936" y2="345" stroke="#8db7ce" stroke-width="1.5" marker-end="url(#arrSky)"/>
 </g>
 
 <g id="arrow-cqe-gen__cq-storage" opacity="0.35">
