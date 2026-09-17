@@ -110,10 +110,10 @@ menu:
       pageRef: /dma/
       parent: RDMA
       weight: 9
-    - name: System IOMMU / SMMU Interface
+    - name: System IOMMU / SMMU
       pageRef: /system-iommu/
       parent: RDMA
-      weight: 10
+      weight: 11
     - name: Blog
       pageRef: /blog
       weight: 2
