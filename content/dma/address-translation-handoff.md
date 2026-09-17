@@ -39,6 +39,9 @@ Neither address [Target Selection](/dma/target-selection) names is usable yet --
 
 **Where this connects.** A passing lookup hands a physical address forward into [The Gather Path](/dma/the-gather-path) or [The Scatter Path](/dma/the-scatter-path), whichever Target Selection's direction called for. Whether this engine holds that resolved address privately for a whole burst, or re-derives it from Key Cache more than once during a long transfer, is the open question [Mid-Transaction Burst Teardown](/dma/mid-transaction-burst-teardown) covers, not this chapter -- this chapter only names the single call that happens at least once, at the start.
 
+> [!CAUTION] Gotcha
+> "Physical address" here means this engine's own Key Cache's resolved endpoint -- not necessarily the last translation a byte passes through before it reaches DRAM. In any virtualized, SR-IOV, or PCIe-passthrough deployment, a system-level IOMMU or SMMU retranslates this address again, transparently to this engine by default. [System IOMMU / SMMU Interface](/system-iommu/) covers that boundary; this chapter's own use of "physical address" stays accurate for what it describes, just scoped one layer short of the whole path.
+
 ## Interface reference
 
 | Question | Answer |
