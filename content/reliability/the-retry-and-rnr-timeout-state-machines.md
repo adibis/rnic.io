@@ -1,6 +1,6 @@
 ---
 title: "The Retry and RNR Timeout State Machines"
-weight: 4
+weight: 5
 date: 2026-09-09
 publishDate: 2026-09-09
 draft: false
@@ -21,7 +21,7 @@ Two different conditions can leave a requester without an acknowledgment for som
 
 ## Block diagram
 
-![Two parallel state-machine lanes -- an ordinary timeout branch (armed on send, expiry triggers go-back-N retransmission, the retry-count ceiling decrements, loops until exhausted) and an RNR branch (armed on receiving an RNR NAK, expiry after the advertised backoff delay triggers a same-PSN resend, the RNR-retry ceiling decrements, loops until exhausted) -- both converging on a single QP ERROR node.](/images/reliability/04-the-retry-and-rnr-timeout-state-machines-block.svg)
+![Three lanes converging on one QP ERROR node: an ordinary timeout branch (armed on send, expiry triggers go-back-N retransmission, the retry-count ceiling decrements, loops until exhausted), an RNR branch (armed on receiving an RNR NAK, expiry after the advertised backoff delay triggers a same-PSN resend, the RNR-retry ceiling decrements, loops until exhausted), and a third, direct path with no state machine at all -- a Remote Access Error, Remote Operational Error, or Invalid Request NAK reported to the client and driving the QP to ERROR immediately, no retry counter ever consulted.](/images/reliability/04-the-retry-and-rnr-timeout-state-machines-block.svg)
 
 ## Deep walkthrough
 
@@ -32,9 +32,14 @@ Two different conditions can leave a requester without an acknowledgment for som
 **Why one shared counter would be the wrong design.** A QP whose peer's receive queue runs empty a few times under a bursty workload, and separately loses a few packets on a lossy path, is facing two unrelated problems. Charging both against one shared budget would let either condition's bad luck exhaust the tolerance for the other -- a QP that happened to hit several RNR conditions early in a connection's life would have less headroom left to tolerate ordinary loss later, for no reason connected to the path's actual loss characteristics. Two independent counters mean a QP's tolerance for one failure mode is never a hidden function of how much of the other failure mode it happened to experience first.
 
 > [!NOTE] Concept
-> Two structurally separate state machines, each armed by a different trigger and counted against its own budget, converge on exactly one terminal outcome. Whichever counter reaches zero first -- the ordinary retry-count ceiling or the RNR-retry ceiling -- the QP is driven to the same ERROR state. Neither branch has its own distinct exit.
+> Two structurally separate state machines, each armed by a different trigger and counted against its own budget, converge on exactly one terminal outcome once *their own* counter is exhausted. Whichever counter reaches zero first -- the ordinary retry-count ceiling or the RNR-retry ceiling -- the QP is driven to the same terminal fault class. Neither of these two branches has its own distinct exit from the other. That's a narrower claim than "this is the only road to that fault class" -- it isn't; see the Gotcha below.
 
 **The one door out, shared by both branches.** Both branches feed the same single exit: per [QP State Machine](/qp/qp-state-machine), the QP is driven to ERROR once its counter runs out. What ERROR actually does to a QP's other outstanding work from that point is [Single-QP Error Handling](/qp/single-qp-error-handling)'s subject, not re-derived here -- this chapter's job stops at naming that exhaustion is the trigger, not at re-explaining what firing that trigger does.
+
+**Most NAK codes never reach this state machine at all.** IBTA-V1 draws a hard line between two families of remotely-detected fault, and this chapter's two branches only cover one of them: "Of the possible NAK codes, two (NAK-Sequence Error and NAK-RNR) indicate operations that should be retried automatically by the requester. The NAK codes other than NAK-Sequence Error and NAK-RNR indicate failures that must be reported to the requester's client immediately and cannot be retried." A Remote Access Error, a Remote Operational Error, or an Invalid Request (an unsupported opcode, a missing FIRST/LAST in a multi-packet message, a length error) never touches either retry counter above -- there's no waiting, no decrementing, no second attempt. The requester reports the failure to its client on the very first occurrence and the QP is driven to error immediately. [Single-QP Error Handling](/qp/single-qp-error-handling) already covers this second family under its own "access-violation error" and "requester-side transport error" names; this chapter's retry/RNR machinery is not the mechanism behind either of them.
+
+> [!CAUTION] Gotcha
+> Don't read this chapter's two branches as the complete map of how a QP reaches its terminal fault state from a NAK or a timeout. They're the *retryable* half only. IBTA-V1's own requester fault-behavior classes name a separate, non-retryable half (Remote Access Error, Remote Operational Error, Invalid Request) that reaches the same kind of terminal outcome directly, with no retry counter ever consulted. Both halves can end a QP's normal operation; only one of them is this chapter's subject.
 
 **What happens next.** This chapter named what triggers a retry and what happens when retries run out. It deliberately didn't cover what retransmission actually does to the packets themselves -- [Go-Back-N Retransmission](/reliability/go-back-n-retransmission) is that chapter, immediately next.
 
@@ -43,4 +48,4 @@ Two different conditions can leave a requester without an acknowledgment for som
 
 ## References
 
-- InfiniBand Trade Association, *InfiniBand™ Architecture Specification*, Volume 1 (General Specifications) -- defines the RNR NAK mechanism, the minimum RNR timer floor, and the independent retry-count semantics this chapter describes.
+- InfiniBand Trade Association, *InfiniBand™ Architecture Specification*, Volume 1 (General Specifications) -- defines the RNR NAK mechanism, the minimum RNR timer floor, and the independent retry-count semantics this chapter describes. §9.9.2.2 (Requester Side Error Detection -- Remotely Detected Errors) is the direct source for the retryable-vs-immediately-reported split this chapter's Gotcha above draws; Table 56/57's Requester Fault Behavior Classes are the source for which specific NAK codes fall on each side of that split.
