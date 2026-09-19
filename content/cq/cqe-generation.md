@@ -4,7 +4,7 @@ weight: 4
 date: 2026-09-04
 publishDate: 2026-09-04
 draft: false
-description: "Nothing else in this Part is fed by both the TX and RX pipelines at once. This chapter is the convergence point -- and the one place a real, asymmetric rule decides whether a completion gets written at all: every receive-side event does, unconditionally, while a send-side event only does if something actually asked for it."
+description: "Nothing else in this Part is fed by both sides of this engine's own pipeline at once. This chapter is the convergence point -- and the one place a real, asymmetric rule decides whether a completion gets written at all: every receive-side event does, unconditionally, while a send-side event only does if something actually asked for it."
 prev: /cq/creating-a-completion-queue
 next: /cq/cq-overflow
 ---
@@ -15,15 +15,20 @@ Every chapter so far in this Part described something that already exists -- a C
 
 ## Locator
 
-![The master RNIC block diagram with CQE Gen highlighted -- fed by two separate arrows, a dashed one labeled "send completion (if signaled)" from TX Packet Build and a solid one labeled "receive completion" from RX PSN Check, converging into CQ Storage.](/images/cq/04-cqe-generation-locator.svg)
+![The master RNIC block diagram with CQE Gen highlighted -- fed by two separate arrows, a dashed one labeled "send completion (if signaled)" from Replay Buffer / Retry Timer and a solid one labeled "receive completion" from DMA Engine, converging into CQ Storage.](/images/cq/04-cqe-generation-locator.svg)
 
-Every other chapter in this Part is scoped to one side of this diagram or the other -- the entry, the ring, the handshake that creates it. This block is different: it's the one point where the TX and RX pipelines this book has spent two entire Parts on both terminate in the same structure.
+Every other chapter in this Part is scoped to one side of this diagram or the other -- the entry, the ring, the handshake that creates it. This block is different: it's the one point where a send-side event and a receive-side event both terminate in the same structure.
+
+> [!CAUTION] Gotcha
+> The send-side arrow above comes from Replay Buffer / Retry Timer, not from TX Packet Build. TX Packet Build only builds and sends an outgoing packet -- it has no way to observe that the peer received or acknowledged it. The actual trigger for a send-side completion is an inbound acknowledgment's MSN, arrived on this same engine's own receive path and processed by [Message Completion and the MSN](/reliability/message-completion-and-the-msn); this chapter picks up exactly where that one leaves off.
 
 ## Block diagram
 
 ![A Work Request completing on the TX side passes through a real gate -- is it signaled, either by its own flag or this QP's own signal-all default -- before a CQE gets written; an unsignaled completion produces nothing. A Receive Request being consumed on the RX side passes through no gate at all: every one produces a CQE, unconditionally. Both paths converge on a shared write into CQ Storage. A third, override path shows a QP forced to ERROR flushing every remaining entry through as a CQE regardless of its own signal flag.](/images/cq/04-cqe-generation-block.svg)
 
 ## Deep walkthrough
+
+**What "completing" means on the send side, before the gate is even checked.** This chapter's own subject is the signal-flag gate below -- it doesn't re-derive what makes a Work Request done in the first place. [Message Completion and the MSN](/reliability/message-completion-and-the-msn) owns that: a send-side Work Request completes when an inbound acknowledgment's MSN covers its logical Send Sequence Number, and no earlier-posted RDMA READ or ATOMIC is still waiting on its own explicit response. Everything below assumes that decision has already been made; this chapter only covers what happens to a WQE once it has.
 
 **The send side is gated; the receive side isn't -- confirmed, not inferred.** [The WQE and the Send Queue Descriptor](/tx/the-wqe-and-the-send-queue-descriptor) already named the `signal` flag as one of four requests a Work Request's flags field carries: a completion-request flag selecting whether this specific operation generates a completion at all. That flag only exists on the send side. Documented directly: completion generation is application-selectable per Work Request on the send side -- either by that Work Request's own flag, or unconditionally for every Work Request on a QP that was set up with a signal-all default at creation -- while a Receive Request carries no equivalent flag at all. Every posted Receive Request that gets consumed produces a completion, full stop, because the application needs to know a receive landed (to reuse or repost the buffer it named) in a way it doesn't necessarily need to know that an unsignaled SEND or WRITE landed.
 

@@ -1,6 +1,6 @@
 ---
 title: "Multi-QP Retry Arbitration"
-weight: 6
+weight: 7
 date: 2026-09-09
 publishDate: 2026-09-09
 draft: false

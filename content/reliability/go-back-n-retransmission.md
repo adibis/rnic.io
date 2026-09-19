@@ -1,6 +1,6 @@
 ---
 title: "Go-Back-N Retransmission"
-weight: 5
+weight: 6
 date: 2026-09-09
 publishDate: 2026-09-09
 draft: false

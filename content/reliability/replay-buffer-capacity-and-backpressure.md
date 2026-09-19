@@ -1,6 +1,6 @@
 ---
 title: "Replay Buffer Capacity and Backpressure"
-weight: 7
+weight: 8
 date: 2026-09-09
 publishDate: 2026-09-09
 draft: false

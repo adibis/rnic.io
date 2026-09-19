@@ -1,6 +1,6 @@
 ---
 title: "Mid-Transaction Reliability Reset"
-weight: 8
+weight: 9
 date: 2026-09-09
 publishDate: 2026-09-09
 draft: false

@@ -169,9 +169,9 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
   <text x="595" y="450" font-size="13" fill="#949ca8" text-anchor="middle" transform="rotate(-90, 595, 450)">unacked copy held</text>
 </g>
 
-<g id="arrow-tx-packet-build__cqe-gen">
-  <path d="M765,125 L765,180 L910,180 L910,735 L690,735 L690,766" fill="none" stroke="#928dce" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#arrIndigo)"/>
-  <text x="920" y="457" font-size="13" fill="#949ca8" text-anchor="middle" transform="rotate(-90, 920, 457)">send completion (if signaled)</text>
+<g id="arrow-replay-buffer__cqe-gen" opacity="0.35">
+  <path d="M420,536 L910,536 L910,735 L690,735 L690,766" fill="none" stroke="#928dce" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arrIndigo)"/>
+  <text x="920" y="636" font-size="13" fill="#949ca8" text-anchor="middle" transform="rotate(-90, 920, 636)">send completion (if signaled)</text>
 </g>
 
 <g id="arrow-wire-in__rx-parser-reassembly" opacity="0.35">
