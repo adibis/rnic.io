@@ -18,13 +18,13 @@ A QP Cache entry evicted under pressure costs a future re-fetch from the QP Tabl
 
 ## Locator
 
-![The master RNIC block diagram with the Replay Buffer highlighted, captioned to distinguish this chapter's admission-control question from the eviction-policy question Eviction Policy and Key Cache Eviction Policy both answered for two other resources.](/images/reliability/07-replay-buffer-capacity-and-backpressure-locator.svg)
+![The master RNIC block diagram with the Replay Buffer highlighted, captioned to distinguish this chapter's admission-control question from the eviction-policy question Eviction Policy and Key Cache Eviction Policy both answered for two other resources.](/images/reliability/08-replay-buffer-capacity-and-backpressure-locator.svg)
 
 [Eviction Policy](/qp/eviction-policy) and [Key Cache Eviction Policy](/mr/key-cache-eviction-policy) both answered the same question for two other cached resources: which entry gets sacrificed when capacity runs out. This chapter is where that question breaks, and what replaces it.
 
 ## Block diagram
 
-![A Send Queue about to post a new request compared against the Replay Buffer's currently available capacity for this QP: enough room admits the send and allocates an entry, insufficient room stalls the send at the TX pipeline rather than transmitting and risking an entry with nowhere to go, with no eviction path drawn anywhere in the diagram.](/images/reliability/07-replay-buffer-capacity-and-backpressure-block.svg)
+![A Send Queue about to post a new request compared against the Replay Buffer's currently available capacity for this QP: enough room admits the send and allocates an entry, insufficient room stalls the send at the TX pipeline rather than transmitting and risking an entry with nowhere to go, with no eviction path drawn anywhere in the diagram.](/images/reliability/08-replay-buffer-capacity-and-backpressure-block.svg)
 
 ## Deep walkthrough
 

@@ -14,13 +14,13 @@ RESET is legal from any state a Reliable Connection Queue Pair can be in, includ
 
 ## Locator
 
-![The master RNIC block diagram with the Retry Timer and Replay Buffer both highlighted -- this chapter's reasoning also reaches into the QP Table and QP Cache without owning either.](/images/reliability/08-mid-transaction-reliability-reset-locator.svg)
+![The master RNIC block diagram with the Retry Timer and Replay Buffer both highlighted -- this chapter's reasoning also reaches into the QP Table and QP Cache without owning either.](/images/reliability/09-mid-transaction-reliability-reset-locator.svg)
 
 [Mid-Transaction QP Reset](/qp/mid-transaction-qp-reset) named this part's two resources -- an armed timer and outstanding Replay Buffer entries -- among the state a RESET has to reconcile, and left both open, deferring them to a part of the book that didn't exist yet. This chapter is that part's answer.
 
 ## Block diagram
 
-![A QP with an armed timer and three outstanding Replay Buffer entries at the moment RESET lands: the timer disarming immediately, the three entries being freed rather than drained, and a dashed, unresolved arrow captioned "late-arriving ACK for a pre-reset PSN" pointing at the now-cleared QP context with a question mark.](/images/reliability/08-mid-transaction-reliability-reset-block.svg)
+![A QP with an armed timer and three outstanding Replay Buffer entries at the moment RESET lands: the timer disarming immediately, the three entries being freed rather than drained, and a dashed, unresolved arrow captioned "late-arriving ACK for a pre-reset PSN" pointing at the now-cleared QP context with a question mark.](/images/reliability/09-mid-transaction-reliability-reset-block.svg)
 
 ## Deep walkthrough
 

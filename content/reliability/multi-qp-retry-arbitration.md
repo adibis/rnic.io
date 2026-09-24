@@ -15,13 +15,13 @@ next: /reliability/replay-buffer-capacity-and-backpressure
 
 ## Locator
 
-![The master RNIC block diagram with the Retry Timer and TX Packet Build/Scheduler blocks both highlighted -- many QPs' retransmissions all compete for the same physical send pipeline Multi-QP TX Scheduling already covers for ordinary traffic.](/images/reliability/06-multi-qp-retry-arbitration-locator.svg)
+![The master RNIC block diagram with the Retry Timer and TX Packet Build/Scheduler blocks both highlighted -- many QPs' retransmissions all compete for the same physical send pipeline Multi-QP TX Scheduling already covers for ordinary traffic.](/images/reliability/07-multi-qp-retry-arbitration-locator.svg)
 
 [Go-Back-N Retransmission](/reliability/go-back-n-retransmission) covered one QP's retransmission in isolation. This chapter asks what happens when many QPs need that same service from the same shared pipeline at once.
 
 ## Block diagram
 
-![Several QPs' timers expiring in a tight window -- correlated by a shared upstream cause such as a congested link or a switch buffer event -- all presenting retransmission work to the same TX Scheduler at once, with a callout naming the new question this scenario raises: does retransmission get its own precedence, or does it compete on equal footing with fresh traffic.](/images/reliability/06-multi-qp-retry-arbitration-block.svg)
+![Several QPs' timers expiring in a tight window -- correlated by a shared upstream cause such as a congested link or a switch buffer event -- all presenting retransmission work to the same TX Scheduler at once, with a callout naming the new question this scenario raises: does retransmission get its own precedence, or does it compete on equal footing with fresh traffic.](/images/reliability/07-multi-qp-retry-arbitration-block.svg)
 
 ## Deep walkthrough
 

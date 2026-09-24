@@ -15,13 +15,13 @@ next: /reliability/multi-qp-retry-arbitration
 
 ## Locator
 
-![The master RNIC block diagram with the Replay Buffer and TX Packet Build both highlighted -- retransmission reads from the first and rebuilds through the second, without either block doing anything a normal send didn't already do.](/images/reliability/05-go-back-n-retransmission-locator.svg)
+![The master RNIC block diagram with the Replay Buffer and TX Packet Build both highlighted -- retransmission reads from the first and rebuilds through the second, without either block doing anything a normal send didn't already do.](/images/reliability/06-go-back-n-retransmission-locator.svg)
 
 [The Retry and RNR Timeout State Machines](/reliability/the-retry-and-rnr-timeout-state-machines) named the two conditions that trigger a retry. This chapter covers what a retry -- specifically, the ordinary timeout branch's retry -- actually resends.
 
 ## Block diagram
 
-![A requester's outstanding window with PSNs N through N+k in flight, one NAK arriving naming PSN N+2 as the resume point, and every packet from N+2 forward -- including N+3 through N+k, which may have already arrived correctly -- being rebuilt and resent, with the already-acknowledged PSNs before N+2 left untouched.](/images/reliability/05-go-back-n-retransmission-block.svg)
+![A requester's outstanding window with PSNs N through N+k in flight, one NAK arriving naming PSN N+2 as the resume point, and every packet from N+2 forward -- including N+3 through N+k, which may have already arrived correctly -- being rebuilt and resent, with the already-acknowledged PSNs before N+2 left untouched.](/images/reliability/06-go-back-n-retransmission-block.svg)
 
 ## Deep walkthrough
 

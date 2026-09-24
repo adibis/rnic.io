@@ -15,13 +15,13 @@ next: /reliability/the-retry-and-rnr-timeout-state-machines
 
 ## Locator
 
-![The master RNIC block diagram with the Replay Buffer highlighted in front of its backing store, in the same visual family as QP Caching and Key Caching's own locator treatment.](/images/reliability/03-replay-buffer-caching-locator.svg)
+![The master RNIC block diagram with the Replay Buffer highlighted in front of its backing store, in the same visual family as QP Caching and Key Caching's own locator treatment.](/images/reliability/04-replay-buffer-caching-locator.svg)
 
 [The Replay Buffer](/reliability/the-replay-buffer) covered what this structure holds and how it's addressed. This chapter covers where it actually lives while a QP's outstanding requests wait on acknowledgment.
 
 ## Block diagram
 
-![The Replay Buffer's working set sitting in the same contended on-chip SRAM pool as QP Context and MTT/MPT translations, with a hit path resolving on-chip and a miss path falling through to backing store, captioned with round-trip time as the variable that actually drives how large this working set gets.](/images/reliability/03-replay-buffer-caching-block.svg)
+![The Replay Buffer's working set sitting in the same contended on-chip SRAM pool as QP Context and MTT/MPT translations, with a hit path resolving on-chip and a miss path falling through to backing store, captioned with round-trip time as the variable that actually drives how large this working set gets.](/images/reliability/04-replay-buffer-caching-block.svg)
 
 ## Deep walkthrough
 
