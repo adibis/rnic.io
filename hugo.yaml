@@ -1,0 +1,138 @@
+baseURL: https://rnic.io/
+locale: en-us
+title: RNIC
+theme: hextra
+
+enableRobotsTXT: true
+enableGitInfo: true
+
+params:
+  description: "A definitive, datasheet-depth guide to RDMA-capable NIC architecture: RoCEv2 wire format, Queue Pair management, memory registration, and every hardware structure between a WQE and the wire."
+  images:
+    - "images/og-card.png"
+
+  author:
+    name: Aditya Shevade
+
+  navbar:
+    displayTitle: true
+    displayLogo: false
+    width: wide
+
+  page:
+    width: wide
+
+  theme:
+    default: light
+    displayToggle: true
+
+  footer:
+    displayCopyright: false
+    displayPoweredBy: false
+
+  imageZoom:
+    enable: true
+
+  # TODO: verify this is the actual public repo once rnic.io is pushed to
+  # GitHub -- placeholder matching chipdv.io's naming convention.
+  reportIssue:
+    enable: true
+    repo: "https://github.com/adibis/rnic.io"
+
+  displayUpdatedDate: true
+  dateFormat: "January 2, 2006"
+
+  comments:
+    enable: false # site-wide default stays off; content/blog/_index.md's
+                  # cascade turns this on for blog posts only, never for
+                  # book chapters.
+    type: giscus
+    # giscus:
+    #   repo: "adibis/rnic.io"
+    #   repoId: ""
+    #   category: ""
+    #   categoryId: ""
+    # TODO: uncomment and fill in once rnic.io is pushed to GitHub,
+    # Discussions is enabled, the giscus GitHub App is installed, and
+    # https://giscus.app's config tool has generated real repoId/
+    # categoryId values. Until then this fails safe at build time
+    # ("giscus is not configured"), not a broken widget in production.
+
+
+menu:
+  main:
+    - name: RDMA
+      pageRef: /overview/
+      weight: 1
+      params:
+        tab: true
+    # Children exist only so the mobile hamburger drawer treats RDMA as a
+    # group label over all nine Parts, not as an alias for whichever page
+    # its own pageRef points at -- without these, Hextra's mobile menu
+    # logic resolves RDMA straight to the Overview page and pulls in
+    # Overview's own sub-chapters and in-page TOC as if they were RDMA's,
+    # with no "Overview" heading in between. Desktop's tab row and left
+    # sidebar both use separate code paths that never look at menu
+    # children, so this list is mobile-only in effect.
+    - name: Overview
+      pageRef: /overview/
+      parent: RDMA
+      weight: 1
+    - name: Queue Pair Management
+      pageRef: /qp/
+      parent: RDMA
+      weight: 2
+    - name: Memory Region / Key Table
+      pageRef: /mr/
+      parent: RDMA
+      weight: 3
+    - name: TX Pipeline
+      pageRef: /tx/
+      parent: RDMA
+      weight: 4
+    - name: RX Pipeline
+      pageRef: /rx/
+      parent: RDMA
+      weight: 5
+    - name: Reliability Engine
+      pageRef: /reliability/
+      parent: RDMA
+      weight: 6
+    - name: Congestion Control Engine
+      pageRef: /congestion/
+      parent: RDMA
+      weight: 7
+    - name: Completion Queue / Event Management
+      pageRef: /cq/
+      parent: RDMA
+      weight: 8
+    - name: DMA Engine
+      pageRef: /dma/
+      parent: RDMA
+      weight: 9
+    - name: System IOMMU / SMMU
+      pageRef: /system-iommu/
+      parent: RDMA
+      weight: 11
+    - name: Blog
+      pageRef: /blog
+      weight: 2
+    - name: About
+      pageRef: /about
+      weight: 3
+    - name: search
+      weight: 4
+      params:
+        type: search
+    - name: theme-toggle
+      weight: 5
+      params:
+        type: theme-toggle
+
+markup:
+  highlight:
+    noClasses: false
+    style: monokai
+  goldmark:
+    renderer:
+      unsafe: true

@@ -1,0 +1,48 @@
+---
+title: "Key Cache Eviction Policy"
+weight: 7
+date: 2026-09-04
+publishDate: 2026-09-04
+draft: false
+description: "The QP Cache only ever loses one entry at a time to eviction pressure. The Key Cache carries that same policy question, plus a second and harsher one: a single deregistration call is reasoned to invalidate the whole cache at once, not just the key being retired."
+prev: /mr/shared-mr-arbitration
+next: /mr/hardware-assisted-key-cache-eviction
+---
+
+## Overview
+
+[Key Caching](../key-caching) established that the Key Cache is not a dedicated structure — it is the same on-chip SRAM [Queue Pair Management](/qp/)'s QP Cache lives in, contended across QP context, MTT/MPT translations, completion-queue, and event-queue state alike, with a confirmed miss cost when a translation isn't resident, measured directly on shipped hardware once the working set overflows the cache. [Shared-MR Arbitration](../shared-mr-arbitration) covered what happens when multiple QPs reference one live entry at the same time. This chapter asks what happens when an entry has to leave that cache — and unlike [Queue Pair Management](/qp/)'s QP Cache, this question has two different answers depending on what triggered the departure: ordinary capacity pressure, which needs a policy to pick a victim, and memory-region deregistration, which is reasoned to clear out the whole cache at once and needs no victim-selection at all.
+
+## Locator
+
+![The master RNIC block diagram with MR/Key Table and Key Cache highlighted -- this chapter covers what decides which cached translation gets evicted, and the separate mass-invalidation trigger deregistration causes.](/images/mr/07-key-cache-eviction-policy-locator.svg)
+
+## Block diagram
+
+![Two side-by-side panels: capacity pressure, where an Eviction Policy weighs recency, priority, and dashed error-state input to pick one victim slot in a full Key Cache and write it back to the MR/Key Table, versus deregistration, where a software deregistration call triggers a thick red outline enclosing every slot in the cache at once -- the whole working set invalidated, not just the one entry being retired, with Kong et al.'s confirmed victim-throughput collapse once deregistration starts.](/images/mr/07-key-cache-eviction-policy-block.svg)
+
+## Deep walkthrough
+
+**The ordinary case: picking a victim.** When the cache is full and a translation not currently resident needs servicing, something already cached has to leave first, and [Eviction Policy](/qp/eviction-policy) already worked through the three shapes that decision can take: LRU (evict whichever cached translation has gone longest untouched), priority-weighted (let software pin translations belonging to latency-sensitive connections against eviction), and error-weighted (evict translations tied to MRs or QPs already showing trouble first, on the theory that they're cheaper to re-fetch than to keep). Every word of that chapter's reasoning about the tradeoff — recency as an imperfect predictor, priority weights needing an external owner, error-weighting coupling the cache to state it doesn't otherwise track — applies to MTT/MPT entries without modification. The mechanism doesn't change just because the cached object is a translation instead of a QP context.
+
+**A second, unrelated reason an entry leaves.** What [Queue Pair Management](/qp/)'s QP Cache never had to reckon with is a single control-plane call that empties out a large share of the cache regardless of recency, priority, or error state. Kong et al. (NSDI 2023), measured directly against an NVIDIA ConnectX-5, confirm the collapse is severe: a victim connection running alone sustains a steady, healthy throughput at a low MTT cache miss rate; a concurrent attacker that only *registers* new MRs barely moves either number; a concurrent attacker that *deregisters* MRs instead collapses the same victim's throughput and roughly triples its miss rate. The specific throughput and miss-rate figures are that paper's own tested configuration, not numbers this chapter treats as universal -- what matters architecturally is that the collapse is confirmed on shipped hardware and asymmetric specifically to deregistration among the three workloads tested. The paper's own explanation is the load-bearing fact for this chapter: MR deregistration is reasoned to invalidate the entire MTT/MPT cache wholesale, not just the one entry being torn down, apparently to avoid the possibility of a stale MR reference resolving against freed or repurposed memory.
+
+That is a different kind of event from the capacity-pressure case above, not a more extreme version of it. Capacity eviction always has a designated replacement — the incoming reference that needed the freed slot — and it only ever removes the one entry the policy selected. Deregistration's invalidation has no such symmetry: it can be triggered by tearing down a single MR, and its cost lands on every other translation that happened to be resident at the time, including ones with no relationship whatsoever to the MR being deregistered. A workload with dozens of live registrations loses all of them to one process's teardown of one, and every one of those translations has to be paid for again through the same PCIe round-trip [Key Caching](../key-caching) already charges for a cold miss — not a transient blip, but a sustained recovery cost across however many MRs were resident when the flush hit.
+
+**Why wholesale rather than targeted.** No public source documents the actual invalidation mechanics — this is reasoned analysis, not a described implementation. But a plausible reason a real cache would flush everything rather than sweep out only the deregistered key's entries: doing the targeted version correctly requires the cache to find every line associated with that lkey/rkey, which may span many MTT entries if the registration covered more than a few pages, and finding all of them with certainty is a harder correctness problem than clearing the array and letting everything re-warm. When the cost of getting a targeted invalidation wrong is a stale translation continuing to resolve against memory the kernel may have already unmapped, a designer has a real incentive to prefer a mechanism that is trivially, provably complete over one that is merely fast.
+
+> [!CAUTION] Gotcha
+> This cache doesn't have a single eviction policy -- it has two independent mechanisms answering two independent questions, easy to conflate under one label ("eviction") even though they are, in the failure mode that matters, unrelated events with unrelated remedies. Mass invalidation doesn't consult recency, priority, or error state; it isn't choosing among candidates, it's clearing the field.
+
+**What this means for "the" eviction policy.** Whichever of LRU, priority-weighted, or error-weighted policy governs ordinary capacity pressure has no say whatsoever over the deregistration case.
+
+Beyond the Kong et al. finding, this chapter shares [Queue Pair Management](/qp/)'s [*Eviction Policy*](/qp/eviction-policy) epistemic status: no public source describes which of the three ordinary-case policies a real RNIC's key cache actually implements, or whether any implementation blends more than one. `[SPARSE PUBLIC SOURCING]`. What's different from [Queue Pair Management](/qp/) is that this chapter isn't thin everywhere — the mass-invalidation trigger is a primary-source-verified data point this book can build the chapter's center of gravity around, rather than a footnote appended to unsourced reasoning.
+
+> [!TIP] Why
+> A targeted invalidation that has any chance of missing a line is a worse failure than an untargeted one that's merely more expensive. If the thing being protected against is a remote peer resolving a stale rkey against memory the OS has already reassigned, "clear everything, cheaply and provably" beats "clear precisely, and hope the sweep found every line" — the cost of the conservative choice is paid in refetch latency, the same real cost [Key Caching](../key-caching) already established; the cost of the aggressive choice, gotten wrong, is a correctness violation. That asymmetry is exactly why a mass-invalidation trigger belongs in the same chapter as ordinary eviction policy rather than off in a footnote: it's not a more extreme eviction, it's a different kind of guarantee, purchased at a different kind of price.
+
+The next chapter turns to what hardware actually runs both of these mechanisms, and asks whether the mass-invalidation trigger just described changes where the answer should sit on the fixed-function/programmable/software-driven spectrum [Hardware-Assisted Key Cache Eviction](../hardware-assisted-key-cache-eviction) opens with.
+
+## References
+
+- No IETF or IBTA standard governs key-cache eviction policy and mass-invalidation mechanics -- it is implementation-specific silicon design, not a wire-format or software-interface contract any standards body defines. This chapter's treatment is grounded in the sources cited in-text above, not a standards document.

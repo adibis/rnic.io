@@ -1,0 +1,97 @@
+/* Widen and border the navbar search trigger now that it sits centered
+   in its own zone, rather than compact against the theme toggle. */
+@media (min-width: 768px) {
+  .hextra-search-trigger {
+    width: 22rem;
+    background-color: transparent;
+    border: 1px solid rgb(0 0 0 / 0.15);
+  }
+  .hextra-search-trigger:hover {
+    background-color: rgb(0 0 0 / 0.03);
+  }
+  .dark .hextra-search-trigger {
+    border-color: rgb(255 255 255 / 0.15);
+  }
+  .dark .hextra-search-trigger:hover {
+    background-color: rgb(255 255 255 / 0.05);
+  }
+}
+
+/* The Overview page inlines the master diagram's raw SVG (instead of an
+   <img>) so its internal <a href> block links stay clickable -- an <img>
+   strips all interactivity out of an embedded SVG. Inline SVG has no
+   intrinsic responsive sizing on its own, so it's set here explicitly. */
+.master-diagram-wrap {
+  overflow-x: auto;
+  margin-top: 2rem;
+}
+.master-diagram-wrap svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.master-diagram-link {
+  text-decoration: none;
+}
+
+/* The Overview page inlines two copies of the master diagram (light and
+   dark palette) since an inlined SVG is fixed at build time and can't
+   react to prefers-color-scheme the way an <img>'s swapped src can --
+   pure CSS toggles which one is visible, off the same .dark class the
+   theme toggle already sets on <html>. */
+.master-diagram-dark {
+  display: none;
+}
+.dark .master-diagram-light {
+  display: none;
+}
+.dark .master-diagram-dark {
+  display: block;
+}
+
+/* Second navbar row (layouts/_partials/navbar.html): book tabs, one per
+   menu item flagged params.tab: true in hugo.yaml -- mirrors chipdv.io's
+   own tab row on the same theme. */
+.rnic-tab-row {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.rnic-tab-row::-webkit-scrollbar {
+  display: none;
+}
+
+.rnic-tab-link {
+  white-space: nowrap;
+}
+
+.rnic-tab-active {
+  color: var(--color-primary-600);
+  border-color: var(--color-primary-600) !important;
+}
+
+/* The theme's --hextra-navbar-height (3.5rem) sizes row 1 alone, and the
+   sidebar/TOC both use that same variable for their own sticky top-offset
+   and height calc, assuming a single-row nav. Redefining the variable
+   itself isn't safe -- row 1's own height class also reads it, so
+   inflating it would make row 1 taller too. Instead, add the second row's
+   measured height (~43px rendered, 2.75rem with a little headroom) only
+   where the sidebar and TOC compute their own position, scoped narrowly
+   so unrelated .hextra-scrollbar uses elsewhere aren't affected. */
+/* Sidebar's sticky top-offset is a desktop-only concern -- below md it's a
+   position:fixed slide-in drawer (theme base rule) that relies on a bare
+   top:0 plus a translateY(-100%) to sit fully off-screen when closed.
+   Applying the offset there too shifts that box down and breaks the
+   translate math, leaving a sliver of the closed drawer visible. */
+@media (min-width: 768px) {
+  .hextra-sidebar-container {
+    top: calc(var(--hextra-navbar-height) + 2.75rem);
+  }
+  .hextra-sidebar-container .hextra-scrollbar {
+    height: calc(100vh - var(--hextra-navbar-height) - 2.75rem - var(--menu-height));
+  }
+}
+.hextra-toc .hextra-scrollbar {
+  top: calc(var(--hextra-navbar-height) + 2.75rem);
+  max-height: calc(100vh - var(--hextra-navbar-height) - 2.75rem - env(safe-area-inset-bottom));
+}

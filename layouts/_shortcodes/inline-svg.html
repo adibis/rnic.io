@@ -1,0 +1,9 @@
+{{- /* Inlines a static SVG file's raw markup into the page, so its internal
+     <a href> links and hover styles actually work -- a plain markdown image
+     renders an SVG as a flat <img>, which strips all interactivity. */ -}}
+{{- $path := .Get 0 -}}
+{{- with $path -}}
+  {{- readFile . | safeHTML -}}
+{{- else -}}
+  {{- errorf "inline-svg requires a file path, e.g. {{< inline-svg \"static/images/foo.svg\" >}}" -}}
+{{- end -}}
