@@ -15,7 +15,7 @@ Below is the same diagram every chapter in this book opens with -- normally with
 
 The dashed boxes on the left and right sit in the host machine, not on the RNIC chip itself -- that's where an operation starts and where it eventually gets reported back. The amber boxes store or look something up (a connection's state, an address translation, an unacknowledged packet waiting to be resent). The blue boxes are where a packet actually gets built, parsed, or moved. Everything else is just the wiring between them.
 
-Boxes that already have a chapter written are clickable -- click one to go straight there. A few boxes on the right (Rate Limiter, DMA Engine, CQE Gen, CQ Storage) don't have their chapters yet, so they're not links.
+Every box is clickable -- click one to go straight to its chapter.
 
 ---
 
