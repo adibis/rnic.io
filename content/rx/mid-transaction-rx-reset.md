@@ -20,7 +20,7 @@ RESET is legal from any state, including RTS with a packet actively occupying on
 
 ## Block diagram
 
-<!-- IMAGE: A single Queue Pair's packet shown at three possible pipeline positions simultaneously (mid-parse in RX Packet Parse, mid-check at the PSN gate, mid-reassembly with an open Multi-Packet Reassembly context), each position connected by a dashed line to a large "RESET" arrow striking down from outside, mirroring qp/mid-transaction-qp-reset.md's and tx/mid-transaction-tx-reset.md's visual convention exactly. The mid-reassembly position is drawn distinctly: a partially-filled destination buffer shown in host memory, shaded to indicate bytes already placed by MIDDLE packets before RESET landed, with a red question mark over whether anything downstream is aware this write is incomplete. A caption at the bottom reads "three positions, one of them leaving a trace in memory outside this pipeline's own state." -->
+![A single QP's packet at three possible RX pipeline positions when RESET lands -- mid-parse in RX Packet Parse, resolved at the PSN gate, or mid-reassembly with an open Multi-Packet Reassembly context. The first two dead-end in an open question; the mid-reassembly position carries the sharper one instead: a destination buffer in host memory already holding real bytes from the FIRST and MIDDLE packets, with no documented signal that the write stopped short of complete.](/images/rx/08-mid-transaction-rx-reset-block.svg)
 
 ## Deep walkthrough
 
