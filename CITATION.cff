@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you cite this guide, please cite it as below."
+title: "rnic.io: RDMA NIC architecture, block by block"
+authors:
+  - family-names: Shevade
+    given-names: Aditya
+url: "https://rnic.io/"
+repository-code: "https://github.com/adibis/rnic.io"
+license:
+  - CC-BY-4.0
+  - MIT
+preferred-citation:
+  type: book
+  title: "rnic.io: RDMA NIC architecture, block by block"
+  authors:
+    - family-names: Shevade
+      given-names: Aditya
+  url: "https://rnic.io/"
+  year: 2026
