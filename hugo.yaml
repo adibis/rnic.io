@@ -6,6 +6,11 @@ theme: hextra
 enableRobotsTXT: true
 enableGitInfo: true
 
+# Hextra emits the gtag.js snippet for this only in production builds.
+services:
+  googleAnalytics:
+    ID: G-BN4T7S6ECQ
+
 params:
   description: "A definitive, datasheet-depth guide to RDMA-capable NIC architecture: RoCEv2 wire format, Queue Pair management, memory registration, and every hardware structure between a WQE and the wire."
   images:
