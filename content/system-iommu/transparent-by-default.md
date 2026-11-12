@@ -6,6 +6,8 @@ publishDate: 2026-09-16
 draft: false
 description: "Every 'physical address' this book has named so far is physical from this engine's own Key Cache's vantage point. Whether it's also the address that actually lands on a DRAM row depends on a layer this engine has no architectural awareness of at all -- and, by default, no way to find out."
 next: /system-iommu/iotlb-miss-latency
+metaDescription: "Why the addresses an RNIC's Key Cache produces may be IOVAs rather than host physical addresses, and how a system IOMMU translates them unseen."
+seoTitle: "IOMMU Translation, Transparent to the RNIC"
 ---
 
 [Address Translation Handoff](/dma/address-translation-handoff) named the output of a Key Cache lookup a physical address and moved on, the same term [Key Caching](/mr/key-caching) and [MR Capacity and Timing](/mr/mr-capacity-and-timing) both already used. That term is correct as far as those chapters' own scope reaches. This chapter is about what's true one layer further out.
@@ -26,6 +28,8 @@ System IOMMU / SMMU is drawn the same way Host Memory Descriptor Rings and Host:
 ## Block diagram
 
 ![DMA Engine's own resolved IOVA crossing a dashed boundary into System IOMMU / SMMU, which retranslates it against its own page tables into a host physical address before it ever reaches DRAM -- everything past the boundary drawn dimmed and out of this engine's own visibility, with a second, dashed path showing the same IOVA passing straight through untouched when no system-level translation layer is present at all.](/images/system-iommu/01-transparent-by-default-block.svg)
+
+{{< flow "two-translations" >}}
 
 ## Deep walkthrough
 

@@ -6,6 +6,8 @@ publishDate: 2026-09-09
 draft: false
 description: "Every earlier chapter in this part answered a question about one QP. This one asks how many QPs a real chip can actually hold at once, what really sets that number, and what it costs in silicon to let a slow control-plane write and a per-packet lookup safely touch the same structure."
 prev: /qp/mid-transaction-qp-reset
+metaDescription: "What sets how many Queue Pairs an RNIC can hold, and what it costs to let slow control-plane writes and per-packet lookups share the QP Table."
+seoTitle: "RDMA QP Capacity and Timing"
 ---
 
 ## Overview

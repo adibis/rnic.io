@@ -1,0 +1,87 @@
+title: "Lost ACK: timeout, resend, duplicate"
+diagram: flows/ack-timeout
+description: >-
+  A single-packet RDMA Write is placed, but its ACK is lost. The requester's
+  retry timer expires, it resends PSN 1000 from the Replay Buffer, and the
+  responder recognises a duplicate, does not place it again, and sends the
+  ACK again.
+steps:
+  - caption: >-
+      A single-packet WRITE, PSN 1000. Its Replay Buffer entry is written and
+      the retry timer arms.
+    lit: [block-send]
+    chapter: /reliability/retry-and-timeout-state
+
+  - caption: >-
+      It arrives in order and the payload is placed. The responder now
+      expects 1001.
+    lit: [block-place]
+    travel: arrow-w1
+    packet: &write
+      label: "WRITE_ONLY  PSN 1000"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x0A  RC RDMA WRITE Only"]
+            - [DestQP, "0x000012"]
+            - [AckReq, "1"]
+            - [PSN, "1000"]
+        - name: RETH
+          fields:
+            - [VA, "0x00007F3A_C0001000"]
+            - [R_Key, "0x00002A04"]
+            - [DMA Length, "4096"]
+        - name: Payload
+          fields:
+            - [Bytes, "4096"]
+    chapter: /rx/psn-check-and-out-of-order-arrival
+
+  - caption: >-
+      The ACK is dropped on the way back. The data is in place, and the
+      requester has no way to know it.
+    travel: arrow-ack1
+    token: "ACK 1000"
+    chapter: /reliability/retry-and-timeout-state
+
+  - caption: >-
+      The ACK timeout expires. Nothing came back at all, so the requester
+      resumes from the oldest PSN it is still timing: 1000.
+    lit: [block-timeout]
+    chapter: /reliability/go-back-n-retransmission
+
+  - caption: >-
+      The retry count drops by one, and PSN 1000 is rebuilt from the Replay
+      Buffer.
+    lit: [block-resend]
+    chapter: /reliability/the-retry-and-rnr-timeout-state-machines
+
+  - predict: >-
+      The responder already placed PSN 1000 and expects 1001. What should it
+      do with a second copy of 1000?
+    caption: >-
+      1000 is lower than expected, so it is a duplicate. The payload is not
+      placed again; the ACK is sent again, so the requester stops retrying.
+    lit: [block-dup]
+    travel: arrow-w2
+    packet: *write
+    chapter: /rx/psn-check-and-out-of-order-arrival
+
+  - caption: >-
+      This ACK gets through. The entry retires and the timer disarms. Had the
+      retry count reached zero first, the QP would have moved to ERROR.
+    lit: [block-retire]
+    travel: arrow-ack2
+    packet:
+      label: "ACK  PSN 1000"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x11  RC Acknowledge"]
+            - [DestQP, "0x000034"]
+            - [AckReq, "0"]
+            - [PSN, "1000"]
+        - name: AETH
+          fields:
+            - [Syndrome, "ACK (bits 6:5 = 00; credit count in 4:0)"]
+            - [MSN, "0x000001"]
+    chapter: /reliability/the-retry-and-rnr-timeout-state-machines

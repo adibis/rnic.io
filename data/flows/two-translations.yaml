@@ -1,0 +1,240 @@
+title: 'One WRITE, two translations: the Key Cache, then the system IOMMU'
+diagram: flows/two-translations
+description: 'A WRITE''s virtual address is translated twice: by the RNIC''s Key
+  Cache into an IOVA, then by the system IOMMU past PCIe into a host physical
+  address. An IOTLB miss adds a page-table walk the RNIC can''t see, and ATS moves
+  the second translation onto the device.'
+play: Play both translations
+steps:
+- scene: Two layers, by default
+  caption: A WRITE arrives carrying an rkey and a virtual address the remote side
+    chose.
+  lit:
+  - block-pkt
+  state:
+    label: One address
+    fields:
+    - - Virtual address
+      - '0x7f00_2000'
+    - - IOVA
+      - '-'
+    - - Host physical
+      - '-'
+    - - Second translation
+      - '-'
+    - - Cost the RNIC can see
+      - '-'
+  chapter: /dma/target-selection
+- caption: The Key Cache checks the rkey's permission and bounds and translates
+    the virtual address. The RNIC's own result is an IOVA, which it treats as
+    the final address.
+  lit:
+  - block-keycache
+  travel: arrow-pkt-key
+  token: '0x7f00_2000'
+  state:
+    label: One address
+    fields:
+    - - Virtual address
+      - '0x7f00_2000'
+    - - IOVA
+      - '0x8000_2000'
+    - - Host physical
+      - '-'
+    - - Second translation
+      - '-'
+    - - Cost the RNIC can see
+      - '-'
+  chapter: /mr/key-caching
+- caption: The write leaves the RNIC across PCIe with that IOVA. Nothing in the
+    RNIC changes whether a system IOMMU is present.
+  lit:
+  - block-iotlb
+  travel: arrow-key-iommu
+  token: '0x8000_2000'
+  state:
+    label: One address
+    fields:
+    - - Virtual address
+      - '0x7f00_2000'
+    - - IOVA
+      - '0x8000_2000'
+    - - Host physical
+      - '-'
+    - - Second translation
+      - IOTLB lookup
+    - - Cost the RNIC can see
+      - '-'
+  chapter: /system-iommu/transparent-by-default
+- caption: The IOMMU's IOTLB holds this page, so the IOVA becomes a host physical
+    address and the write lands in DRAM. With passthrough guests, this second
+    check is what keeps one tenant out of another's memory.
+  lit:
+  - block-iotlb
+  - block-dram
+  travel: arrow-iotlb-dram
+  token: '0x2_3456_2000'
+  state:
+    label: One address
+    fields:
+    - - Virtual address
+      - '0x7f00_2000'
+    - - IOVA
+      - '0x8000_2000'
+    - - Host physical
+      - '0x2_3456_2000'
+    - - Second translation
+      - IOTLB hit
+    - - Cost the RNIC can see
+      - none
+  chapter: /system-iommu/transparent-by-default
+- scene: An IOTLB miss
+  caption: A second WRITE targets a page the IOTLB doesn't hold. The Key Cache
+    translates it as before; the miss happens past PCIe.
+  lit:
+  - block-iotlb
+  travel: arrow-key-iommu
+  token: '0x8040_9000'
+  state:
+    label: One address
+    fresh: true
+    fields:
+    - - Virtual address
+      - '0x7f40_9000'
+    - - IOVA
+      - '0x8040_9000'
+    - - Host physical
+      - '-'
+    - - Second translation
+      - IOTLB miss
+    - - Cost the RNIC can see
+      - '-'
+  chapter: /system-iommu/iotlb-miss-latency
+- caption: The IOMMU walks its own page tables. Tiemann et al. (2022) measured
+    about 330 ns added per IOTLB miss on their platform.
+  lit:
+  - block-walk
+  travel: arrow-iotlb-walk
+  state:
+    label: One address
+    fields:
+    - - Virtual address
+      - '0x7f40_9000'
+    - - IOVA
+      - '0x8040_9000'
+    - - Host physical
+      - '-'
+    - - Second translation
+      - page-table walk
+    - - Cost the RNIC can see
+      - '-'
+  chapter: /system-iommu/iotlb-miss-latency
+- caption: The walk fills the IOTLB and the write goes on to DRAM.
+  lit:
+  - block-iotlb
+  - block-walk
+  travel: arrow-walk-iotlb
+  state:
+    label: One address
+    fields:
+    - - Virtual address
+      - '0x7f40_9000'
+    - - IOVA
+      - '0x8040_9000'
+    - - Host physical
+      - '0x3_1200_9000'
+    - - Second translation
+      - walk, then fill
+    - - Cost the RNIC can see
+      - '-'
+  chapter: /system-iommu/iotlb-miss-latency
+- predict: The write was delayed by a page-table walk. What does the RNIC learn
+    about that?
+  caption: Nothing. There is no error and no signal; the completion looks the
+    same as for a hit. The RNIC only sees its own DMA slot staying busy longer.
+  lit:
+  - block-dram
+  travel: arrow-iotlb-dram
+  token: '0x3_1200_9000'
+  state:
+    label: One address
+    fields:
+    - - Virtual address
+      - '0x7f40_9000'
+    - - IOVA
+      - '0x8040_9000'
+    - - Host physical
+      - '0x3_1200_9000'
+    - - Second translation
+      - walk, then fill
+    - - Cost the RNIC can see
+      - 'none: only a longer DMA'
+  chapter: /system-iommu/iotlb-miss-latency
+- scene: With ATS
+  caption: A device that supports ATS asks the IOMMU for a translation explicitly
+    and keeps the answer in its own Address Translation Cache. No source this
+    book found confirms shipped RNICs do this.
+  lit:
+  - block-atc
+  - block-iotlb
+  travel: arrow-ats-fill
+  token: '0x3_1200_9000'
+  state:
+    label: One address
+    fresh: true
+    fields:
+    - - Virtual address
+      - '0x7f40_9000'
+    - - IOVA
+      - '0x8040_9000'
+    - - Host physical
+      - '0x3_1200_9000'
+    - - Second translation
+      - cached in the ATC
+    - - Cost the RNIC can see
+      - the request round trip, once
+  chapter: /system-iommu/ats-local-caching
+- caption: Later writes to that page look up the IOVA in the ATC instead of sending
+    it across.
+  lit:
+  - block-keycache
+  - block-atc
+  travel: arrow-key-atc
+  token: '0x8040_9000'
+  state:
+    label: One address
+    fields:
+    - - Virtual address
+      - '0x7f40_9000'
+    - - IOVA
+      - '0x8040_9000'
+    - - Host physical
+      - '0x3_1200_9000'
+    - - Second translation
+      - ATC hit
+    - - Cost the RNIC can see
+      - none
+  chapter: /system-iommu/ats-local-caching
+- caption: The RNIC issues the already-translated address and the IOTLB isn't
+    consulted. If the mapping changes, the IOMMU sends an Invalidate Request,
+    and the device must answer with an Invalidate Completion only once the entry
+    is actually cleared.
+  lit:
+  - block-atc
+  - block-dram
+  travel: arrow-atc-dram
+  token: '0x3_1200_9000'
+  state:
+    label: One address
+    fields:
+    - - Virtual address
+      - '0x7f40_9000'
+    - - IOVA
+      - '0x8040_9000'
+    - - Host physical
+      - '0x3_1200_9000'
+    - - Second translation
+      - already done, on the device
+    - - Cost the RNIC can see
+      - none
+  chapter: /system-iommu/ats-local-caching

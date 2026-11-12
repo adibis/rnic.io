@@ -7,6 +7,8 @@ draft: false
 description: "Every other cached resource in this book competes for the same shared SRAM. The Replay Buffer is no exception, and its own working set is shaped by something neither the QP Cache nor the Key Cache has to think about: how fast acknowledgments actually come back."
 prev: /reliability/message-completion-and-the-msn
 next: /reliability/the-retry-and-rnr-timeout-state-machines
+metaDescription: "An RNIC's Replay Buffer shares on-chip SRAM with every other cache, and its working set is set by how fast ACKs come back."
+seoTitle: "Replay Buffer Caching in RDMA NICs"
 ---
 
 ## Overview

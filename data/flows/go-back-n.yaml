@@ -1,0 +1,245 @@
+title: "Go-back-N: one packet lost, three resent"
+diagram: flows/go-back-n
+description: >-
+  A four-packet RDMA Write loses PSN 1001 in the fabric. The responder
+  rejects 1002 as a gap and NAKs naming 1001, drops 1003, and the requester
+  rebuilds 1001 through 1003 from its Replay Buffer and resends them in
+  order until one ACK for 1003 retires everything.
+steps:
+  - caption: >-
+      A 16 KiB WRITE leaves as PSN 1000 to 1003. All four sit in the Replay
+      Buffer, and the retry timer watches the oldest, 1000.
+    lit: [block-send]
+    state:
+      label: "Both ends"
+      fields:
+        - [Responder expects PSN, "1000"]
+        - [Replay Buffer holds, "1000 to 1003"]
+        - [Retry timer watches, "1000"]
+    chapter: /reliability/the-replay-buffer
+
+  - caption: >-
+      1000 is the PSN the responder expects. It is accepted, and the expected
+      PSN moves to 1001.
+    lit: [block-ok-1000]
+    travel: arrow-p1000
+    packet:
+      label: "WRITE_FIRST  PSN 1000"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x06  RC RDMA WRITE First"]
+            - [DestQP, "0x000012"]
+            - [AckReq, "0"]
+            - [PSN, "1000"]
+        - name: RETH
+          fields:
+            - [VA, "0x00007F3A_C0001000"]
+            - [R_Key, "0x00002A04"]
+            - [DMA Length, "16384"]
+        - name: Payload
+          fields:
+            - [Bytes, "4096"]
+    state:
+      label: "Both ends"
+      fields:
+        - [Responder expects PSN, "1001"]
+        - [Replay Buffer holds, "1000 to 1003"]
+        - [Retry timer watches, "1000"]
+    chapter: /rx/psn-check-and-out-of-order-arrival
+
+  - caption: >-
+      PSN 1001 is dropped somewhere in the fabric. Nobody is told; it simply
+      never arrives.
+    travel: arrow-p1001
+    token: "PSN 1001"
+    state:
+      label: "Both ends"
+      fields:
+        - [Responder expects PSN, "1001"]
+        - [Replay Buffer holds, "1000 to 1003"]
+        - [Retry timer watches, "1000"]
+    chapter: /reliability/go-back-n-retransmission
+
+  - predict: >-
+      PSN 1002 arrives next, but the responder is still waiting for 1001.
+      Does it keep 1002 until 1001 shows up?
+    caption: >-
+      No. A PSN higher than expected means a gap, and RC rejects the packet
+      rather than buffering it. Keeping out-of-order packets would need a
+      reorder buffer for every QP.
+    lit: [block-gap]
+    travel: arrow-p1002
+    packet:
+      label: "WRITE_MIDDLE  PSN 1002"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x07  RC RDMA WRITE Middle"]
+            - [DestQP, "0x000012"]
+            - [AckReq, "0"]
+            - [PSN, "1002"]
+        - name: Payload
+          fields:
+            - [Bytes, "4096"]
+    state:
+      label: "Both ends"
+      fields:
+        - [Responder expects PSN, "1001"]
+        - [Replay Buffer holds, "1000 to 1003"]
+        - [Retry timer watches, "1000"]
+    chapter: /rx/psn-check-and-out-of-order-arrival
+
+  - caption: >-
+      The responder NAKs, naming 1001, the PSN it is waiting for. That one
+      number is all the requester will learn about the loss. It crosses
+      PSN 1003 on the way.
+    travel: [arrow-nak, arrow-p1003]
+    token: [{label: "NAK  PSN 1001", wire: true}, {label: "PSN 1003", wire: true}]
+    packet:
+      label: "NAK  PSN 1001"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x11  RC Acknowledge"]
+            - [DestQP, "0x000034"]
+            - [AckReq, "0"]
+            - [PSN, "1001"]
+        - name: AETH
+          fields:
+            - [Syndrome, "NAK (bits 6:5 = 11), code 0: PSN sequence error"]
+            - [MSN, "0x000000"]
+    parallel:
+      - "NAK for 1001, heading to the requester"
+      - "PSN 1003, heading to the responder"
+    state:
+      label: "Both ends"
+      fields:
+        - [Responder expects PSN, "1001"]
+        - [Replay Buffer holds, "1000 to 1003"]
+        - [Retry timer watches, "1000"]
+    chapter: /rx/psn-check-and-out-of-order-arrival
+
+  - caption: >-
+      1003 was already on its way. It is out of order too, and is dropped.
+    lit: [block-drop-1003]
+    travel: [arrow-nak, arrow-p1003]
+    token: [{label: "NAK  PSN 1001", wire: true}, {label: "PSN 1003", wire: true}]
+    packet:
+      label: "WRITE_LAST  PSN 1003"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x08  RC RDMA WRITE Last"]
+            - [DestQP, "0x000012"]
+            - [AckReq, "1"]
+            - [PSN, "1003"]
+        - name: Payload
+          fields:
+            - [Bytes, "4096"]
+    parallel:
+      - "NAK for 1001, heading to the requester"
+      - "PSN 1003, heading to the responder"
+    state:
+      label: "Both ends"
+      fields:
+        - [Responder expects PSN, "1001"]
+        - [Replay Buffer holds, "1000 to 1003"]
+        - [Retry timer watches, "1000"]
+    chapter: /rx/psn-check-and-out-of-order-arrival
+
+  - caption: >-
+      The NAK reaches the requester. A sequence-error NAK draws on the same
+      retry count a timeout does. Everything before 1001 counts as received.
+    lit: [block-go-back]
+    state:
+      label: "Both ends"
+      fields:
+        - [Responder expects PSN, "1001"]
+        - [Replay Buffer holds, "1001 to 1003"]
+        - [Retry timer watches, "1001"]
+    chapter: /reliability/the-retry-and-rnr-timeout-state-machines
+
+  - predict: >-
+      1002 and 1003 both reached the responder once. Which packets does the
+      requester send again?
+    caption: >-
+      Every one from 1001 on. It knows only the resume point, not what made
+      it across, so it rebuilds 1001, 1002 and 1003 from the Replay Buffer
+      through the ordinary TX Packet Build path.
+    lit: [block-rebuild]
+    state:
+      label: "Both ends"
+      fields:
+        - [Responder expects PSN, "1001"]
+        - [Replay Buffer holds, "1001 to 1003"]
+        - [Retry timer watches, "1001"]
+    chapter: /reliability/go-back-n-retransmission
+
+  - caption: >-
+      The three resends leave back to back and are in flight together. They
+      are the same packets: same PSNs, same headers, same source bytes.
+    travel: [arrow-r1001, arrow-r1002, arrow-r1003]
+    token: [{label: "PSN 1001", wire: true}, {label: "PSN 1002", wire: true}, {label: "PSN 1003", wire: true}]
+    packet:
+      label: "WRITE_MIDDLE  PSN 1001"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x07  RC RDMA WRITE Middle"]
+            - [DestQP, "0x000012"]
+            - [AckReq, "0"]
+            - [PSN, "1001"]
+        - name: Payload
+          fields:
+            - [Bytes, "4096"]
+    parallel:
+      - "PSN 1001 in flight"
+      - "PSN 1002 in flight"
+      - "PSN 1003 in flight"
+    state:
+      label: "Both ends"
+      fields:
+        - [Responder expects PSN, "1001"]
+        - [Replay Buffer holds, "1001 to 1003"]
+        - [Retry timer watches, "1001"]
+    chapter: /tx/tx-packet-build
+
+  - caption: >-
+      This time they arrive in order. Each is placed through the reassembly
+      context, which had stayed where 1000 left it.
+    lit: [block-accept]
+    state:
+      label: "Both ends"
+      fields:
+        - [Responder expects PSN, "1004"]
+        - [Replay Buffer holds, "1001 to 1003"]
+        - [Retry timer watches, "1001"]
+    chapter: /rx/multi-packet-reassembly
+
+  - caption: >-
+      One ACK for 1003 retires what was left and disarms the timer. 1002 and
+      1003 crossed the fabric twice because the responder would not keep them
+      the first time.
+    lit: [block-retire]
+    travel: arrow-ack
+    packet:
+      label: "ACK  PSN 1003"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x11  RC Acknowledge"]
+            - [DestQP, "0x000034"]
+            - [AckReq, "0"]
+            - [PSN, "1003"]
+        - name: AETH
+          fields:
+            - [Syndrome, "ACK (bits 6:5 = 00; credit count in 4:0)"]
+            - [MSN, "0x000001"]
+    state:
+      label: "Both ends"
+      fields:
+        - [Responder expects PSN, "1004"]
+        - [Replay Buffer holds, "empty"]
+        - [Retry timer watches, "disarmed"]
+    chapter: /reliability/go-back-n-retransmission

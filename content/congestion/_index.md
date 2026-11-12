@@ -5,6 +5,9 @@ description: "DCQCN rate-limiter state, tracked per QP -- a table this time buil
 icon: adjustments
 cascade:
   type: docs
+metaDescription: "How an RDMA NIC runs DCQCN congestion control: per-QP rate-limiter state, CNP generation on the receiver, and the rate cut and recovery state machine."
+seoTitle: "RDMA Congestion Control Engine (DCQCN)"
+homeSummary: "DCQCN: ECN marks, CNPs, and the per-QP rate limiter that cuts and recovers."
 ---
 
 Every Queue Pair that sends traffic carries live congestion-control state alongside it: a current injection rate, and the ECN-marked feedback that rate reacts to. This part opens that state up field by field, the standard-defined Congestion Notification Packet that triggers a rate cut, and the three-phase recovery mechanism that runs in its absence -- plus a real surprise this book didn't expect going in: the interesting multi-instance question here isn't on the send side, the way it is everywhere else in this book, but on the receive side, where generating that same notification packet turns out to be a real, bounded, measured hardware resource.

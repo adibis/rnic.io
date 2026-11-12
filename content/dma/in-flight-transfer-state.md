@@ -6,6 +6,8 @@ publishDate: 2026-09-16
 draft: false
 description: "Every per-QP context this book has covered so far survives between packets -- installed once, held, updated in place. This engine keeps nothing like that. What it tracks exists only for the lifetime of one transfer, belongs to whichever QP asked for it, and disappears the instant that transfer completes."
 next: /dma/target-selection
+metaDescription: "The state an RNIC's DMA engine holds for one transfer: created when it starts, owned by one QP, gone when it completes, unlike per-QP context."
+seoTitle: "DMA In-Flight Transfer State"
 ---
 
 [Mid-Transaction QP Reset](/qp/mid-transaction-qp-reset) already named this chapter's subject without describing it: "a DMA write that may be actively mid-burst into host memory this instant, not yet committed in full." This is what that sentence is actually pointing at.

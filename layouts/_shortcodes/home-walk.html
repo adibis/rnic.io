@@ -1,0 +1,13 @@
+{{- /* One featured walk on the home page. The Part name and step count come
+  from the chapter and the flow's data file, so they cannot drift.
+  @example {{< home-walk page="/qp/qp-caching" flow="qp-cache-miss" title="A QP Cache miss" >}}summary{{< /home-walk >}} */ -}}
+{{- $page := site.GetPage (.Get "page") -}}
+{{- $flow := index hugo.Data.flows (.Get "flow") -}}
+{{- if not $page }}{{ errorf "home-walk: no page %q" (.Get "page") }}{{ end -}}
+{{- if not $flow }}{{ errorf "home-walk: no flow %q" (.Get "flow") }}{{ end -}}
+<a class="rnic-home-walk not-prose" href="{{ $page.RelPermalink }}">
+  <span class="rnic-home-meta">{{ $page.FirstSection.Title }}</span>
+  <span class="rnic-home-walk-title">{{ .Get "title" }}</span>
+  <span class="rnic-home-walk-desc">{{ .Inner | strings.TrimSpace }}</span>
+  <span class="rnic-home-walk-steps">&#9654;&ensp;{{ len $flow.steps }} steps</span>
+</a>

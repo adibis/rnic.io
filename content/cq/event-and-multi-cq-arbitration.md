@@ -7,6 +7,8 @@ draft: false
 description: "Multi-QP Error Arbitration named this Part as the place a real, documented storm scenario gets its general treatment: many QPs forced to ERROR by one shared fault, all needing to report at once through what is, at that instant, one serialized path. This chapter names that problem in full -- and its quieter, steady-state counterpart on the notification side -- without a citation pinning down which policy a real RNIC actually runs for either."
 prev: /cq/cq-overflow
 next: /cq/mid-transaction-cq-reset
+metaDescription: "How an RNIC orders completion events when many CQs share one interrupt vector, and how flush CQEs interleave when many QPs fail at once."
+seoTitle: "Event and Multi-CQ Arbitration in RDMA NICs"
 ---
 
 ## Overview
@@ -33,6 +35,10 @@ Two different structures this Part has already covered both funnel into a shared
 > Both scenarios in this chapter reduce to the identical shape: several sources need one shared, serialized resource at overlapping moments, and something has to pick an order. One is about writing a CQE; the other is about raising a notification. Neither is a capacity problem the way [CQ Overflow](/cq/cq-overflow) is -- there's no missing room here, only a moment where two or more things want the same single-servicing-at-a-time gate simultaneously.
 
 **The same three candidate shapes, because it's the same underlying question.** [Multi-QP TX Scheduling](/tx/multi-qp-tx-scheduling) already worked through round-robin, weighted round-robin, and priority for a different shared gate -- whose WQE gets fetched next -- and [Eviction Policy](/qp/eviction-policy) worked through the same three shapes again for cache victim selection. Round-robin services every waiting QP-flush or CQ-notification in a fixed rotation, fair and starvation-free but blind to whether one of them is more urgent than the rest. Weighted round-robin fixes that blindness at the cost of needing something to own the weights. Strict priority serves whichever QP or CQ matters most predictably fast, at the structural starvation risk [Multi-QP TX Scheduling](/tx/multi-qp-tx-scheduling) already named for the exact same tradeoff. This book doesn't have a citation pinning down which of these a real RNIC actually runs for either the write-side or notify-side question here, the same honest position taken every other time this shape has come up.
+
+The walk below runs both gates: two armed CQs whose events reach one vector together, first under round-robin and then under strict priority, and then three QPs flushing through one CQE write path at once.
+
+{{< flow "cq-arbitration" >}}
 
 **Why a QP-fatal storm specifically raises the stakes on getting this right.** An ordinary moment of two QPs' signaled completions landing close together is unremarkable -- [The Completion Queue](/cq/the-completion-queue) already established that a shared CQ's ring is a strict FIFO regardless of which QP fed it, and nothing about ordinary traffic requires a policy decision beyond "whoever's write actually arrives first." A shared-fault storm is different in kind: potentially dozens or hundreds of QPs (per [Multi-QP Error Arbitration](/qp/multi-qp-error-arbitration)'s own framing) all becoming eligible to flush at the exact same instant, not spread out over time the way ordinary traffic naturally is. Whatever policy governs this gate matters most precisely when it's under the most simultaneous demand -- the same lesson [CQ Overflow](/cq/cq-overflow)'s provisioning rule already drew from the identical event.
 

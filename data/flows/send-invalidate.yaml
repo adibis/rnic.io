@@ -1,0 +1,135 @@
+title: "SEND with Invalidate: a message that revokes a key"
+diagram: flows/send-invalidate
+description: >-
+  A SEND_ONLY_WITH_INVALIDATE: the IETH names rkey 0x2A04 on the responder.
+  The payload is placed through the Receive WQE like any SEND, then the
+  responder invalidates the key and reports it in the receive completion. A
+  later WRITE using the key is refused with a remote access error.
+steps:
+  - caption: >-
+      The responder exposed a buffer under rkey 0x2A04, registered so it can
+      be revoked remotely, and the requester has been using it. Now the
+      requester is done, and its application posts a SEND with Invalidate
+      that names that key.
+    lit: [block-post, block-mr]
+    chapter: /mr/registering-a-memory-region
+
+  - caption: >-
+      The payload is gathered under the WQE's lkey. The packet gets an IETH:
+      four bytes, the rkey to revoke.
+    lit: [block-build]
+    chapter: /tx/tx-packet-build
+
+  - caption: >-
+      PSN 4000 is the one expected. Like any SEND, the packet carries no
+      address, so the responder takes the Receive WQE at the head of its
+      queue.
+    lit: [block-rx-check]
+    travel: arrow-send
+    packet:
+      label: "SEND_ONLY_INV  PSN 4000"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x17  RC SEND Only with Invalidate"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000012"]
+            - [AckReq, "1"]
+            - [PSN, "4000"]
+        - name: IETH
+          fields:
+            - [R_Key, "0x00002A04"]
+        - name: Payload
+          fields:
+            - [Bytes, "1024"]
+    chapter: /rx/the-receive-queue-descriptor-and-ring
+
+  - caption: >-
+      The payload lands in the buffer the Receive WQE named, not in the
+      buffer 0x2A04 covers.
+    lit: [block-place]
+    chapter: /dma/the-scatter-path
+
+  - predict: >-
+      The message has been placed. What does the responder do with rkey
+      0x2A04?
+    caption: >-
+      Invalidates it, once the message is complete. That is why only LAST and
+      ONLY packets can carry an IETH. From here on, no QP can use the key.
+    lit: [block-invalidate]
+    chapter: /mr/mid-transaction-deregistration
+
+  - caption: >-
+      The receive completion says an invalidation happened and names the key,
+      so the responder's software learns the buffer is no longer exposed.
+      The ACK is already on its way back.
+    lit: [block-recv-cqe]
+    travel: arrow-ack
+    packet:
+      label: "ACK  PSN 4000"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x11  RC Acknowledge"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000034"]
+            - [PSN, "4000"]
+        - name: AETH
+          fields:
+            - [Syndrome, "ACK (bits 6:5 = 00; credit count in 4:0)"]
+            - [MSN, "0x000001"]
+    chapter: /cq/the-cqe
+
+  - caption: >-
+      The ACK retires PSN 4000 at the requester.
+    lit: [block-ack-match]
+    chapter: /reliability/retry-and-timeout-state
+
+  - condition: "only if the Work Request was signaled"
+    caption: >-
+      The send completion posts.
+    lit: [block-send-cqe]
+    chapter: /cq/cqe-generation
+
+  - predict: >-
+      A WRITE still queued at the requester uses rkey 0x2A04. What happens to
+      it?
+    caption: >-
+      It leaves as usual: nothing at the requester knows the key is gone.
+    travel: arrow-late
+    packet:
+      label: "WRITE_ONLY  PSN 4001"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x0A  RC RDMA WRITE Only"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000012"]
+            - [AckReq, "1"]
+            - [PSN, "4001"]
+        - name: RETH
+          fields:
+            - [VA, "0x00007F3A_C0001000"]
+            - [R_Key, "0x00002A04"]
+            - [DMA Length, "4096"]
+    chapter: /mr/permission-and-bounds-violations
+
+  - caption: >-
+      The rkey check fails and nothing is written. The NAK carries a remote
+      access error, and both QPs move to ERROR, as for any bad rkey.
+    lit: [block-reject]
+    travel: arrow-nak
+    packet:
+      label: "NAK  PSN 4001"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x11  RC Acknowledge"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000034"]
+            - [PSN, "4001"]
+        - name: AETH
+          fields:
+            - [Syndrome, "NAK (bits 6:5 = 11), code 2: remote access error"]
+            - [MSN, "0x000001"]
+    chapter: /mr/permission-and-bounds-violations

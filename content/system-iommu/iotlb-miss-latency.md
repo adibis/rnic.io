@@ -7,6 +7,8 @@ draft: false
 description: "Transparent doesn't mean free. A system-level IOMMU or SMMU's own cache miss adds real, measured latency to a transfer this engine has already committed a slot to -- and this engine has no event, no status bit, and no way at all to learn that's what just happened."
 prev: /system-iommu/transparent-by-default
 next: /system-iommu/ats-local-caching
+metaDescription: "A system IOMMU's IOTLB miss adds measured latency to an RNIC's DMA, and the NIC gets no event or status bit to tell it why."
+seoTitle: "IOTLB Miss Latency and RDMA DMA"
 ---
 
 ## Overview

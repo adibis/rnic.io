@@ -7,6 +7,8 @@ draft: false
 description: "A QP number isn't a name, it's an address. This chapter is about the structure that address indexes into, and why a page-table-shaped answer fits a problem the public record barely documents."
 prev: /qp/qp-context
 next: /qp/qp-caching
+metaDescription: "The RNIC QP Table: the QP number as an index into hardware context storage, and why a page-table-shaped structure fits it."
+seoTitle: "The RDMA QP Table"
 ---
 
 ## Overview

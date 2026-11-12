@@ -6,6 +6,9 @@ publishDate: 2026-09-04
 draft: false
 description: "Mid-Transaction QP Reset closed Queue Pair Management asking what happens to a DMA write already mid-burst when RESET lands. This chapter asks the TX-pipeline-specific version of the same question -- and unlike that chapter, it has a named, shipped RNIC on record as simply unable to answer it in hardware at all."
 prev: /tx/hardware-assisted-tx-scheduling-engines
+next: /tx/response-generation
+metaDescription: "What happens to a WQE caught mid-build in an RNIC's transmit pipeline when its QP is reset, and a shipped NIC on record as unable to handle it in hardware."
+seoTitle: "Resetting the TX Pipeline Mid-Transaction"
 ---
 
 ## Overview
@@ -38,7 +41,7 @@ RESET is legal from any state, including RTS with a WQE actively occupying one o
 > [!IMPORTANT] Food for Thought
 > HiP08 shows one vendor's engineering documentation admitting hardware can't flush outstanding work in error state, punting the problem to software instead. Did other vendors make the opposite trade and build a fully hardware-flushable pipeline? What would you actually check on real hardware to find out, given the public record doesn't say either way?
 
-This chapter closes [TX Pipeline](/tx/). [RX Pipeline](/rx/) runs a related set of questions against the receiving side of everything this part just built.
+Every chapter so far has followed a packet this QP's own software asked for. [Response Generation](/tx/response-generation) closes this part with the packets it never asked for: the acknowledgments and READ responses a responder owes.
 
 ## References
 

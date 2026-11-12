@@ -7,6 +7,8 @@ draft: false
 description: "A reliable sender can't forget what it sent the instant it sends it -- only once something confirms the other side actually has it. This chapter is where that in-between state actually lives, and what it costs to hold it."
 prev: /reliability/retry-and-timeout-state
 next: /reliability/message-completion-and-the-msn
+metaDescription: "The RNIC Replay Buffer: what a reliable sender holds for every unacknowledged packet so it can resend it, and what holding it costs."
+seoTitle: "The RDMA Replay Buffer"
 ---
 
 ## Overview

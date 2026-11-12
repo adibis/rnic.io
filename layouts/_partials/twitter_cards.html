@@ -1,0 +1,9 @@
+{{- /* Replaces Hugo's built-in twitter_cards template so the card uses the
+  same seoTitle and metaDescription as the page head and Open Graph tags. */ -}}
+{{- $image := partial "og-image.html" . -}}
+<meta name="twitter:card" content="{{ if $image }}summary_large_image{{ else }}summary{{ end }}">
+{{- with $image }}
+<meta name="twitter:image" content="{{ . }}">
+{{- end }}
+<meta name="twitter:title" content="{{ or .Params.seoTitle .Title site.Title }}">
+<meta name="twitter:description" content="{{ partial "utils/page-description.html" . | chomp }}">

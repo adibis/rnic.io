@@ -1,0 +1,192 @@
+title: "The same Write, host to host"
+diagram: flows/system-view
+description: >-
+  The RDMA Write with Immediate followed outside the adapters: Host A's
+  doorbell, WQE read and payload read across PCIe, the packet through a
+  switch, RNIC B's payload write, Receive WQE read, CQE write and completion
+  event across Host B's PCIe link, and the ACK back to Host A's Completion
+  Queue.
+steps:
+  - scene: "On Host A"
+    role: "Requester"
+    caption: >-
+      The application writes a WQE into the Send Queue ring in its own
+      memory. Nothing has moved toward the adapter yet.
+    lit: [block-a-app, block-a-sq]
+    chapter: /tx/the-send-queue-ring
+
+  - caption: >-
+      It rings the doorbell: one 64-byte MMIO write across PCIe, telling
+      RNIC A that new work exists.
+    lit: [block-nica-fetch]
+    travel: arrow-a-doorbell
+    token: "doorbell"
+    chapter: /tx/the-send-queue-ring
+
+  - caption: >-
+      RNIC A reads the WQE back out of host memory, a second PCIe crossing,
+      and looks up the QP's context.
+    lit: [block-a-sq, block-nica-fetch]
+    travel: arrow-a-wqe-read
+    token: "WQE"
+    chapter: /tx/the-send-queue-ring
+
+  - caption: >-
+      The rate limiter lets this QP send. Nothing has signalled congestion.
+    lit: [block-nica-rate]
+    chapter: /congestion/the-rate-limiter-table
+
+  - caption: >-
+      After the lkey check, the DMA engine reads the 4 KiB payload from the
+      source buffer: the third crossing, and the only one carrying the data.
+    lit: [block-a-buf, block-nica-dma]
+    travel: arrow-a-payload-read
+    token: "4 KiB"
+    chapter: /dma/the-gather-path
+
+  - caption: >-
+      TX Packet Build puts BTH, RETH and ImmDt in front of the payload, inside
+      UDP, IP and Ethernet, records a Replay Buffer entry, and sends it.
+    lit: [block-nica-tx]
+    travel: arrow-wire-a-sw
+    packet: &write_pkt
+      label: "WRITE_ONLY_IMM  PSN 1000"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x0B  RC RDMA WRITE Only with Immediate"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000012"]
+            - [AckReq, "1"]
+            - [PSN, "1000"]
+        - name: RETH
+          fields:
+            - [VA, "0x00007F3A_C0001000"]
+            - [R_Key, "0x00002A04"]
+            - [DMA Length, "4096"]
+        - name: ImmDt
+          fields:
+            - [Immediate, "0x0000002A"]
+        - name: Payload
+          fields:
+            - [Bytes, "4096"]
+    chapter: /tx/tx-packet-build
+
+  - scene: "The fabric"
+    caption: >-
+      The switch forwards it on its destination IP address, like any other
+      UDP packet. Nothing in the switch has to understand RDMA.
+    lit: [block-switch]
+    travel: arrow-wire-sw-b
+    packet: *write_pkt
+    chapter: /overview/rocev1-to-rocev2
+
+  - scene: "On Host B"
+    role: "Responder"
+    caption: >-
+      RNIC B checks the PSN and resolves the rkey for remote write over the
+      whole range.
+    lit: [block-nicb-rx]
+    chapter: /rx/psn-check-and-out-of-order-arrival
+
+  - predict: >-
+      Host B's CPU has done nothing so far. Does it have to copy the payload
+      into place?
+    caption: >-
+      No. RNIC B's DMA engine writes the payload straight into the
+      destination buffer across Host B's PCIe link. The read running beside
+      it is the next step: neither transfer waits for the other.
+    lit: [block-nicb-dma, block-b-buf]
+    travel: [arrow-b-payload-write, arrow-b-rq-read]
+    token: ["4 KiB", "RQ WQE"]
+    parallel:
+      - "Payload written into the destination buffer"
+      - "Receive WQE read from the Receive Queue ring"
+    chapter: /dma/the-scatter-path
+
+  - caption: >-
+      In parallel, because the immediate value needs somewhere to surface,
+      RNIC B reads the Receive WQE that Host B's application posted earlier.
+      Placement does not need it: the RETH already named the address.
+    lit: [block-nicb-rq, block-b-rq]
+    travel: [arrow-b-payload-write, arrow-b-rq-read]
+    token: ["4 KiB", "RQ WQE"]
+    parallel:
+      - "Payload written into the destination buffer"
+      - "Receive WQE read from the Receive Queue ring"
+    chapter: /rx/the-receive-queue-descriptor-and-ring
+
+  - caption: >-
+      CQE Generation writes a receive completion, carrying the immediate
+      value, into Host B's Completion Queue. It lands behind the payload
+      write, never ahead of it.
+    lit: [block-nicb-cqe, block-b-cq, block-nicb-ack]
+    travel: [arrow-b-cqe-write, arrow-wire-b-sw]
+    token: [{label: "CQE", wire: false}, {label: "ACK  PSN 1000", wire: true}]
+    parallel:
+      - "Receive CQE written into Host B's CQ"
+      - "ACK for PSN 1000 leaves through RNIC B's TX"
+    chapter: /cq/cqe-generation
+
+  - caption: >-
+      At the same moment, the ACK for PSN 1000 leaves through RNIC B's own
+      TX path. It does not wait for the completion: the two are separate
+      jobs inside the adapter.
+    lit: [block-nicb-ack]
+    travel: [arrow-b-cqe-write, arrow-wire-b-sw]
+    token: [{label: "CQE", wire: false}, {label: "ACK  PSN 1000", wire: true}]
+    packet: &ack_pkt
+      label: "ACK  PSN 1000"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x11  RC Acknowledge"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000034"]
+            - [AckReq, "0"]
+            - [PSN, "1000"]
+        - name: AETH
+          fields:
+            - [Syndrome, "ACK (bits 6:5 = 00; credit count in 4:0)"]
+            - [MSN, "0x000001"]
+    parallel:
+      - "Receive CQE written into Host B's CQ"
+      - "ACK for PSN 1000 leaves through RNIC B's TX"
+    chapter: /reliability/message-completion-and-the-msn
+
+  - condition: "only if software armed the CQ"
+    caption: >-
+      A completion event tells Host B's software to look. An application that
+      polls instead finds the CQE on its own.
+    lit: [block-nicb-event, block-b-app]
+    travel: arrow-b-event
+    token: "event"
+    chapter: /cq/event-and-multi-cq-arbitration
+
+  - scene: "The ACK returns"
+    role: "Requester"
+    caption: >-
+      The switch forwards it back. RNIC A matches it against the Replay
+      Buffer, retires the entry, and disarms the retry timer.
+    lit: [block-nica-rx]
+    travel: arrow-wire-sw-a
+    packet: *ack_pkt
+    chapter: /reliability/retry-and-timeout-state
+
+  - condition: "only if the Work Request was signaled"
+    caption: >-
+      RNIC A writes the send completion into Host A's Completion Queue.
+    lit: [block-nica-cqe, block-a-cq]
+    travel: arrow-a-cqe-write
+    token: "CQE"
+    chapter: /cq/cqe-generation
+
+  - predict: >-
+      The application polls its Completion Queue. How many PCIe crossings
+      does that poll cost?
+    caption: >-
+      None. The CQ sits in host memory, so the poll is an ordinary memory
+      read. The whole Write crossed PCIe four times on Host A and three or
+      four times on Host B, and neither CPU copied a byte.
+    lit: [block-a-app, block-a-cq]
+    chapter: /cq/the-completion-queue

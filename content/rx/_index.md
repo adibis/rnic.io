@@ -5,6 +5,9 @@ description: "A packet arriving at the wire is bytes, nothing more, until someth
 icon: inbox-in
 cascade:
   type: docs
+metaDescription: "The receive pipeline of an RDMA NIC: parsing RoCEv2 headers, the PSN check, multi-packet reassembly, the Receive Queue and arbitration across QPs."
+seoTitle: "The RDMA NIC RX Pipeline"
+homeSummary: "Parsing, the PSN check, multi-packet reassembly, and the Receive Queue."
 ---
 
 Every chapter so far that mentioned "the receiving side" left the actual mechanism unopened. This part opens it: a frame landing on the wire, parsed apart layer by layer, checked against a sequence number before it is allowed to mean anything, tracked across however many packets one message actually spans, and finally placed in host memory -- plus what happens when one QP's receive path stalls without taking any other QP down with it, what happens when many QPs' packets arrive interleaved on the same physical pipeline, and what happens when a QP resets with a packet already mid-flight through one of these stages.

@@ -34,20 +34,9 @@
   text-decoration: none;
 }
 
-/* The Overview page inlines two copies of the master diagram (light and
-   dark palette) since an inlined SVG is fixed at build time and can't
-   react to prefers-color-scheme the way an <img>'s swapped src can --
-   pure CSS toggles which one is visible, off the same .dark class the
-   theme toggle already sets on <html>. */
-.master-diagram-dark {
-  display: none;
-}
-.dark .master-diagram-light {
-  display: none;
-}
-.dark .master-diagram-dark {
-  display: block;
-}
+/* An inlined SVG can't swap to its -dark.svg twin the way an <img> does;
+   containers marked .rnic-themed-svg take the dark palette from
+   svg-dark-palette.css instead (svg/build/make_dark_palette_css.py). */
 
 /* Second navbar row (layouts/_partials/navbar.html): book tabs, one per
    menu item flagged params.tab: true in hugo.yaml -- mirrors chipdv.io's
@@ -94,4 +83,168 @@
 .hextra-toc .hextra-scrollbar {
   top: calc(var(--hextra-navbar-height) + 2.75rem);
   max-height: calc(100vh - var(--hextra-navbar-height) - 2.75rem - env(safe-area-inset-bottom));
+}
+
+
+/* ---- Home page (content/_index.md and the home-* shortcodes) ----
+   The hextra-home layout centres one padded column; the hero and the map
+   band break out of it to full width, and every other section stretches
+   to the column's width instead of shrinking to its content. */
+html:has(.rnic-home-hero), body:has(.rnic-home-hero) { overflow-x: hidden; }
+.rnic-home-bleed {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.rnic-home-inner {
+  max-width: var(--hextra-max-page-width); margin: 0 auto;
+  padding: 0 max(env(safe-area-inset-right), 1.5rem) 0 max(env(safe-area-inset-left), 1.5rem);
+}
+.rnic-home-section, .rnic-home-band { align-self: stretch; }
+.rnic-home-section { padding: 3.5rem 0 0; }
+.rnic-home-last { padding-bottom: 0; }
+
+/* Hero: dark in both themes, flush under the navbar (main's top padding
+   is 2rem, 3rem from md up). */
+.rnic-home-hero {
+  margin-top: -2rem;
+  background: #111418;
+  color: #f5f5f5;
+  padding: 3.5rem 0 3.25rem;
+}
+@media (min-width: 768px) { .rnic-home-hero { margin-top: -3rem; padding: 4.5rem 0 4rem; } }
+.rnic-home-badge {
+  display: inline-block;
+  font: 600 .72rem/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: .08em; text-transform: uppercase;
+  color: #8ec1ff; background: rgb(56 139 253 / .14);
+  border: 1px solid rgb(56 139 253 / .4);
+  padding: .4rem .65rem; border-radius: 999px;
+}
+.rnic-home-hero h1 {
+  font-size: clamp(2.1rem, 5vw, 3.4rem); line-height: 1.08; font-weight: 700;
+  letter-spacing: -.02em; margin: 1.25rem 0 0; max-width: 46rem; color: #fff;
+}
+.rnic-home-lede {
+  font-size: 1.15rem; line-height: 1.6; color: #b9c0cb;
+  max-width: 44rem; margin: 1.1rem 0 0;
+}
+.rnic-home-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.5rem; margin-top: 2rem; }
+.rnic-home-btn {
+  background: #2f81f7; color: #fff; font-weight: 600;
+  padding: .75rem 1.5rem; border-radius: .45rem; text-decoration: none;
+}
+.rnic-home-btn:hover { background: #4b93f8; }
+.rnic-home-stats { font: .82rem ui-monospace, SFMono-Regular, Menlo, monospace; color: #8b93a1; }
+
+/* Section labels, as on chipdv.io: small caps label, one-line gloss. */
+.rnic-home-label-row {
+  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
+  gap: .25rem 1.5rem; padding-bottom: .9rem; margin-bottom: 1.25rem;
+  border-bottom: 1px solid rgb(0 0 0 / .1);
+}
+.dark .rnic-home-label-row { border-color: rgb(255 255 255 / .1); }
+.rnic-home-label {
+  font: 600 .78rem/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: .1em; text-transform: uppercase; color: #2563eb; margin: 0;
+}
+.dark .rnic-home-label { color: #7cb0ff; }
+.rnic-home-sublabel { font-size: .9rem; color: #6b7280; margin: 0; }
+.dark .rnic-home-sublabel { color: #9ca3af; }
+.rnic-home-sublabel a { color: inherit; text-decoration: none; }
+.rnic-home-sublabel a:hover { text-decoration: underline; }
+.rnic-home-meta {
+  font: .74rem ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: .04em; color: #6b7280;
+}
+.dark .rnic-home-meta { color: #9ca3af; }
+
+/* Contents: a numbered two-column table of contents. */
+.rnic-home-parts {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: 1fr; column-gap: 2.5rem;
+}
+@media (min-width: 900px) { .rnic-home-parts { grid-template-columns: 1fr 1fr; } }
+.rnic-home-parts li { border-bottom: 1px solid rgb(0 0 0 / .07); }
+.dark .rnic-home-parts li { border-color: rgb(255 255 255 / .07); }
+.rnic-home-parts a {
+  display: flex; gap: 1.1rem; padding: 1.05rem .5rem; text-decoration: none; color: inherit;
+  border-radius: .4rem;
+}
+.rnic-home-parts a:hover { background: rgb(37 99 235 / .05); }
+.dark .rnic-home-parts a:hover { background: rgb(124 176 255 / .07); }
+.rnic-home-num {
+  font: 600 1.05rem/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: #2563eb; min-width: 1.8rem;
+}
+.dark .rnic-home-num { color: #7cb0ff; }
+.rnic-home-part-body { display: flex; flex-direction: column; gap: .3rem; }
+.rnic-home-part-title { font-size: 1.12rem; font-weight: 600; line-height: 1.35; }
+.rnic-home-part-desc { font-size: .93rem; line-height: 1.5; color: #4b5563; }
+.dark .rnic-home-part-desc { color: #b4bac4; }
+
+/* The map: a tinted band so the diagram reads as its own stop. */
+.rnic-home-band { background: #f3f5f8; padding: 3rem 0 2.5rem; margin-top: 3.5rem; }
+.dark .rnic-home-band { background: #171a1f; }
+.rnic-home-band .rnic-home-label-row { border-color: rgb(0 0 0 / .1); }
+.rnic-home-map { margin-top: 0; max-width: 68rem; margin-left: auto; margin-right: auto; }
+
+/* Walks: cards with a play marker, distinct from the contents list. */
+.rnic-home-walks { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+@media (min-width: 640px) { .rnic-home-walks { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1024px) { .rnic-home-walks { grid-template-columns: 1fr 1fr 1fr; } }
+.rnic-home-walk {
+  display: flex; flex-direction: column; gap: .45rem;
+  padding: 1.25rem 1.35rem 1.1rem; border-radius: .6rem; text-decoration: none; color: inherit;
+  border: 1px solid rgb(0 0 0 / .1); border-top: 3px solid #2f81f7;
+  background: #fff; transition: box-shadow .15s, border-color .15s;
+}
+.rnic-home-walk:hover { box-shadow: 0 4px 16px rgb(0 0 0 / .08); border-color: rgb(0 0 0 / .18); border-top-color: #2f81f7; }
+.dark .rnic-home-walk { background: #16191e; border-color: rgb(255 255 255 / .1); border-top-color: #2f81f7; }
+.dark .rnic-home-walk:hover { border-color: rgb(255 255 255 / .2); border-top-color: #2f81f7; box-shadow: none; }
+.rnic-home-walk-title { font-size: 1.1rem; font-weight: 600; line-height: 1.35; }
+.rnic-home-walk-desc { font-size: .92rem; line-height: 1.5; color: #4b5563; flex-grow: 1; }
+.dark .rnic-home-walk-desc { color: #b4bac4; }
+.rnic-home-walk-steps { font: 600 .76rem ui-monospace, SFMono-Regular, Menlo, monospace; color: #2563eb; margin-top: .35rem; }
+.dark .rnic-home-walk-steps { color: #7cb0ff; }
+
+/* Blog: a short list, newest first. */
+.rnic-home-posts { list-style: none; margin: 0; padding: 0; }
+.rnic-home-posts li {
+  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline;
+  gap: .3rem 2rem; padding: .9rem 0; border-bottom: 1px solid rgb(0 0 0 / .07);
+}
+.dark .rnic-home-posts li { border-color: rgb(255 255 255 / .07); }
+.rnic-home-posts a { display: flex; flex-direction: column; gap: .25rem; text-decoration: none; color: inherit; max-width: 48rem; }
+.rnic-home-posts a:hover .rnic-home-post-title { text-decoration: underline; }
+.rnic-home-post-title { font-size: 1.05rem; font-weight: 600; }
+.rnic-home-post-desc { font-size: .92rem; color: #4b5563; }
+.dark .rnic-home-post-desc { color: #b4bac4; }
+
+/* On a page with no sidebar Hextra adds a second theme toggle to the
+   footer; the home page hides it so its footer matches the chapters'. */
+body:has(.rnic-home-hero) .hextra-footer > div:has(.hextra-theme-toggle),
+body:has(.rnic-home-hero) .hextra-footer > div:has(.hextra-theme-toggle) + hr { display: none; }
+/* The page itself is near-black in dark mode, so the hero takes a blue
+   tint and an edge to stay a distinct block. */
+.dark .rnic-home-hero { background: #0f1a2b; border-bottom: 1px solid rgb(124 176 255 / .15); }
+/* Below this width the whole diagram's labels are unreadable; keep it
+   legible and let it scroll sideways inside its band instead. */
+@media (max-width: 760px) { .rnic-home-map svg { min-width: 720px; } }
+
+/* The navbar joins the hero on the home page, as on chipdv.io, so the top
+   of the page reads as one dark block instead of a white strip above it. */
+body:has(.rnic-home-hero) .hextra-nav-container-blur { background: #111418 !important; box-shadow: none !important; }
+.dark body:has(.rnic-home-hero) .hextra-nav-container-blur { background: #0f1a2b !important; }
+body:has(.rnic-home-hero) .hextra-nav-container nav { color: #d4d4d4; }
+body:has(.rnic-home-hero) .hextra-nav-container nav a,
+body:has(.rnic-home-hero) .hextra-nav-container nav button { color: #d4d4d4 !important; }
+body:has(.rnic-home-hero) .hextra-nav-container nav > a:first-child { color: #fff !important; }
+body:has(.rnic-home-hero) .hextra-nav-container nav a:hover,
+body:has(.rnic-home-hero) .hextra-nav-container nav button:hover { color: #fff !important; }
+body:has(.rnic-home-hero) .hextra-search-trigger { border-color: rgb(255 255 255 / .18); color: #a3a3a3; }
+body:has(.rnic-home-hero) .hextra-search-trigger:hover { background-color: rgb(255 255 255 / .06); }
+body:has(.rnic-home-hero) .hextra-nav-container kbd {
+  background: rgb(255 255 255 / .1) !important; color: #a3a3a3 !important; border-color: rgb(255 255 255 / .15) !important;
 }

@@ -7,6 +7,8 @@ draft: false
 description: "A RoCEv2 packet looks like an ordinary UDP datagram to everything sitting between two endpoints, and nothing like one to either end running verbs -- what's actually packed inside is where this book's build-by-block depth begins."
 prev: /overview/what-is-rdma
 next: /overview/rocev1-to-rocev2
+metaDescription: "What RoCEv2 is: an ordinary UDP datagram to the network, carrying InfiniBand transport headers to UDP port 4791. The packet layout, header by header."
+seoTitle: "What Is RoCEv2? The Packet Format"
 ---
 
 [What Is RDMA](../what-is-rdma) named four things a normal NIC never had to do: bypass the kernel on the data path, enforce memory protection in hardware instead of the OS, run a reliability protocol in hardware instead of a software TCP stack, and let a remote adapter touch memory without waking the remote CPU. None of that says anything yet about what actually goes out on the wire. RoCEv2 — RDMA over Converged Ethernet, version 2 — is the concrete protocol this book uses throughout: the wire format that carries every one of those capabilities as actual bytes at fixed offsets. This chapter stays at overview depth, naming every structure precisely enough to place this book's later deep dives against it. It doesn't yet explain how a receiver validates a PSN or how a destination QP gets looked up — those chapters own that.
@@ -39,7 +41,7 @@ The BTH alone is enough for some packets (a SEND-family MIDDLE, say). Others car
 | **IETH** — Invalidate Extended Transport Header | the 32-bit `rkey` to invalidate | 4 bytes |
 | **ATMETH** — Atomic Extended Transport Header | remote virtual address, `rkey`, swap/add operand, compare operand | 28 bytes |
 
-RETH is how a WRITE or READ tells the responder where to touch memory — and, notably, it only needs to appear once per message: on a multi-packet transfer's FIRST or ONLY packet, never on MIDDLE or LAST, since the address and length don't change mid-message. ATMETH is sized for the largest operation in the catalog — a 64-bit compare plus a 64-bit swap/add value alongside the usual address and key — which is also why atomics ([The Operation Catalog](/overview/operation-catalog)) never span multiple packets: there's no FIRST/MIDDLE/LAST variant for an operation that's already one fixed-size unit.
+RETH is how a WRITE or READ tells the responder where to touch memory — and, notably, it only needs to appear once per message: on a multi-packet transfer's FIRST or ONLY packet, never on MIDDLE or LAST, since the address and length don't change mid-message. ATMETH is sized for the largest operation in the catalog — a 64-bit compare plus a 64-bit swap/add value alongside the usual address and key — which is also why atomics ([The Operation Catalog](/overview/operation-catalog/atomics)) never span multiple packets: there's no FIRST/MIDDLE/LAST variant for an operation that's already one fixed-size unit.
 
 > [!CAUTION] Gotcha
 > AETH's syndrome byte is not a generic "ack happened" flag — it's the field that distinguishes a plain ACK from an RNR NAK from every other NAK type, exactly the signal [Queue Pair Management](/qp/)'s error-handling chapters and [Reliability Engine](/reliability/)'s reliability engine both key off.

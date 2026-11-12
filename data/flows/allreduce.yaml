@@ -1,0 +1,393 @@
+title: One all-reduce, four hosts, one switch
+diagram: flows/allreduce
+play: Play the all-reduce
+description: 'A ring all-reduce over four ranks: three reduce-scatter steps that leave each
+  rank with one finished chunk, then three all-gather steps that hand the finished chunks
+  round. Every hop is the same pair of verbs NCCL''s InfiniBand transport uses: the receiver
+  RDMA WRITEs a clear-to-send slot into the sender, and the sender RDMA WRITEs the chunk with
+  an immediate.'
+steps:
+- scene: Before
+  caption: 'Four ranks each hold a buffer of four chunks, and every rank needs the element-wise
+    sum of all four buffers. To make each contribution visible, rank r starts with 10 to the
+    power r in every chunk: 1, 10, 100, 1000. A finished chunk reads 1111, and a partial sum
+    shows by its digits which ranks have been added in.'
+  lit:
+  - block-r0-c0
+  - block-r0-c1
+  - block-r0-c2
+  - block-r0-c3
+  - block-r1-c0
+  - block-r1-c1
+  - block-r1-c2
+  - block-r1-c3
+  - block-r2-c0
+  - block-r2-c1
+  - block-r2-c2
+  - block-r2-c3
+  - block-r3-c0
+  - block-r3-c1
+  - block-r3-c2
+  - block-r3-c3
+  state:
+    label: Chunk values on each rank
+    fields:
+    - [rank 0, 1 · 1 · 1 · 1]
+    - [rank 1, 10 · 10 · 10 · 10]
+    - [rank 2, 100 · 100 · 100 · 100]
+    - [rank 3, 1000 · 1000 · 1000 · 1000]
+  chapter: /overview/one-transaction-start-to-finish
+- caption: 'Each rank has an RC Queue Pair to its right-hand neighbour and one from its left:
+    0 to 1, 1 to 2, 2 to 3, 3 to 0. Every buffer the NICs will touch was registered when the
+    connection was set up, so each side already has the keys it needs.'
+  lit:
+  - block-nic0
+  - block-nic1
+  - block-nic2
+  - block-nic3
+  - block-switch
+  state:
+    label: Chunk values on each rank
+    fields:
+    - [rank 0, 1 · 1 · 1 · 1]
+    - [rank 1, 10 · 10 · 10 · 10]
+    - [rank 2, 100 · 100 · 100 · 100]
+    - [rank 3, 1000 · 1000 · 1000 · 1000]
+  chapter: /qp/installing-a-qp
+- scene: Clear to send
+  predict: Rank 0 is about to write a chunk straight into rank 1's memory. How does rank 0
+    learn where?
+  caption: 'The receiver tells it. Each rank posts a Receive WQE, then RDMA WRITEs a small
+    slot into its left neighbour''s memory: the staging buffer''s address, its rkey and the
+    size it expects. Most of these small writes are unsignaled. All four go at once, against
+    the ring.'
+  lit:
+  - block-nic0
+  - block-nic1
+  - block-nic2
+  - block-nic3
+  - block-switch
+  travel: [arrow-c10, arrow-c21, arrow-c32, arrow-c03]
+  token: [CTS, CTS, CTS, CTS]
+  packet:
+    label: RDMA WRITE Only  (clear to send)
+    headers:
+    - name: BTH
+      fields:
+      - [OpCode, 0x0A  RC RDMA WRITE Only]
+      - [DestQP, '0x000101']
+      - [PSN, '500']
+    - name: RETH
+      fields:
+      - [VA, sender's CTS slot]
+      - [R_Key, '0x0000C7A1']
+      - [DMA Length, one slot]
+    - name: Payload
+      fields:
+      - [addr, rank 1's staging buffer]
+      - [rkey, '0x0000B00F']
+      - [size, 1 MiB]
+      - ['tag, idx', which slot this is]
+  state:
+    label: Chunk values on each rank
+    fields:
+    - [rank 0, 1 · 1 · 1 · 1]
+    - [rank 1, 10 · 10 · 10 · 10]
+    - [rank 2, 100 · 100 · 100 · 100]
+    - [rank 3, 1000 · 1000 · 1000 · 1000]
+  chapter: /overview/operation-catalog/rdma-write
+- scene: Reduce-scatter
+  caption: 'No. Every rank sends one chunk to its right-hand neighbour, so every output port
+    has exactly one sender: the incast that CNP Generation''s walk builds never forms here.
+    Each chunk goes as one RDMA WRITE with Immediate into the staging buffer the CTS named;
+    the immediate consumes the Receive WQE and makes a receive completion. Then the GPU, not
+    the NIC, adds the staging buffer into its own chunk.'
+  lit:
+  - block-r0-c0
+  - block-stage1
+  - block-r1-c0
+  - block-r1-c1
+  - block-stage2
+  - block-r2-c1
+  - block-r2-c2
+  - block-stage3
+  - block-r3-c2
+  - block-r3-c3
+  - block-stage0
+  - block-r0-c3
+  - block-switch
+  - block-nic0
+  - block-nic1
+  - arrow-nic1-stage
+  - block-nic2
+  - arrow-nic2-stage
+  - block-nic3
+  - arrow-nic3-stage
+  - arrow-nic0-stage
+  travel: [arrow-d01, arrow-d12, arrow-d23, arrow-d30]
+  token: [chunk 0 = 1, chunk 1 = 10, chunk 2 = 100, chunk 3 = 1000]
+  state:
+    label: Chunk values on each rank
+    fields:
+    - [rank 0, 1 · 1 · 1 · 1001]
+    - [rank 1, 11 · 10 · 10 · 10]
+    - [rank 2, 100 · 110 · 100 · 100]
+    - [rank 3, 1000 · 1000 · 1100 · 1000]
+  predict: Four senders share one switch. Does any switch port have two packets queued for
+    it?
+  chapter: /congestion/cnp-generation
+  parallel:
+  - 'rank 0 to rank 1: chunk 0'
+  - 'rank 1 to rank 2: chunk 1'
+  - 'rank 2 to rank 3: chunk 2'
+  - 'rank 3 to rank 0: chunk 3'
+  packet:
+    label: RDMA WRITE with Immediate, 1 MiB  (256 packets)
+    headers:
+    - name: BTH, first packet
+      fields:
+      - [OpCode, 0x06  RC RDMA WRITE First]
+      - [DestQP, '0x000102']
+      - [PSN, '900']
+    - name: RETH, first packet
+      fields:
+      - [VA, rank 1's staging buffer]
+      - [R_Key, '0x0000B00F, from the CTS']
+      - [DMA Length, 1 MiB]
+    - name: BTH, last packet
+      fields:
+      - [OpCode, 0x09  RC RDMA WRITE Last with Immediate]
+      - [PSN, '1155']
+    - name: ImmDt, last packet
+      fields:
+      - - Immediate
+        - the transfer's size or request ID, which the receiver matches on
+- caption: 'Each step repeats the same exchange: a CTS against the ring, a WRITE with Immediate
+    along it, a receive completion, and an addition on the GPU. From here the walk shows only
+    the data. Each rank forwards the partial sum it just made.'
+  lit:
+  - block-r0-c3
+  - block-stage1
+  - block-r1-c3
+  - block-r1-c0
+  - block-stage2
+  - block-r2-c0
+  - block-r2-c1
+  - block-stage3
+  - block-r3-c1
+  - block-r3-c2
+  - block-stage0
+  - block-r0-c2
+  - block-switch
+  - block-nic0
+  - block-nic1
+  - arrow-nic1-stage
+  - block-nic2
+  - arrow-nic2-stage
+  - block-nic3
+  - arrow-nic3-stage
+  - arrow-nic0-stage
+  travel: [arrow-d01, arrow-d12, arrow-d23, arrow-d30]
+  token: [chunk 3 = 1001, chunk 0 = 11, chunk 1 = 110, chunk 2 = 1100]
+  state:
+    label: Chunk values on each rank
+    fields:
+    - [rank 0, 1 · 1 · 1101 · 1001]
+    - [rank 1, 11 · 10 · 10 · 1011]
+    - [rank 2, 111 · 110 · 100 · 100]
+    - [rank 3, 1000 · 1110 · 1100 · 1000]
+  chapter: /dma/the-scatter-path
+  parallel:
+  - 'rank 0 to rank 1: chunk 3'
+  - 'rank 1 to rank 2: chunk 0'
+  - 'rank 2 to rank 3: chunk 1'
+  - 'rank 3 to rank 0: chunk 2'
+- caption: 'Each rank holds one finished chunk, 1111, and a mix of partial sums in the others:
+    rank 0 owns chunk 1, rank 1 chunk 2, rank 2 chunk 3, rank 3 chunk 0. That is the reduce-scatter
+    half.'
+  lit:
+  - block-r0-c2
+  - block-stage1
+  - block-r1-c2
+  - block-r1-c3
+  - block-stage2
+  - block-r2-c3
+  - block-r2-c0
+  - block-stage3
+  - block-r3-c0
+  - block-r3-c1
+  - block-stage0
+  - block-r0-c1
+  - block-switch
+  - block-nic0
+  - block-nic1
+  - arrow-nic1-stage
+  - block-nic2
+  - arrow-nic2-stage
+  - block-nic3
+  - arrow-nic3-stage
+  - arrow-nic0-stage
+  travel: [arrow-d01, arrow-d12, arrow-d23, arrow-d30]
+  token: [chunk 2 = 1101, chunk 3 = 1011, chunk 0 = 111, chunk 1 = 1110]
+  state:
+    label: Chunk values on each rank
+    fields:
+    - [rank 0, 1 · 1111 · 1101 · 1001]
+    - [rank 1, 11 · 10 · 1111 · 1011]
+    - [rank 2, 111 · 110 · 100 · 1111]
+    - [rank 3, 1111 · 1110 · 1100 · 1000]
+  predict: After one more step, what does each rank hold?
+  parallel:
+  - 'rank 0 to rank 1: chunk 2'
+  - 'rank 1 to rank 2: chunk 3'
+  - 'rank 2 to rank 3: chunk 0'
+  - 'rank 3 to rank 0: chunk 1'
+- scene: All-gather
+  caption: 'Now each rank passes its finished chunk to the right. Nothing is added any more:
+    the receiver''s GPU copies the staging buffer over its own chunk.'
+  lit:
+  - block-r0-c1
+  - block-stage1
+  - block-r1-c1
+  - block-r1-c2
+  - block-stage2
+  - block-r2-c2
+  - block-r2-c3
+  - block-stage3
+  - block-r3-c3
+  - block-r3-c0
+  - block-stage0
+  - block-r0-c0
+  - block-switch
+  - block-nic0
+  - block-nic1
+  - arrow-nic1-stage
+  - block-nic2
+  - arrow-nic2-stage
+  - block-nic3
+  - arrow-nic3-stage
+  - arrow-nic0-stage
+  travel: [arrow-d01, arrow-d12, arrow-d23, arrow-d30]
+  token: [chunk 1 = 1111, chunk 2 = 1111, chunk 3 = 1111, chunk 0 = 1111]
+  state:
+    label: Chunk values on each rank
+    fields:
+    - [rank 0, 1111 · 1111 · 1101 · 1001]
+    - [rank 1, 11 · 1111 · 1111 · 1011]
+    - [rank 2, 111 · 110 · 1111 · 1111]
+    - [rank 3, 1111 · 1110 · 1100 · 1111]
+  chapter: /overview/operation-catalog/rdma-write
+  parallel:
+  - 'rank 0 to rank 1: chunk 1'
+  - 'rank 1 to rank 2: chunk 2'
+  - 'rank 2 to rank 3: chunk 3'
+  - 'rank 3 to rank 0: chunk 0'
+- caption: The finished chunks move one more hop.
+  lit:
+  - block-r0-c0
+  - block-stage1
+  - block-r1-c0
+  - block-r1-c1
+  - block-stage2
+  - block-r2-c1
+  - block-r2-c2
+  - block-stage3
+  - block-r3-c2
+  - block-r3-c3
+  - block-stage0
+  - block-r0-c3
+  - block-switch
+  - block-nic0
+  - block-nic1
+  - arrow-nic1-stage
+  - block-nic2
+  - arrow-nic2-stage
+  - block-nic3
+  - arrow-nic3-stage
+  - arrow-nic0-stage
+  travel: [arrow-d01, arrow-d12, arrow-d23, arrow-d30]
+  token: [chunk 0 = 1111, chunk 1 = 1111, chunk 2 = 1111, chunk 3 = 1111]
+  state:
+    label: Chunk values on each rank
+    fields:
+    - [rank 0, 1111 · 1111 · 1101 · 1111]
+    - [rank 1, 1111 · 1111 · 1111 · 1011]
+    - [rank 2, 111 · 1111 · 1111 · 1111]
+    - [rank 3, 1111 · 1110 · 1111 · 1111]
+  parallel:
+  - 'rank 0 to rank 1: chunk 0'
+  - 'rank 1 to rank 2: chunk 1'
+  - 'rank 2 to rank 3: chunk 2'
+  - 'rank 3 to rank 0: chunk 3'
+- caption: One more, and every rank holds 1111 in all four chunks.
+  lit:
+  - block-r0-c3
+  - block-stage1
+  - block-r1-c3
+  - block-r1-c0
+  - block-stage2
+  - block-r2-c0
+  - block-r2-c1
+  - block-stage3
+  - block-r3-c1
+  - block-r3-c2
+  - block-stage0
+  - block-r0-c2
+  - block-switch
+  - block-nic0
+  - block-nic1
+  - arrow-nic1-stage
+  - block-nic2
+  - arrow-nic2-stage
+  - block-nic3
+  - arrow-nic3-stage
+  - arrow-nic0-stage
+  travel: [arrow-d01, arrow-d12, arrow-d23, arrow-d30]
+  token: [chunk 3 = 1111, chunk 0 = 1111, chunk 1 = 1111, chunk 2 = 1111]
+  state:
+    label: Chunk values on each rank
+    fields:
+    - [rank 0, 1111 · 1111 · 1111 · 1111]
+    - [rank 1, 1111 · 1111 · 1111 · 1111]
+    - [rank 2, 1111 · 1111 · 1111 · 1111]
+    - [rank 3, 1111 · 1111 · 1111 · 1111]
+  parallel:
+  - 'rank 0 to rank 1: chunk 3'
+  - 'rank 1 to rank 2: chunk 0'
+  - 'rank 2 to rank 3: chunk 1'
+  - 'rank 3 to rank 0: chunk 2'
+- scene: What it cost
+  caption: 'Six steps, each moving a quarter of the buffer out of every rank: one and a half
+    buffers sent per rank. In general a ring of N ranks sends 2(N-1)/N of the buffer from
+    each rank, just under twice the buffer however many ranks there are, which is why rings
+    are favoured for large buffers. The price is 2(N-1) steps of latency. NCCL also cuts each
+    chunk into slices and pipelines them, which this walk leaves out.'
+  lit:
+  - block-r0-c0
+  - block-r0-c1
+  - block-r0-c2
+  - block-r0-c3
+  - block-r1-c0
+  - block-r1-c1
+  - block-r1-c2
+  - block-r1-c3
+  - block-r2-c0
+  - block-r2-c1
+  - block-r2-c2
+  - block-r2-c3
+  - block-r3-c0
+  - block-r3-c1
+  - block-r3-c2
+  - block-r3-c3
+  - block-nic0
+  - block-nic1
+  - block-nic2
+  - block-nic3
+  state:
+    label: Chunk values on each rank
+    fields:
+    - [rank 0, 1111 · 1111 · 1111 · 1111]
+    - [rank 1, 1111 · 1111 · 1111 · 1111]
+    - [rank 2, 1111 · 1111 · 1111 · 1111]
+    - [rank 3, 1111 · 1111 · 1111 · 1111]
+  chapter: /overview/one-transaction-start-to-finish

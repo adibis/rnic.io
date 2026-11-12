@@ -6,6 +6,8 @@ publishDate: 2026-09-09
 draft: false
 description: "A Send Queue entry tells hardware what to do. A Receive Queue entry tells hardware only where -- no opcode, no remote address, nothing to send. This chapter is the simplest descriptor in the book, and the ring that holds it in strict, unaddressed order."
 next: /rx/rx-packet-parse
+metaDescription: "An RDMA Receive WQE says only where data should land: no opcode, no remote address. The descriptor, and the ring that holds it in order."
+seoTitle: "The RDMA Receive Queue and Receive WQE"
 ---
 
 ## Overview

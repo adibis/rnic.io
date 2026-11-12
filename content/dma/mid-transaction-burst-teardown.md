@@ -6,6 +6,8 @@ publishDate: 2026-09-16
 draft: false
 description: "Two already-published chapters named this exact resource and left the same honest question open: what happens when the ground a running transfer depends on -- the QP that owns it, or the Memory Region backing its translation -- gets pulled out from under it mid-execution. This chapter doesn't resolve either question more cleanly than they already declined to. It states them together, and says why."
 prev: /dma/multi-qp-burst-arbitration
+metaDescription: "What happens to a running DMA transfer when its QP is reset or its Memory Region is deregistered mid-burst, and why no public source settles it."
+seoTitle: "Tearing Down a DMA Burst Mid-Transaction"
 ---
 
 ## Overview

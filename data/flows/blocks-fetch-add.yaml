@@ -1,0 +1,141 @@
+title: "Fetch and Add, block by block, with a duplicate"
+diagram: flows/op-view
+play: "Play this Fetch and Add"
+description: >-
+  A FETCH_ADD across both hosts: RNIC B reads 41, writes 42 and keeps 41.
+  The acknowledgement is lost, RNIC A resends the request from its Replay
+  Buffer, and RNIC B recognises the duplicate and answers with the saved 41
+  without touching Host B's memory again.
+steps:
+  - scene: "On Host A"
+    role: "Requester"
+    caption: >-
+      The application writes a FETCH_ADD WQE: a remote 64-bit counter and its
+      rkey, an add value of 1, and a local buffer for the reply. It rings the
+      doorbell.
+    lit: [block-a-app, block-a-sq, block-nica-fetch]
+    travel: arrow-a-doorbell
+    token: "doorbell"
+    chapter: /tx/the-send-queue-ring
+
+  - caption: >-
+      RNIC A reads the WQE out of host memory and looks up the QP's context.
+    lit: [block-a-sq, block-nica-fetch]
+    travel: arrow-a-wqe-read
+    token: "WQE"
+    chapter: /tx/wqe-prefetch
+
+  - caption: >-
+      After the lkey check on the reply buffer, TX Packet Build sends a BTH
+      and an ATMETH carrying the add value; the compare field goes unused. A Replay Buffer entry is recorded and the
+      retry timer arms.
+    lit: [block-nica-key, block-nica-tx]
+    travel: arrow-wire-req
+    packet: &fa_pkt
+      label: "FETCH_ADD  PSN 3100"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x14  RC FetchAdd"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000012"]
+            - [PSN, "3100"]
+        - name: ATMETH
+          fields:
+            - [VA, "0x00007F3A_C0002000"]
+            - [R_Key, "0x00002A04"]
+            - [Swap/Add Data, "0x0000000000000001"]
+            - [Compare Data, "unused"]
+    chapter: /reliability/the-replay-buffer
+
+  - scene: "On Host B"
+    role: "Responder"
+    caption: >-
+      RX Parse checks the PSN, and the Key Cache checks the rkey for remote
+      atomic permission on an 8-byte-aligned address.
+    lit: [block-nicb-rx, block-nicb-key]
+    chapter: /mr/permission-and-bounds-violations
+
+  - caption: >-
+      The atomic unit reads the counter. It holds 41.
+    lit: [block-nicb-atomic, block-nicb-dma, block-b-buf]
+    travel: arrow-b-mem-read
+    token: "41"
+    chapter: /dma/target-selection
+
+  - caption: >-
+      It writes 42, as part of the same indivisible step. Unlike Compare and
+      Swap, Fetch and Add always writes.
+    lit: [block-nicb-atomic, block-nicb-dma, block-b-buf]
+    travel: arrow-b-mem-write
+    token: "42"
+    chapter: /dma/target-selection
+
+  - caption: >-
+      RNIC B keeps the original value, 41, with the request's PSN, then sends
+      ATOMIC_ACKNOWLEDGE. The acknowledgement is lost in the fabric and never
+      reaches RNIC A.
+    lit: [block-nicb-atomic, block-nicb-tx]
+    chapter: /reliability/go-back-n-retransmission
+
+  - scene: "The resend"
+    role: "Requester"
+    caption: >-
+      RNIC A's retry timer expires. It rebuilds FETCH_ADD PSN 3100 from the
+      Replay Buffer and sends it again, unchanged.
+    lit: [block-nica-tx]
+    travel: arrow-wire-req
+    packet: *fa_pkt
+    chapter: /reliability/retry-and-timeout-state
+
+  - scene: "The duplicate"
+    role: "Responder"
+    predict: >-
+      PSN 3100 arrives at RNIC B a second time. Does the counter become 43?
+    caption: >-
+      No. RNIC B expects 3101, so 3100 is a duplicate. It is not executed
+      again: RNIC B finds the 41 it kept for that PSN, and Host B's memory
+      is not touched.
+    lit: [block-nicb-rx, block-nicb-atomic]
+    chapter: /rx/psn-check-and-out-of-order-arrival
+
+  - caption: >-
+      The acknowledgement goes again, with the same original value, 41.
+    lit: [block-nicb-tx]
+    travel: arrow-wire-resp
+    packet:
+      label: "ATOMIC_ACK  PSN 3100"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x12  RC Atomic Acknowledge"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000034"]
+            - [PSN, "3100"]
+        - name: AETH
+          fields:
+            - [Syndrome, "ACK (bits 6:5 = 00; credit count in 4:0)"]
+            - [MSN, "0x000001"]
+        - name: ATMACK
+          fields:
+            - [Original Data, "0x0000000000000029"]
+    chapter: /overview/operation-catalog/atomics
+
+  - scene: "The reply returns"
+    role: "Requester"
+    caption: >-
+      RNIC A writes 41 into the reply buffer and retires the Replay Buffer
+      entry. The counter on Host B holds 42: the add ran once, though the
+      request crossed the wire twice.
+    lit: [block-nica-rx, block-nica-dma, block-a-buf]
+    travel: arrow-a-reply-write
+    token: "41"
+    chapter: /dma/the-scatter-path
+
+  - condition: "only if the Work Request was signaled"
+    caption: >-
+      The completion posts to Host A's Completion Queue.
+    lit: [block-nica-cqe, block-a-cq]
+    travel: arrow-a-cqe-write
+    token: "CQE"
+    chapter: /cq/cqe-generation

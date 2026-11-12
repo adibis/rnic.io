@@ -7,6 +7,8 @@ draft: false
 description: "Every QP state transition is a contract: software supplies a fixed set of attributes, hardware refuses the transition if even one is missing. Reliable Connection's contract is the strictest of the three transports it's enforced against, and that's not incidental -- it's every parameter the reliability engine needs, collected at the one moment hardware can still refuse to proceed without it."
 prev: /qp/installing-a-qp
 next: /qp/single-qp-error-handling
+metaDescription: "The RDMA QP state machine from RESET through INIT, RTR and RTS to ERROR: the attributes each transition requires, and why RC demands the most."
+seoTitle: "The RDMA QP State Machine"
 ---
 
 ## Overview
@@ -26,7 +28,7 @@ RESET, INIT, RTR, RTS, and ERROR are the states a QP can carry live traffic thro
 
 A zoomed state diagram: RESET, INIT, RTR, RTS as the core forward path, SQD as an RTS-reachable sub-graph with its own draining/drained internal states, ERROR reachable from any state, and RESET as ERROR's only way out.
 
-![The RC QP state machine: RESET through INIT, RTR, RTS labeled with each transition's required attribute mask, SQD as a satellite draining state off RTS, every state's fatal-error path converging into ERROR, and the single ERROR-to-RESET arrow as the only way out.](/images/qp/05-qp-state-machine-block.svg)
+{{< flow "qp-lifecycle" >}}
 
 ## Deep walkthrough
 

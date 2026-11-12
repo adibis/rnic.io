@@ -7,6 +7,8 @@ draft: false
 description: "Every caching chapter so far in this book resolves a key or a QP number that could arrive in any order. A Send Queue ring doesn't work that way -- it's consumed strictly in order, front to back -- and that one difference is why this chapter's on-chip structure is a prefetch buffer, not a lookup cache, even though it's solving the exact same PCIe-latency problem."
 prev: /tx/the-send-queue-ring
 next: /tx/tx-packet-build
+metaDescription: "Why an RNIC prefetches Send Queue WQEs into a buffer instead of caching them: the ring is read strictly in order, so PCIe latency is hidden differently."
+seoTitle: "RDMA WQE Prefetch"
 ---
 
 ## Overview
@@ -37,6 +39,11 @@ Fetching a WQE from host DRAM on every single doorbell would put a PCIe round tr
 **What this argument doesn't cover: many QPs sharing one prefetch buffer.** Everything above reasons about a single QP's own ring in isolation -- true within that scope, but not the realistic case. [Key Caching](/mr/key-caching) already found real evidence (the uRDMA paper) of one shared, unpartitioned SRAM pool covering QPC/MTT/MPT/CQC/EQC together -- though that same chapter is explicit that Kong et al., this chapter's own cited source for the WQE cache, actually names the WQE cache as a structure distinct from that pool rather than confirming it's part of the same one, an ambiguity neither source resolves. Whichever way that turns out, a pipeline servicing many concurrently-active QPs at once (exactly what [Multi-QP TX Scheduling](/tx/multi-qp-tx-scheduling) is about two chapters from now) has to divide finite prefetch capacity across all of them, and nothing here says whether one QP's aggressive lookahead can starve another QP's prefetch entirely -- the same head-of-line-blocking shape [Single-QP Pipeline Stalls](/tx/single-qp-pipeline-stalls) spends a full chapter on for the scheduling gate. This chapter's "no eviction policy to design" conclusion holds only for one QP's own ring; whether the shared buffer needs an allocation policy *across* QPs is an open question this chapter doesn't answer.
 
 **A concrete shape of the problem, with actual numbers.** Say the shared pool holds 100 slots total, and QP1 arrives first with 100 Work Requests posted, the tenth one fenced. Since the pool is empty when QP1 shows up, a scheduler with no other allocation policy grants it all 100 slots at once. WQEs 1 through 9 issue and free their slots immediately; WQE 10 blocks on its fence, and because a Send Queue issues strictly in order, WQEs 11 through 100 are stuck behind it -- prefetched, resident, and completely unusable, holding 90 slots that are doing nothing. QP2 arrives next, wanting slots of its own, and finds only the 9 QP1 already freed. Nobody did anything wrong -- QP1's fence is legitimate, QP2's request is legitimate -- the problem is entirely in how the shared pool got allocated in the first place.
+
+Play it, and the gate that keeps QP1 waiting even after its fence clears:
+
+{{< flow "tx-pool" >}}
+
 
 > [!CAUTION] Gotcha
 > Don't reach for "eviction policy" to describe reclaiming a stalled QP's held-but-unusable prefetch slots, even though the shape looks similar on the surface. [Eviction Policy](/qp/eviction-policy) already claimed that name for a different problem: reclaiming a QP context from a hot, on-die cache back to slower backing storage once too many QPs are active at once to fit on-die. Both are about taking a resource away from something, but the structures and the cost of getting it wrong aren't the same -- worth two different names from the start rather than one word doing double duty.

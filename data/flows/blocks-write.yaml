@@ -1,0 +1,180 @@
+title: "RDMA WRITE, block by block"
+diagram: flows/op-view
+play: "Play this WRITE"
+description: >-
+  A single-packet RDMA WRITE across both hosts: Host A's doorbell, WQE read
+  and payload read, the packet with its RETH on the wire, RNIC B's rkey check
+  and payload write straight to the named address, and the ACK back. No
+  Receive WQE, completion or event on Host B, until the last scene adds
+  immediate data.
+steps:
+  - scene: "On Host A"
+    role: "Requester"
+    caption: >-
+      The application writes a WRITE WQE into the Send Queue ring, naming a
+      local source buffer and a remote address and rkey, and rings the
+      doorbell.
+    lit: [block-a-app, block-a-sq, block-nica-fetch]
+    travel: arrow-a-doorbell
+    token: "doorbell"
+    chapter: /tx/the-send-queue-ring
+
+  - caption: >-
+      RNIC A reads the WQE out of host memory and looks up the QP's context.
+    lit: [block-a-sq, block-nica-fetch]
+    travel: arrow-a-wqe-read
+    token: "WQE"
+    chapter: /tx/wqe-prefetch
+
+  - caption: >-
+      The Key Cache checks the lkey on the source buffer, then the DMA engine
+      reads the 4 KiB payload out of Host A's memory.
+    lit: [block-nica-key, block-nica-dma, block-a-buf]
+    travel: arrow-a-payload-read
+    token: "4 KiB"
+    chapter: /dma/the-gather-path
+
+  - caption: >-
+      TX Packet Build puts a BTH and a RETH in front of the payload. The RETH
+      carries the remote address, the rkey and the length: everything the
+      responder needs to place the bytes. A Replay Buffer entry is recorded
+      and the packet leaves.
+    lit: [block-nica-tx]
+    travel: arrow-wire-req
+    packet: &write_pkt
+      label: "WRITE_ONLY  PSN 1000"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x0A  RC RDMA WRITE Only"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000012"]
+            - [AckReq, "1"]
+            - [PSN, "1000"]
+        - name: RETH
+          fields:
+            - [VA, "0x00007F3A_C0001000"]
+            - [R_Key, "0x00002A04"]
+            - [DMA Length, "4096"]
+        - name: Payload
+          fields:
+            - [Bytes, "4096"]
+    chapter: /tx/tx-packet-build
+
+  - scene: "On Host B"
+    role: "Responder"
+    caption: >-
+      RX Parse checks the PSN, then the Key Cache resolves the rkey. It must
+      grant remote write over all 4,096 bytes at that address.
+    lit: [block-nicb-rx, block-nicb-key]
+    packet: *write_pkt
+    chapter: /mr/permission-and-bounds-violations
+
+  - predict: >-
+      Does RNIC B need a Receive WQE before it can place these bytes?
+    caption: >-
+      No. The RETH already named the address, so the DMA engine writes the
+      payload straight there. The Receive Queue is never read.
+    lit: [block-nicb-dma, block-b-buf]
+    travel: arrow-b-mem-write
+    token: "4 KiB"
+    chapter: /dma/the-scatter-path
+
+  - caption: >-
+      The ACK for PSN 1000 leaves through RNIC B's TX path. That is all: no
+      completion, no event. Host B's software is not told a WRITE happened.
+    lit: [block-nicb-tx]
+    travel: arrow-wire-resp
+    packet: &ack_pkt
+      label: "ACK  PSN 1000"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x11  RC Acknowledge"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000034"]
+            - [PSN, "1000"]
+        - name: AETH
+          fields:
+            - [Syndrome, "ACK (bits 6:5 = 00; credit count in 4:0)"]
+            - [MSN, "0x000001"]
+    chapter: /reliability/message-completion-and-the-msn
+
+  - scene: "The ACK returns"
+    role: "Requester"
+    caption: >-
+      RX Parse on RNIC A matches the ACK against the Replay Buffer, retires
+      the entry and disarms the retry timer.
+    lit: [block-nica-rx]
+    packet: *ack_pkt
+    chapter: /reliability/retry-and-timeout-state
+
+  - condition: "only if the Work Request was signaled"
+    caption: >-
+      RNIC A writes the send completion into Host A's Completion Queue.
+    lit: [block-nica-cqe, block-a-cq]
+    travel: arrow-a-cqe-write
+    token: "CQE"
+    chapter: /cq/cqe-generation
+
+  - predict: >-
+      How many of Host B's own blocks did this WRITE use?
+    caption: >-
+      One: the memory it was written into. Host B's application, its Receive
+      Queue and its Completion Queue never took part. That is what one-sided
+      means.
+    lit: [block-b-buf]
+    chapter: /dma/target-selection
+
+  - scene: "With Immediate"
+    role: "Responder"
+    predict: >-
+      The same WRITE as WRITE_ONLY_WITH_IMMEDIATE, carrying 32 bits of
+      immediate data. Which of Host B's blocks join in?
+    caption: >-
+      The payload still lands at the RETH address. But the immediate value has
+      to reach software, so RNIC B now consumes a Receive WQE. It uses only
+      the WQE's wr_id, which tags the completion; the scatter list is ignored.
+    lit: [block-nicb-rq, block-b-rq]
+    travel: arrow-b-rq-read
+    token: [{label: "Receive WQE", wire: false}]
+    packet:
+      label: "WRITE_ONLY_IMM  PSN 1000"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x0B  RC RDMA WRITE Only with Immediate"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000012"]
+            - [AckReq, "1"]
+            - [PSN, "1000"]
+        - name: RETH
+          fields:
+            - [VA, "0x00007F3A_C0001000"]
+            - [R_Key, "0x00002A04"]
+            - [DMA Length, "4096"]
+        - name: ImmDt
+          fields:
+            - [Immediate, "0x0000002A"]
+        - name: Payload
+          fields:
+            - [Bytes, "4096"]
+    chapter: /rx/the-receive-queue-descriptor-and-ring
+
+  - caption: >-
+      After the payload write, RNIC B writes a receive CQE carrying the
+      immediate value and the byte count. A one-sided WRITE has become one
+      Host B's software is told about.
+    lit: [block-nicb-cqe, block-b-cq]
+    travel: arrow-b-cqe-write
+    token: "CQE + imm"
+    chapter: /cq/the-cqe
+
+  - condition: "only if the CQ is armed"
+    caption: >-
+      RNIC B raises a completion event, so an application sleeping on the CQ
+      wakes and reads the immediate value from the CQE.
+    lit: [block-nicb-event, block-b-app]
+    travel: arrow-b-event
+    token: "event"
+    chapter: /cq/event-and-multi-cq-arbitration

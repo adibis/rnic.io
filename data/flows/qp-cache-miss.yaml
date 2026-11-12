@@ -1,0 +1,231 @@
+title: "One hit, one miss, and the QP the miss pushed out"
+diagram: flows/qp-cache-miss
+play: "Play the lookups"
+description: >-
+  A four-line QP Cache holding four busy QPs. A packet for a cached QP hits
+  and goes straight on; a packet for a fifth QP misses, waits while the
+  least recently used line is written back and the context is fetched over
+  PCIe, then carries on. The transmit side then wants the QP that was just
+  evicted, and pays the same price.
+steps:
+  - scene: "A hit"
+    caption: >-
+      A SEND arrives for QP 0x12. The cache is full: four lines, four QPs.
+      Three of them are dirty, meaning a packet has moved their PSN counters
+      since they were fetched, so the QP Table's copy is out of date.
+    lit: [arrow-wire-in, block-rxparser]
+    travel: arrow-wire-in
+    packet:
+      label: "SEND_ONLY  PSN 300"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x04  RC SEND Only"]
+            - [DestQP, "0x000012"]
+            - [PSN, "300"]
+        - name: Payload
+          fields:
+            - [Bytes, "512"]
+    state: &c0
+      label: "QP Cache"
+      fields:
+        - [line 0, "QP 0x12, dirty"]
+        - [line 1, "QP 0x2A, clean"]
+        - [line 2, "QP 0x31, dirty"]
+        - [line 3, "QP 0x40, dirty"]
+        - [LRU order, "0x12, 0x2A, 0x31, 0x40 (oldest)"]
+        - [waiting, "none"]
+    chapter: /qp/qp-caching
+
+  - caption: >-
+      The RX Parser reads DestQP out of the BTH and asks the cache for QP
+      0x12. Line 0 holds it.
+    lit: [block-rxparser, block-slot-0]
+    travel: arrow-rx-lookup
+    token: "QPN 0x12"
+    state: *c0
+
+  - caption: >-
+      A hit. The context goes to PSN Check with no trip off the chip, and
+      QP 0x12 stays at the front of the LRU order.
+    lit: [block-slot-0, block-psn]
+    travel: arrow-rx-ctx
+    token: "QPC 0x12"
+    state: *c0
+    chapter: /rx/psn-check-and-out-of-order-arrival
+
+  - scene: "A miss"
+    caption: >-
+      The next SEND is for QP 0x77, a connection that has been quiet for a
+      while.
+    lit: [arrow-wire-in, block-rxparser]
+    travel: arrow-wire-in
+    packet:
+      label: "SEND_ONLY  PSN 9000"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x04  RC SEND Only"]
+            - [DestQP, "0x000077"]
+            - [PSN, "9000"]
+        - name: Payload
+          fields:
+            - [Bytes, "512"]
+    state: *c0
+
+  - caption: >-
+      The lookup compares 0x77 against all four lines. None of them holds
+      it.
+    lit: [block-rxparser, block-slot-0, block-slot-1, block-slot-2, block-slot-3]
+    travel: arrow-rx-lookup
+    token: "QPN 0x77"
+    state: *c0
+
+  - predict: >-
+      The context for QP 0x77 is not on the chip. Is the packet dropped?
+    caption: >-
+      No. A miss is routine, not an error. The packet is held until its
+      context arrives; nothing about it is discarded and the sender never
+      finds out.
+    lit: [block-rxparser, block-hold]
+    travel: arrow-miss
+    token: "SEND, QP 0x77"
+    state: &c1
+      label: "QP Cache"
+      fields:
+        - [line 0, "QP 0x12, dirty"]
+        - [line 1, "QP 0x2A, clean"]
+        - [line 2, "QP 0x31, dirty"]
+        - [line 3, "QP 0x40, dirty"]
+        - [LRU order, "0x12, 0x2A, 0x31, 0x40 (oldest)"]
+        - [waiting, "SEND for QP 0x77"]
+    chapter: /qp/qp-caching
+
+  - scene: "Making room"
+    caption: >-
+      Every line is taken, so one QP has to go. This walk uses LRU, which
+      picks the QP that has gone longest without a packet: 0x40, in line 3.
+    lit: [block-evict, block-slot-3]
+    state: *c1
+    chapter: /qp/eviction-policy
+
+  - predict: >-
+      QP 0x40's context is in the QP Table as well. Can line 3 simply be
+      overwritten?
+    caption: >-
+      Not while it is dirty. QP 0x40 has handled packets since it was
+      fetched, so its PSN counters on the chip are newer than the table's
+      copy. Line 3 is written back over PCIe first; only then is it free.
+    lit: [block-slot-3, block-qptable]
+    travel: arrow-writeback
+    token: "QPC 0x40"
+    state: &c2
+      label: "QP Cache"
+      fields:
+        - [line 0, "QP 0x12, dirty"]
+        - [line 1, "QP 0x2A, clean"]
+        - [line 2, "QP 0x31, dirty"]
+        - [line 3, "free"]
+        - [LRU order, "0x12, 0x2A, 0x31 (oldest)"]
+        - [waiting, "SEND for QP 0x77"]
+    chapter: /qp/eviction-policy
+
+  - scene: "The fetch"
+    caption: >-
+      The cache reads QP 0x77's entry from the QP Table, a second PCIe
+      round trip, and fills line 3 with it. A freshly fetched line is clean.
+    lit: [block-qptable, block-slot-3]
+    travel: arrow-fetch
+    token: "QPC 0x77"
+    state: &c3
+      label: "QP Cache"
+      fields:
+        - [line 0, "QP 0x12, dirty"]
+        - [line 1, "QP 0x2A, clean"]
+        - [line 2, "QP 0x31, dirty"]
+        - [line 3, "QP 0x77, clean"]
+        - [LRU order, "0x77, 0x12, 0x2A, 0x31 (oldest)"]
+        - [waiting, "SEND for QP 0x77"]
+    chapter: /qp/the-qp-table
+
+  - caption: >-
+      The held packet gets its context and goes on to PSN Check, exactly as
+      a hit would have. It arrives later than the hit did by one PCIe write
+      and one PCIe read. PSN Check moves QP 0x77's expected PSN on, so line 3
+      is dirty again.
+    lit: [block-hold, block-psn]
+    travel: arrow-resume
+    token: "SEND, QP 0x77"
+    state: &c4
+      label: "QP Cache"
+      fields:
+        - [line 0, "QP 0x12, dirty"]
+        - [line 1, "QP 0x2A, clean"]
+        - [line 2, "QP 0x31, dirty"]
+        - [line 3, "QP 0x77, dirty"]
+        - [LRU order, "0x77, 0x12, 0x2A, 0x31 (oldest)"]
+        - [waiting, "none"]
+
+  - scene: "The QP that was pushed out"
+    predict: >-
+      The TX Scheduler now picks QP 0x40, which has a request posted. Which
+      line holds QP 0x40?
+    caption: >-
+      None. It is the QP that was evicted to make room for 0x77. The transmit side misses too, and
+      LRU now picks QP 0x31 in line 2.
+    lit: [block-txsched, block-slot-0, block-slot-1, block-slot-2, block-slot-3, block-evict]
+    travel: arrow-tx-lookup
+    token: "QPN 0x40"
+    state: *c4
+    chapter: /qp/qp-caching
+
+  - caption: >-
+      QP 0x31 is dirty, so it is written back first.
+    lit: [block-slot-2, block-qptable]
+    travel: arrow-writeback
+    token: "QPC 0x31"
+    state: &c5
+      label: "QP Cache"
+      fields:
+        - [line 0, "QP 0x12, dirty"]
+        - [line 1, "QP 0x2A, clean"]
+        - [line 2, "free"]
+        - [line 3, "QP 0x77, dirty"]
+        - [LRU order, "0x77, 0x12, 0x2A (oldest)"]
+        - [waiting, "TX work for QP 0x40"]
+
+  - caption: >-
+      QP 0x40 comes back from the QP Table into line 2, carrying the
+      counters it was written back with.
+    lit: [block-qptable, block-slot-2]
+    travel: arrow-fetch
+    token: "QPC 0x40"
+    state: &c6
+      label: "QP Cache"
+      fields:
+        - [line 0, "QP 0x12, dirty"]
+        - [line 1, "QP 0x2A, clean"]
+        - [line 2, "QP 0x40, clean"]
+        - [line 3, "QP 0x77, dirty"]
+        - [LRU order, "0x40, 0x77, 0x12, 0x2A (oldest)"]
+        - [waiting, "TX work for QP 0x40"]
+
+  - caption: >-
+      TX Packet Build gets the context and can start. Five busy QPs and four
+      lines: the first miss pushed out a QP that was needed moments later,
+      and bringing it back pushed out another.
+      That is the working-set problem this chapter is about, and the reason
+      Eviction Policy asks whether recency alone is the right test.
+    lit: [block-slot-2, block-txbuild]
+    travel: arrow-tx-ctx
+    token: "QPC 0x40"
+    state:
+      label: "QP Cache"
+      fields:
+        - [line 0, "QP 0x12, dirty"]
+        - [line 1, "QP 0x2A, clean"]
+        - [line 2, "QP 0x40, clean"]
+        - [line 3, "QP 0x77, dirty"]
+        - [LRU order, "0x40, 0x77, 0x12, 0x2A (oldest)"]
+        - [waiting, "none"]
+    chapter: /qp/eviction-policy

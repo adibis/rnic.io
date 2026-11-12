@@ -1,0 +1,15 @@
+{{- /* Site override of Hextra's page-description.html: a page's
+  metaDescription, written to fit a search result (about 155 characters),
+  wins over its description, which is longer and doubles as the subtitle on
+  its Part's section cards. */ -}}
+{{ with or .Params.metaDescription .Description | plainify | htmlUnescape -}}
+  {{ . -}}
+{{ else -}}
+  {{ if .IsHome -}}
+    {{ with .Site.Params.description | plainify | htmlUnescape -}}
+      {{ . -}}
+    {{ end -}}
+  {{ else -}}
+    {{ .Summary | plainify | htmlUnescape | chomp -}}
+  {{ end -}}
+{{ end -}}

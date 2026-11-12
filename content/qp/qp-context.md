@@ -6,6 +6,8 @@ publishDate: 2026-09-04
 draft: false
 description: "Two fields on every RC Queue Pair count outstanding RDMA reads and atomics -- one for what this QP has sent, one for what it will accept -- and confusing them is the single most common misreading of a QP's context. Here's the full field list, wire-format ties included, and which fields hardware updates on its own without a single software write."
 next: /qp/the-qp-table
+metaDescription: "The fields of an RDMA Queue Pair context: PSNs, retry settings, the two outstanding read and atomic limits, and which fields hardware updates itself."
+seoTitle: "RDMA QP Context Fields"
 ---
 
 [One Transaction, Start to Finish](/overview/one-transaction-start-to-finish) already touched this chapter's subject twice without stopping to open it: once to say the sending adapter needs "the sending QP's live context" before it can build a packet, once to say the receiving side performs "the same kind of QP Table/Cache lookup" on arrival. This is where that context actually gets defined, field by field, before the next two chapters cover where it's stored and what gets cached.
@@ -73,7 +75,7 @@ Not every field named above gets the same full treatment here, and here's why. T
 - *What happens next*: nothing to retry here; this field's only failure mode is a software bug at connection setup, not a hardware fault.
 
 **The receive-side and send-side PSN counters.**
-- *What*: 32-bit fields, RC/UC only for the receive-side counter, all transports for the send-side counter. The receive-side counter starts at a value software supplies at INIT→RTR (the PSN the peer's first packet is expected to carry); the send-side counter starts at a value software supplies at RTR→RTS, then advances under hardware's own control from there.
+- *What*: 32-bit fields each holding a 24-bit PSN, the width [What Is RoCEv2](/overview/what-is-rocev2) described inside the BTH; RC/UC only for the receive-side counter, all transports for the send-side counter. The receive-side counter starts at a value software supplies at INIT→RTR (the PSN the peer's first packet is expected to carry); the send-side counter starts at a value software supplies at RTR→RTS, then advances under hardware's own control from there.
 - *Where this is checked*: at the receiving QP, comparing the receive-side counter against the PSN carried in every arriving packet's BTH -- exactly which pipeline stage performs that comparison, and what happens to a packet that doesn't match, is the RX pipeline's ([RX Pipeline](/rx/)) open question, deliberately not resolved here (see [One Transaction, Start to Finish](/overview/one-transaction-start-to-finish) for the walkthrough that first flags it).
 - *What happens next*: a PSN mismatch is reliability-engine ([Reliability Engine](/reliability/)) territory -- this chapter's job stops at naming the field and what it holds, not how a gap or duplicate gets handled.
 

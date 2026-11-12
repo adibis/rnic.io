@@ -1,0 +1,137 @@
+title: "One Transaction: RDMA Write with Immediate"
+diagram: overview/05-one-transaction-sequence
+description: >-
+  One RDMA Write with Immediate stepped from the Work Request to both
+  completions, with the header fields of each packet on the wire.
+steps:
+  - caption: >-
+      Software posts an RDMA Write with Immediate Work Request and rings the
+      doorbell. The request names the local source buffer and its lkey, the
+      remote target address and its rkey, and a 32-bit immediate value.
+    lit: [block-post-wr]
+    chapter: /tx/the-wqe-and-the-send-queue-descriptor
+
+  - caption: >-
+      The TX engine fetches the WQE off the Send Queue ring and looks up the
+      sending QP's context.
+    lit: [block-wqe-fetch]
+    chapter: /tx
+
+  - caption: >-
+      The rate limiter decides when this QP may dispatch. With no congestion
+      signalled, the gate is open.
+    lit: [block-rate-gate]
+    chapter: /congestion/the-rate-limiter-table
+
+  - caption: >-
+      The lkey is checked against the local Key Table, then the 4,096 source
+      bytes are gathered. The message fits one path MTU, so it becomes a
+      single ONLY packet: BTH, RETH, and ImmDt, with the QP's next PSN.
+    lit: [block-build]
+    chapter: /tx/tx-packet-build
+
+  - caption: >-
+      The packet leaves inside UDP, destination port 4791. The requester
+      records what a resend would need until it is acknowledged, and arms the
+      QP's retry timer.
+    lit: [arrow-write]
+    travel: arrow-write
+    packet: &write_pkt
+      label: "WRITE_ONLY_IMM  PSN 1000"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x0B  RC RDMA WRITE Only with Immediate"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000012"]
+            - [AckReq, "1"]
+            - [PSN, "1000"]
+        - name: RETH
+          fields:
+            - [VA, "0x00007F3A_C0001000"]
+            - [R_Key, "0x00002A04"]
+            - [DMA Length, "4096"]
+        - name: ImmDt
+          fields:
+            - [Immediate, "0x0000002A"]
+        - name: Payload
+          fields:
+            - [Bytes, "4096"]
+    chapter: /reliability/retry-and-timeout-state
+
+  - caption: >-
+      The responder's RX engine parses BTH. DestQP selects the QP, and PSN
+      1000 equals the QP's expected PSN, so the packet is in order.
+    lit: [block-rx-parse]
+    packet: *write_pkt
+    chapter: /rx/psn-check-and-out-of-order-arrival
+
+  - caption: >-
+      RETH is resolved against the responder's Key Table. The rkey must be
+      valid, grant remote write, and cover the whole target range. A failure
+      takes the dashed branch: a NAK, and the responder QP moves to ERROR.
+    lit: [block-reth-check]
+    chapter: /mr/permission-and-bounds-violations
+
+  - caption: >-
+      The DMA engine places the 4,096-byte payload in host memory at the
+      target address.
+    lit: [block-dma]
+    chapter: /dma/the-scatter-path
+
+  - predict: >-
+      This WRITE carries immediate data. What does the responder produce for
+      its own software that a plain WRITE never would?
+    caption: >-
+      Because the operation carries immediate data, the responder consumes
+      the next pre-posted Receive WQE and posts a receive completion carrying
+      the immediate value. A plain RDMA Write skips this step. The ACK
+      already crossing back is the next step.
+    lit: [block-rq-cqe, block-ack-gen]
+    travel: arrow-ack
+    token: [{label: "ACK  PSN 1000", wire: true}]
+    parallel:
+      - "Receive WQE consumed, receive CQE posted"
+      - "ACK generated and sent back"
+    chapter: /cq/cqe-generation
+
+  - caption: >-
+      In parallel, not after the completion, the responder generates an ACK
+      for PSN 1000 and sends it back to the requester. The AETH's Message
+      Sequence Number advances to count the completed message.
+    lit: [block-ack-gen, block-rq-cqe]
+    travel: arrow-ack
+    packet:
+      label: "ACK  PSN 1000"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x11  RC Acknowledge"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000034"]
+            - [AckReq, "0"]
+            - [PSN, "1000"]
+        - name: AETH
+          fields:
+            - [Syndrome, "ACK (bits 6:5 = 00; credit count in 4:0)"]
+            - [MSN, "0x000001"]
+    parallel:
+      - "Receive WQE consumed, receive CQE posted"
+      - "ACK generated and sent back"
+    chapter: /reliability/message-completion-and-the-msn
+
+  - predict: >-
+      The ACK for PSN 1000 has arrived. What must the requester do before it
+      can report the WRITE complete?
+    caption: >-
+      The requester matches the ACK's PSN against its oldest unacknowledged
+      packet, retires that packet, and disarms the retry timer.
+    lit: [block-psn-match]
+    chapter: /reliability/retry-and-timeout-state
+
+  - condition: "only if the Work Request was signaled"
+    caption: >-
+      The WQE is complete. If the Work Request set its signal flag, the
+      requester posts a send completion to its Completion Queue.
+    lit: [block-send-cqe]
+    chapter: /cq/cqe-generation

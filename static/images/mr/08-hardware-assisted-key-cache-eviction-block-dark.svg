@@ -54,7 +54,7 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <text x="500" y="295" font-size="9" fill="#949ca8" text-anchor="middle">more -- both latency and flexibility increase together, left to right</text>
 </g>
 
-<text x="260" y="225" font-size="8" fill="#949ca8" text-anchor="middle">identical spectrum to Part 1 ch. 1.9 --</text>
+<text x="260" y="225" font-size="8" fill="#949ca8" text-anchor="middle">identical spectrum to the QP Cache's --</text>
 <text x="260" y="236" font-size="8" fill="#949ca8" text-anchor="middle">not re-drawn in full, see that chapter</text>
 
 <!-- RIGHT: mass invalidation -->

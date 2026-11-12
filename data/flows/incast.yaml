@@ -1,0 +1,148 @@
+title: "Two senders, one port: ECN, CNP, rate cut"
+diagram: flows/system-view
+description: >-
+  Hosts A and C both stream to Host B through one switch port. The egress
+  queue grows past its marking threshold and the switch sets ECN on
+  forwarded packets; RNIC B answers marked flows with CNPs, and the rate
+  limiters on RNIC A and RNIC C cut their rates and then recover.
+steps:
+  - scene: "Congestion builds"
+    caption: >-
+      RNIC A is streaming a large Write to Host B at full rate. Its packets
+      carry an ECN-capable code point in the IP header.
+    lit: [block-nica-tx]
+    travel: arrow-wire-a-sw
+    packet:
+      label: "PSN 1500"
+      headers:
+        - name: IP
+          fields:
+            - [ECN, "10  ECT(0), ECN-capable"]
+        - name: BTH
+          fields:
+            - [OpCode, "0x07  RC RDMA WRITE Middle"]
+            - [DestQP, "0x000012"]
+            - [PSN, "1500"]
+        - name: Payload
+          fields:
+            - [Bytes, "4096"]
+    chapter: /overview/rocev1-to-rocev2
+
+  - caption: >-
+      RNIC C starts sending to Host B as well, while A keeps streaming. Both
+      flows need the same switch port at the same time.
+    lit: [block-nica-tx, block-c-app, block-nicc-tx]
+    travel: [arrow-wire-a-sw, arrow-wire-c-sw]
+    token: [{label: "A to B", wire: true}, {label: "C to B", wire: true}]
+    parallel:
+      - "RNIC A streaming to Host B"
+      - "RNIC C streaming to Host B"
+    chapter: /congestion
+
+  - predict: >-
+      Two full-rate senders share one port toward B. What happens inside the
+      switch?
+    caption: >-
+      Two links' worth of traffic arrives for one link's worth of drain, so
+      the egress queue toward B grows. Past a threshold, the switch starts
+      setting the ECN bits on packets it forwards.
+    lit: [block-switch-queue]
+    chapter: /overview/rocev1-to-rocev2
+
+  - scene: "The receiver notifies"
+    caption: >-
+      A marked packet reaches RNIC B. It is parsed, checked and placed as
+      usual; the mark changes nothing about delivery.
+    lit: [block-switch-queue, block-nicb-rx]
+    travel: arrow-wire-sw-b
+    packet:
+      label: "PSN 1500"
+      headers:
+        - name: IP
+          fields:
+            - [ECN, "11  CE, congestion experienced"]
+        - name: BTH
+          fields:
+            - [OpCode, "0x07  RC RDMA WRITE Middle"]
+            - [DestQP, "0x000012"]
+            - [PSN, "1500"]
+        - name: Payload
+          fields:
+            - [Bytes, "4096"]
+    chapter: /congestion/cnp-generation
+
+  - caption: >-
+      The mark wakes CNP generation. No CNP has gone to this flow recently,
+      so one goes at once; further marks inside the window (50 µs in one
+      deployment) are folded into it.
+    lit: [block-nicb-cnp]
+    chapter: /congestion/cnp-generation
+
+  - caption: >-
+      The CNP is a BTH, a reserved field and the ICRC: opcode 0x81, DestQP
+      naming RNIC A's QP, PSN forced to 0. It should leave ahead of ordinary traffic. RNIC C's flow
+      was marked too, so a second CNP, naming C's QP, follows it.
+    lit: [block-nicb-cnp]
+    travel: arrow-wire-b-sw
+    packet: &cnp
+      label: "CNP"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x81  CNP"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000034"]
+            - [PSN, "0"]
+    chapter: /congestion/cnp-generation
+
+  - caption: >-
+      The switch forwards each CNP to its sender, A's and C's together. The
+      switch only marked; it is the receiver that tells each sender.
+    lit: [block-nica-rx, block-nicc-rate]
+    travel: [arrow-wire-sw-a, arrow-wire-sw-c]
+    token: [{label: "CNP  A's QP", wire: true}, {label: "CNP  C's QP", wire: true}]
+    packet: *cnp
+    parallel:
+      - "CNP to RNIC A's QP"
+      - "CNP to RNIC C's QP"
+    chapter: /congestion/cnp-generation
+
+  - scene: "The senders react"
+    predict: >-
+      RNIC A has a CNP for this QP. What happens to its sending rate, and to
+      the rate it will try to climb back to?
+    caption: >-
+      The rate limiter cuts this QP's rate. The rate it had been sending at
+      becomes the target to climb back toward, and both recovery counters
+      reset to zero.
+    lit: [block-nica-rate, block-nicc-rate]
+    parallel:
+      - "RNIC A cuts its QP's rate"
+      - "RNIC C cuts its QP's rate"
+    chapter: /congestion/the-rate-control-state-machine
+
+  - caption: >-
+      RNIC C cuts its own QP's rate at the same moment, from its own CNP.
+      Each sender reacts only for its own flow.
+    lit: [block-nicc-rate, block-nica-rate]
+    parallel:
+      - "RNIC A cuts its QP's rate"
+      - "RNIC C cuts its QP's rate"
+    chapter: /congestion/multi-flow-cnp-arbitration
+
+  - caption: >-
+      With both senders slower, the queue drains below the threshold and
+      the switch stops marking.
+    lit: [block-switch-queue]
+    chapter: /congestion
+
+  - caption: >-
+      With no new CNP, each rate limiter climbs back. Fast recovery halves
+      the distance to the target on each timer or byte-counter expiry, then
+      additive increase raises the target itself. A new mark at any point
+      starts the cycle again.
+    lit: [block-nica-rate, block-nicc-rate]
+    parallel:
+      - "RNIC A's rate climbs back"
+      - "RNIC C's rate climbs back"
+    chapter: /congestion/the-rate-control-state-machine

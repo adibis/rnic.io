@@ -1,0 +1,172 @@
+title: Re-arming a Completion Queue without sleeping through a completion
+diagram: flows/cq-rearm
+description: Notification on a Completion Queue is a one-shot request that covers
+  only CQEs written after it. A CQE that lands between the last empty poll and
+  the arm never raises an event, so the safe order is to arm and then poll once
+  more before sleeping.
+play: Play both orders
+steps:
+- scene: Poll, then arm, then sleep
+  caption: The application drains the CQ until a poll comes back empty, intending
+    to arm notification and sleep until more work completes.
+  lit:
+  - block-u-poll
+  state:
+    label: Completion Queue
+    fields:
+    - - CQEs waiting
+      - '0'
+    - - CQ armed
+      - 'no'
+    - - Application thread
+      - running
+  chapter: /cq/creating-a-completion-queue
+- caption: Before the arm request reaches the adapter, a Work Request completes
+    and its CQE is written. The CQ isn't armed, so no event is raised.
+  lit:
+  - block-u-cqe
+  state:
+    label: Completion Queue
+    fields:
+    - - CQEs waiting
+      - '1'
+    - - CQ armed
+      - 'no'
+    - - Application thread
+      - running
+  chapter: /cq/creating-a-completion-queue
+- caption: The arm request arrives. Notification is one-shot and covers only a
+    CQE written after the request.
+  lit:
+  - block-u-armed
+  travel: arrow-u-arm
+  token: arm
+  state:
+    label: Completion Queue
+    fields:
+    - - CQEs waiting
+      - '1'
+    - - CQ armed
+      - yes, for the next new CQE
+    - - Application thread
+      - running
+  chapter: /cq/creating-a-completion-queue
+- predict: One CQE is waiting and the CQ is armed. Does the adapter raise an event?
+  caption: No. The waiting CQE was written before the arm, so it never produces
+    an event of its own.
+  lit:
+  - block-u-armed
+  - arrow-u-noevent
+  state:
+    label: Completion Queue
+    fields:
+    - - CQEs waiting
+      - '1'
+    - - CQ armed
+      - yes, for the next new CQE
+    - - Application thread
+      - running
+  chapter: /cq/creating-a-completion-queue
+- caption: The application sleeps on the event channel. The completed work sits
+    in the CQ until some unrelated later completion happens to wake the thread,
+    and if none comes, it is never handled.
+  lit:
+  - block-u-sleep
+  state:
+    label: Completion Queue
+    fields:
+    - - CQEs waiting
+      - '1'
+    - - CQ armed
+      - yes, for the next new CQE
+    - - Application thread
+      - asleep, with work waiting
+  chapter: /cq/creating-a-completion-queue
+- scene: Arm, then poll again
+  caption: 'Same start: a poll comes back empty.'
+  lit:
+  - block-s-poll
+  state:
+    label: Completion Queue
+    fresh: true
+    fields:
+    - - CQEs waiting
+      - '0'
+    - - CQ armed
+      - 'no'
+    - - Application thread
+      - running
+  chapter: /cq/creating-a-completion-queue
+- caption: A CQE lands in the same gap, before the arm.
+  lit:
+  - block-s-cqe
+  state:
+    label: Completion Queue
+    fields:
+    - - CQEs waiting
+      - '1'
+    - - CQ armed
+      - 'no'
+    - - Application thread
+      - running
+  chapter: /cq/creating-a-completion-queue
+- caption: The application arms notification.
+  lit:
+  - block-s-cqe
+  travel: arrow-s-arm
+  token: arm
+  state:
+    label: Completion Queue
+    fields:
+    - - CQEs waiting
+      - '1'
+    - - CQ armed
+      - yes, for the next new CQE
+    - - Application thread
+      - running
+  chapter: /cq/creating-a-completion-queue
+- predict: What should the application do between arming and sleeping?
+  caption: Poll once more. This poll finds the CQE that landed before the arm
+    and handles it. The arm stays in place for whatever comes next.
+  lit:
+  - block-s-repoll
+  state:
+    label: Completion Queue
+    fields:
+    - - CQEs waiting
+      - '0'
+    - - CQ armed
+      - yes, for the next new CQE
+    - - Application thread
+      - running
+  chapter: /cq/creating-a-completion-queue
+- caption: A later Work Request completes while the CQ is armed, so this CQE does
+    raise an event.
+  lit:
+  - block-s-next
+  travel: arrow-s-event
+  token: event
+  state:
+    label: Completion Queue
+    fields:
+    - - CQEs waiting
+      - '1'
+    - - CQ armed
+      - 'no: the arm was used'
+    - - Application thread
+      - woken
+  chapter: /cq/creating-a-completion-queue
+- caption: 'The application wakes and repeats the same order: poll until empty,
+    arm, poll once more. It never sleeps with a CQE waiting.'
+  lit:
+  - block-s-wake
+  state:
+    label: Completion Queue
+    fields:
+    - - CQEs waiting
+      - '0'
+    - - CQ armed
+      - yes, for the next new CQE
+    - - Application thread
+      - running
+  chapter: /cq/creating-a-completion-queue

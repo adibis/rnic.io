@@ -7,6 +7,8 @@ draft: false
 description: "Deciding which QP to evict is one question. Deciding what actually runs that decision -- fixed silicon, a programmable engine, or a trap to software -- is a separate one, and it's where the cost of flexibility gets paid in latency, not complexity."
 prev: /qp/eviction-policy
 next: /qp/mid-transaction-qp-reset
+metaDescription: "What runs QP Cache eviction in an RNIC, fixed silicon, a programmable engine or a trap to software, and what each costs in latency."
+seoTitle: "Hardware-Assisted QP Eviction Engines"
 ---
 
 ## Overview

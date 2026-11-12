@@ -7,6 +7,8 @@ draft: false
 description: "A normal NIC's DMA engine only ever writes into a buffer software chose ahead of time. This engine sometimes does that too -- and sometimes places data at an address the wire packet itself names, resolved through a key software never touched at the moment the transfer runs. The opcode decides which. This is the one demand ordinary DMA hardware never had to meet."
 prev: /dma/in-flight-transfer-state
 next: /dma/address-translation-handoff
+metaDescription: "How an RNIC's DMA engine picks the destination: a SEND lands in a posted receive buffer, an RDMA WRITE at the address its RETH names."
+seoTitle: "RDMA DMA Target Selection"
 ---
 
 ## Overview
@@ -46,7 +48,7 @@ Target selection happens before [Address Translation Handoff](/dma/address-trans
 **Atomics.** The responder's side is wire-named, the same shape as a READ request: a single eight-byte remote address and `rkey`, carried in the packet, naming the one memory location the operation reads, modifies, and writes back. No scatter-gather list applies -- atomics have exactly one target, not a chain of segments. The pre-operation value returned to the requester lands in a local buffer the original WQE named, software-named, the same shape as a READ response.
 
 > [!TIP] Why
-> Letting a packet name its own target, instead of requiring the receiving side to have already posted a matching buffer, is exactly what makes RDMA WRITE and RDMA READ useful for the workloads that motivate this book in the first place: a remote peer can place or retrieve data at a location the local side registered once, without that side's software being anywhere in the loop for each individual transfer. SEND/RECEIVE's software-named-on-both-ends shape is the one this book's [Operation Catalog](/overview/operation-catalog) already covers as the closest RDMA gets to ordinary networking -- both sides' software stays in the loop, the same way it would for any other kind of message passing.
+> Letting a packet name its own target, instead of requiring the receiving side to have already posted a matching buffer, is exactly what makes RDMA WRITE and RDMA READ useful for the workloads that motivate this book in the first place: a remote peer can place or retrieve data at a location the local side registered once, without that side's software being anywhere in the loop for each individual transfer. SEND/RECEIVE's software-named-on-both-ends shape is the one this book's [Operation Catalog](/overview/operation-catalog/send) already covers as the closest RDMA gets to ordinary networking -- both sides' software stays in the loop, the same way it would for any other kind of message passing.
 
 **Where this connects.** Every address this chapter resolves, wire-named or software-named, still has to become a physical address before a single byte moves -- that lookup, and the cache backing it, is [Address Translation Handoff](/dma/address-translation-handoff), immediately next. Which local key or which remote key actually gets checked is what [The Memory Region Descriptor](/mr/the-memory-region-descriptor) and [Permission and Bounds Violations](/mr/permission-and-bounds-violations) already cover in full -- this chapter only decides which address and which key enter that process, not what happens once they do.
 

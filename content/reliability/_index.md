@@ -5,6 +5,9 @@ description: "A Reliable Connection promises delivery, not just transmission. Th
 icon: shield-check
 cascade:
   type: docs
+metaDescription: "How an RDMA NIC keeps the Reliable Connection promise: the replay buffer, ACK and retry timers, go-back-N retransmission, RNR handling and the MSN."
+seoTitle: "The RDMA Reliability Engine"
+homeSummary: "The Replay Buffer, retry and RNR timers, go-back-N, and the MSN."
 ---
 
 Every chapter so far that named a timer, a retry count, or an acknowledgment left the actual mechanism closed. This part opens it: the live state a Queue Pair keeps to know what it sent and what still needs confirming, the buffer that holds an unacknowledged packet's worth of information long enough to resend it, the two parallel state machines that decide when a timeout becomes a retry and when a retry becomes a QP driven to ERROR, what actually gets retransmitted when it does, what happens when many Queue Pairs need retransmission service from the same shared pipeline at once, and what happens when a Queue Pair resets with a timer armed and a replay buffer entry still waiting on an acknowledgment that will now never come.

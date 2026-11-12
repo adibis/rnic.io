@@ -1,0 +1,94 @@
+title: "Remote Access Error"
+diagram: flows/rkey-violation
+description: >-
+  An RDMA Write names an rkey whose MR allows remote read only. The packet
+  passes the PSN check, fails the permission check, and draws a Remote
+  Access Error NAK; the responder's QP and then the requester's QP both
+  move to ERROR, with no retry.
+steps:
+  - caption: >-
+      The requester sends a WRITE whose rkey names an MR on the responder.
+      That MR was registered with remote read permission only.
+    lit: [block-send]
+    chapter: /mr/the-memory-region-descriptor
+
+  - caption: >-
+      PSN 1000 is the one expected, so the packet passes the sequence gate.
+    lit: [block-psn]
+    travel: arrow-w
+    packet:
+      label: "WRITE_ONLY  PSN 1000"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x0A  RC RDMA WRITE Only"]
+            - [DestQP, "0x000012"]
+            - [AckReq, "1"]
+            - [PSN, "1000"]
+        - name: RETH
+          fields:
+            - [VA, "0x00007F3A_C0001000"]
+            - [R_Key, "0x00002A04"]
+            - [DMA Length, "4096"]
+        - name: Payload
+          fields:
+            - [Bytes, "4096"]
+    chapter: /rx/psn-check-and-out-of-order-arrival
+
+  - predict: >-
+      The rkey is valid and the address is inside the MR. Does the write go
+      through?
+    caption: >-
+      No. The MR exists, but its access flags leave out remote write. A
+      permission failure and a bounds failure are reported the same way, and
+      nothing is written.
+    lit: [block-deny]
+    chapter: /mr/permission-and-bounds-violations
+
+  - caption: >-
+      The responder NAKs PSN 1000 with code 2, Remote Access Error.
+    lit: [block-resp-err]
+    travel: arrow-nak
+    packet:
+      label: "NAK  PSN 1000"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x11  RC Acknowledge"]
+            - [DestQP, "0x000034"]
+            - [AckReq, "0"]
+            - [PSN, "1000"]
+        - name: AETH
+          fields:
+            - [Syndrome, "NAK (bits 6:5 = 11), code 2: remote access error"]
+            - [MSN, "0x000000"]
+    parallel:
+      - "NAK (Remote Access Error) to the requester"
+      - "Responder QP moves to ERROR"
+    chapter: /mr/permission-and-bounds-violations
+
+  - caption: >-
+      In the same moment, the responder's own QP raises a local access-error
+      event and moves to ERROR; it does not wait for the NAK to arrive.
+    lit: [block-resp-err]
+    travel: arrow-nak
+    token: [{label: "NAK  PSN 1000", wire: true}]
+    parallel:
+      - "NAK (Remote Access Error) to the requester"
+      - "Responder QP moves to ERROR"
+    chapter: /qp/single-qp-error-handling
+
+  - predict: >-
+      A sequence-error NAK sent the requester back to retry. Will this one?
+    caption: >-
+      No. Only sequence-error and RNR NAKs are retried. The WQE completes at
+      once with a remote access error status.
+    lit: [block-req-cqe]
+    chapter: /reliability/the-retry-and-rnr-timeout-state-machines
+
+  - caption: >-
+      The requester's QP moves to ERROR too, and every WQE posted after this
+      one completes as flushed. One bad rkey has stopped both ends of the
+      connection.
+    lit: [block-req-err]
+    chapter: /qp/single-qp-error-handling

@@ -1,0 +1,98 @@
+title: "Receiver Not Ready"
+diagram: flows/rnr
+description: >-
+  A SEND arrives in order but the responder's Receive Queue is empty. The
+  responder answers with an RNR NAK carrying a delay; the requester waits it
+  out against its RNR retry count, the responder's application posts a
+  Receive WQE in the meantime, and the resent SEND is consumed and ACKed.
+steps:
+  - caption: >-
+      A single-packet SEND, PSN 1000. A SEND names no remote address: it
+      depends on the responder having posted a Receive WQE.
+    lit: [block-send]
+    chapter: /overview/operation-catalog/send
+
+  - caption: >-
+      The PSN is right, but the responder's Receive Queue is empty. The packet
+      arrived intact and has nowhere to go.
+    lit: [block-empty]
+    travel: arrow-s1
+    packet: &send
+      label: "SEND_ONLY  PSN 1000"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x04  RC SEND Only"]
+            - [DestQP, "0x000012"]
+            - [AckReq, "1"]
+            - [PSN, "1000"]
+        - name: Payload
+          fields:
+            - [Bytes, "1024"]
+    chapter: /rx/the-receive-queue-descriptor-and-ring
+
+  - predict: >-
+      Should the requester treat this the way it treats a lost packet?
+    caption: >-
+      No, and the responder says so outright: an RNR NAK, whose AETH carries
+      how long to wait before trying again.
+    travel: arrow-rnr
+    packet:
+      label: "RNR NAK  PSN 1000"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x11  RC Acknowledge"]
+            - [DestQP, "0x000034"]
+            - [AckReq, "0"]
+            - [PSN, "1000"]
+        - name: AETH
+          fields:
+            - [Syndrome, "RNR NAK (bits 6:5 = 01; timer code in 4:0)"]
+            - [MSN, "0x000000"]
+    chapter: /reliability/the-retry-and-rnr-timeout-state-machines
+
+  - caption: >-
+      The requester waits out the delay. This draws on the RNR retry count,
+      a budget separate from the one loss uses, so an empty receive queue
+      never eats into the tolerance for loss.
+    lit: [block-wait]
+    chapter: /reliability/retry-and-timeout-state
+
+  - caption: >-
+      Meanwhile the responder's application posts a Receive WQE. Nothing
+      tells the requester; it tries again when the delay is up.
+    lit: [block-post-recv, block-wait]
+    parallel:
+      - "Requester waits out the RNR delay"
+      - "Responder's application posts a Receive WQE"
+    chapter: /rx/the-receive-queue-descriptor-and-ring
+
+  - caption: >-
+      The same packet arrives again. This time a WQE sits at the head of the
+      RQ: it is consumed, the payload placed, and a receive completion
+      written.
+    lit: [block-consume]
+    travel: arrow-s2
+    packet: *send
+    chapter: /cq/cqe-generation
+
+  - caption: >-
+      The ACK retires the send. Had the RQ stayed empty until the RNR retry
+      count ran out, the QP would have moved to ERROR.
+    lit: [block-retire]
+    travel: arrow-ack
+    packet:
+      label: "ACK  PSN 1000"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x11  RC Acknowledge"]
+            - [DestQP, "0x000034"]
+            - [AckReq, "0"]
+            - [PSN, "1000"]
+        - name: AETH
+          fields:
+            - [Syndrome, "ACK (bits 6:5 = 00; credit count in 4:0)"]
+            - [MSN, "0x000001"]
+    chapter: /reliability/the-retry-and-rnr-timeout-state-machines

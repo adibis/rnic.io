@@ -1,0 +1,17 @@
+{{- /* Greedy word wrap: splits .text into lines of at most .width
+  characters, keeping .max lines and ending a cut-off last line with an
+  ellipsis. */ -}}
+{{- $lines := slice -}}
+{{- $cur := "" -}}
+{{- range split .text " " -}}
+  {{- if eq $cur "" }}{{ $cur = . }}
+  {{- else if le (add (len $cur) (len .) 1) $.width }}{{ $cur = printf "%s %s" $cur . }}
+  {{- else }}{{ $lines = $lines | append $cur }}{{ $cur = . }}{{ end -}}
+{{- end -}}
+{{- if ne $cur "" }}{{ $lines = $lines | append $cur }}{{ end -}}
+{{- if gt (len $lines) .max -}}
+  {{- $kept := first .max $lines -}}
+  {{- $last := index $kept (sub .max 1) -}}
+  {{- $lines = (first (sub .max 1) $kept) | append (printf "%s…" (strings.TrimRight ".,:;" $last)) -}}
+{{- end -}}
+{{- return $lines -}}

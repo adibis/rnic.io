@@ -1,0 +1,173 @@
+title: "SEND, block by block"
+diagram: flows/op-view
+play: "Play this SEND"
+description: >-
+  A single-packet SEND across both hosts: Host A's doorbell, WQE read and
+  payload read, the packet on the wire, RNIC B fetching the Receive WQE that
+  names the buffer, placing the payload, and writing a completion while the
+  ACK goes back. A closing scene shows what immediate data changes.
+steps:
+  - scene: "Before anything is sent"
+    role: "Responder"
+    caption: >-
+      Host B's application has already posted a Receive WQE naming a buffer.
+      A SEND carries no address, so that WQE is the only thing that will say
+      where the bytes go.
+    lit: [block-b-app, block-b-rq]
+    chapter: /rx/the-receive-queue-descriptor-and-ring
+
+  - scene: "On Host A"
+    role: "Requester"
+    caption: >-
+      The application writes a SEND WQE into the Send Queue ring and rings
+      the doorbell: one MMIO write across PCIe.
+    lit: [block-a-app, block-a-sq, block-nica-fetch]
+    travel: arrow-a-doorbell
+    token: "doorbell"
+    chapter: /tx/the-send-queue-ring
+
+  - caption: >-
+      RNIC A reads the WQE out of host memory and looks up the QP's context.
+    lit: [block-a-sq, block-nica-fetch]
+    travel: arrow-a-wqe-read
+    token: "WQE"
+    chapter: /tx/wqe-prefetch
+
+  - caption: >-
+      The Key Cache checks the lkey on the source buffer, then the DMA engine
+      reads the 4 KiB payload out of Host A's memory.
+    lit: [block-nica-key, block-nica-dma, block-a-buf]
+    travel: arrow-a-payload-read
+    token: "4 KiB"
+    chapter: /dma/the-gather-path
+
+  - caption: >-
+      TX Packet Build puts a BTH in front of the payload and nothing else: no
+      RETH, because there is no remote address to state. A Replay Buffer
+      entry is recorded and the packet leaves.
+    lit: [block-nica-tx]
+    travel: arrow-wire-req
+    packet: &send_pkt
+      label: "SEND_ONLY  PSN 1000"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x04  RC SEND Only"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000012"]
+            - [AckReq, "1"]
+            - [PSN, "1000"]
+        - name: Payload
+          fields:
+            - [Bytes, "4096"]
+    chapter: /tx/tx-packet-build
+
+  - scene: "On Host B"
+    role: "Responder"
+    caption: >-
+      RX Parse checks the PSN. There is no rkey in the packet to check:
+      whatever permission this SEND needs comes from Host B's own Receive
+      WQE.
+    lit: [block-nicb-rx]
+    packet: *send_pkt
+    chapter: /rx/psn-check-and-out-of-order-arrival
+
+  - predict: >-
+      The packet names no address. Where does RNIC B find one?
+    caption: >-
+      In the Receive WQE at the head of the Receive Queue, taken strictly in
+      order. RNIC B reads it across PCIe, unless it already holds it on-chip.
+      An empty queue here would draw an RNR NAK instead.
+    lit: [block-nicb-rq, block-b-rq]
+    travel: arrow-b-rq-read
+    token: "RQ WQE"
+    chapter: /rx/the-receive-queue-descriptor-and-ring
+
+  - caption: >-
+      The Key Cache checks the lkey Host B's software put in that WQE, then
+      the DMA engine writes the payload into the buffer it named.
+    lit: [block-nicb-key, block-nicb-dma, block-b-buf]
+    travel: arrow-b-mem-write
+    token: "4 KiB"
+    chapter: /dma/the-scatter-path
+
+  - caption: >-
+      CQE Generation writes a receive completion into Host B's Completion
+      Queue, and at the same moment the ACK for PSN 1000 leaves through RNIC
+      B's TX path. A SEND always tells the responder's software; the ACK
+      does not wait for that.
+    lit: [block-nicb-cqe, block-b-cq, block-nicb-tx]
+    travel: [arrow-b-cqe-write, arrow-wire-resp]
+    token: [{label: "CQE", wire: false}, {label: "ACK  PSN 1000", wire: true}]
+    parallel:
+      - "Receive CQE written into Host B's CQ"
+      - "ACK for PSN 1000 leaves through RNIC B's TX"
+    packet: &ack_pkt
+      label: "ACK  PSN 1000"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x11  RC Acknowledge"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000034"]
+            - [PSN, "1000"]
+        - name: AETH
+          fields:
+            - [Syndrome, "ACK (bits 6:5 = 00; credit count in 4:0)"]
+            - [MSN, "0x000001"]
+    chapter: /cq/cqe-generation
+
+  - condition: "only if software armed the CQ"
+    caption: >-
+      A completion event tells Host B's application to look.
+    lit: [block-nicb-event, block-b-app]
+    travel: arrow-b-event
+    token: "event"
+    chapter: /cq/event-and-multi-cq-arbitration
+
+  - scene: "The ACK returns"
+    role: "Requester"
+    caption: >-
+      RX Parse on RNIC A matches the ACK against the Replay Buffer, retires
+      the entry and disarms the retry timer.
+    lit: [block-nica-rx]
+    packet: *ack_pkt
+    chapter: /reliability/retry-and-timeout-state
+
+  - condition: "only if the Work Request was signaled"
+    caption: >-
+      RNIC A writes the send completion into Host A's Completion Queue.
+    lit: [block-nica-cqe, block-a-cq]
+    travel: arrow-a-cqe-write
+    token: "CQE"
+    chapter: /cq/cqe-generation
+
+  - scene: "With Immediate"
+    role: "Responder"
+    predict: >-
+      The same SEND as SEND_ONLY_WITH_IMMEDIATE, carrying 32 bits of
+      immediate data. Which blocks change?
+    caption: >-
+      None. The path is the same; only the receive CQE differs. RNIC B copies
+      the ImmDt value into it, so Host B's software reads the 32 bits from
+      the completion without looking in the buffer.
+    lit: [block-nicb-cqe, block-b-cq]
+    travel: arrow-b-cqe-write
+    token: "CQE + imm"
+    packet:
+      label: "SEND_ONLY_IMM  PSN 1000"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x05  RC SEND Only with Immediate"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000012"]
+            - [AckReq, "1"]
+            - [PSN, "1000"]
+        - name: ImmDt
+          fields:
+            - [Immediate, "0x0000002A"]
+        - name: Payload
+          fields:
+            - [Bytes, "4096"]
+    chapter: /cq/the-cqe

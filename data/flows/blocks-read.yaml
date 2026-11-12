@@ -1,0 +1,145 @@
+title: "RDMA READ, block by block"
+diagram: flows/op-view
+play: "Play this READ"
+description: >-
+  An 8 KiB RDMA READ across both hosts: a request with no payload, RNIC B
+  reading its own host's memory and building two response packets on the
+  requester's PSNs, and RNIC A writing each into Host A's buffer. The last
+  response is the acknowledgement.
+steps:
+  - scene: "On Host A"
+    role: "Requester"
+    caption: >-
+      The application writes a READ WQE, naming a remote address and rkey to
+      read from and a local buffer to read into, and rings the doorbell.
+    lit: [block-a-app, block-a-sq, block-nica-fetch]
+    travel: arrow-a-doorbell
+    token: "doorbell"
+    chapter: /tx/the-send-queue-ring
+
+  - caption: >-
+      RNIC A reads the WQE out of host memory and looks up the QP's context.
+    lit: [block-a-sq, block-nica-fetch]
+    travel: arrow-a-wqe-read
+    token: "WQE"
+    chapter: /tx/wqe-prefetch
+
+  - predict: >-
+      A WRITE read its payload out of Host A's memory at this point. What
+      does a READ read?
+    caption: >-
+      Nothing. The local buffer is where the data will land, not where it
+      comes from: the Key Cache checks its lkey, and the request is a BTH
+      and a RETH with no payload. It
+      takes PSN 2000 and reserves 2001 for the second response packet. A
+      Replay Buffer entry is recorded and the request leaves.
+    lit: [block-nica-key, block-nica-tx]
+    travel: arrow-wire-req
+    packet:
+      label: "READ_REQUEST  PSN 2000"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x0C  RC RDMA READ Request"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000012"]
+            - [PSN, "2000"]
+        - name: RETH
+          fields:
+            - [VA, "0x00007F3A_C0001000"]
+            - [R_Key, "0x00002A04"]
+            - [DMA Length, "8192"]
+    chapter: /tx/tx-packet-build
+
+  - scene: "On Host B"
+    role: "Responder"
+    caption: >-
+      RX Parse checks the PSN, and the Key Cache checks the rkey for remote
+      read over all 8 KiB. The request also takes one of the QP's
+      outstanding-read slots.
+    lit: [block-nicb-rx, block-nicb-key]
+    chapter: /mr/permission-and-bounds-violations
+
+  - predict: >-
+      Host B's software posted nothing for this request. Who reads the 8 KiB
+      out of Host B's memory?
+    caption: >-
+      RNIC B's DMA engine. The arrow that carried a WRITE's payload into
+      Host B's memory now runs the other way.
+    lit: [block-nicb-dma, block-b-buf]
+    travel: arrow-b-mem-read
+    token: "8 KiB"
+    chapter: /dma/the-gather-path
+
+  - caption: >-
+      RNIC B's TX Packet Build turns the data into a response, the job a
+      requester's TX path normally does. READ_RESPONSE_FIRST carries PSN
+      2000, the request's own PSN, with an AETH and the first 4 KiB.
+    lit: [block-nicb-tx]
+    travel: [arrow-wire-resp]
+    token: [{label: "RESP FIRST 2000", wire: true}]
+    packet:
+      label: "READ_RESPONSE_FIRST  PSN 2000"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x0D  RC RDMA READ Response First"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000034"]
+            - [PSN, "2000"]
+        - name: AETH
+          fields:
+            - [Syndrome, "ACK (bits 6:5 = 00; credit count in 4:0)"]
+            - [MSN, "0x000000"]
+        - name: Payload
+          fields:
+            - [Bytes, "4096"]
+    chapter: /tx/tx-packet-build
+
+  - scene: "The response returns"
+    role: "Requester"
+    caption: >-
+      RNIC A matches PSN 2000 to its outstanding READ and writes the first
+      4 KiB into the buffer its own WQE named; nothing on the wire says
+      where. READ_RESPONSE_LAST is already on its way behind it.
+    lit: [block-nica-rx, block-nica-dma, block-a-buf, block-nicb-tx]
+    travel: [arrow-a-reply-write, arrow-wire-resp]
+    token: [{label: "4 KiB", wire: false}, {label: "RESP LAST 2001", wire: true}]
+    parallel:
+      - "First 4 KiB written into Host A's buffer"
+      - "READ_RESPONSE_LAST, PSN 2001, on the wire"
+    packet:
+      label: "READ_RESPONSE_LAST  PSN 2001"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x0F  RC RDMA READ Response Last"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000034"]
+            - [PSN, "2001"]
+        - name: AETH
+          fields:
+            - [Syndrome, "ACK (bits 6:5 = 00; credit count in 4:0)"]
+            - [MSN, "0x000001"]
+        - name: Payload
+          fields:
+            - [Bytes, "4096"]
+    chapter: /dma/target-selection
+
+  - caption: >-
+      The last 4 KiB lands behind the first. Its AETH is the acknowledgement:
+      the Replay Buffer entry retires and the retry timer disarms, with no
+      separate ACK.
+    lit: [block-nica-rx, block-nica-dma, block-a-buf]
+    travel: arrow-a-reply-write
+    token: "4 KiB"
+    chapter: /reliability/message-completion-and-the-msn
+
+  - condition: "only if the Work Request was signaled"
+    caption: >-
+      RNIC A writes the completion into Host A's Completion Queue. By the
+      time the application sees it, the data is already in its buffer.
+    lit: [block-nica-cqe, block-a-cq]
+    travel: arrow-a-cqe-write
+    token: "CQE"
+    chapter: /cq/cqe-generation

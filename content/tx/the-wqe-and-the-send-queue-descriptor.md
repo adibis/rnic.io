@@ -6,6 +6,8 @@ publishDate: 2026-09-04
 draft: false
 description: "A WQE and a wire packet are not the same shape. Software builds one -- a generic descriptor any transport can use, every field and flag named here. Hardware builds the other from it -- opcode, BTH, RETH, payload, ICRC. This chapter is about the shape that exists in between the two: what a Send Queue actually holds before any of that translation happens."
 next: /tx/the-send-queue-ring
+metaDescription: "What an RDMA Send Queue WQE holds before the NIC turns it into a packet: every field and flag of the descriptor software builds."
+seoTitle: "The RDMA WQE and Send Queue Descriptor"
 ---
 
 ## Overview

@@ -7,6 +7,8 @@ draft: false
 description: "The wire does not ask permission before interleaving packets from a dozen different Queue Pairs. One shared parser and one shared placement stage still have to service them in some order -- the same policy question TX Pipeline asked of the transmit side, asked here of arrivals nothing chose to interleave in the first place."
 prev: /rx/single-qp-rx-stalls
 next: /rx/hardware-assisted-rx-dispatch-engines
+metaDescription: "How an RNIC's shared parser and placement stage service packets from many Queue Pairs that arrive interleaved on the wire."
+seoTitle: "Multi-QP RX Arbitration"
 ---
 
 ## Overview

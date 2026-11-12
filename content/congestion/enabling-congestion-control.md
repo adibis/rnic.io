@@ -7,6 +7,8 @@ draft: false
 description: "There's no congestion-control switch on a Queue Pair. There's a Traffic Class attribute -- the same QoS mechanism InfiniBand has always had -- and RoCEv2's own annex is what turns setting it correctly into the one act that actually makes a QP's packets eligible for the whole mechanism this Part describes."
 prev: /congestion/caching
 next: /congestion/cnp-generation
+metaDescription: "There is no congestion-control switch on a Queue Pair. In RoCEv2 the Traffic Class attribute is what makes a QP's packets eligible for ECN and DCQCN."
+seoTitle: "Enabling RoCEv2 Congestion Control on a QP"
 ---
 
 ## Overview

@@ -1,0 +1,220 @@
+title: "One RDMA Write with Immediate, block by block"
+diagram: overview/00-master-diagram-linked
+description: >-
+  The same RDMA Write with Immediate as One Transaction, Start to Finish,
+  followed through the adapter's blocks: the requester's send path, the
+  responder's receive path, then the ACK back on the requester. The same
+  drawing stands for both machines; the badge says which one you are on.
+steps:
+  # ---------------------------------------------------------------- requester
+  - scene: "Send path"
+    role: "Requester"
+    caption: >-
+      The doorbell says new work exists. WQE Fetch reads the RDMA Write with
+      Immediate WQE off the Send Queue ring in host memory.
+    lit: [block-host-desc-rings, block-wqe-fetch-sched]
+    travel: arrow-host-desc-rings__wqe-fetch-sched
+    token: "WQE"
+    chapter: /tx/the-send-queue-ring
+
+  - caption: >-
+      The scheduler looks up the sending QP's context: state, next PSN, path.
+      A QP Cache hit avoids a trip to the backing QP Table.
+    lit: [block-wqe-fetch-sched, block-qp-cache]
+    travel: arrow-wqe-fetch-sched__qp-cache
+    token: "QPN"
+    chapter: /qp/qp-caching
+
+  - caption: >-
+      The Rate Limiter checks this QP's entry. No congestion has been
+      signalled, so the gate opens.
+    lit: [block-rate-limiter, arrow-rate-limiter__tx-packet-build]
+    travel: arrow-wqe-fetch-sched__rate-limiter
+    token: "rate?"
+    chapter: /congestion/the-rate-limiter-table
+
+  - caption: >-
+      The WQE's lkey resolves through the Key Cache, giving the DMA Engine a
+      validated translation for the source buffer.
+    lit: [block-key-cache, block-dma-engine]
+    travel: arrow-key-cache__dma-engine
+    token: "lkey"
+    chapter: /mr/key-caching
+
+  - caption: >-
+      The DMA Engine gathers the 4,096 source bytes, through the system IOMMU
+      when one is present, and hands them to TX Packet Build.
+    lit: [block-dma-engine, block-system-iommu, block-tx-packet-build]
+    travel: arrow-dma-engine__tx-packet-build
+    token: "4 KiB"
+    chapter: /dma/the-gather-path
+
+  - caption: >-
+      As the packet leaves, the Replay Buffer records what a resend would
+      need: the header fields
+      and a reference to the source buffer, not a copy of the payload. The
+      retry timer starts.
+    lit: [block-replay-buffer]
+    travel: [arrow-tx-packet-build__wire-out, arrow-tx-packet-build__replay-buffer]
+    token: [{label: "WRITE_ONLY_IMM  PSN 1000", wire: true}, "entry 1000"]
+    parallel:
+      - "Packet leaves on the wire"
+      - "Replay Buffer entry written"
+    chapter: /reliability/the-replay-buffer
+
+  - caption: >-
+      BTH, RETH, ImmDt, payload, and ICRC leave as one RoCEv2 packet, in the
+      same moment its Replay Buffer entry is written.
+    lit: [block-tx-packet-build]
+    travel: [arrow-tx-packet-build__wire-out, arrow-tx-packet-build__replay-buffer]
+    token: [{label: "WRITE_ONLY_IMM  PSN 1000", wire: true}, "entry 1000"]
+    packet: &write_pkt
+      label: "WRITE_ONLY_IMM  PSN 1000"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x0B  RC RDMA WRITE Only with Immediate"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000012"]
+            - [AckReq, "1"]
+            - [PSN, "1000"]
+        - name: RETH
+          fields:
+            - [VA, "0x00007F3A_C0001000"]
+            - [R_Key, "0x00002A04"]
+            - [DMA Length, "4096"]
+        - name: ImmDt
+          fields:
+            - [Immediate, "0x0000002A"]
+        - name: Payload
+          fields:
+            - [Bytes, "4096"]
+    parallel:
+      - "Packet leaves on the wire"
+      - "Replay Buffer entry written"
+    chapter: /tx/tx-packet-build
+
+  # ---------------------------------------------------------------- responder
+  - scene: "Receive path"
+    role: "Responder"
+    caption: >-
+      Now on the other machine's adapter. RX Parser reads the opcode: one
+      packet, carrying both RETH and ImmDt.
+    lit: [block-rx-parser-reassembly]
+    travel: arrow-wire-in__rx-parser-reassembly
+    packet: *write_pkt
+    chapter: /rx/rx-packet-parse
+
+  - caption: >-
+      DestQP 0x000012 selects the responder's QP. Its context, including the
+      expected PSN, comes from the QP Cache.
+    lit: [block-rx-parser-reassembly, block-qp-cache]
+    travel: arrow-rx-parser-reassembly__qp-cache
+    token: "QPN"
+    chapter: /qp/qp-caching
+
+  - caption: >-
+      PSN 1000 equals the expected PSN, so the packet is accepted.
+    lit: [block-rx-psn-check]
+    travel: arrow-rx-parser-reassembly__rx-psn-check
+    token: "PSN 1000"
+    chapter: /rx/psn-check-and-out-of-order-arrival
+
+  - caption: >-
+      The rkey resolves through the Key Cache and must grant remote write
+      over the whole target range. Then the DMA Engine places the payload,
+      through the system IOMMU when one is present.
+    lit: [block-dma-engine, block-key-cache, block-system-iommu]
+    travel: arrow-rx-psn-check__dma-engine
+    token: "rkey"
+    chapter: /dma/the-scatter-path
+
+  - predict: >-
+      This WRITE carries immediate data. What does the responder produce for
+      its own software that a plain WRITE never would?
+    caption: >-
+      Immediate data consumes a pre-posted Receive WQE, so CQE Generation
+      writes a receive completion carrying the immediate value into CQ
+      Storage. A plain WRITE produces no completion on the responder. The ACK
+      leaving beside it is the next step.
+    lit: [block-cqe-gen, block-cq-storage, arrow-cqe-gen__cq-storage]
+    travel: [arrow-dma-engine__cqe-gen, arrow-tx-packet-build__wire-out]
+    token: [{label: "CQE", wire: false}, {label: "ACK  PSN 1000", wire: true}]
+    parallel:
+      - "CQE Generation writes the receive completion"
+      - "ACK for PSN 1000 leaves through TX Packet Build"
+    chapter: /cq/cqe-generation
+
+  - caption: >-
+      At the same time, RX PSN Check tells the responder's own TX Packet
+      Build that a response is due, and the ACK for PSN 1000 goes out; it
+      does not wait for the completion. The AETH's MSN counts the completed
+      message.
+    lit: [block-rx-psn-check, block-tx-packet-build, arrow-rx-psn-check__tx-packet-build]
+    travel: [arrow-dma-engine__cqe-gen, arrow-tx-packet-build__wire-out]
+    token: [{label: "CQE", wire: false}, {label: "ACK  PSN 1000", wire: true}]
+    packet: &ack_pkt
+      label: "ACK  PSN 1000"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x11  RC Acknowledge"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000034"]
+            - [AckReq, "0"]
+            - [PSN, "1000"]
+        - name: AETH
+          fields:
+            - [Syndrome, "ACK (bits 6:5 = 00; credit count in 4:0)"]
+            - [MSN, "0x000001"]
+    parallel:
+      - "CQE Generation writes the receive completion"
+      - "ACK for PSN 1000 leaves through TX Packet Build"
+    chapter: /tx/response-generation
+
+  - condition: "only if software armed the CQ"
+    caption: >-
+      The new entry raises a completion event to the host.
+    lit: [block-host-event]
+    travel: arrow-cq-storage__host-event
+    token: "event"
+    chapter: /cq/event-and-multi-cq-arbitration
+
+  # ------------------------------------------------------- requester, ACK path
+
+  - scene: "The ACK returns"
+    role: "Requester"
+    caption: >-
+      Back on the requester. RX Parser hands the ACK to PSN Check, which
+      matches it against the outstanding packets.
+    lit: [block-rx-parser-reassembly, block-rx-psn-check, arrow-rx-parser-reassembly__rx-psn-check]
+    travel: arrow-wire-in__rx-parser-reassembly
+    packet: *ack_pkt
+    chapter: /rx/psn-check-and-out-of-order-arrival
+
+  - predict: >-
+      The ACK for PSN 1000 has arrived. What must happen to the Replay Buffer
+      entry and the retry timer?
+    caption: >-
+      ACK matching retires the Replay Buffer entry for PSN 1000 and disarms
+      the retry timer. Nothing will be resent.
+    lit: [block-rx-psn-check, block-replay-buffer]
+    travel: arrow-rx-psn-check__replay-buffer
+    token: "ACK 1000"
+    chapter: /reliability/retry-and-timeout-state
+
+  - condition: "only if the Work Request was signaled"
+    caption: >-
+      The MSN covers the WQE, so it retires, and CQE Generation writes a send
+      completion into the requester's CQ Storage.
+    lit: [block-cqe-gen, block-cq-storage, arrow-cqe-gen__cq-storage]
+    travel: arrow-replay-buffer__cqe-gen
+    token: "CQE"
+    chapter: /reliability/message-completion-and-the-msn
+
+  - scene: "Recap"
+    recap: true
+    caption: >-
+      Every block this one WRITE touched, marked by which machine used it.
+      Nine did work on both machines. The Replay Buffer is the one that held
+      state across the whole round trip.

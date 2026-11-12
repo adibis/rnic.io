@@ -52,7 +52,7 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <line x1="40" y1="335" x2="860" y2="335" stroke="#575f6b" stroke-width="1"/>
 
 <rect x="680" y="350" width="180" height="44" rx="6" fill="#2f3237" stroke="#606976" stroke-width="1.3" stroke-dasharray="4,3"/>
-<text x="770" y="376" font-size="9" fill="#94a3b8" text-anchor="middle">Part 6: Congestion Control</text>
+<text x="770" y="376" font-size="9" fill="#94a3b8" text-anchor="middle">Congestion Control Engine</text>
 
 <line x1="680" y1="372" x2="415" y2="212" stroke="#94a3b8" stroke-width="1.3" stroke-dasharray="3,2"/>
 <g transform="translate(650,354)">

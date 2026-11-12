@@ -1,0 +1,223 @@
+title: Two WRITEs complete, and a FLUSH makes them visible
+diagram: flows/write-flush
+description: Two RDMA WRITEs are acknowledged and complete, which confirms order
+  and acknowledgment but not that their bytes have reached memory. A FLUSH, ordered
+  behind them and answered like a READ, is the operation that promises they are
+  visible.
+play: Play the FLUSH
+steps:
+- caption: The application posts two RDMA WRITEs to the same remote region on
+    one QP.
+  lit:
+  - block-post
+  state:
+    label: Completed and visible
+    fields:
+    - - WRITE A completed
+      - 'no'
+    - - WRITE A visible
+      - 'no'
+    - - WRITE B completed
+      - 'no'
+    - - WRITE B visible
+      - 'no'
+    - - FLUSH
+      - '-'
+  chapter: /dma/ordering-and-outstanding-dma-tracking
+- caption: Both WRITEs go out back to back; the second doesn't wait for the first
+    to be acknowledged.
+  lit:
+  - block-post
+  travel:
+  - arrow-wa
+  - arrow-wb
+  token:
+  - WRITE A
+  - WRITE B
+  parallel:
+  - WRITE A, PSN 10, on the wire
+  - WRITE B, PSN 11, right behind it
+  state:
+    label: Completed and visible
+    fields:
+    - - WRITE A completed
+      - 'no'
+    - - WRITE A visible
+      - 'no'
+    - - WRITE B completed
+      - 'no'
+    - - WRITE B visible
+      - 'no'
+    - - FLUSH
+      - '-'
+  chapter: /dma/ordering-and-outstanding-dma-tracking
+- caption: The responder accepts both, in order. A memory subsystem can take responsibility
+    for posted writes before their bytes are placed.
+  lit:
+  - block-accept
+  state:
+    label: Completed and visible
+    fields:
+    - - WRITE A completed
+      - 'no'
+    - - WRITE A visible
+      - not yet
+    - - WRITE B completed
+      - 'no'
+    - - WRITE B visible
+      - not yet
+    - - FLUSH
+      - '-'
+  chapter: /dma/ordering-and-outstanding-dma-tracking
+- caption: One cumulative ACK for PSN 11 covers both WRITEs.
+  lit:
+  - block-accept
+  travel: arrow-ack
+  token: ACK 11
+  state:
+    label: Completed and visible
+    fields:
+    - - WRITE A completed
+      - 'no'
+    - - WRITE A visible
+      - not yet
+    - - WRITE B completed
+      - 'no'
+    - - WRITE B visible
+      - not yet
+    - - FLUSH
+      - '-'
+  chapter: /dma/ordering-and-outstanding-dma-tracking
+- caption: Both WRITEs complete at the requester. Completion confirms they were
+    acknowledged in order.
+  lit:
+  - block-complete
+  state:
+    label: Completed and visible
+    fields:
+    - - WRITE A completed
+      - 'yes'
+    - - WRITE A visible
+      - not promised
+    - - WRITE B completed
+      - 'yes'
+    - - WRITE B visible
+      - not promised
+    - - FLUSH
+      - '-'
+  chapter: /dma/ordering-and-outstanding-dma-tracking
+- predict: Both WRITEs have completed. Can a reader at the responder count on
+    seeing their bytes?
+  caption: No. Ordinary completion promises order and acknowledgment, not placement.
+    The bytes may still be on their way into memory.
+  lit:
+  - block-drain
+  state:
+    label: Completed and visible
+    fields:
+    - - WRITE A completed
+      - 'yes'
+    - - WRITE A visible
+      - not promised
+    - - WRITE B completed
+      - 'yes'
+    - - WRITE B visible
+      - not promised
+    - - FLUSH
+      - '-'
+  chapter: /dma/ordering-and-outstanding-dma-tracking
+- caption: 'To get that promise the application posts a FLUSH. It is ordered behind
+    both WRITEs and handled like a READ: it waits for a response.'
+  lit:
+  - block-post-flush
+  state:
+    label: Completed and visible
+    fields:
+    - - WRITE A completed
+      - 'yes'
+    - - WRITE A visible
+      - not promised
+    - - WRITE B completed
+      - 'yes'
+    - - WRITE B visible
+      - not promised
+    - - FLUSH
+      - posted
+  chapter: /dma/ordering-and-outstanding-dma-tracking
+- caption: The FLUSH asks for global visibility. The other placement type it can
+    ask for is persistence, for persistent memory.
+  lit:
+  - block-post-flush
+  travel: arrow-flush
+  token: FLUSH 12
+  state:
+    label: Completed and visible
+    fields:
+    - - WRITE A completed
+      - 'yes'
+    - - WRITE A visible
+      - not promised
+    - - WRITE B completed
+      - 'yes'
+    - - WRITE B visible
+      - not promised
+    - - FLUSH
+      - in flight
+  chapter: /dma/ordering-and-outstanding-dma-tracking
+- caption: Before answering, the responder makes every earlier WRITE on the connection
+    visible. In rxe, the Linux software RoCE driver, that is a write barrier for
+    visibility, or a flush of the persistent-memory range for persistence.
+  lit:
+  - block-place
+  state:
+    label: Completed and visible
+    fields:
+    - - WRITE A completed
+      - 'yes'
+    - - WRITE A visible
+      - 'yes'
+    - - WRITE B completed
+      - 'yes'
+    - - WRITE B visible
+      - 'yes'
+    - - FLUSH
+      - executed
+  chapter: /dma/ordering-and-outstanding-dma-tracking
+- caption: The response is a READ response with no payload, so the FLUSH completes
+    like a READ.
+  lit:
+  - block-place
+  travel: arrow-flush-resp
+  token: response
+  state:
+    label: Completed and visible
+    fields:
+    - - WRITE A completed
+      - 'yes'
+    - - WRITE A visible
+      - 'yes'
+    - - WRITE B completed
+      - 'yes'
+    - - WRITE B visible
+      - 'yes'
+    - - FLUSH
+      - answered
+  chapter: /dma/ordering-and-outstanding-dma-tracking
+- caption: 'The FLUSH completes. The application now knows what the earlier completions
+    couldn''t tell it: A and B are visible at the responder.'
+  lit:
+  - block-visible
+  state:
+    label: Completed and visible
+    fields:
+    - - WRITE A completed
+      - 'yes'
+    - - WRITE A visible
+      - 'yes'
+    - - WRITE B completed
+      - 'yes'
+    - - WRITE B visible
+      - 'yes'
+    - - FLUSH
+      - completed
+  chapter: /dma/ordering-and-outstanding-dma-tracking

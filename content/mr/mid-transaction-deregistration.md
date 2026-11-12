@@ -7,6 +7,8 @@ draft: false
 description: "The verbs contract is unambiguous: stopping use of a key before deregistering it is software's job, not hardware's. What a DMA burst already mid-flight against that key does when the table entry disappears underneath it is a question the contract doesn't have to answer, and no public source does either."
 prev: /mr/hardware-assisted-key-cache-eviction
 next: /mr/mr-capacity-and-timing
+metaDescription: "Software must stop using an RDMA key before deregistering it. What a DMA burst already in flight does when the entry disappears is left unspecified."
+seoTitle: "Deregistering a Memory Region Mid-Transaction"
 ---
 
 ## Overview

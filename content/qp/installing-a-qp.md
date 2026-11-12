@@ -7,6 +7,8 @@ draft: false
 description: "A QP exists in hardware before it can send or receive anything at all. This chapter covers the two steps that get it there: allocating its table entry, and the one transition that turns an allocated-but-inert entry into something bound to a port with its access rules already fixed."
 prev: /qp/qp-caching
 next: /qp/qp-state-machine
+metaDescription: "How an RDMA Queue Pair is installed in hardware: allocating its QP Table entry, and the RESET to INIT transition that binds it to a port."
+seoTitle: "Installing an RDMA Queue Pair"
 ---
 
 ## Overview

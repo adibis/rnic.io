@@ -41,6 +41,12 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
   <text x="510" y="306" font-size="10" fill="#928dce" text-anchor="middle">TX Packet Build (3.4)</text>
 </g>
 
+<g>
+  <rect x="700" y="270" width="280" height="46" rx="6" fill="#34383d" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <text x="840" y="290" font-size="12" font-weight="500" fill="#949ca8" text-anchor="middle">Also built here: ACKs and READ data</text>
+  <text x="840" y="306" font-size="10" fill="#949ca8" text-anchor="middle">Response Generation (3.9)</text>
+</g>
+<line x1="700" y1="293" x2="654" y2="293" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrAppz3)"/>
 <!-- Fan-out into three coexisting hazards -->
 <line x1="510" y1="316" x2="510" y2="340" stroke="#94a3b8" stroke-width="1.5"/>
 <line x1="180" y1="340" x2="840" y2="340" stroke="#94a3b8" stroke-width="1.5"/>

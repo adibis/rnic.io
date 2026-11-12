@@ -13,7 +13,7 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 </defs>
 
 <text x="620" y="30" font-size="24" font-weight="500" fill="#0f172a" text-anchor="middle">rnic.io -- RNIC Architecture, Master Block Diagram</text>
-<text x="620" y="50" font-size="15" fill="#64748b" text-anchor="middle">Every block referenced across Parts 1-8. Each chapter opens with this same drawing, one block highlighted, the rest dimmed.</text>
+<text x="620" y="50" font-size="15" fill="#64748b" text-anchor="middle">Every block this book covers. Each chapter opens with this same drawing, one block highlighted, the rest dimmed.</text>
 
 <g transform="translate(0,24)">
 <!-- ============ TX LANE ============ -->
@@ -196,6 +196,11 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <g id="arrow-rx-psn-check__dma-engine" opacity="0.35">
   <path d="M580,770 L580,720 L610,720 L610,470 L636,407" fill="none" stroke="#4338ca" stroke-width="1.5" marker-end="url(#arrIndigo)"/>
   <text x="625" y="540" font-size="13" fill="#64748b" text-anchor="middle" transform="rotate(-90, 625, 540)">accepted -&gt; DMA write</text>
+</g>
+
+<g id="arrow-rx-psn-check__tx-packet-build" opacity="0.35">
+  <path d="M627,770 L627,752 L634,752 L634,150 L655,150 L655,129" fill="none" stroke="#b45309" stroke-width="1.5" marker-end="url(#arrAmber)"/>
+  <text x="648" y="660" font-size="13" fill="#64748b" text-anchor="middle" transform="rotate(-90, 648, 660)">response due</text>
 </g>
 
 <g id="arrow-dma-engine__cqe-gen" opacity="0.35">

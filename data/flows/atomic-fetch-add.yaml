@@ -1,0 +1,115 @@
+title: "Atomic Fetch and Add, and a duplicate that must not add twice"
+diagram: flows/atomic-fetch-add
+description: >-
+  A FETCH_ADD of 1 on a remote counter holding 41: the responder writes 42
+  and keeps 41. The ATOMIC_ACKNOWLEDGE is lost, the requester resends PSN
+  3100, and the responder answers the duplicate with the saved 41 instead of
+  adding again.
+steps:
+  - caption: >-
+      The application asks to add 1 to a remote 64-bit counter and get back
+      what it held before.
+    lit: [block-post]
+    chapter: /tx/the-wqe-and-the-send-queue-descriptor
+
+  - caption: >-
+      The request is one packet: a BTH and an ATMETH carrying the address,
+      the rkey and the add value. It gets a Replay Buffer entry and the retry
+      timer arms, like any request.
+    lit: [block-build]
+    chapter: /reliability/the-replay-buffer
+
+  - caption: >-
+      PSN check, then the rkey, which must allow remote atomics on an
+      8-byte-aligned address.
+    lit: [block-rx-check]
+    travel: arrow-req
+    packet: &fa_pkt
+      label: "FETCH_ADD  PSN 3100"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x14  RC FetchAdd"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000012"]
+            - [PSN, "3100"]
+        - name: ATMETH
+          fields:
+            - [VA, "0x00007F3A_C0002000"]
+            - [R_Key, "0x00002A04"]
+            - [Swap/Add Data, "0x0000000000000001"]
+            - [Compare Data, "unused"]
+    chapter: /mr/permission-and-bounds-violations
+
+  - caption: >-
+      The responder reads 41 and writes 42 as one indivisible
+      read-modify-write. Fetch and Add always writes; there is no compare to
+      fail.
+    lit: [block-rmw]
+    chapter: /overview/operation-catalog/atomics
+
+  - caption: >-
+      It keeps 41 alongside PSN 3100. Nothing needs it yet.
+    lit: [block-save]
+    chapter: /qp/qp-context
+
+  - caption: >-
+      The ATOMIC_ACKNOWLEDGE carrying 41 is lost in the fabric.
+    lit: [block-save]
+    travel: arrow-ack-lost
+    token: "ATOMIC_ACK  41"
+    chapter: /reliability/go-back-n-retransmission
+
+  - caption: >-
+      No acknowledgement arrives, the ACK timeout expires, and the requester
+      rebuilds PSN 3100 from the Replay Buffer.
+    lit: [block-timeout]
+    chapter: /reliability/retry-and-timeout-state
+
+  - predict: >-
+      The same FETCH_ADD arrives again. The counter already holds 42. What
+      should the responder do?
+    caption: >-
+      Not add again. PSN 3100 is below the expected 3101, so it is a
+      duplicate. The responder finds the 41 it kept for that PSN and sends it
+      back without touching the counter. If the saved value were already gone,
+      Linux's soft-RoCE driver would drop the request rather than run it.
+    lit: [block-dup]
+    travel: arrow-req-again
+    packet: *fa_pkt
+    chapter: /rx/psn-check-and-out-of-order-arrival
+
+  - caption: >-
+      This acknowledgement gets through, with the original value in its
+      ATMACK.
+    lit: [block-dup]
+    travel: arrow-ack
+    packet:
+      label: "ATOMIC_ACK  PSN 3100"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x12  RC Atomic Acknowledge"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000034"]
+            - [PSN, "3100"]
+        - name: AETH
+          fields:
+            - [Syndrome, "ACK (bits 6:5 = 00; credit count in 4:0)"]
+            - [MSN, "0x000001"]
+        - name: ATMACK
+          fields:
+            - [Original Data, "0x0000000000000029"]
+    chapter: /overview/operation-catalog/atomics
+
+  - caption: >-
+      The requester writes 41 to the reply buffer and retires the entry. The
+      counter holds 42: one add, though the request crossed the wire twice.
+    lit: [block-reply]
+    chapter: /dma/the-scatter-path
+
+  - condition: "only if the Work Request was signaled"
+    caption: >-
+      The send completion posts with 41 in the reply buffer.
+    lit: [block-send-cqe]
+    chapter: /cq/cqe-generation

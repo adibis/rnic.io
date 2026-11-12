@@ -6,6 +6,8 @@ publishDate: 2026-09-04
 draft: false
 description: "A WQE is deliberately thin: hardware produces everything downstream of it. A CQE runs that discipline in reverse -- it's hardware's own report of what actually happened, and on a failed completion, most of it isn't even required to be trustworthy. This chapter is the field list, and the one status check that decides which fields you're allowed to read at all."
 next: /cq/the-completion-queue
+metaDescription: "The fields of an RDMA Completion Queue Entry, and the status check that decides which of them can be trusted when a completion fails."
+seoTitle: "The RDMA CQE: Completion Entry Fields"
 ---
 
 ## Overview

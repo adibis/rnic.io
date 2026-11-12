@@ -32,7 +32,7 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <circle cx="640" cy="160" r="45" fill="#492727" stroke="#ce8d8d" stroke-width="1.5"/>
 <text x="640" y="156" font-size="11" font-weight="500" fill="#ce8d8d" text-anchor="middle">QP</text>
 <text x="640" y="170" font-size="11" font-weight="500" fill="#ce8d8d" text-anchor="middle">ERROR</text>
-<text x="640" y="220" font-size="8" fill="#949ca8" text-anchor="middle">either counter reaching zero drives the QP here (Part 5.4)</text>
+<text x="640" y="220" font-size="8" fill="#949ca8" text-anchor="middle">either counter reaching zero drives the QP here</text>
 
 <text x="440" y="255" font-size="9" fill="#949ca8" text-anchor="middle">QP Context (1.1) already named the ceilings these counters count down from; this is the live state built on top.</text>
 </svg>

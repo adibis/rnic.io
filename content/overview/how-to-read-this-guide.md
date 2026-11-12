@@ -1,11 +1,13 @@
 ---
 title: "How to Read This Guide"
-weight: 6
+weight: 7
 date: 2026-09-04
 publishDate: 2026-09-04
 draft: false
 description: "Every chapter from Queue Pair Management onward follows the same template and draws on the same five color-coded callouts. Both are named here once, before Queue Pair Management starts."
-prev: /overview/one-transaction-start-to-finish
+prev: /overview/one-all-reduce
+metaDescription: "How the rnic.io RDMA NIC architecture guide is organized: the chapter template every Part follows and the five color-coded callouts."
+seoTitle: "How to Read the RNIC Architecture Guide"
 ---
 
 Every chapter from [Queue Pair Management](/qp/) onward follows the same template, and draws on the same five color-coded callouts wherever one earns its place. Both are named here once, so you recognize them by design from the first chapter rather than by repetition several chapters in.
@@ -17,11 +19,8 @@ Every chapter outside the [Overview](/overview/) part — not the chapters you'v
 - **Overview.** One paragraph stating what this block does and why it exists, before any mechanism is described.
 - **Locator.** The master RNIC block diagram, with this chapter's block highlighted and everything else dimmed. It's both a "you are here" and the chapter's hero image, the same drawing every time, never a new diagram. Here it is whole, every block clickable to the chapter that owns it:
 
-<div class="master-diagram-wrap master-diagram-light">
-{{< inline-svg "static/images/overview/00-master-diagram-linked.svg" >}}
-</div>
-<div class="master-diagram-wrap master-diagram-dark">
-{{< inline-svg "static/images/overview/00-master-diagram-linked-dark.svg" >}}
+<div class="master-diagram-wrap rnic-themed-svg">
+{{< inline-svg "static/images/overview/00-master-diagram-linked.svg" "The RNIC master block diagram: every hardware block between a Work Request and the wire, each one a link to the chapter that covers it" >}}
 </div>
 
 - **Block diagram.** A second diagram, zoomed to just this stage or structure, replacing the locator's whole-chip context with actual internal detail.

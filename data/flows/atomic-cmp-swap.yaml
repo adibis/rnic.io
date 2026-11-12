@@ -1,0 +1,84 @@
+title: "Atomic Compare and Swap"
+diagram: flows/atomic-cmp-swap
+description: >-
+  A COMPARE_SWAP on a remote 64-bit word: the request carries an ATMETH with
+  the address, rkey, swap and compare values; the responder performs one
+  indivisible read-modify-write and returns the original value in
+  ATOMIC_ACKNOWLEDGE, which the requester writes to its reply buffer.
+steps:
+  - caption: >-
+      The application asks for a compare and swap on a remote 64-bit word:
+      if it holds 5, make it 9.
+    lit: [block-post]
+    chapter: /tx/the-wqe-and-the-send-queue-descriptor
+
+  - caption: >-
+      The request is one packet with an ATMETH: target address, rkey, swap
+      value and compare value. The target must be 8-byte aligned. A local
+      buffer, under an lkey, waits for the reply.
+    lit: [block-build]
+    chapter: /overview/operation-catalog/atomics
+
+  - caption: >-
+      PSN check, then the rkey, which this time must carry remote atomic
+      permission.
+    lit: [block-rx-check]
+    travel: arrow-req
+    packet:
+      label: "COMPARE_SWAP  PSN 3000"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x13  RC CmpSwap"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000012"]
+            - [PSN, "3000"]
+        - name: ATMETH
+          fields:
+            - [VA, "0x00007F3A_C0002000"]
+            - [R_Key, "0x00002A04"]
+            - [Swap Data, "0x0000000000000009"]
+            - [Compare Data, "0x0000000000000005"]
+    chapter: /mr/permission-and-bounds-violations
+
+  - predict: >-
+      The word holds 5, and the compare value is 5. What value does the
+      responder send back?
+    caption: >-
+      It reads 5, finds it equal to the compare value, and writes 9, as one
+      indivisible read-modify-write. A WRITE only places bytes; this computes
+      on them.
+    lit: [block-rmw]
+    chapter: /overview/operation-catalog/atomics
+
+  - caption: >-
+      It sends back the value it found, 5, not the one it wrote.
+      ATOMIC_ACKNOWLEDGE carries it in the ATMACK, and the requester writes
+      it to the reply buffer.
+    lit: [block-reply]
+    travel: arrow-ack
+    packet:
+      label: "ATOMIC_ACK  PSN 3000"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x12  RC Atomic Acknowledge"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000034"]
+            - [PSN, "3000"]
+        - name: AETH
+          fields:
+            - [Syndrome, "ACK (bits 6:5 = 00; credit count in 4:0)"]
+            - [MSN, "0x000001"]
+        - name: ATMACK
+          fields:
+            - [Original Data, "0x0000000000000005"]
+    chapter: /overview/operation-catalog/atomics
+
+  - condition: "only if the Work Request was signaled"
+    caption: >-
+      The completion posts. Software sees 5 come back, equal to its compare
+      value, and knows the swap happened. Had the word held 7, it would get 7
+      back and nothing would have changed.
+    lit: [block-send-cqe]
+    chapter: /cq/cqe-generation

@@ -7,6 +7,8 @@ draft: false
 description: "Queue Pair Management asked whether an eviction policy runs as fixed silicon, a programmable engine, or a software trap. This chapter asks the same question of TX scheduling -- and unlike Queue Pair Management's version, it has dated, concrete evidence that at least some shipped RNICs sit at the software-driven end of that spectrum, not by choice so much as by not having built the alternative yet."
 prev: /tx/multi-qp-tx-scheduling
 next: /tx/mid-transaction-tx-reset
+metaDescription: "Fixed silicon, a programmable engine or software: what runs TX scheduling in an RNIC, with dated evidence that some shipped NICs rely on software."
+seoTitle: "Hardware-Assisted TX Scheduling Engines"
 ---
 
 ## Overview

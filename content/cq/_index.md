@@ -5,6 +5,9 @@ description: "Every operation this book has walked through ends the same way: a 
 icon: check-circle
 cascade:
   type: docs
+metaDescription: "How an RDMA NIC reports finished work: Completion Queues, CQE generation, CQ overflow, notification arming, and arbitration among many CQs."
+seoTitle: "RDMA Completion Queues and Event Management"
+homeSummary: "CQE generation, overflow, notification, and arbitration across many CQs."
 ---
 
 The TX and RX pipelines both end at the same kind of structure: a Completion Queue Entry gets generated, written into a per-CQ ring, and reported -- by polling or by interrupt -- to whatever's waiting on it. This part covers that path end to end: CQE generation from both the send and receive sides, what happens when a CQ fills up faster than software drains it, and how hardware arbitrates event reporting when many queues have something to report at once.

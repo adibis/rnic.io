@@ -7,6 +7,8 @@ draft: false
 description: "QP Capacity and Timing left this question open before this Part even existed: does a Rate Limiter entry behave like the QP Table's hard-allocated row, or like the Replay Buffer's dual-natured mix of hard quota and soft cache? The answer turns out to be the simpler of the two -- and the more interesting question is whether this table is even a separate structure at all."
 prev: /congestion/rate-limiter-context
 next: /congestion/caching
+metaDescription: "Is an RNIC's rate-limiter table hard-allocated per QP like the QP Table, or quota plus cache like the Replay Buffer? And is it a separate structure at all?"
+seoTitle: "The RNIC Rate Limiter Table"
 ---
 
 ## Overview

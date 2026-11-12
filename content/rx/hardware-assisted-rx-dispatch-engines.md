@@ -7,6 +7,8 @@ draft: false
 description: "The receive path has a constraint the transmit side never faces: a packet already crossed the wire before this pipeline gets a say in when it arrives. This chapter asks the same fixed-versus-programmable question TX Pipeline asked of transmit scheduling, and finds a real structural reason the honest answer may differ."
 prev: /rx/multi-qp-rx-arbitration
 next: /rx/mid-transaction-rx-reset
+metaDescription: "Fixed or programmable receive dispatch in an RNIC, and why a packet that has already crossed the wire constrains the answer more than on transmit."
+seoTitle: "Hardware-Assisted RX Dispatch Engines"
 ---
 
 ## Overview

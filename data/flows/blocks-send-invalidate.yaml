@@ -1,0 +1,159 @@
+title: "SEND with Invalidate, block by block"
+diagram: flows/op-view
+play: "Play this SEND with Invalidate"
+description: >-
+  A SEND_ONLY_WITH_INVALIDATE across both hosts: the payload lands in the
+  buffer the Receive WQE named, RNIC B then invalidates the rkey the IETH
+  carries, and its receive completion names that key. A later WRITE that
+  still uses the key is refused.
+steps:
+  - scene: "Before the SEND"
+    role: "Responder"
+    caption: >-
+      Host B lent Host A a buffer under rkey 0x2A04, a key registered so it
+      can be revoked this way, and Host A has been writing into it. Host B
+      has also posted a Receive WQE for the message that will say Host A is
+      done.
+    lit: [block-b-app, block-b-rq, block-nicb-key]
+    chapter: /mr/registering-a-memory-region
+
+  - scene: "On Host A"
+    role: "Requester"
+    caption: >-
+      The application writes a SEND with Invalidate WQE naming rkey 0x2A04,
+      and rings the doorbell.
+    lit: [block-a-app, block-a-sq, block-nica-fetch]
+    travel: arrow-a-doorbell
+    token: "doorbell"
+    chapter: /tx/the-wqe-and-the-send-queue-descriptor
+
+  - caption: >-
+      RNIC A reads the WQE, checks the lkey on the source buffer, and reads
+      the payload.
+    lit: [block-nica-fetch, block-nica-key, block-nica-dma, block-a-buf]
+    travel: arrow-a-payload-read
+    token: "1 KiB"
+    chapter: /dma/the-gather-path
+
+  - caption: >-
+      The packet is a BTH, an IETH holding the rkey to revoke, and the
+      payload. Like any SEND, it names no address.
+    lit: [block-nica-tx]
+    travel: arrow-wire-req
+    packet:
+      label: "SEND_ONLY_INV  PSN 4000"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x17  RC SEND Only with Invalidate"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000012"]
+            - [AckReq, "1"]
+            - [PSN, "4000"]
+        - name: IETH
+          fields:
+            - [R_Key, "0x00002A04"]
+        - name: Payload
+          fields:
+            - [Bytes, "1024"]
+    chapter: /tx/tx-packet-build
+
+  - scene: "On Host B"
+    role: "Responder"
+    caption: >-
+      RX Parse checks the PSN, and RNIC B reads the Receive WQE at the head
+      of the Receive Queue, as for any SEND.
+    lit: [block-nicb-rx, block-nicb-rq, block-b-rq]
+    travel: arrow-b-rq-read
+    token: "RQ WQE"
+    chapter: /rx/the-receive-queue-descriptor-and-ring
+
+  - caption: >-
+      The payload goes into the buffer that WQE named. The lent buffer under
+      0x2A04 is not where it lands.
+    lit: [block-nicb-dma, block-b-buf]
+    travel: arrow-b-mem-write
+    token: "1 KiB"
+    chapter: /dma/the-scatter-path
+
+  - predict: >-
+      The payload is placed. What happens to rkey 0x2A04 now?
+    caption: >-
+      RNIC B invalidates it. From here on no QP can use that key: any lookup
+      fails the way an unknown key would. The memory itself is untouched;
+      Host B can register it again under a new key.
+    lit: [block-nicb-key]
+    chapter: /mr/mid-transaction-deregistration
+
+  - caption: >-
+      The receive completion goes to Host B's Completion Queue, flagged as
+      carrying an invalidation and naming 0x2A04, so Host B's software knows
+      the key is gone without asking. The ACK leaves at the same moment.
+    lit: [block-nicb-cqe, block-b-cq, block-nicb-tx]
+    travel: [arrow-b-cqe-write, arrow-wire-resp]
+    token: [{label: "CQE", wire: false}, {label: "ACK  PSN 4000", wire: true}]
+    parallel:
+      - "Receive CQE naming rkey 0x2A04 written into Host B's CQ"
+      - "ACK for PSN 4000 leaves through RNIC B's TX"
+    chapter: /cq/the-cqe
+
+  - scene: "The ACK returns"
+    role: "Requester"
+    caption: >-
+      RNIC A retires the Replay Buffer entry and, if the Work Request was
+      signaled, writes the send completion.
+    lit: [block-nica-rx, block-nica-cqe, block-a-cq]
+    travel: arrow-a-cqe-write
+    token: "CQE"
+    chapter: /reliability/retry-and-timeout-state
+
+  - scene: "A stale WRITE"
+    role: "Requester"
+    caption: >-
+      Suppose Host A still had a WRITE queued that uses rkey 0x2A04. It
+      leaves as usual; nothing on Host A knows the key is gone.
+    lit: [block-nica-tx]
+    travel: arrow-wire-req
+    packet:
+      label: "WRITE_ONLY  PSN 4001"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x0A  RC RDMA WRITE Only"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000012"]
+            - [AckReq, "1"]
+            - [PSN, "4001"]
+        - name: RETH
+          fields:
+            - [VA, "0x00007F3A_C0001000"]
+            - [R_Key, "0x00002A04"]
+            - [DMA Length, "4096"]
+        - name: Payload
+          fields:
+            - [Bytes, "4096"]
+    chapter: /tx/tx-packet-build
+
+  - scene: "Refused"
+    role: "Responder"
+    caption: >-
+      The Key Cache lookup fails, nothing is written, and RNIC B answers with
+      a remote access error NAK. As with any bad rkey, both QPs then move to
+      ERROR. The revocation took effect without Host B's software doing
+      anything.
+    lit: [block-nicb-key, block-nicb-tx]
+    travel: arrow-wire-resp
+    packet:
+      label: "NAK  PSN 4001"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x11  RC Acknowledge"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000034"]
+            - [PSN, "4001"]
+        - name: AETH
+          fields:
+            - [Syndrome, "NAK (bits 6:5 = 11), code 2: remote access error"]
+            - [MSN, "0x000001"]
+    chapter: /mr/permission-and-bounds-violations

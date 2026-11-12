@@ -1,0 +1,153 @@
+title: "Scattering one SEND into two buffers"
+diagram: flows/sge-walk
+play: "Play the scatter"
+description: >-
+  The same 7,680-byte SEND arriving as two packets at a receiver whose
+  posted Receive WQE names a 2 KiB buffer and an 8 KiB buffer. The first
+  packet splits across both; the second resumes where it stopped; the
+  completion reports how much of the posted space was used.
+steps:
+  - scene: "Packet 1 arrives"
+    caption: >-
+      SEND_FIRST, PSN 100, arrives with 4,096 bytes of payload.
+    lit: [block-b-psn, block-r-p0]
+    travel: arrow-wire
+    packet:
+      label: "SEND_FIRST  PSN 100"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x00  RC SEND First"]
+            - [DestQP, "0x000012"]
+            - [AckReq, "0"]
+            - [PSN, "100"]
+        - name: Payload
+          fields:
+            - [Bytes, "4,096"]
+    state: &s0
+      label: "Scatter cursor"
+      fields:
+        - [Receive WQE, "not taken yet"]
+        - [SGE, "-"]
+        - [offset in SGE, "-"]
+        - [bytes placed, "0"]
+    chapter: /rx/psn-check-and-out-of-order-arrival
+
+  - caption: >-
+      PSN 100 is the expected PSN, so the payload may be placed. A packet
+      that failed this check would never reach the scatter engine at all.
+    lit: [block-b-psn, block-b-scatter]
+    travel: arrow-b-ps
+    token: "4,096 B"
+    state: *s0
+    chapter: /dma/the-scatter-path
+
+  - caption: >-
+      A SEND names no address. The first packet of the message takes the
+      next Receive WQE that software posted, and that WQE's SGE list decides
+      where the bytes go: 2 KiB in MR 3, then 8 KiB in MR 4.
+    lit: [block-b-wqe, block-b-scatter, block-r-b0, block-r-b1]
+    travel: arrow-b-wqe
+    token: "Receive WQE"
+    state: &s1
+      label: "Scatter cursor"
+      fields:
+        - [Receive WQE, "taken: 2 SGEs, 10 KiB"]
+        - [SGE, "0"]
+        - [offset in SGE, "0"]
+        - [bytes placed, "0"]
+    chapter: /rx/the-receive-queue-descriptor-and-ring
+
+  - caption: >-
+      SGE 0's lkey is translated, with a local-write check this time.
+    lit: [block-b-xlate, block-b-scatter, block-b-sge0]
+    travel: arrow-b-xlate
+    token: "lkey 0x3003"
+    state: *s1
+    chapter: /dma/address-translation-handoff
+
+  - predict: >-
+      The packet carries 4,096 bytes and SGE 0 holds 2,048. What happens to
+      the other 2,048?
+    caption: >-
+      They go on into SGE 1. First SGE 0 is filled, all 2,048 bytes of it.
+    lit: [block-b-scatter, block-b-sge0, block-r-p0, block-r-b0]
+    travel: arrow-b-write0
+    token: "2,048 B"
+    state: &s2
+      label: "Scatter cursor"
+      fields:
+        - [Receive WQE, "taken: 2 SGEs, 10 KiB"]
+        - [SGE, "1"]
+        - [offset in SGE, "0"]
+        - [bytes placed, "2,048"]
+
+  - caption: >-
+      Then SGE 1 is translated and the second half of the packet lands at
+      its start. One packet, two buffers in two regions.
+    lit: [block-b-xlate, block-b-scatter, block-b-sge1, block-r-p0, block-r-b1]
+    travel: [arrow-b-xlate, arrow-b-write1]
+    token: ["lkey 0x4004", "2,048 B"]
+    state: &s3
+      label: "Scatter cursor"
+      fields:
+        - [Receive WQE, "taken: 2 SGEs, 10 KiB"]
+        - [SGE, "1"]
+        - [offset in SGE, "2,048"]
+        - [bytes placed, "4,096"]
+
+  - scene: "Packet 2 arrives"
+    caption: >-
+      SEND_LAST, PSN 101, is next in sequence. It belongs to the message
+      already in progress, so it uses the same Receive WQE and the cursor
+      where packet 1 left it.
+    lit: [block-b-psn, block-b-scatter, block-r-p1]
+    travel: [arrow-wire, arrow-b-ps]
+    token: ["SEND_LAST 101", "3,584 B"]
+    packet:
+      label: "SEND_LAST  PSN 101"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x02  RC SEND Last"]
+            - [DestQP, "0x000012"]
+            - [AckReq, "1"]
+            - [PSN, "101"]
+        - name: Payload
+          fields:
+            - [Bytes, "3,584"]
+    state: *s3
+    chapter: /rx/multi-packet-reassembly
+
+  - caption: >-
+      All 3,584 bytes fit in what is left of SGE 1, starting at offset
+      2,048.
+    lit: [block-b-xlate, block-b-scatter, block-b-sge1, block-r-p1, block-r-b1]
+    travel: [arrow-b-xlate, arrow-b-write1]
+    token: ["lkey 0x4004", "3,584 B"]
+    state: &s4
+      label: "Scatter cursor"
+      fields:
+        - [Receive WQE, "taken: 2 SGEs, 10 KiB"]
+        - [SGE, "1"]
+        - [offset in SGE, "5,632"]
+        - [bytes placed, "7,680"]
+
+  - scene: "Done"
+    predict: >-
+      SGE 1 had room for 8 KiB and got 5,632 bytes. How does software find
+      out how much arrived?
+    caption: >-
+      The receive CQE carries the byte count, 7,680. The last 2,560 bytes
+      of SGE 1 are left untouched. The opposite case is not a truncation: a
+      SEND larger than all the posted SGEs together is an error, and on RC
+      the receiver NAKs it as an invalid request.
+    lit: [block-b-scatter, block-b-sge0, block-b-sge1, block-r-b0, block-r-b1]
+    state:
+      label: "Scatter cursor"
+      fields:
+        - [Receive WQE, "complete, CQE byte count 7,680"]
+        - [SGE, "1"]
+        - [offset in SGE, "5,632 of 8,192"]
+        - [bytes placed, "7,680"]
+    chapter: /cq/cqe-generation

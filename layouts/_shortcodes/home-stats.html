@@ -1,0 +1,11 @@
+{{- /* Counts for the home page hero, computed from the content so they stay
+  true as chapters and walks are added. */ -}}
+{{- $parts := where site.Sections.ByWeight "Params.homeSummary" "!=" nil -}}
+{{- $chapters := 0 -}}{{- $walks := 0 -}}
+{{- range $parts -}}
+  {{- $chapters = add $chapters (len .RegularPagesRecursive) -}}
+{{- end -}}
+{{- range hugo.Data.flows -}}
+  {{- if .steps }}{{ $walks = add $walks 1 }}{{ end -}}
+{{- end -}}
+{{ len $parts }} parts &middot; {{ $chapters }} chapters &middot; {{ $walks }} step-through walks

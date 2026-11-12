@@ -1,0 +1,189 @@
+title: A QP's flush, the event that gates teardown, and an SRQ fault that takes
+  every QP with it
+diagram: flows/qp-flush
+description: QP 1 faults and flushes every outstanding send and receive WQE with
+  a completion of its own, then raises last WQE reached so software knows it can
+  be destroyed without disturbing the SRQ. When the SRQ itself faults, every QP
+  attached to it moves to ERROR at once.
+play: Play the flush
+steps:
+- scene: One QP faults
+  caption: Three QPs share one Shared Receive Queue. QP 1 has 3 send WQEs outstanding
+    and has already pulled 2 receive WQEs from the SRQ.
+  lit:
+  - block-srq
+  - block-qp1
+  - block-qp2
+  - block-qp3
+  state:
+    label: Queue Pairs
+    fields:
+    - - QP 1
+      - 'RTS: 3 sends, 2 SRQ WQEs held'
+    - - QP 2
+      - RTS
+    - - QP 3
+      - RTS
+    - - SRQ
+      - healthy
+    - - QP 1's CQ
+      - 0 CQEs
+  chapter: /qp/single-qp-error-handling
+- caption: QP 1's first outstanding send fails, a remote access error, and QP
+    1 moves to ERROR. Nothing outside QP 1 changes state.
+  lit:
+  - block-qp1
+  state:
+    label: Queue Pairs
+    fields:
+    - - QP 1
+      - 'ERROR: 3 sends, 2 SRQ WQEs held'
+    - - QP 2
+      - RTS
+    - - QP 3
+      - RTS
+    - - SRQ
+      - healthy
+    - - QP 1's CQ
+      - 0 CQEs
+  chapter: /qp/single-qp-error-handling
+- predict: QP 1 is in ERROR with 3 send WQEs outstanding. Are they dropped?
+  caption: 'No. Each one gets a CQE, in order: an error status for the send that
+    failed, and a flush status for the two behind it. Every WR the application
+    posted ends with a completion.'
+  lit:
+  - block-qp1
+  - block-cq
+  travel: arrow-sq-flush
+  token: 3 CQEs
+  state:
+    label: Queue Pairs
+    fields:
+    - - QP 1
+      - 'ERROR: 0 sends, 2 SRQ WQEs held'
+    - - QP 2
+      - RTS
+    - - QP 3
+      - RTS
+    - - SRQ
+      - healthy
+    - - QP 1's CQ
+      - 3 CQEs
+  chapter: /qp/single-qp-error-handling
+- caption: 'The receive side flushes the same way: the 2 WQEs QP 1 already took
+    from the SRQ complete with a flush status.'
+  lit:
+  - block-qp1
+  - block-cq
+  travel: arrow-rq-flush
+  token: 2 CQEs
+  state:
+    label: Queue Pairs
+    fields:
+    - - QP 1
+      - 'ERROR: drained'
+    - - QP 2
+      - RTS
+    - - QP 3
+      - RTS
+    - - SRQ
+      - healthy
+    - - QP 1's CQ
+      - 5 CQEs
+  chapter: /qp/single-qp-error-handling
+- caption: QP 1 will never take another WQE from the SRQ, so the adapter raises
+    last WQE reached. Destroying an SRQ-attached QP before this event can leave
+    the shared queue inconsistent for QP 2 and QP 3.
+  lit:
+  - block-qp1
+  - block-app
+  travel: arrow-ev-qp1
+  token: last WQE reached
+  state:
+    label: Queue Pairs
+    fields:
+    - - QP 1
+      - 'ERROR: safe to destroy'
+    - - QP 2
+      - RTS
+    - - QP 3
+      - RTS
+    - - SRQ
+      - healthy
+    - - QP 1's CQ
+      - 5 CQEs
+  chapter: /qp/single-qp-error-handling
+- caption: Meanwhile QP 2 keeps taking receive WQEs from the same SRQ, through
+    the same pipeline. One QP's fault stays inside that QP.
+  lit:
+  - block-srq
+  - block-qp2
+  travel: arrow-srq-qp2
+  token: WQE
+  state:
+    label: Queue Pairs
+    fields:
+    - - QP 1
+      - 'ERROR: safe to destroy'
+    - - QP 2
+      - RTS
+    - - QP 3
+      - RTS
+    - - SRQ
+      - healthy
+    - - QP 1's CQ
+      - 5 CQEs
+  chapter: /qp/single-qp-error-handling
+- scene: The shared queue faults
+  predict: Now the SRQ itself hits an error. Which QPs are affected?
+  caption: Every QP attached to it, at once. IBTA-V1 Table 58 counts a receive
+    queue that can't fetch from its SRQ as a Local QP Error, so QP 2 and QP 3
+    both move to ERROR and each raises its own QP-fatal event.
+  lit:
+  - block-srq
+  - block-qp2
+  - block-qp3
+  - block-app
+  travel:
+  - arrow-ev-qp2
+  - arrow-ev-qp3
+  token:
+  - QP fatal
+  - QP fatal
+  parallel:
+  - QP 2 moves to ERROR and raises a QP-fatal event
+  - QP 3 moves to ERROR and raises a QP-fatal event
+  state:
+    label: Queue Pairs
+    fields:
+    - - QP 1
+      - 'ERROR: safe to destroy'
+    - - QP 2
+      - 'ERROR: flushing'
+    - - QP 3
+      - 'ERROR: flushing'
+    - - SRQ
+      - error
+    - - QP 1's CQ
+      - 5 CQEs
+  chapter: /qp/single-qp-error-handling
+- caption: QP 2 and QP 3 each flush to their own CQs the way QP 1 did, and each
+    raises last WQE reached before it is safe to tear down. A fault in a shared
+    structure is the one path out of single-QP isolation.
+  lit:
+  - block-qp2
+  - block-qp3
+  state:
+    label: Queue Pairs
+    fields:
+    - - QP 1
+      - 'ERROR: safe to destroy'
+    - - QP 2
+      - 'ERROR: drained'
+    - - QP 3
+      - 'ERROR: drained'
+    - - SRQ
+      - error
+    - - QP 1's CQ
+      - 5 CQEs
+  chapter: /qp/single-qp-error-handling

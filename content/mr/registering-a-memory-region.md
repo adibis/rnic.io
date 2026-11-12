@@ -7,6 +7,8 @@ draft: false
 description: "A memory region has none of a QP's five-state richness -- it's usable or it isn't. This chapter covers the one call that makes it usable, the real hardware cost the verbs manual doesn't describe, and the one alternative -- On-Demand Paging -- that defers that cost instead of paying it upfront."
 prev: /mr/key-caching
 next: /mr/permission-and-bounds-violations
+metaDescription: "What registering an RDMA Memory Region costs in hardware: pinning pages, writing MTT and MPT entries, issuing keys, and how On-Demand Paging defers it."
+seoTitle: "Registering an RDMA Memory Region"
 ---
 
 ## Overview
@@ -24,7 +26,9 @@ A Queue Pair climbs through a hardware-enforced sequence of states before it can
 
 ## Block diagram
 
-![Registration walking page tables and pinning pages into a populated MPT/MTT entry, which then becomes a valid MR with usable lkey/rkey, and later deregistration retiring it -- with a dashed branch showing the deferred-resolution (ODP) path skipping upfront pinning for a page-fault-style first touch instead, and rejoining the same MPT/MTT population step.](/images/mr/04-registering-a-memory-region-block.svg)
+Registration walking page tables and pinning pages into a populated MPT/MTT entry, which then becomes a valid MR with usable lkey/rkey, and later deregistration retiring it -- with a dashed branch showing the deferred-resolution (ODP) path skipping upfront pinning for a page-fault-style first touch instead, and rejoining the same MPT/MTT population step.
+
+{{< flow "mr-registration" >}}
 
 ## Deep walkthrough
 

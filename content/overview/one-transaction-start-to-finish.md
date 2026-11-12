@@ -5,13 +5,15 @@ date: 2026-09-04
 publishDate: 2026-09-04
 draft: false
 description: "Every mechanism in this book gets its own chapter, in isolation. This is the one place they run together — one RDMA Write, start to finish, with a map of exactly which later chapter owns each stage it passes through."
-prev: /overview/operation-catalog
-next: /overview/how-to-read-this-guide
+prev: /overview/operation-catalog/atomics
+next: /overview/one-all-reduce
+metaDescription: "One RoCEv2 RDMA Write with Immediate traced through both NICs, packet by packet and block by block, with the chapter that covers each stage."
+seoTitle: "One RDMA Write, Start to Finish"
 ---
 
-The last four articles built the pieces separately: what RDMA demands of hardware that a conventional NIC never had to provide ([What Is RDMA](../what-is-rdma)), the exact byte layout of a RoCEv2 packet ([What Is RoCEv2](../what-is-rocev2)), why that layout carries an IP/UDP header at all ([RoCEv1 → RoCEv2](../rocev1-to-rocev2)), and the full catalog of operations a Queue Pair can issue ([The Operation Catalog](../operation-catalog)). None of them showed one operation actually moving through hardware, front to back. This article does exactly that — one RDMA Write with Immediate, from an application posting a Work Queue Element to the completion landing back in that same application's Completion Queue — and names, at every stage, which later part of this book owns that stage in depth. Nothing here is explained fully; that's deliberate. This article is a map, not a chapter.
+The articles before this one built the pieces separately: what RDMA demands of hardware that a conventional NIC never had to provide ([What Is RDMA](../what-is-rdma)), the exact byte layout of a RoCEv2 packet ([What Is RoCEv2](../what-is-rocev2)), why that layout carries an IP/UDP header at all ([RoCEv1 → RoCEv2](../rocev1-to-rocev2)), and every operation a Queue Pair can issue, each walked across both hosts on its own page ([The Operation Catalog](../operation-catalog)). None of them followed one operation through every stage of the hardware, front to back, or said which part of this book owns each stage. This article does exactly that — one RDMA Write with Immediate, from an application posting a Work Queue Element to the completion landing back in that same application's Completion Queue — and names, at every stage, which later part of this book owns that stage in depth. Nothing here is explained fully; that's deliberate. This article is a map, not a chapter.
 
-![One Transaction: RDMA Write with Immediate, local and remote. The master's TX engine fetches the WQE, checks the lkey against its Key Table, passes the rate limiter's dispatch gate, then builds BTH+RETH+IMMDT with PSN=N and sends it. The slave's RX engine parses the BTH, resolves RETH against its own Key Table, places the payload via the DMA engine, consumes the pre-posted RQ WQE because this variant carries immediate data, and posts a receive CQE before ACKing. The ACK closes the loop: the master matches the PSN, disarms its retry timer, and posts a send CQE.](/images/overview/05-one-transaction-sequence.svg)
+{{< flow "one-transaction" >}}
 
 ## Bring-up: everything that has to exist first
 
@@ -25,11 +27,15 @@ Before the adapter spends any further effort on this WQE, one gate has to pass: 
 
 Once dispatched, the adapter needs the sending QP's live context — its current PSN, its negotiated path, its state — and getting that context on-chip cheaply, or paying for a miss when it isn't already cached, is the whole subject of [Queue Pair Management](/qp/)'s [*The QP Table*](/qp/the-qp-table) and [*QP Caching*](/qp/qp-caching). The adapter also has to validate the local scatter-gather entry against its `lkey` before it's allowed to read the source bytes at all — the same Key Table that [Memory Region / Key Table](/mr/) spends its first three chapters on, consulted here from the sending side rather than the receiving side.
 
-With permission and context both resolved, the adapter builds the wire packet: a Base Transport Header carrying the opcode, the destination QP, and the PSN drawn from the QP's live send-sequence state; an RDMA Extended Transport Header carrying the remote address, `rkey`, and length (present here because this message fits in one packet — a longer message would carry RETH only on its first packet, per [The Operation Catalog](../operation-catalog)); the immediate value; and the payload itself, closed out with the invariant CRC described in [What Is RoCEv2](../what-is-rocev2). Because this is a Reliable Connection operation, the adapter also can't simply forget the packet once it's sent: a copy has to be held somewhere until it's acknowledged, and a retry timer has to start. That holding structure — the replay buffer — and the timer it's paired with belong entirely to [Reliability Engine](/reliability/).
+With permission and context both resolved, the adapter builds the wire packet: a Base Transport Header carrying the opcode, the destination QP, and the PSN drawn from the QP's live send-sequence state; an RDMA Extended Transport Header carrying the remote address, `rkey`, and length (present here because this message fits in one packet — a longer message would carry RETH only on its first packet, per [The Operation Catalog](/overview/operation-catalog/rdma-write)); the immediate value; and the payload itself, closed out with the invariant CRC described in [What Is RoCEv2](../what-is-rocev2). Because this is a Reliable Connection operation, the adapter also can't simply forget the packet once it's sent: a copy has to be held somewhere until it's acknowledged, and a retry timer has to start. That holding structure — the replay buffer — and the timer it's paired with belong entirely to [Reliability Engine](/reliability/).
 
 ## The wire
 
 What actually goes out the port — Ethernet, then IP, then UDP to the fixed RoCEv2 destination port, then the InfiniBand transport headers just assembled, then payload, then ICRC — is exactly the packet [What Is RoCEv2](../what-is-rocev2) already described field by field. This article doesn't re-derive it; it just confirms that the packet built above is a real instance of that shape, now in flight.
+
+The adapter is only part of the trip. Here is the same Write with the hosts and the switch drawn in, counting every PCIe crossing on both sides:
+
+{{< flow "system-write" >}}
 
 ## The receive path: a packet becomes bytes in memory
 
@@ -46,6 +52,10 @@ A Reliable Connection can't leave the sender in the dark. The receiver owes an a
 ## What just happened, seen from above
 
 One operation, and the QP Table/Cache pattern from [Queue Pair Management](/qp/) got consulted twice — once on each end. The Key Table from [Memory Region / Key Table](/mr/) got consulted twice as well, once to validate a local read and once to validate a remote write, by two different pieces of hardware on two different machines. The replay buffer from [Reliability Engine](/reliability/) held state for the entire round trip and nothing else in this walkthrough held state anywhere near that long. That's not a coincidence specific to RDMA Write — it's the same storage-structure-plus-working-set shape showing up in more than one place in this single transaction, and it shows up again, differently dressed, in several of the parts this walkthrough only named in passing. The next article names that shape directly, so the rest of this book reads as a pattern applied repeatedly rather than eight unrelated subsystems that happen to sit next to each other on the same die.
+
+The same transaction, followed block by block across the master diagram -- each step links to the chapter that owns it:
+
+{{< flow "chip-walk" >}}
 
 > [!IMPORTANT] Food for Thought
 > This walkthrough touched the QP Table/Cache pattern ([Queue Pair Management](/qp/)) and the Key Table ([Memory Region / Key Table](/mr/)) without dwelling on either, and named the replay buffer ([Reliability Engine](/reliability/)) as the structure holding state for the entire round trip. Before reading the next article's own reveal: based only on what this one transaction actually touched, which other parts of this book are likely to face the same table-plus-working-set-plus-eviction question?

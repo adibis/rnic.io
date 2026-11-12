@@ -1,6 +1,10 @@
 <script>
   (function () {
+    // Runs on every class change on <html>, not only theme toggles (the
+    // flow player marks the page while it is open), so it must leave an
+    // already-dark source alone.
     function darkSrc(src) {
+      if (/-dark\.svg(\?.*)?$/.test(src)) return src;
       return src.replace(/\.svg(\?.*)?$/, "-dark.svg$1");
     }
     function lightSrc(src) {
@@ -8,9 +12,13 @@
     }
     function syncDiagrams() {
       var dark = document.documentElement.classList.contains("dark");
+      // Work on the attribute, not img.src: the property resolves to an
+      // absolute URL, and writing that back would stop the selector above
+      // matching on the next toggle.
       document.querySelectorAll('img[src^="/images/"]').forEach(function (img) {
-        var next = dark ? darkSrc(img.src) : lightSrc(img.src);
-        if (next !== img.src) img.src = next;
+        var src = img.getAttribute("src");
+        var next = dark ? darkSrc(src) : lightSrc(src);
+        if (next !== src) img.setAttribute("src", next);
       });
     }
     syncDiagrams();

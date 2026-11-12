@@ -7,6 +7,8 @@ draft: false
 description: "A CNP cuts the current rate once, immediately. Getting it back is not one action but three -- a fast phase, a steady phase, and an aggressive phase, picked automatically by two counters this book already named, not chosen by whichever chapter happens to be reading them."
 prev: /congestion/cnp-generation
 next: /congestion/single-qp-rate-state-faults
+metaDescription: "How DCQCN recovers after a CNP cut: fast recovery, additive increase and hyper increase, chosen by a timer count and a byte-counter count."
+seoTitle: "DCQCN Rate Control State Machine"
 ---
 
 ## Overview
@@ -21,7 +23,7 @@ next: /congestion/single-qp-rate-state-faults
 
 ## Block diagram
 
-![A Congestion Notification Packet arriving cuts the rate immediately and resets both stage counts to zero. From there, every timer or byte-counter expiry increments its own stage count, and comparing the larger and smaller of the two against a fixed threshold picks one of three phases: fast recovery while both counts are still below it, additive increase once one has crossed but the other hasn't, and hyper increase once both have run well past it with no new CNP.](/images/congestion/06-the-rate-control-state-machine-block.svg)
+{{< flow "rate-recovery" >}}
 
 ## Deep walkthrough
 

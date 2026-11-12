@@ -6,6 +6,8 @@ publishDate: 2026-09-09
 draft: false
 description: "Mid-Transaction QP Reset named replay-buffer contents and armed timers among the leftovers RESET has to reconcile, and left both unresolved. This chapter resolves them, and finds one hazard neither chapter can fully close."
 prev: /reliability/replay-buffer-capacity-and-backpressure
+metaDescription: "What happens to replay-buffer entries and armed retry timers when an RDMA QP is reset in flight, and the one hazard that stays open."
+seoTitle: "Resetting Reliability State Mid-Transaction"
 ---
 
 ## Overview

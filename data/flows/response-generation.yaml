@@ -1,0 +1,370 @@
+title: "What the responder sends back, and when"
+diagram: flows/response-generation
+play: "Play the responses"
+description: >-
+  Six requests on one RC connection and every response they earn: a SEND
+  and a WRITE with no AckReq that get no response of their own, a READ
+  whose first response packet acknowledges both of them, a lost packet
+  that turns the next request into a PSN sequence error and a NAK, and
+  the resend that ends in a single coalesced ACK.
+steps:
+  - scene: "SEND, no AckReq"
+    role: "Requester"
+    caption: >-
+      A SEND arrives with PSN 300 and the AckReq bit clear. The requester
+      chose not to ask for a response yet.
+    lit: [arrow-send]
+    travel: arrow-send
+    packet:
+      label: "SEND_ONLY  PSN 300"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x04  RC SEND Only"]
+            - [DestQP, "0x000012"]
+            - [AckReq, "0"]
+            - [PSN, "300"]
+        - name: Payload
+          fields:
+            - [Bytes, "512"]
+    state: &s0
+      label: "Responder state"
+      fields:
+        - [expected PSN, "300"]
+        - [MSN, "0"]
+        - [ACK owed through, "none"]
+        - [NAK latch, "clear"]
+    chapter: /tx/response-generation
+
+  - scene: "Nothing owed yet"
+    role: "Responder"
+    caption: >-
+      The SEND is valid and complete, so the MSN goes to 1 and the expected
+      PSN to 301. With AckReq clear the responder may hold its answer for as
+      long as it likes, so it sends nothing.
+    lit: [block-send]
+    state: &s1
+      label: "Responder state"
+      fields:
+        - [expected PSN, "301"]
+        - [MSN, "1"]
+        - [ACK owed through, "300, not yet due"]
+        - [NAK latch, "clear"]
+    chapter: /reliability/message-completion-and-the-msn
+
+  - scene: "WRITE, no AckReq"
+    role: "Requester"
+    caption: >-
+      A WRITE follows with PSN 301, again without AckReq.
+    lit: [arrow-write]
+    travel: arrow-write
+    packet:
+      label: "WRITE_ONLY  PSN 301"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x0A  RC RDMA WRITE Only"]
+            - [DestQP, "0x000012"]
+            - [AckReq, "0"]
+            - [PSN, "301"]
+        - name: RETH
+          fields:
+            - [VA, "0x00007F3A_C0001000"]
+            - [R_Key, "0x00002A04"]
+            - [DMA Length, "1024"]
+    state: *s1
+
+  - scene: "Still nothing owed"
+    role: "Responder"
+    caption: >-
+      Placed and complete: MSN 2, expected PSN 302. Two requests are now
+      done and neither has been answered.
+    lit: [block-write]
+    state: &s2
+      label: "Responder state"
+      fields:
+        - [expected PSN, "302"]
+        - [MSN, "2"]
+        - [ACK owed through, "301, not yet due"]
+        - [NAK latch, "clear"]
+
+  - scene: "The READ"
+    role: "Requester"
+    caption: >-
+      A READ for 8 KiB at a 4 KiB path MTU. Its response will need two
+      packets, so the requester has set aside PSNs 302 and 303 for them.
+    lit: [arrow-read]
+    travel: arrow-read
+    packet:
+      label: "READ_REQUEST  PSN 302"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x0C  RC RDMA READ Request"]
+            - [DestQP, "0x000012"]
+            - [AckReq, "0"]
+            - [PSN, "302"]
+        - name: RETH
+          fields:
+            - [VA, "0x00007F3A_C0004000"]
+            - [R_Key, "0x00002A04"]
+            - [DMA Length, "8192"]
+    state: *s2
+    chapter: /overview/operation-catalog/rdma-read
+
+  - scene: "READ responses"
+    role: "Responder"
+    predict: >-
+      The READ has AckReq clear too. Does the responder still have to
+      answer it?
+    caption: >-
+      Yes. AckReq only matters for SENDs and WRITEs; a READ or ATOMIC always
+      gets an explicit response. The responder validates the RETH, takes an
+      outstanding-read resource that remembers PSNs 302 and 303, and starts
+      the DMA read. The expected PSN jumps past both.
+    lit: [block-read]
+    state: &s3
+      label: "Responder state"
+      fields:
+        - [expected PSN, "304"]
+        - [MSN, "2"]
+        - [ACK owed through, "301, not yet due"]
+        - [NAK latch, "clear"]
+        - [READ resource, "PSN 302 to 303"]
+    chapter: /dma/the-gather-path
+
+  - predict: >-
+      The SEND and the WRITE are still unanswered. What acknowledges them?
+    caption: >-
+      The first READ response packet. It must carry an AETH, and that AETH
+      implicitly acknowledges every SEND or WRITE with an earlier PSN. MSN 2
+      tells the requester two messages are complete. This responder bumps
+      the MSN for the READ when it finishes; bumping it at the start is
+      equally allowed.
+    lit: [arrow-rf, block-implicit]
+    travel: arrow-rf
+    packet:
+      label: "READ_RESPONSE_FIRST  PSN 302"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x0D  RC RDMA READ Response First"]
+            - [DestQP, "0x000034"]
+            - [PSN, "302"]
+        - name: AETH
+          fields:
+            - [Syndrome, "ACK; credits 0b11111, since this QP uses an SRQ"]
+            - [MSN, "2"]
+        - name: Payload
+          fields:
+            - [Bytes, "4096"]
+    state: &s4
+      label: "Responder state"
+      fields:
+        - [expected PSN, "304"]
+        - [MSN, "2"]
+        - [ACK owed through, "none"]
+        - [NAK latch, "clear"]
+        - [READ resource, "PSN 302 to 303"]
+    chapter: /reliability/message-completion-and-the-msn
+
+  - caption: >-
+      The last packet carries the second AETH, which acknowledges only the
+      READ itself. MSN 3. The resource is kept, so a duplicate READ could be
+      answered again.
+    lit: [arrow-rl, block-explicit]
+    travel: arrow-rl
+    packet:
+      label: "READ_RESPONSE_LAST  PSN 303"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x0F  RC RDMA READ Response Last"]
+            - [DestQP, "0x000034"]
+            - [PSN, "303"]
+        - name: AETH
+          fields:
+            - [Syndrome, "ACK; credits 0b11111, since this QP uses an SRQ"]
+            - [MSN, "3"]
+        - name: Payload
+          fields:
+            - [Bytes, "4096"]
+    state:
+      label: "Responder state"
+      fields:
+        - [expected PSN, "304"]
+        - [MSN, "3"]
+        - [ACK owed through, "none"]
+        - [NAK latch, "clear"]
+        - [READ resource, "PSN 302 to 303, kept for duplicates"]
+
+  - scene: "A lost packet"
+    role: "Requester"
+    caption: >-
+      The SEND with PSN 304 is lost on the wire. The next one, PSN 305,
+      arrives with AckReq set.
+    lit: [arrow-lost, arrow-ahead]
+    travel: [arrow-lost, arrow-ahead]
+    token: ["SEND 304", "SEND 305"]
+    packet:
+      label: "SEND_ONLY  PSN 305"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x04  RC SEND Only"]
+            - [DestQP, "0x000012"]
+            - [AckReq, "1"]
+            - [PSN, "305"]
+        - name: Payload
+          fields:
+            - [Bytes, "512"]
+    state: &s5
+      label: "Responder state"
+      fields:
+        - [expected PSN, "304"]
+        - [MSN, "3"]
+        - [ACK owed through, "none"]
+        - [NAK latch, "clear"]
+    chapter: /reliability/go-back-n-retransmission
+
+  - scene: "Sequence error"
+    role: "Responder"
+    caption: >-
+      305 is ahead of the expected 304: a PSN sequence error. The packet is
+      not executed, no Receive WQE is used, and the MSN stays at 3.
+    lit: [block-seq]
+    state: *s5
+    chapter: /rx/psn-check-and-out-of-order-arrival
+
+  - predict: >-
+      Which PSN does the NAK carry: 305, the packet that tripped it, or 304?
+    caption: >-
+      304, the responder's expected PSN, so the requester knows where to
+      resume. A NAK is a packet with the Acknowledge opcode and a NAK code in
+      the AETH syndrome. Its MSN is still valid: 3.
+    lit: [arrow-nak]
+    travel: arrow-nak
+    packet:
+      label: "NAK  PSN 304"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x11  RC Acknowledge"]
+            - [DestQP, "0x000034"]
+            - [PSN, "304"]
+        - name: AETH
+          fields:
+            - [Syndrome, "NAK, code 0  PSN sequence error"]
+            - [MSN, "3"]
+    state: &s6
+      label: "Responder state"
+      fields:
+        - [expected PSN, "304"]
+        - [MSN, "3"]
+        - [ACK owed through, "none"]
+        - [NAK latch, "set"]
+    chapter: /reliability/go-back-n-retransmission
+
+  - caption: >-
+      Both sides act on it at once. The requester backs up to 304. The
+      responder's latch makes it ignore every new request until 304 arrives,
+      and it sends no second NAK in the meantime.
+    lit: [block-backup, block-latch]
+    parallel:
+      - "Requester: rewinds its send queue to PSN 304"
+      - "Responder: drops new requests until 304, without NAKing them"
+    state: *s6
+
+  - scene: "The resend"
+    role: "Requester"
+    caption: >-
+      The resent 304 arrives.
+    lit: [arrow-resend-304]
+    travel: arrow-resend-304
+    packet:
+      label: "SEND_ONLY  PSN 304"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x04  RC SEND Only"]
+            - [DestQP, "0x000012"]
+            - [AckReq, "0"]
+            - [PSN, "304"]
+        - name: Payload
+          fields:
+            - [Bytes, "512"]
+    state: *s6
+
+  - scene: "Back in sequence"
+    role: "Responder"
+    caption: >-
+      It matches the expected PSN, so the latch clears and the SEND runs:
+      MSN 4.
+    lit: [block-accept]
+    state: &s7
+      label: "Responder state"
+      fields:
+        - [expected PSN, "305"]
+        - [MSN, "4"]
+        - [ACK owed through, "304, not yet due"]
+        - [NAK latch, "clear"]
+
+  - scene: "AckReq again"
+    role: "Requester"
+    caption: >-
+      305 follows, with AckReq set as before.
+    lit: [arrow-resend-305]
+    travel: arrow-resend-305
+    packet:
+      label: "SEND_ONLY  PSN 305"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x04  RC SEND Only"]
+            - [DestQP, "0x000012"]
+            - [AckReq, "1"]
+            - [PSN, "305"]
+        - name: Payload
+          fields:
+            - [Bytes, "512"]
+    state: *s7
+
+  - scene: "The ACK"
+    role: "Responder"
+    caption: >-
+      MSN 5. AckReq means a response must now be scheduled, with a PSN of
+      at least 305.
+    lit: [block-owed]
+    state: &s8
+      label: "Responder state"
+      fields:
+        - [expected PSN, "306"]
+        - [MSN, "5"]
+        - [ACK owed through, "305, due now"]
+        - [NAK latch, "clear"]
+
+  - caption: >-
+      One ACK carries PSN 305 and MSN 5. On the requester it retires both
+      304 and 305, because an ACK covers every earlier SEND or WRITE.
+    lit: [arrow-ack, block-retire]
+    travel: arrow-ack
+    packet:
+      label: "ACK  PSN 305"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x11  RC Acknowledge"]
+            - [DestQP, "0x000034"]
+            - [PSN, "305"]
+        - name: AETH
+          fields:
+            - [Syndrome, "ACK; credits 0b11111, since this QP uses an SRQ"]
+            - [MSN, "5"]
+    state:
+      label: "Responder state"
+      fields:
+        - [expected PSN, "306"]
+        - [MSN, "5"]
+        - [ACK owed through, "none"]
+        - [NAK latch, "clear"]
+    chapter: /reliability/the-replay-buffer

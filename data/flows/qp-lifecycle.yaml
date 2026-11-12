@@ -1,0 +1,241 @@
+title: "One RC QP from RESET to RTS, through SQD, into ERROR and back"
+diagram: qp/05-qp-state-machine-block
+play: "Play this state machine"
+description: >-
+  The RC QP state machine: RESET through INIT, RTR, RTS, each transition
+  labeled with the attributes it requires, SQD as a draining satellite off
+  RTS, every state's fatal-error path converging into ERROR, and the single
+  ERROR-to-RESET arrow as the only way out. The walkthrough brings one QP up,
+  shows a transition refused for a missing attribute, pauses the QP through
+  SQD, then faults it and rebuilds it.
+steps:
+  - scene: Bring-up
+    caption: >-
+      A freshly created QP sits in RESET. It has a number and nothing else:
+      it neither sends nor receives, and every attribute below is unset.
+    lit: [block-reset]
+    state: &blank
+      label: "QP context"
+      fields:
+        - [state, "RESET"]
+        - [pkey index, "-"]
+        - [port, "-"]
+        - [access, "-"]
+        - [av, "-"]
+        - [mtu, "-"]
+        - [dest-qp, "-"]
+        - [rq-psn, "-"]
+        - [resp-rd-atomic, "-"]
+        - [rnr-timer, "-"]
+        - [sq-psn, "-"]
+        - [req-rd-atomic, "-"]
+        - [retry, "-"]
+        - [rnr-retry, "-"]
+        - [timeout, "-"]
+    chapter: /qp/installing-a-qp
+
+  - caption: >-
+      RESET to INIT places the QP on a port and declares which remote
+      operations it will accept. Nothing about a peer yet.
+    lit: [block-init]
+    travel: arrow-reset-init
+    state: &init
+      label: "QP context"
+      fields:
+        - [state, "INIT"]
+        - [pkey index, "0"]
+        - [port, "1"]
+        - [access, "remote read, remote write"]
+        - [av, "-"]
+        - [mtu, "-"]
+        - [dest-qp, "-"]
+        - [rq-psn, "-"]
+        - [resp-rd-atomic, "-"]
+        - [rnr-timer, "-"]
+        - [sq-psn, "-"]
+        - [req-rd-atomic, "-"]
+        - [retry, "-"]
+        - [rnr-retry, "-"]
+        - [timeout, "-"]
+    chapter: /qp/qp-context
+
+  - caption: >-
+      INIT to RTR names the peer: the path to it, the QP number on the far
+      side, and the PSN its first packet will carry. Ready to Receive means
+      exactly that; the QP still cannot send.
+    lit: [block-rtr]
+    travel: arrow-init-rtr
+    state: &rtr
+      label: "QP context"
+      fields:
+        - [state, "RTR"]
+        - [pkey index, "0"]
+        - [port, "1"]
+        - [access, "remote read, remote write"]
+        - [av, "path to the peer"]
+        - [mtu, "4096"]
+        - [dest-qp, "0x000012"]
+        - [rq-psn, "5000"]
+        - [resp-rd-atomic, "16"]
+        - [rnr-timer, "code 12"]
+        - [sq-psn, "-"]
+        - [req-rd-atomic, "-"]
+        - [retry, "-"]
+        - [rnr-retry, "-"]
+        - [timeout, "-"]
+    chapter: /qp/qp-state-machine
+
+  - predict: >-
+      Software asks for RTS but leaves out the ACK timeout. What does the
+      hardware do with the other five attributes it did supply?
+    condition: "a required attribute is missing"
+    caption: >-
+      Nothing. The whole transition is refused and the QP stays in RTR with
+      none of the five applied, so there is no partial state to clean up.
+    lit: [block-rtr]
+    state: *rtr
+    chapter: /qp/qp-state-machine
+
+  - caption: >-
+      With the full set, RTR to RTS arms the QP to send. Four of these six
+      exist only because RC has retry timers and an outstanding-read limit to
+      configure; UC and UD need just the state and the send PSN.
+    lit: [block-rts]
+    travel: arrow-rtr-rts
+    state: &rts
+      label: "QP context"
+      fields:
+        - [state, "RTS"]
+        - [pkey index, "0"]
+        - [port, "1"]
+        - [access, "remote read, remote write"]
+        - [av, "path to the peer"]
+        - [mtu, "4096"]
+        - [dest-qp, "0x000012"]
+        - [rq-psn, "5000"]
+        - [resp-rd-atomic, "16"]
+        - [rnr-timer, "code 12"]
+        - [sq-psn, "1000"]
+        - [req-rd-atomic, "16"]
+        - [retry, "7"]
+        - [rnr-retry, "6"]
+        - [timeout, "code 14 (about 67 ms)"]
+    chapter: /reliability/retry-and-timeout-state
+
+  - scene: A clean pause
+    caption: >-
+      Software asks for SQD. The QP stops taking new sends but lets the ones
+      already posted finish and their responses arrive.
+    lit: [block-sqd]
+    travel: arrow-rts-sqd
+    state:
+      label: "QP context"
+      fields:
+        - [state, "SQD (draining)"]
+        - [pkey index, "0"]
+        - [port, "1"]
+        - [access, "remote read, remote write"]
+        - [av, "path to the peer"]
+        - [mtu, "4096"]
+        - [dest-qp, "0x000012"]
+        - [rq-psn, "5000"]
+        - [resp-rd-atomic, "16"]
+        - [rnr-timer, "code 12"]
+        - [sq-psn, "1000"]
+        - [req-rd-atomic, "16"]
+        - [retry, "7"]
+        - [rnr-retry, "6"]
+        - [timeout, "code 14 (about 67 ms)"]
+    chapter: /qp/qp-state-machine
+
+  - caption: >-
+      The last outstanding request is acknowledged and the QP is drained. If
+      software asked for it on entry, a drain-complete event fires on exactly
+      this internal transition, and it is now safe to change send-side
+      attributes.
+    lit: [block-sqd]
+    state:
+      label: "QP context"
+      fields:
+        - [state, "SQD (drained)"]
+        - [pkey index, "0"]
+        - [port, "1"]
+        - [access, "remote read, remote write"]
+        - [av, "path to the peer"]
+        - [mtu, "4096"]
+        - [dest-qp, "0x000012"]
+        - [rq-psn, "5000"]
+        - [resp-rd-atomic, "16"]
+        - [rnr-timer, "code 12"]
+        - [sq-psn, "1000"]
+        - [req-rd-atomic, "16"]
+        - [retry, "7"]
+        - [rnr-retry, "6"]
+        - [timeout, "code 14 (about 67 ms)"]
+    chapter: /qp/qp-state-machine
+
+  - caption: >-
+      SQD back to RTS. No rebuild, no lost work: SQD is requested, has a
+      completion signal, and is reversible in place.
+    lit: [block-rts]
+    travel: arrow-sqd-rts
+    state:
+      label: "QP context"
+      fields:
+        - [state, "RTS"]
+        - [pkey index, "0"]
+        - [port, "1"]
+        - [access, "remote read, remote write"]
+        - [av, "path to the peer"]
+        - [mtu, "4096"]
+        - [dest-qp, "0x000012"]
+        - [rq-psn, "5000"]
+        - [resp-rd-atomic, "16"]
+        - [rnr-timer, "code 12"]
+        - [sq-psn, "1000"]
+        - [req-rd-atomic, "16"]
+        - [retry, "7"]
+        - [rnr-retry, "6"]
+        - [timeout, "code 14 (about 67 ms)"]
+    chapter: /qp/qp-state-machine
+
+  - scene: A fault
+    caption: >-
+      A completion error on this RC QP. Nobody requested this transition, and
+      it takes the entire QP to ERROR, both queues: RC has no send-queue-only
+      SQE state to fall back on.
+    lit: [block-error]
+    travel: arrow-fault-rts
+    token: "fatal error"
+    state:
+      label: "QP context"
+      fields:
+        - [state, "ERROR"]
+        - [send queue, "outstanding WQEs flushed"]
+        - [receive queue, "outstanding WQEs flushed"]
+        - [pkey index, "0"]
+        - [port, "1"]
+        - [access, "remote read, remote write"]
+        - [av, "path to the peer"]
+        - [mtu, "4096"]
+        - [dest-qp, "0x000012"]
+        - [rq-psn, "5000"]
+        - [resp-rd-atomic, "16"]
+        - [rnr-timer, "code 12"]
+        - [sq-psn, "1000"]
+        - [req-rd-atomic, "16"]
+        - [retry, "7"]
+        - [rnr-retry, "6"]
+        - [timeout, "code 14 (about 67 ms)"]
+    chapter: /qp/single-qp-error-handling
+
+  - predict: >-
+      Can software modify the QP straight from ERROR back to RTS?
+    caption: >-
+      No. ERROR to RESET is the only door out, and the QP then climbs INIT,
+      RTR and RTS again with every required attribute supplied as if it were
+      new.
+    lit: [block-reset]
+    travel: arrow-error-reset
+    state: *blank
+    chapter: /qp/mid-transaction-qp-reset

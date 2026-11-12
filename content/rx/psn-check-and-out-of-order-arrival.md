@@ -7,6 +7,8 @@ draft: false
 description: "A packet sequence number is a transaction tag, not a timestamp -- and the three-way branch it drives (matches, too low, too high) is the single gate every parsed packet has to clear before it means anything at all. This chapter is that gate, and the one place a resolved packet actually hands off to memory."
 prev: /rx/rx-packet-parse
 next: /rx/multi-packet-reassembly
+metaDescription: "The RoCEv2 PSN check: a packet's sequence number is expected, a duplicate, or reveals a gap, and that three-way branch gates everything after it."
+seoTitle: "RDMA PSN Check and Out-of-Order Arrival"
 ---
 
 ## Overview
@@ -25,6 +27,10 @@ A packet sequence number exists to solve one problem: let a hardware receiver, w
 ## Block diagram
 
 ![A three-way branch fed by one comparison -- arriving PSN against the destination QP's next-expected PSN -- with the "matches" path continuing straight through to permission checking and DMA handoff, the "lower than expected" path looping back to a re-acknowledgment box that never touches the Receive Queue, and the "higher than expected" path terminating in a reject-and-signal box captioned with the PSN the sender should resume from.](/images/rx/03-psn-check-and-out-of-order-arrival-block.svg)
+
+{{< flow "go-back-n" >}}
+
+{{< flow "ack-timeout" >}}
 
 ## Deep walkthrough
 

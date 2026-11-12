@@ -6,6 +6,8 @@ publishDate: 2026-09-04
 draft: false
 description: "Mid-Transaction TX Reset already gathered the citation this chapter needed before this Part even had a name: destroying a QP doesn't guarantee its CQEs get cleaned out of the Completion Queue it reported to. This closing chapter is what that leaves behind, and the one real dispute about whether a shared CQ's own cleanup path can be trusted not to touch a QP that never asked to be reset at all."
 prev: /cq/event-and-multi-cq-arbitration
+metaDescription: "Destroying a QP does not guarantee its CQEs are cleaned out of a shared Completion Queue. What that leaves behind, and whether CQ cleanup is safe."
+seoTitle: "Resetting a Completion Queue Mid-Transaction"
 ---
 
 ## Overview

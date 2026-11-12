@@ -7,6 +7,8 @@ draft: false
 description: "The QP Cache only ever loses one entry at a time to eviction pressure. The Key Cache carries that same policy question, plus a second and harsher one: a single deregistration call is reasoned to invalidate the whole cache at once, not just the key being retired."
 prev: /mr/shared-mr-arbitration
 next: /mr/hardware-assisted-key-cache-eviction
+metaDescription: "Key Cache eviction in an RNIC: the per-entry policy question, and why one deregistration may invalidate the whole translation cache."
+seoTitle: "RDMA Key Cache Eviction Policy"
 ---
 
 ## Overview
@@ -20,6 +22,8 @@ next: /mr/hardware-assisted-key-cache-eviction
 ## Block diagram
 
 ![Two side-by-side panels: capacity pressure, where an Eviction Policy weighs recency, priority, and dashed error-state input to pick one victim slot in a full Key Cache and write it back to the MR/Key Table, versus deregistration, where a software deregistration call triggers a thick red outline enclosing every slot in the cache at once -- the whole working set invalidated, not just the one entry being retired, with Kong et al.'s confirmed victim-throughput collapse once deregistration starts.](/images/mr/07-key-cache-eviction-policy-block.svg)
+
+{{< flow "shared-cache" >}}
 
 ## Deep walkthrough
 

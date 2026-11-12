@@ -1,0 +1,337 @@
+title: 'A Send Queue ring: post, fetch, retire, wrap'
+diagram: flows/sq-ring
+description: 'Three Work Requests go through an eight-slot Send Queue ring: posted,
+  announced by the doorbell, fetched, sent, and retired by the completer. A NAK
+  shows why a fetched WQE keeps its slot until it completes, and a second batch
+  wraps the producer index and fills the ring to its N-1 limit.'
+play: Play the ring
+steps:
+- scene: Post and fetch
+  caption: An empty eight-slot ring. Producer and consumer index are equal, which
+    is what empty means. Nothing has been posted.
+  lit:
+  - block-app
+  state:
+    label: Send Queue ring
+    fields:
+    - - Producer index
+      - '0'
+    - - Read position
+      - '0'
+    - - Consumer index
+      - '0'
+    - - Entries held
+      - '0'
+    - - Free to post
+      - '7'
+  chapter: /tx/the-send-queue-ring
+- caption: The application posts three Work Requests. Each becomes a WQE written
+    into the next slot, and the producer index moves to 3. No byte has reached
+    the adapter yet.
+  lit:
+  - block-app
+  - block-slot-0
+  - block-slot-1
+  - block-slot-2
+  travel: arrow-post
+  token: WQEs 0-2
+  state:
+    label: Send Queue ring
+    fields:
+    - - Producer index
+      - '3'
+    - - Read position
+      - '0'
+    - - Consumer index
+      - '0'
+    - - Entries held
+      - '3'
+    - - Free to post
+      - '4'
+  chapter: /tx/the-send-queue-ring
+- caption: 'The application rings the doorbell: one MMIO write carrying the new
+    producer index. This is the only part of posting the adapter sees directly.'
+  lit:
+  - block-doorbell
+  travel: arrow-doorbell
+  token: PI = 3
+  state:
+    label: Send Queue ring
+    fields:
+    - - Producer index
+      - '3'
+    - - Read position
+      - '0'
+    - - Consumer index
+      - '0'
+    - - Entries held
+      - '3'
+    - - Free to post
+      - '4'
+  chapter: /tx/the-send-queue-ring
+- caption: WQE fetch compares the new producer index with its read position and
+    learns that three entries are waiting.
+  lit:
+  - block-doorbell
+  - block-fetch
+  travel: arrow-db-fetch
+  state:
+    label: Send Queue ring
+    fields:
+    - - Producer index
+      - '3'
+    - - Read position
+      - '0'
+    - - Consumer index
+      - '0'
+    - - Entries held
+      - '3'
+    - - Free to post
+      - '4'
+  chapter: /tx/wqe-prefetch
+- predict: WQE fetch reads the three WQEs across PCIe and holds them on-chip.
+    Are slots 0 to 2 free for the application to reuse?
+  caption: No. The read position moves to 3, but the consumer index stays at 0.
+    Each WQE keeps its slot until it completes, because a retransmission rebuilds
+    from it.
+  lit:
+  - block-fetch
+  - block-slot-0
+  - block-slot-1
+  - block-slot-2
+  travel: arrow-fetch-read
+  token: WQEs 0-2
+  state:
+    label: Send Queue ring
+    fields:
+    - - Producer index
+      - '3'
+    - - Read position
+      - '3'
+    - - Consumer index
+      - '0'
+    - - Entries held
+      - '3'
+    - - Free to post
+      - '4'
+  chapter: /tx/wqe-prefetch
+- caption: The three operations leave as packets. Their slots are still held.
+  lit:
+  - block-fetch
+  - block-slot-0
+  - block-slot-1
+  - block-slot-2
+  travel: arrow-fetch-wire
+  token: WQEs 0-2
+  state:
+    label: Send Queue ring
+    fields:
+    - - Producer index
+      - '3'
+    - - Read position
+      - '3'
+    - - Consumer index
+      - '0'
+    - - Entries held
+      - '3'
+    - - Free to post
+      - '4'
+  chapter: /tx/tx-packet-build
+- scene: Retire and retry
+  caption: An ACK covers WQE 0. The completer finishes it and advances the consumer
+    index to 1; slot 0 is free again.
+  lit:
+  - block-complete
+  - block-slot-1
+  - block-slot-2
+  travel: arrow-ack
+  token: ACK
+  state:
+    label: Send Queue ring
+    fields:
+    - - Producer index
+      - '3'
+    - - Read position
+      - '3'
+    - - Consumer index
+      - '1'
+    - - Entries held
+      - '2'
+    - - Free to post
+      - '5'
+  chapter: /reliability/message-completion-and-the-msn
+- caption: 'A NAK names WQE 1''s first packet as missing. The completer sends
+    WQE fetch back: its read position goes back to the consumer index, 1, so WQEs
+    1 and 2 are sent again. In rxe, the Linux software RoCE driver, this is the
+    requester''s wqe_index being reset to the consumer index.'
+  lit:
+  - block-complete
+  - block-fetch
+  - block-slot-1
+  - block-slot-2
+  travel: arrow-ack
+  token: NAK
+  state:
+    label: Send Queue ring
+    fields:
+    - - Producer index
+      - '3'
+    - - Read position
+      - '1'
+    - - Consumer index
+      - '1'
+    - - Entries held
+      - '2'
+    - - Free to post
+      - '5'
+  chapter: /reliability/go-back-n-retransmission
+- predict: Could the retransmission work if slots 1 and 2 had been freed when
+    they were first fetched?
+  caption: No. The application could have posted new WQEs over them. Because the
+    consumer index never passed them, both WQEs are still in place to be read
+    again.
+  lit:
+  - block-fetch
+  - block-slot-1
+  - block-slot-2
+  travel: arrow-fetch-read
+  token: WQEs 1-2
+  state:
+    label: Send Queue ring
+    fields:
+    - - Producer index
+      - '3'
+    - - Read position
+      - '3'
+    - - Consumer index
+      - '1'
+    - - Entries held
+      - '2'
+    - - Free to post
+      - '5'
+  chapter: /reliability/the-replay-buffer
+- caption: 'The resent packets are acknowledged. The completer advances the consumer
+    index to 3. The ring is empty again: producer equals consumer.'
+  lit:
+  - block-complete
+  travel: arrow-ack
+  token: ACK
+  state:
+    label: Send Queue ring
+    fields:
+    - - Producer index
+      - '3'
+    - - Read position
+      - '3'
+    - - Consumer index
+      - '3'
+    - - Entries held
+      - '0'
+    - - Free to post
+      - '7'
+  chapter: /reliability/message-completion-and-the-msn
+- caption: A signaled Work Request also gets a CQE, which tells the application
+    its WQE is done. In rxe the consumer index advances for unsignaled WQEs as
+    well, and the application's full check reads it directly; only the CQE is
+    optional.
+  lit:
+  - block-app
+  - block-complete
+  travel: arrow-cqe
+  token: CQE
+  state:
+    label: Send Queue ring
+    fields:
+    - - Producer index
+      - '3'
+    - - Read position
+      - '3'
+    - - Consumer index
+      - '3'
+    - - Entries held
+      - '0'
+    - - Free to post
+      - '7'
+  chapter: /cq/cqe-generation
+- scene: Wrap and full
+  caption: The application posts five more WQEs into slots 3 to 7. The producer
+    index goes from 7 to (7 + 1) & 7 = 0 by masking, with no modulo.
+  lit:
+  - block-app
+  - block-slot-3
+  - block-slot-4
+  - block-slot-5
+  - block-slot-6
+  - block-slot-7
+  travel: arrow-post
+  token: WQEs 3-7
+  state:
+    label: Send Queue ring
+    fields:
+    - - Producer index
+      - '0'
+    - - Read position
+      - '3'
+    - - Consumer index
+      - '3'
+    - - Entries held
+      - '5'
+    - - Free to post
+      - '2'
+  chapter: /tx/the-send-queue-ring
+- caption: Nothing has completed yet. Two more posts go into slots 0 and 1, and
+    the producer index reaches 2. Seven entries are held.
+  lit:
+  - block-app
+  - block-slot-3
+  - block-slot-4
+  - block-slot-5
+  - block-slot-6
+  - block-slot-7
+  - block-slot-0
+  - block-slot-1
+  travel: arrow-post
+  token: WQEs 8-9
+  state:
+    label: Send Queue ring
+    fields:
+    - - Producer index
+      - '2'
+    - - Read position
+      - '3'
+    - - Consumer index
+      - '3'
+    - - Entries held
+      - '7'
+    - - Free to post
+      - '0'
+  chapter: /tx/the-send-queue-ring
+- predict: Slot 2, the one unlit slot, is empty. Can the application post into
+    it?
+  caption: No. The producer index would become 3, equal to the consumer index,
+    and the ring would read as empty with eight WQEs in it. The full test is (PI
+    + 1 - CI) & 7 = 0, so one slot always stays unused.
+  lit:
+  - block-slot-3
+  - block-slot-4
+  - block-slot-5
+  - block-slot-6
+  - block-slot-7
+  - block-slot-0
+  - block-slot-1
+  state:
+    label: Send Queue ring
+    fields:
+    - - Producer index
+      - '2'
+    - - Read position
+      - '3'
+    - - Consumer index
+      - '3'
+    - - Entries held
+      - '7'
+    - - Free to post
+      - '0'
+    - - Full test
+      - (2 + 1 - 3) & 7 = 0
+  chapter: /tx/the-send-queue-ring

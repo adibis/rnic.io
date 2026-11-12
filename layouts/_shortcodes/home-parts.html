@@ -1,0 +1,22 @@
+{{- /* The book's table of contents for the home page: every section that
+  sets homeSummary, in sidebar order, numbered, with its chapter and walk
+  counts. A new Part appears here once its _index.md gains a homeSummary. */ -}}
+{{- $parts := where site.Sections.ByWeight "Params.homeSummary" "!=" nil -}}
+<ol class="rnic-home-parts not-prose">
+{{- range $i, $p := $parts }}
+  {{- $walks := 0 -}}
+  {{- range $p.RegularPagesRecursive -}}
+    {{- if .HasShortcode "flow" }}{{ $walks = add $walks 1 }}{{ end -}}
+  {{- end }}
+  <li>
+    <a href="{{ $p.RelPermalink }}">
+      <span class="rnic-home-num">{{ printf "%02d" (add $i 1) }}</span>
+      <span class="rnic-home-part-body">
+        <span class="rnic-home-part-title">{{ $p.Title }}</span>
+        <span class="rnic-home-part-desc">{{ $p.Params.homeSummary }}</span>
+        <span class="rnic-home-meta">{{ len $p.RegularPagesRecursive }} chapters{{ with $walks }} &middot; {{ . }} with walks{{ end }}</span>
+      </span>
+    </a>
+  </li>
+{{- end }}
+</ol>

@@ -1,0 +1,123 @@
+title: "Compare and Swap, block by block"
+diagram: flows/op-view
+play: "Play this Compare and Swap"
+description: >-
+  A COMPARE_SWAP across both hosts: the operands travel inside the request,
+  RNIC B's atomic unit reads the remote word, compares and writes the swap
+  value as one indivisible step, and the original value comes back in
+  ATOMIC_ACKNOWLEDGE to be written into Host A's reply buffer.
+steps:
+  - scene: "On Host A"
+    role: "Requester"
+    caption: >-
+      The application writes a COMPARE_SWAP WQE: a remote 64-bit word and its
+      rkey, compare value 5, swap value 9, and a local buffer for the reply.
+      It rings the doorbell.
+    lit: [block-a-app, block-a-sq, block-nica-fetch]
+    travel: arrow-a-doorbell
+    token: "doorbell"
+    chapter: /tx/the-send-queue-ring
+
+  - caption: >-
+      RNIC A reads the WQE out of host memory and looks up the QP's context.
+    lit: [block-a-sq, block-nica-fetch]
+    travel: arrow-a-wqe-read
+    token: "WQE"
+    chapter: /tx/wqe-prefetch
+
+  - caption: >-
+      Both operands are in the WQE itself, so no payload is read from Host
+      A's memory. The Key Cache checks the lkey on the reply buffer, and TX
+      Packet Build sends one packet: a BTH and an ATMETH.
+    lit: [block-nica-key, block-nica-tx]
+    travel: arrow-wire-req
+    packet:
+      label: "COMPARE_SWAP  PSN 3000"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x13  RC CmpSwap"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000012"]
+            - [PSN, "3000"]
+        - name: ATMETH
+          fields:
+            - [VA, "0x00007F3A_C0002000"]
+            - [R_Key, "0x00002A04"]
+            - [Swap Data, "0x0000000000000009"]
+            - [Compare Data, "0x0000000000000005"]
+    chapter: /dma/the-gather-path
+
+  - scene: "On Host B"
+    role: "Responder"
+    caption: >-
+      RX Parse checks the PSN, and the Key Cache checks the rkey. This time
+      the region must allow remote atomics, and the address must be 8-byte
+      aligned.
+    lit: [block-nicb-rx, block-nicb-key]
+    chapter: /mr/permission-and-bounds-violations
+
+  - caption: >-
+      The atomic unit reads the target word through the DMA engine. It holds
+      5.
+    lit: [block-nicb-atomic, block-nicb-dma, block-b-buf]
+    travel: arrow-b-mem-read
+    token: "5"
+    chapter: /dma/target-selection
+
+  - predict: >-
+      The word holds 5 and the compare value is 5. What goes back into Host
+      B's memory, and can anything touch the word in between?
+    caption: >-
+      9 is written, and nothing else touches the word between the read and
+      the write: the two are one indivisible step. How hardware makes them
+      indivisible is the adapter's choice. Linux's soft-RoCE driver holds a
+      lock across both; PCIe also defines atomic operations a device can ask
+      the host to perform.
+    lit: [block-nicb-atomic, block-nicb-dma, block-b-buf]
+    travel: arrow-b-mem-write
+    token: "9"
+    chapter: /dma/target-selection
+
+  - caption: >-
+      RNIC B's TX path builds ATOMIC_ACKNOWLEDGE. Its ATMACK carries the
+      value the word held before, 5, not the 9 just written.
+    lit: [block-nicb-tx]
+    travel: arrow-wire-resp
+    packet:
+      label: "ATOMIC_ACK  PSN 3000"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x12  RC Atomic Acknowledge"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000034"]
+            - [PSN, "3000"]
+        - name: AETH
+          fields:
+            - [Syndrome, "ACK (bits 6:5 = 00; credit count in 4:0)"]
+            - [MSN, "0x000001"]
+        - name: ATMACK
+          fields:
+            - [Original Data, "0x0000000000000005"]
+    chapter: /overview/operation-catalog/atomics
+
+  - scene: "The reply returns"
+    role: "Requester"
+    caption: >-
+      RNIC A matches the acknowledgement, retires the Replay Buffer entry,
+      and writes the 8-byte original value into the reply buffer.
+    lit: [block-nica-rx, block-nica-dma, block-a-buf]
+    travel: arrow-a-reply-write
+    token: "5"
+    chapter: /dma/the-scatter-path
+
+  - condition: "only if the Work Request was signaled"
+    caption: >-
+      The completion posts. The application sees 5, equal to its compare
+      value, and knows the swap happened. Had the word held 7, it would read
+      7 back, and RNIC B would have skipped the write.
+    lit: [block-nica-cqe, block-a-cq]
+    travel: arrow-a-cqe-write
+    token: "CQE"
+    chapter: /cq/cqe-generation

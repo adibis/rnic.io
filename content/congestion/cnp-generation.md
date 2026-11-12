@@ -7,6 +7,8 @@ draft: false
 description: "Every other chapter in this Part is about the sender's own state. This one is the exception -- the receive-side mechanism that has to exist for any of that state to ever change at all, built around a real, standard-defined packet the sender never builds and the receiver never asked to send."
 prev: /congestion/enabling-congestion-control
 next: /congestion/the-rate-control-state-machine
+metaDescription: "How a RoCEv2 receiver turns ECN-marked packets into Congestion Notification Packets: the per-flow CNP rate limit and the CNP's wire format."
+seoTitle: "CNP Generation in RoCEv2"
 ---
 
 ## Overview
@@ -32,7 +34,11 @@ Every other chapter in this Part is scoped to the sending side of a connection. 
 > [!NOTE] Concept
 > CNP generation isn't "one packet, one notification." It's a per-flow, rate-limited alarm: the first mark after a quiet period fires immediately, and every mark after that is suppressed until the window closes -- collapsing an arbitrarily bursty congestion signal down to a bounded rate of notifications.
 
-**The packet itself is standard-defined, not this book's invention.** RoCEv2's own annex specifies a real CNP wire format: a BTH with `Opcode` set to `0b10000001` (`0x81`), `DestQP` set to the flow being throttled, `PSN` forced to 0, `SE` and `M` forced to 0, and `P_KEY` copied from the marked packet's own BTH. [The WQE and the Send Queue Descriptor](/tx/the-wqe-and-the-send-queue-descriptor)'s opcode table never lists this value, for the same reason [The CQE](/cq/the-cqe)'s completion-opcode vocabulary needed values no Work Request ever requests: nothing about posting a Work Request ever asks for a CNP to be sent. It's generated entirely by this mechanism, not requested by software.
+Play it with two senders sharing one switch port toward a receiver: the mark, the CNP, and the rate cut on each sender. A ring collective is the opposite pattern: in [One All-Reduce, Four Hosts](/overview/one-all-reduce) every rank sends to exactly one neighbour, so on a single switch no output port has two senders aimed at it.
+
+{{< flow "incast" >}}
+
+**The packet itself is standard-defined, not this book's invention.** RoCEv2's own annex specifies a real CNP wire format: a BTH with `Opcode` set to `0b10000001` (`0x81`), `DestQP` set to the flow being throttled, `PSN` forced to 0, `SE` and `M` forced to 0, and `P_KEY` copied from the marked packet's own BTH. A reserved field and the ICRC follow the BTH; no other transport header does. [The WQE and the Send Queue Descriptor](/tx/the-wqe-and-the-send-queue-descriptor)'s opcode table never lists this value, for the same reason [The CQE](/cq/the-cqe)'s completion-opcode vocabulary needed values no Work Request ever requests: nothing about posting a Work Request ever asks for a CNP to be sent. It's generated entirely by this mechanism, not requested by software.
 
 > [!CAUTION] Gotcha
 > `DestQP` isn't read out of some "source QP" field on the marked packet -- BTH carries no such field. [QP Context](/qp/qp-context) already established the actual mechanism: this receiving QP's own destination-QP context field already names its peer, fixed since INIT→RTR, and gets copied into the header of every packet this QP sends -- an ACK, and now a CNP, exactly the same way. Generating a CNP doesn't require parsing anything new out of the packet that triggered it; it reuses context this QP already has resident.
@@ -55,6 +61,7 @@ Every other chapter in this Part is scoped to the sending side of a connection. 
 | **PSN** | forced to 0 | IBTA Annex A17 |
 | **SE, M** | forced to 0 | IBTA Annex A17 |
 | **P_KEY** | copied from the marked packet's own BTH | IBTA Annex A17 |
+| **After the BTH** | a reserved field, then the ICRC; no other transport header | IBTA Annex A17 |
 | **Generation window (`N`)** | 50µs in one documented deployment | DCQCN paper -- architect's choice, not standardized |
 
 ## References

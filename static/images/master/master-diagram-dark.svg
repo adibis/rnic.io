@@ -13,7 +13,7 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 </defs>
 
 <text x="620" y="30" font-size="24" font-weight="500" fill="#ccd0d7" text-anchor="middle">rnic.io -- RNIC Architecture, Master Block Diagram</text>
-<text x="620" y="50" font-size="15" fill="#949ca8" text-anchor="middle">Every block referenced across Parts 1-8. Each chapter opens with this same drawing, one block highlighted, the rest dimmed.</text>
+<text x="620" y="50" font-size="15" fill="#949ca8" text-anchor="middle">Every block this book covers. Each chapter opens with this same drawing, one block highlighted, the rest dimmed.</text>
 
 <g transform="translate(0,24)">
 <!-- ============ TX LANE ============ -->

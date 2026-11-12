@@ -1,0 +1,193 @@
+title: "Two retry budgets and one exit: loss, RNR, and a NAK that is never retried"
+diagram: reliability/05-the-retry-and-rnr-timeout-state-machines-block
+play: "Play this state machine"
+description: >-
+  Three lanes converging on one QP ERROR node: an ordinary timeout branch, an
+  RNR branch, and a direct path with no retry counter at all. The walkthrough
+  runs a requester's retry count down to zero through loss, spends RNR
+  retries on a fresh QP while its ordinary count stays untouched, and sends a
+  third QP straight to ERROR on a Remote Access Error.
+steps:
+  - scene: Loss
+    caption: >-
+      A requester sends PSN 1000 and arms its retry timer for the ACK
+      timeout. This QP was brought up with a retry count of 2, small so the
+      walk runs out quickly.
+    lit: [block-ord-armed]
+    state: &loss0
+      label: "Requester retry state"
+      fields:
+        - [QP state, "RTS"]
+        - [Retry timer, "armed (ACK timeout)"]
+        - [Oldest unACKed PSN, "1000"]
+        - [Retry count left, "2"]
+        - [RNR retry count left, "3"]
+    chapter: /reliability/retry-and-timeout-state
+
+  - caption: >-
+      Nothing comes back: no ACK and no NAK. The timer expires.
+    lit: [block-ord-expiry]
+    travel: arrow-ord-expire
+    state:
+      label: "Requester retry state"
+      fields:
+        - [QP state, "RTS"]
+        - [Retry timer, "expired"]
+        - [Oldest unACKed PSN, "1000"]
+        - [Retry count left, "2"]
+        - [RNR retry count left, "3"]
+    chapter: /reliability/the-retry-and-rnr-timeout-state-machines
+
+  - caption: >-
+      Go-back-N from the oldest unacknowledged PSN, and one retry spent. The
+      timer is armed again for the resent packets.
+    lit: [block-ord-resend]
+    travel: arrow-ord-resend
+    state:
+      label: "Requester retry state"
+      fields:
+        - [QP state, "RTS"]
+        - [Retry timer, "armed (ACK timeout)"]
+        - [Oldest unACKed PSN, "1000"]
+        - [Retry count left, "1"]
+        - [RNR retry count left, "3"]
+    chapter: /reliability/go-back-n-retransmission
+
+  - caption: >-
+      Round the loop again, discovered a different way: a PSN Sequence Error
+      NAK arrives instead of silence. It draws on the same counter, because
+      it is the same condition from the requester's side. Another go-back-N,
+      and the count reaches zero.
+    lit: [block-ord-expiry, block-ord-resend]
+    travel: arrow-ord-loop
+    token: "NAK seq error"
+    state:
+      label: "Requester retry state"
+      fields:
+        - [QP state, "RTS"]
+        - [Retry timer, "armed (ACK timeout)"]
+        - [Oldest unACKed PSN, "1000"]
+        - [Retry count left, "0"]
+        - [RNR retry count left, "3"]
+    chapter: /reliability/the-retry-and-rnr-timeout-state-machines
+
+  - predict: >-
+      The resend times out once more, with no retries left. Does the
+      requester try again?
+    caption: >-
+      No. The count is exhausted, the WQE completes with a transport retry
+      counter exceeded error, and the QP goes to ERROR. Its RNR retry count
+      is still 3: loss never touched it.
+    lit: [block-error]
+    travel: arrow-ord-exhausted
+    token: "exhausted"
+    state:
+      label: "Requester retry state"
+      fields:
+        - [QP state, "ERROR"]
+        - [Retry timer, "stopped"]
+        - [Oldest unACKed PSN, "1000"]
+        - [Retry count left, "0"]
+        - [RNR retry count left, "3"]
+    chapter: /qp/single-qp-error-handling
+
+  - scene: Receiver not ready
+    caption: >-
+      A different QP, with the same budgets. Its SEND reaches a responder
+      whose Receive Queue is empty, and comes back as an RNR NAK carrying a
+      delay. That arms the RNR timer, not the ordinary one.
+    lit: [block-rnr-armed]
+    state:
+      label: "Requester retry state"
+      fresh: true
+      fields:
+        - [QP state, "RTS"]
+        - [Retry timer, "RNR delay running"]
+        - [Oldest unACKed PSN, "1000"]
+        - [Retry count left, "2"]
+        - [RNR retry count left, "3"]
+    chapter: /reliability/the-retry-and-rnr-timeout-state-machines
+
+  - caption: >-
+      The delay runs out. It is never shorter than the RNR timer floor the
+      responder is allowed to advertise.
+    lit: [block-rnr-expiry]
+    travel: arrow-rnr-expire
+    state:
+      label: "Requester retry state"
+      fields:
+        - [QP state, "RTS"]
+        - [Retry timer, "RNR delay over"]
+        - [Oldest unACKed PSN, "1000"]
+        - [Retry count left, "2"]
+        - [RNR retry count left, "3"]
+    chapter: /reliability/the-retry-and-rnr-timeout-state-machines
+
+  - caption: >-
+      The same PSN is sent again and one RNR retry is spent. The ordinary
+      retry count stays at 2: an empty receive queue costs nothing from the
+      budget kept for loss.
+    lit: [block-rnr-resend]
+    travel: arrow-rnr-resend
+    state:
+      label: "Requester retry state"
+      fields:
+        - [QP state, "RTS"]
+        - [Retry timer, "armed (ACK timeout)"]
+        - [Oldest unACKed PSN, "1000"]
+        - [Retry count left, "2"]
+        - [RNR retry count left, "2"]
+    chapter: /reliability/the-retry-and-rnr-timeout-state-machines
+
+  - condition: "the Receive Queue stays empty"
+    caption: >-
+      Each further RNR NAK spends one more. When the RNR count reaches zero
+      the WQE completes with an RNR retry counter exceeded error and the QP
+      goes to the same ERROR, with its ordinary count still at 2.
+    lit: [block-error]
+    travel: arrow-rnr-exhausted
+    token: "exhausted"
+    state:
+      label: "Requester retry state"
+      fields:
+        - [QP state, "ERROR"]
+        - [Retry timer, "stopped"]
+        - [Oldest unACKed PSN, "1000"]
+        - [Retry count left, "2"]
+        - [RNR retry count left, "0"]
+    chapter: /qp/single-qp-error-handling
+
+  - scene: Not retryable
+    caption: >-
+      A third QP's WRITE comes back with a NAK for a Remote Access Error.
+      Only sequence-error and RNR NAKs are retried; this one is reported to
+      the client on its first occurrence.
+    lit: [block-direct]
+    state:
+      label: "Requester retry state"
+      fresh: true
+      fields:
+        - [QP state, "RTS"]
+        - [Retry timer, "armed (ACK timeout)"]
+        - [Oldest unACKed PSN, "1000"]
+        - [Retry count left, "2"]
+        - [RNR retry count left, "3"]
+    chapter: /mr/permission-and-bounds-violations
+
+  - predict: >-
+      Which of the two counters does this NAK spend?
+    caption: >-
+      Neither. No waiting and no second attempt: the QP goes to ERROR
+      immediately with both budgets untouched.
+    lit: [block-error]
+    travel: arrow-direct
+    token: "remote access error"
+    state:
+      label: "Requester retry state"
+      fields:
+        - [QP state, "ERROR"]
+        - [Retry timer, "stopped"]
+        - [Oldest unACKed PSN, "1000"]
+        - [Retry count left, "2"]
+        - [RNR retry count left, "3"]
+    chapter: /qp/single-qp-error-handling

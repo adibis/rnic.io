@@ -6,6 +6,8 @@ publishDate: 2026-09-04
 draft: false
 description: "A normal NIC hands a frame to software and stops there. An RDMA-capable NIC is handed a virtual address and a remote key and is expected to move bytes into another machine's memory without a syscall, without the remote CPU, and without a single unverified byte -- this book is about what building that actually takes in hardware."
 next: /overview/what-is-rocev2
+metaDescription: "What RDMA asks of a NIC: moving bytes into another machine's memory with no syscall, no remote CPU and every access checked, and what it takes in hardware."
+seoTitle: "What Is RDMA? A Hardware View"
 ---
 
 A conventional NIC moves frames between a wire and a ring buffer and stops there — every byte that means something is somebody else's problem, decided in software after the frame has already landed. An RDMA-capable NIC cannot stop there. It is handed a virtual address, a length, and a remote key, and it is expected to move that many bytes into or out of a specific region of another machine's memory without a syscall on the data path, without the remote CPU noticing, and without ever moving a byte the key didn't authorize. That is not a faster NIC. It is a NIC doing work that used to belong entirely to an operating system's network stack, done instead in hardware — and that shift, block by block, is what this book is about. Most RDMA guides describe that shift as "the hardware handles reliability, address translation, and delivery" and consider the matter settled. This one opens each of those verbs into the pipeline stage, cache, and state machine actually doing the work, one part at a time. This chapter names the four capabilities that shift requires before any of the later parts start building them.

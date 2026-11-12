@@ -1,0 +1,176 @@
+title: Registering a Memory Region, stage by stage
+diagram: mr/04-registering-a-memory-region-block
+description: A pinned registration walks and pins every page, writes the MTT and
+  MPT entries, and only then has live keys. An ODP registration skips pinning,
+  rejoins the same path, and pays at first touch instead. Deregistration retires
+  the keys without any promise about operations still in flight.
+play: Play the registration
+steps:
+- scene: Pinned registration
+  caption: 'Software registers a 64 KiB buffer: a Protection Domain, a virtual
+    address range, and access flags. Nothing exists in the adapter''s tables yet.'
+  lit:
+  - block-call
+  state:
+    label: Memory Region
+    fields:
+    - - Pages pinned
+      - 0 of 16
+    - - MTT entries
+      - none
+    - - MPT entry
+      - none
+    - - lkey / rkey
+      - none
+  chapter: /mr/registering-a-memory-region
+- caption: The driver walks the process's page tables and pins all 16 pages so
+    they can't move. This cost grows with the size of the region and is paid now,
+    whether or not every page is ever touched.
+  lit:
+  - block-call
+  travel: arrow-pin
+  token: 16 pages
+  state:
+    label: Memory Region
+    fields:
+    - - Pages pinned
+      - 16 of 16
+    - - MTT entries
+      - none
+    - - MPT entry
+      - none
+    - - lkey / rkey
+      - none
+  chapter: /mr/registering-a-memory-region
+- caption: One MTT entry per page holds its translation, and the MPT entry holds
+    the region's address, length and permissions.
+  lit:
+  - block-mpt
+  state:
+    label: Memory Region
+    fields:
+    - - Pages pinned
+      - 16 of 16
+    - - MTT entries
+      - 16 written
+    - - MPT entry
+      - written
+    - - lkey / rkey
+      - none
+  chapter: /mr/the-memory-region-descriptor
+- predict: Could a key resolve against this entry before all 16 MTT entries are
+    written?
+  caption: Only if the key goes live first, and this book doesn't settle whether
+    hardware prevents that window. If it can open, a lookup in it resolves against
+    an incomplete translation, which is why the keys come last here.
+  lit:
+  - block-mpt
+  state:
+    label: Memory Region
+    fields:
+    - - Pages pinned
+      - 16 of 16
+    - - MTT entries
+      - 16 written
+    - - MPT entry
+      - written
+    - - lkey / rkey
+      - not yet assigned
+  chapter: /mr/registering-a-memory-region
+- caption: 'Keys are assigned and the MR is valid. There is no further state to
+    step through, unlike a QP: the lkey can go into a Work Request and the rkey
+    to a peer right away.'
+  lit:
+  - block-valid
+  travel: arrow-keys
+  token: lkey, rkey
+  state:
+    label: Memory Region
+    fields:
+    - - Pages pinned
+      - 16 of 16
+    - - MTT entries
+      - 16 written
+    - - MPT entry
+      - written
+    - - lkey / rkey
+      - live
+  chapter: /mr/registering-a-memory-region
+- scene: On-Demand Paging
+  caption: The same call with the deferred-resolution permission set skips pinning.
+    Registration costs about the same whatever the region's size.
+  lit:
+  - block-call
+  - block-odp
+  travel: arrow-odp
+  token: ODP
+  state:
+    label: Memory Region
+    fresh: true
+    fields:
+    - - Pages pinned
+      - '0: none pinned'
+    - - MTT entries
+      - not resolved yet
+    - - MPT entry
+      - '-'
+    - - lkey / rkey
+      - none
+  chapter: /mr/registering-a-memory-region
+- caption: 'It rejoins the same path: the descriptor is populated and the keys
+    go live, with pages still unresolved.'
+  lit:
+  - block-mpt
+  - block-valid
+  travel: arrow-rejoin
+  state:
+    label: Memory Region
+    fields:
+    - - Pages pinned
+      - '0: none pinned'
+    - - MTT entries
+      - filled on first touch
+    - - MPT entry
+      - written
+    - - lkey / rkey
+      - live
+  chapter: /mr/registering-a-memory-region
+- caption: 'The cost moves to first touch: the first access to each page pauses
+    for a page-fault-style resolution, then resumes. An implicit-ODP rkey covering
+    a whole address space also exposes all of it if leaked.'
+  lit:
+  - block-odp
+  - block-valid
+  state:
+    label: Memory Region
+    fields:
+    - - Pages pinned
+      - on first touch
+    - - MTT entries
+      - filled on first touch
+    - - MPT entry
+      - written
+    - - lkey / rkey
+      - live
+  chapter: /dma/single-burst-fault-handling
+- scene: Deregistration
+  caption: Deregistration removes the MPT and MTT entries, drops them from the
+    Key Cache if resident, and retires the keys. It promises nothing about operations
+    already in flight that use them.
+  lit:
+  - block-invalid
+  travel: arrow-dereg
+  token: deregister
+  state:
+    label: Memory Region
+    fresh: true
+    fields:
+    - - Pages pinned
+      - released
+    - - MTT entries
+      - removed
+    - - MPT entry
+      - removed
+    - - lkey / rkey
+      - retired
+  chapter: /mr/mid-transaction-deregistration

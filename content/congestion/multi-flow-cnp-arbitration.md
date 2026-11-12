@@ -7,6 +7,8 @@ draft: false
 description: "Every other multi-instance chapter in this book is about many QPs contending for one shared, serialized gate on the send side. This Part doesn't have one of those -- each QP's rate limiter runs entirely independent state. The real contention here is on the other side of the connection entirely, and it's a bounded, measured, real hardware number, not a hypothetical."
 prev: /congestion/single-qp-rate-state-faults
 next: /congestion/eviction-policy
+metaDescription: "When many flows are marked at once, the contention is on the receiver's CNP generator, and its CNP rate is a bounded, measured hardware limit."
+seoTitle: "Multi-Flow CNP Arbitration in an RNIC"
 ---
 
 ## Overview

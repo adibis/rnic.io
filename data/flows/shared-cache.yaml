@@ -1,0 +1,257 @@
+title: 'One shared cache: a QP miss evicts a translation, then a deregistration
+  clears them all'
+diagram: flows/shared-cache
+description: Eight lines of on-chip cache hold QP contexts and memory translations
+  side by side. A QP context miss evicts a translation, the translation's own
+  miss then has to write a dirty QP context back first, and one unrelated deregistration
+  invalidates every translation at once.
+play: Play the cache
+steps:
+- scene: Capacity pressure
+  caption: 'The cache is full and warm. QP contexts and MTT/MPT translations sit
+    in whatever line was free when they arrived; nothing reserves lines for either
+    kind. QP 2 sent a packet a while ago and its next PSN moved on-chip, so line
+    2 is dirty: newer than the QP Table''s copy.'
+  lit:
+  - block-line-0
+  - block-line-1
+  - block-line-2
+  - block-line-3
+  - block-line-4
+  - block-line-5
+  - block-line-6
+  - block-line-7
+  state:
+    label: Shared cache
+    fields:
+    - - Line 0
+      - QPC 1
+    - - Line 1
+      - MTT A
+    - - Line 2
+      - QPC 2 (dirty)
+    - - Line 3
+      - MTT B
+    - - Line 4
+      - QPC 3
+    - - Line 5
+      - MTT C
+    - - Line 6
+      - QPC 4
+    - - Line 7
+      - MTT D
+    - - Next victim
+      - MTT D (line 7)
+  chapter: /mr/key-caching
+- caption: 'A packet arrives for QP 5. Its context isn''t in any line: a miss.'
+  lit:
+  - block-engine
+  travel: arrow-qp-lookup
+  state:
+    label: Shared cache
+    fields:
+    - - Line 0
+      - QPC 1
+    - - Line 1
+      - MTT A
+    - - Line 2
+      - QPC 2 (dirty)
+    - - Line 3
+      - MTT B
+    - - Line 4
+      - QPC 3
+    - - Line 5
+      - MTT C
+    - - Line 6
+      - QPC 4
+    - - Line 7
+      - MTT D
+    - - Next victim
+      - MTT D (line 7)
+  chapter: /qp/qp-caching
+- predict: The least recently used line holds MTT D, a memory translation. Can
+    a QP context miss evict it?
+  caption: Yes. The victim is chosen by recency, not by type, so QP 5's context
+    replaces MTT D in line 7. A translation is never modified on-chip, so dropping
+    it costs no write.
+  lit:
+  - block-line-7
+  travel: arrow-qpc-fetch
+  token: QPC 5
+  state:
+    label: Shared cache
+    fields:
+    - - Line 0
+      - QPC 1
+    - - Line 1
+      - MTT A
+    - - Line 2
+      - QPC 2 (dirty)
+    - - Line 3
+      - MTT B
+    - - Line 4
+      - QPC 3
+    - - Line 5
+      - MTT C
+    - - Line 6
+      - QPC 4
+    - - Line 7
+      - QPC 5
+    - - Next victim
+      - QPC 2 (line 2)
+  chapter: /qp/eviction-policy
+- caption: 'A DMA now needs memory region D. Its translation was the line just
+    given to QP 5: a miss caused by QP traffic, not by memory-region traffic.'
+  lit:
+  - block-dma
+  travel: arrow-dma-lookup
+  state:
+    label: Shared cache
+    fields:
+    - - Line 0
+      - QPC 1
+    - - Line 1
+      - MTT A
+    - - Line 2
+      - QPC 2 (dirty)
+    - - Line 3
+      - MTT B
+    - - Line 4
+      - QPC 3
+    - - Line 5
+      - MTT C
+    - - Line 6
+      - QPC 4
+    - - Line 7
+      - QPC 5
+    - - Next victim
+      - QPC 2 (line 2)
+  chapter: /mr/key-caching
+- caption: The next victim is QP 2's context, and it is dirty. Its line can't
+    be reused until the newer copy is written back to the QP Table, or QP 2's
+    progress would be lost.
+  lit:
+  - block-line-2
+  travel: arrow-qpc-writeback
+  token: QPC 2
+  state:
+    label: Shared cache
+    fields:
+    - - Line 0
+      - QPC 1
+    - - Line 1
+      - MTT A
+    - - Line 2
+      - empty
+    - - Line 3
+      - MTT B
+    - - Line 4
+      - QPC 3
+    - - Line 5
+      - MTT C
+    - - Line 6
+      - QPC 4
+    - - Line 7
+      - QPC 5
+    - - Next victim
+      - '-'
+  chapter: /qp/eviction-policy
+- caption: 'Only then is MTT D fetched into line 2. One translation miss cost
+    two PCIe crossings: a write and a read.'
+  lit:
+  - block-line-2
+  travel: arrow-mtt-fetch
+  token: MTT D
+  state:
+    label: Shared cache
+    fields:
+    - - Line 0
+      - QPC 1
+    - - Line 1
+      - MTT A
+    - - Line 2
+      - MTT D
+    - - Line 3
+      - MTT B
+    - - Line 4
+      - QPC 3
+    - - Line 5
+      - MTT C
+    - - Line 6
+      - QPC 4
+    - - Line 7
+      - QPC 5
+    - - Next victim
+      - QPC 1 (line 0)
+  chapter: /mr/key-caching
+- scene: Deregistration
+  predict: Another process deregisters MR X, which isn't cached anywhere. Which
+    lines does that touch?
+  caption: Every MTT/MPT line. Kong et al. (NSDI 2023) attribute what they measured
+    to deregistration invalidating the whole translation cache, not just the departing
+    MR's entries. QP contexts stay.
+  lit:
+  - block-dereg
+  - block-line-1
+  - block-line-2
+  - block-line-3
+  - block-line-5
+  travel: arrow-dereg
+  token: invalidate
+  state:
+    label: Shared cache
+    fields:
+    - - Line 0
+      - QPC 1
+    - - Line 1
+      - empty
+    - - Line 2
+      - empty
+    - - Line 3
+      - empty
+    - - Line 4
+      - QPC 3
+    - - Line 5
+      - empty
+    - - Line 6
+      - QPC 4
+    - - Line 7
+      - QPC 5
+    - - Next victim
+      - an empty line
+    - - Victim's MTT misses
+      - '0'
+  chapter: /mr/key-cache-eviction-policy
+- caption: The victim's next DMAs miss on translations it used a moment ago, and
+    each one is a PCIe round trip to the MR/Key Table. On a ConnectX-5, a neighbour
+    deregistering MRs roughly tripled a victim's MTT miss rate and collapsed its
+    throughput; a neighbour only registering MRs barely moved either.
+  lit:
+  - block-dma
+  - block-line-1
+  travel: arrow-mtt-fetch
+  token: MTT A
+  state:
+    label: Shared cache
+    fields:
+    - - Line 0
+      - QPC 1
+    - - Line 1
+      - MTT A
+    - - Line 2
+      - empty
+    - - Line 3
+      - empty
+    - - Line 4
+      - QPC 3
+    - - Line 5
+      - empty
+    - - Line 6
+      - QPC 4
+    - - Line 7
+      - QPC 5
+    - - Next victim
+      - an empty line
+    - - Victim's MTT misses
+      - 1, and B, C, D to come
+  chapter: /mr/key-cache-eviction-policy

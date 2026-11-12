@@ -37,7 +37,7 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <text x="745" y="128" font-size="8" fill="#64748b" text-anchor="middle">evicts what's cheap to re-fetch</text>
 <text x="745" y="140" font-size="8" fill="#64748b" text-anchor="middle">anyway -- but couples the cache to</text>
 <text x="745" y="152" font-size="8" fill="#64748b" text-anchor="middle">a completely different subsystem</text>
-<text x="745" y="168" font-size="7.5" fill="#94a3b8" text-anchor="middle">input: Part 5's per-QP retry/RNR counters</text>
+<text x="745" y="168" font-size="7.5" fill="#94a3b8" text-anchor="middle">input: per-QP retry/RNR counters</text>
 
 <rect x="180" y="220" width="540" height="40" rx="6" fill="#eef2ff" stroke="#4338ca" stroke-width="1.5"/>
 <text x="450" y="235" font-size="9" font-weight="500" fill="#312e81" text-anchor="middle">the same eviction decision, three different signals to make it from</text>

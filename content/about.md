@@ -3,6 +3,8 @@ title: About
 weight: 100
 sidebar:
   hideFromTree: true
+metaDescription: "Who writes rnic.io, the RDMA NIC architecture guide: Aditya Shevade, a design verification engineer, opening up the hardware behind RDMA and RoCEv2."
+seoTitle: "About rnic.io"
 ---
 
 Most public RDMA/RoCEv2 material treats the RNIC as a black box: "the hardware handles PSN tracking, address translation, retries." That's the right level for a networking overview, and the wrong level if you're the one who has to design, verify, or debug that hardware. This site opens the box -- every one of those bullets becomes a chapter with a pipeline stage, a state machine, a caching structure, and a failure mode.

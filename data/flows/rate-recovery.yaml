@@ -1,0 +1,227 @@
+title: "One QP's rate: cut by a CNP, then climbing back through the phases"
+diagram: congestion/06-the-rate-control-state-machine-block
+play: "Play this state machine"
+description: >-
+  A CNP cuts the rate and resets both stage counts; each timer or
+  byte-counter expiry then advances its own count, and comparing the larger
+  and smaller count against a threshold picks fast recovery, additive
+  increase or hyper increase. The walkthrough follows one QP's current and
+  target rate through each phase with worked numbers, until a second CNP
+  resets it, then shows α rising in congested windows and decaying in
+  quiet ones.
+steps:
+  - scene: The cut
+    caption: >-
+      A QP sending at 64 Gb/s. The numbers in this walk are illustrative: the
+      reaction factor α is held at 0.5 and the phase threshold F is 3.
+    state:
+      label: "Rate-limiter context"
+      fields:
+        - [Current rate, "64 Gb/s"]
+        - [Target rate, "64 Gb/s"]
+        - [α, "0.5"]
+        - [Timer stage, "0"]
+        - [Byte stage, "0"]
+        - [Phase, "-"]
+    chapter: /congestion/rate-limiter-context
+
+  - caption: >-
+      A CNP arrives. The current rate is remembered as the target, then cut
+      by α/2: 64 × 0.75 = 48. Both stage counts go to zero. In a real
+      adapter α itself rises with CNPs and decays without them; it is held
+      still here so the arithmetic stays visible, and the last scene shows
+      it moving.
+    lit: [block-cnp]
+    state:
+      label: "Rate-limiter context"
+      fields:
+        - [Current rate, "48 Gb/s"]
+        - [Target rate, "64 Gb/s"]
+        - [α, "0.5"]
+        - [Timer stage, "0"]
+        - [Byte stage, "0"]
+        - [Phase, "-"]
+    chapter: /congestion/cnp-generation
+
+  - scene: Recovery
+    caption: >-
+      The rate timer fires, and advances only its own stage count.
+    lit: [block-fire]
+    travel: arrow-cnp-fire
+    token: "timer"
+    state:
+      label: "Rate-limiter context"
+      fields:
+        - [Current rate, "48 Gb/s"]
+        - [Target rate, "64 Gb/s"]
+        - [α, "0.5"]
+        - [Timer stage, "1"]
+        - [Byte stage, "0"]
+        - [Phase, "-"]
+    chapter: /congestion/rate-limiter-context
+
+  - predict: >-
+      The larger stage count is 1 and F is 3. Which phase, and what does the
+      current rate become?
+    caption: >-
+      Fast recovery: both counts are still below F. The current rate jumps to
+      the midpoint of itself and the target, (48 + 64) / 2 = 56.
+    lit: [block-fast]
+    travel: arrow-to-fast
+    state:
+      label: "Rate-limiter context"
+      fields:
+        - [Current rate, "56 Gb/s"]
+        - [Target rate, "64 Gb/s"]
+        - [α, "0.5"]
+        - [Timer stage, "1"]
+        - [Byte stage, "0"]
+        - [Phase, "fast recovery"]
+    chapter: /congestion/the-rate-control-state-machine
+
+  - caption: >-
+      Three more firings, byte counter, timer, byte counter: each halves the
+      remaining gap, 60, then 62, then 63. The target has not moved.
+    lit: [block-fire, block-fast]
+    state:
+      label: "Rate-limiter context"
+      fields:
+        - [Current rate, "63 Gb/s"]
+        - [Target rate, "64 Gb/s"]
+        - [α, "0.5"]
+        - [Timer stage, "2"]
+        - [Byte stage, "2"]
+        - [Phase, "fast recovery"]
+    chapter: /congestion/the-rate-control-state-machine
+
+  - predict: >-
+      The byte counter fires a third time, so its count reaches F while the
+      timer's stays at 2. Still fast recovery?
+    caption: >-
+      No. The larger count is no longer below F, so this is additive
+      increase: the target itself climbs a fixed step, 4 Gb/s here, and the
+      current rate closes half the distance to it, (68 + 63) / 2 = 65.5.
+    lit: [block-fire, block-additive]
+    travel: arrow-to-additive
+    state:
+      label: "Rate-limiter context"
+      fields:
+        - [Current rate, "65.5 Gb/s"]
+        - [Target rate, "68 Gb/s"]
+        - [α, "0.5"]
+        - [Timer stage, "2"]
+        - [Byte stage, "3"]
+        - [Phase, "additive increase"]
+    chapter: /congestion/the-rate-control-state-machine
+
+  - caption: >-
+      The timer fires and reaches 3 too. The smaller count is at F, not past
+      it, so the QP stays in additive increase: target 72, current
+      (72 + 65.5) / 2 = 68.75.
+    lit: [block-fire, block-additive]
+    travel: arrow-to-additive
+    state:
+      label: "Rate-limiter context"
+      fields:
+        - [Current rate, "68.75 Gb/s"]
+        - [Target rate, "72 Gb/s"]
+        - [α, "0.5"]
+        - [Timer stage, "3"]
+        - [Byte stage, "3"]
+        - [Phase, "additive increase"]
+    chapter: /congestion/the-rate-control-state-machine
+
+  - condition: "both counts pass F with no new CNP"
+    caption: >-
+      Had both counters kept firing until the smaller passed F, hyper
+      increase would take over and ramp harder than the fixed step. The
+      algorithm defers that formula to another specification, so this walk
+      shows no number for it.
+    lit: [block-hyper]
+    travel: arrow-to-hyper
+    chapter: /congestion/the-rate-control-state-machine
+
+  - scene: Cut again
+    predict: >-
+      Instead, a second CNP arrives while the QP is in additive increase.
+      What happens to the stage counts?
+    caption: >-
+      Back to the top, whatever the phase: the target becomes 68.75, the
+      current rate is cut to 68.75 × 0.75 ≈ 51.6, and both counts go to zero.
+      Recovery starts over from fast recovery.
+    lit: [block-cnp]
+    state:
+      label: "Rate-limiter context"
+      fields:
+        - [Current rate, "51.6 Gb/s"]
+        - [Target rate, "68.75 Gb/s"]
+        - [α, "0.5"]
+        - [Timer stage, "0"]
+        - [Byte stage, "0"]
+        - [Phase, "-"]
+    chapter: /congestion/cnp-generation
+
+  - scene: How α trends
+    caption: >-
+      α was held at 0.5 above. In DCQCN it is updated once per fixed window:
+      a window with a CNP moves it toward 1 by α = (1 − g)α + g, and a window
+      without one decays it by α = (1 − g)α. The paper's g is 1/256; this
+      scene uses 1/4 so the trend shows in a few steps.
+    state:
+      label: "Reaction factor"
+      fresh: true
+      fields:
+        - [α, "0.5"]
+        - [This window, "-"]
+        - [Next cut keeps, "75% of the rate"]
+    chapter: /congestion/rate-limiter-context
+
+  - caption: >-
+      A window with a CNP: α = 0.75 × 0.5 + 0.25 = 0.625. A cut now would
+      keep 1 − α/2, about 69% of the rate.
+    lit: [block-cnp]
+    state:
+      label: "Reaction factor"
+      fields:
+        - [α, "0.625"]
+        - [This window, "CNP"]
+        - [Next cut keeps, "69% of the rate"]
+    chapter: /congestion/rate-limiter-context
+
+  - caption: >-
+      Another window with a CNP: α rises to about 0.72, and the next cut
+      would keep only 64%. Sustained congestion makes each cut deeper.
+    lit: [block-cnp]
+    state:
+      label: "Reaction factor"
+      fields:
+        - [α, "0.72"]
+        - [This window, "CNP"]
+        - [Next cut keeps, "64% of the rate"]
+    chapter: /congestion/rate-limiter-context
+
+  - predict: >-
+      Now three windows pass with no CNP. Does α drop back to 0.5 at once?
+    caption: >-
+      No. Each quiet window takes off a quarter: 0.54, 0.40, then 0.30. α
+      remembers the recent trend instead of the last event.
+    state:
+      label: "Reaction factor"
+      fields:
+        - [α, "0.30"]
+        - [This window, "no CNP, three times"]
+        - [Next cut keeps, "85% of the rate"]
+    chapter: /congestion/rate-limiter-context
+
+  - caption: >-
+      A CNP arriving now meets a low α and cuts gently, keeping 85% of the
+      rate. The same CNP after the two congested windows would have kept
+      64%: the cut is sized by how congested the path has been lately.
+    lit: [block-cnp]
+    state:
+      label: "Reaction factor"
+      fields:
+        - [α, "0.30"]
+        - [This window, "CNP"]
+        - [Next cut keeps, "85% of the rate"]
+    chapter: /congestion/the-rate-control-state-machine

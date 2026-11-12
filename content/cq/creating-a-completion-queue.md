@@ -7,6 +7,8 @@ draft: false
 description: "Installing a QP needs a state machine. Registering a Memory Region needs a Protection Domain. Creating a Completion Queue needs neither -- just a depth request and, optionally, a way to be told about new entries instead of having to go looking for them."
 prev: /cq/the-completion-queue
 next: /cq/cqe-generation
+metaDescription: "Creating an RDMA Completion Queue: a depth and optional event notification, no state machine or Protection Domain, and the re-arm race to avoid."
+seoTitle: "Creating an RDMA Completion Queue"
 ---
 
 ## Overview
@@ -41,6 +43,8 @@ The previous chapter's ring has to come from somewhere. This chapter is that som
 
 > [!CAUTION] Gotcha
 > Re-arming has a real ordering hazard built into it. Arming only promises notification for entries that arrive *after* the request -- so a completion that lands in the narrow window between draining a CQ empty and re-requesting notification generates no event of its own, and never will. "Poll until empty, then arm, then sleep" isn't safe on its own; software has to check the CQ one more time immediately *after* arming, not before, or risk sleeping through a completion that already landed in that gap.
+
+{{< flow "cq-rearm" >}}
 
 **Resizing -- a separate act from creation, not a variation on it.** A Completion Queue's depth doesn't have to stay fixed for its entire life the way [The QP Table](/qp/the-qp-table)'s entries or a Send Queue's ring do -- a real interface documents a distinct resize operation, callable after creation, that requests a new minimum depth for an existing CQ. The one hard constraint: the requested new depth has to be at least the number of entries still sitting unpolled in that CQ right now -- you cannot resize a queue down below data it's already holding that software hasn't consumed yet. Beyond that floor, the same rounding rule from creation applies again: the actual new depth may still come back larger than requested, and has to be read back the same way.
 

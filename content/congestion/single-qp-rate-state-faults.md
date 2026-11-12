@@ -7,6 +7,8 @@ draft: false
 description: "A malformed Congestion Notification Packet isn't a new failure mode this Part has to invent a story for -- it's an ordinary malformed packet, caught the same way any other one is. What's genuinely open is quieter: what a rate limiter's own gate is actually for, once the QP behind it can no longer send anything at all."
 prev: /congestion/the-rate-control-state-machine
 next: /congestion/multi-flow-cnp-arbitration
+metaDescription: "A malformed CNP is caught like any other bad packet. The open question is what a rate limiter does once its QP is in ERROR and can no longer send."
+seoTitle: "Rate-Limiter Faults on a Single QP"
 ---
 
 ## Overview

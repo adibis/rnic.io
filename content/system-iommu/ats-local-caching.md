@@ -6,6 +6,8 @@ publishDate: 2026-09-16
 draft: false
 description: "Transparent by Default's default costs a full round trip to the system-level translation layer on every access this engine's own cache doesn't already know about. PCIe's own Address Translation Services extension is the one real mechanism that lets a device cache that answer locally instead -- on request, not by default."
 prev: /system-iommu/iotlb-miss-latency
+metaDescription: "How PCIe Address Translation Services lets an RNIC cache IOMMU translations on the device, and the invalidation protocol that keeps them coherent."
+seoTitle: "PCIe ATS for RDMA NICs"
 ---
 
 ## Overview
@@ -19,6 +21,8 @@ prev: /system-iommu/iotlb-miss-latency
 ## Block diagram
 
 ![A device-side Address Translation Cache (ATC) sitting between DMA Engine and the system-level IOMMU/SMMU: a request for a translation, a Translated Address response cached locally, every later access to the same IOVA resolving from the ATC directly without crossing the boundary again, and a separate invalidation path -- the system-level layer sending an Invalidate Request downstream and the device confirming with an Invalidate Completion once its own cached entry is actually cleared.](/images/system-iommu/03-ats-local-caching-block.svg)
+
+{{< flow "two-translations" >}}
 
 ## Deep walkthrough
 

@@ -7,6 +7,8 @@ draft: false
 description: "A shared receive buffer registered once and addressed by a dozen QPs turns one key-table entry into something many owners touch at once -- concurrent reads are presumably free, but no public source says what happens when one of those owners tries to invalidate the entry while the others are still reading it."
 prev: /mr/permission-and-bounds-violations
 next: /mr/key-cache-eviction-policy
+metaDescription: "One Memory Region used by many QPs: concurrent key lookups, and the open question of invalidating the entry while other QPs still use it."
+seoTitle: "Shared Memory Region Arbitration"
 ---
 
 ## Overview

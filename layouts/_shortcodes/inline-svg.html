@@ -1,9 +1,15 @@
 {{- /* Inlines a static SVG file's raw markup into the page, so its internal
      <a href> links and hover styles actually work -- a plain markdown image
-     renders an SVG as a flat <img>, which strips all interactivity. */ -}}
+     renders an SVG as a flat <img>, which strips all interactivity. An
+     optional second argument names the drawing for screen readers; it is a
+     group label, not role="img", so the links inside stay reachable. */ -}}
 {{- $path := .Get 0 -}}
 {{- with $path -}}
-  {{- readFile . | safeHTML -}}
+  {{- $svg := readFile . -}}
+  {{- with $.Get 1 -}}
+    {{- $svg = replace $svg "<svg " (printf `<svg role="group" aria-label="%s" ` (. | htmlEscape)) 1 -}}
+  {{- end -}}
+  {{- $svg | safeHTML -}}
 {{- else -}}
   {{- errorf "inline-svg requires a file path, e.g. {{< inline-svg \"static/images/foo.svg\" >}}" -}}
 {{- end -}}

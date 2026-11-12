@@ -14,7 +14,7 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 
 <text x="450" y="30" font-size="16" font-weight="500" fill="#0f172a" text-anchor="middle">Five resource pools one QP can exhaust</text>
 <text x="450" y="50" font-size="12" fill="#64748b" text-anchor="middle">QP Table and QP Cache heights are real -- table &gt;&gt; cache, by construction.</text>
-<text x="450" y="65" font-size="12" fill="#64748b" text-anchor="middle">Parts 3 and 5 exist but state no figure; Part 6 doesn't exist yet -- not drawn to scale.</text>
+<text x="450" y="65" font-size="12" fill="#64748b" text-anchor="middle">The other three have no figure stated anywhere in this book -- not drawn to scale.</text>
 
 <!-- baseline -->
 <line x1="70" y1="440" x2="830" y2="440" stroke="#cbd5e1" stroke-width="1.5"/>
@@ -57,7 +57,7 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
   <text x="750" y="378" font-size="22" font-weight="500" fill="#94a3b8" text-anchor="middle">?</text>
 </g>
 <text x="750" y="460" font-size="11" fill="#64748b" text-anchor="middle">Rate Limiter state</text>
-<text x="750" y="474" font-size="11" fill="#94a3b8" text-anchor="middle">not yet drafted</text>
+<text x="750" y="474" font-size="11" fill="#94a3b8" text-anchor="middle">no figure stated</text>
 
 <text x="450" y="505" font-size="12" font-weight="500" fill="#0f172a" text-anchor="middle">The real ceiling on QP count is whichever of these five is shortest -- not necessarily the table.</text>
 </svg>

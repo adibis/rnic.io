@@ -1,0 +1,220 @@
+title: A Replay Buffer allocation fills, the gate stalls, and an ACK reopens it
+diagram: flows/replay-gate
+description: 'A QP with 8 WQEs ready and a 4-entry Replay Buffer allocation sends
+  four, then stalls at the transmit gate: there is nowhere to hold a fifth for
+  retransmission, and evicting an entry would break reliability. An ACK retires
+  two entries and the gate admits two more.'
+play: Play the gate
+steps:
+- caption: Eight WQEs are ready in the Send Queue. This QP's Replay Buffer allocation
+    is 4 entries, and its responder is a long round trip away. The gate below
+    is this book's reasoning about where the check has to sit, not a documented
+    design.
+  lit:
+  - block-sq
+  - block-gate
+  state:
+    label: Replay Buffer
+    fields:
+    - - Entry 1
+      - free
+    - - Entry 2
+      - free
+    - - Entry 3
+      - free
+    - - Entry 4
+      - free
+    - - WQEs waiting
+      - '8'
+    - - Gate
+      - open
+  chapter: /reliability/replay-buffer-capacity-and-backpressure
+- caption: 'The gate admits WQE 1: it allocates an entry to resend from, and the
+    packet goes out in the same step.'
+  lit:
+  - block-gate
+  - block-entry-1
+  travel:
+  - arrow-gate-alloc
+  - arrow-gate-wire
+  token:
+  - ''
+  - WQE 1
+  parallel:
+  - Entry 1 allocated for WQE 1
+  - WQE 1 transmitted
+  state:
+    label: Replay Buffer
+    fields:
+    - - Entry 1
+      - WQE 1
+    - - Entry 2
+      - free
+    - - Entry 3
+      - free
+    - - Entry 4
+      - free
+    - - WQEs waiting
+      - '7'
+    - - Gate
+      - open
+  chapter: /reliability/replay-buffer-capacity-and-backpressure
+- caption: 'WQEs 2 to 4 follow the same way. No ACK has come back yet: the round
+    trip is longer than it takes to send four.'
+  lit:
+  - block-gate
+  - block-entry-2
+  - block-entry-3
+  - block-entry-4
+  travel:
+  - arrow-gate-alloc
+  - arrow-gate-wire
+  token:
+  - ''
+  - WQEs 2-4
+  parallel:
+  - Entries 2 to 4 allocated
+  - WQEs 2 to 4 transmitted
+  state:
+    label: Replay Buffer
+    fields:
+    - - Entry 1
+      - WQE 1
+    - - Entry 2
+      - WQE 2
+    - - Entry 3
+      - WQE 3
+    - - Entry 4
+      - WQE 4
+    - - WQEs waiting
+      - '4'
+    - - Gate
+      - open
+  chapter: /reliability/replay-buffer-capacity-and-backpressure
+- predict: WQE 5 is ready and the link is idle. Does it go?
+  caption: No. All four entries hold unacknowledged packets, and WQE 5 would have
+    nothing to be resent from. The gate holds it. This is a stall, not a fault.
+  lit:
+  - block-gate
+  - block-sq
+  - block-entry-1
+  - block-entry-2
+  - block-entry-3
+  - block-entry-4
+  state:
+    label: Replay Buffer
+    fields:
+    - - Entry 1
+      - WQE 1
+    - - Entry 2
+      - WQE 2
+    - - Entry 3
+      - WQE 3
+    - - Entry 4
+      - WQE 4
+    - - WQEs waiting
+      - '4'
+    - - Gate
+      - 'closed: no free entry'
+  chapter: /reliability/replay-buffer-capacity-and-backpressure
+- predict: Could the gate free a slot by evicting entry 1 instead?
+  caption: No. Entry 1 is the only way to resend WQE 1 if it was lost. Unlike
+    a cache line, it has no backing copy to fetch again, so evicting it would
+    break the reliability contract rather than cost latency.
+  lit:
+  - block-entry-1
+  state:
+    label: Replay Buffer
+    fields:
+    - - Entry 1
+      - WQE 1
+    - - Entry 2
+      - WQE 2
+    - - Entry 3
+      - WQE 3
+    - - Entry 4
+      - WQE 4
+    - - WQEs waiting
+      - '4'
+    - - Gate
+      - 'closed: no free entry'
+  chapter: /reliability/replay-buffer-capacity-and-backpressure
+- caption: One cumulative ACK covers WQEs 1 and 2. Their entries are retired.
+  lit:
+  - block-entry-1
+  - block-entry-2
+  travel: arrow-ack
+  token: ACK
+  state:
+    label: Replay Buffer
+    fields:
+    - - Entry 1
+      - free
+    - - Entry 2
+      - free
+    - - Entry 3
+      - WQE 3
+    - - Entry 4
+      - WQE 4
+    - - WQEs waiting
+      - '4'
+    - - Gate
+      - open
+  chapter: /reliability/replay-buffer-capacity-and-backpressure
+- caption: The gate opens for WQEs 5 and 6, which take the freed entries, then
+    closes again.
+  lit:
+  - block-gate
+  - block-entry-1
+  - block-entry-2
+  travel:
+  - arrow-gate-alloc
+  - arrow-gate-wire
+  token:
+  - ''
+  - WQEs 5-6
+  parallel:
+  - Entries 1 and 2 allocated
+  - WQEs 5 and 6 transmitted
+  state:
+    label: Replay Buffer
+    fields:
+    - - Entry 1
+      - WQE 5
+    - - Entry 2
+      - WQE 6
+    - - Entry 3
+      - WQE 3
+    - - Entry 4
+      - WQE 4
+    - - WQEs waiting
+      - '2'
+    - - Gate
+      - 'closed: no free entry'
+  chapter: /reliability/replay-buffer-capacity-and-backpressure
+- caption: 'From here, this QP sends only as fast as ACKs free entries: at most
+    4 entries'' worth of packets per round trip. A longer round trip or a smaller
+    allocation lowers that ceiling, however fast the link is.'
+  lit:
+  - block-gate
+  - block-peer
+  - block-entry-1
+  - block-entry-2
+  - block-entry-3
+  - block-entry-4
+  state:
+    label: Replay Buffer
+    fields:
+    - - Entry 1
+      - WQE 5
+    - - Entry 2
+      - WQE 6
+    - - Entry 3
+      - WQE 3
+    - - Entry 4
+      - WQE 4
+    - - WQEs waiting
+      - '2'
+    - - Gate
+      - paced by ACKs
+  chapter: /reliability/replay-buffer-capacity-and-backpressure

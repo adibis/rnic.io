@@ -7,6 +7,8 @@ draft: false
 description: "An arriving packet can pass every check this part has covered and still not be processable -- not because anything is wrong with it, but because a resource it needs isn't there yet. This chapter is what that actually does to one Queue Pair's receive path, and what it does not do to any other."
 prev: /rx/multi-packet-reassembly
 next: /rx/multi-qp-rx-arbitration
+metaDescription: "When a valid RDMA packet cannot be processed yet because a resource it needs is missing: what that does to one QP's receive path, and not to others."
+seoTitle: "Single-QP RX Stalls"
 ---
 
 ## Overview

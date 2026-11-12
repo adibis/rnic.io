@@ -1,0 +1,36 @@
+{{- /* Returns the absolute URL of this page's social card. Chapters and
+  Part pages get a card drawn at build time: the Part's name, the page's
+  title and its search description over the site's dark card. Anything
+  else, and any page that sets its own `images`, keeps the default. Text
+  is wrapped here by character count, because the image filter does not
+  wrap to a margin and the NIC icon sits in the top-right corner. */ -}}
+{{- $url := "" -}}
+{{- with .Params.images -}}
+  {{- $url = index . 0 | absURL -}}
+{{- else -}}
+  {{- $url = index site.Params.images 0 | absURL -}}
+  {{- if and (not .IsHome) (in (slice "page" "section") .Kind) -}}
+    {{- $bold := resources.Get "fonts/Literata-Bold.ttf" -}}
+    {{- $reg := resources.Get "fonts/Literata-Regular.ttf" -}}
+    {{- $part := "" -}}
+    {{- with .FirstSection }}{{ if ne . $ }}{{ $part = .LinkTitle }}{{ end }}{{ end -}}
+    {{- $kicker := cond (eq $part "") "rnic.io" (printf "rnic.io  ·  %s" $part) -}}
+    {{- $title := or .Params.seoTitle .Title -}}
+    {{- $desc := or .Params.metaDescription .Description "" | plainify | htmlUnescape -}}
+    {{- $filters := slice (images.Text $kicker (dict "font" $reg "size" 28 "color" "#94a3b8" "x" 90 "y" 120)) -}}
+    {{- $lines := partial "og-wrap.html" (dict "text" $title "width" 20 "max" 3) -}}
+    {{- $y := 180 -}}
+    {{- range $lines -}}
+      {{- $filters = $filters | append (images.Text . (dict "font" $bold "size" 62 "color" "#f5f5f5" "x" 90 "y" $y)) -}}
+      {{- $y = add $y 76 -}}
+    {{- end -}}
+    {{- $y = add $y 28 -}}
+    {{- range partial "og-wrap.html" (dict "text" $desc "width" 58 "max" (cond (gt (len $lines) 2) 2 3)) -}}
+      {{- $filters = $filters | append (images.Text . (dict "font" $reg "size" 27 "color" "#cbd5e1" "x" 90 "y" $y)) -}}
+      {{- $y = add $y 40 -}}
+    {{- end -}}
+    {{- $card := resources.Get "og/base.png" | images.Filter $filters | resources.Copy (printf "og/%s.png" (.RelPermalink | strings.TrimPrefix "/" | strings.TrimSuffix "/" | replaceRE "/" "-" )) -}}
+    {{- $url = $card.Permalink -}}
+  {{- end -}}
+{{- end -}}
+{{- return $url -}}

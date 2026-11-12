@@ -7,6 +7,8 @@ draft: false
 description: "A Send Queue is software producing, hardware consuming. A Completion Queue is the exact same ring shape with both roles swapped -- hardware produces, software consumes -- and it's usually not even feeding from one QP: many QPs' completions land in the same ring, interleaved in whatever order they actually finish in."
 prev: /cq/the-cqe
 next: /cq/creating-a-completion-queue
+metaDescription: "An RDMA Completion Queue is a ring like the Send Queue with the roles swapped: hardware writes CQEs, software reads them, often for many QPs at once."
+seoTitle: "The RDMA Completion Queue Ring"
 ---
 
 ## Overview

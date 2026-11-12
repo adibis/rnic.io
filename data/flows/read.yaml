@@ -1,0 +1,116 @@
+title: "RDMA Read: one request, a two-packet response"
+diagram: flows/read
+description: >-
+  An 8 KiB RDMA Read: the request carries a RETH and no payload, the
+  responder's hardware reads its own memory and sends READ_RESPONSE_FIRST
+  and READ_RESPONSE_LAST on the requester's PSNs, and the AETH on the last
+  response acknowledges the request.
+steps:
+  - caption: >-
+      The application posts a READ: the remote address and rkey to read
+      from, and a local buffer with its lkey to read into.
+    lit: [block-post]
+    chapter: /tx/the-wqe-and-the-send-queue-descriptor
+
+  - caption: >-
+      The request carries no payload. It takes PSN 2000, and because 8 KiB
+      needs two response packets at this MTU it reserves 2001 too. The next
+      request on this QP starts at 2002.
+    lit: [block-build]
+    chapter: /overview/operation-catalog/rdma-read
+
+  - caption: >-
+      The request goes into the Replay Buffer like any other, and the retry
+      timer arms on PSN 2000.
+    lit: [block-replay]
+    chapter: /reliability/the-replay-buffer
+
+  - caption: >-
+      The responder checks PSN 2000, then the rkey, this time for remote read
+      permission over all 8 KiB.
+    lit: [block-rx-check]
+    travel: arrow-req
+    packet:
+      label: "READ_REQUEST  PSN 2000"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x0C  RC RDMA READ Request"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000012"]
+            - [PSN, "2000"]
+        - name: RETH
+          fields:
+            - [VA, "0x00007F3A_C0001000"]
+            - [R_Key, "0x00002A04"]
+            - [DMA Length, "8192"]
+    chapter: /mr/permission-and-bounds-violations
+
+  - caption: >-
+      Reads and atomics in flight are capped per QP, at a ceiling both sides
+      agreed when the connection was set up. This request takes one slot.
+    lit: [block-read-slot]
+    chapter: /qp/qp-context
+
+  - predict: >-
+      The responder's software posted nothing for this request. Who builds
+      the response packets?
+    caption: >-
+      The responder's hardware. Its DMA engine reads the 8 KiB, and for this
+      message the responder becomes the sender.
+    lit: [block-dma-read]
+    chapter: /dma/the-gather-path
+
+  - caption: >-
+      READ_RESPONSE_FIRST carries PSN 2000, the request's own PSN, and an
+      AETH. The requester places it in the buffer its own WQE named; nothing
+      on the wire says where.
+    lit: [block-place-1]
+    travel: arrow-resp-first
+    packet:
+      label: "READ_RESPONSE_FIRST  PSN 2000"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x0D  RC RDMA READ Response First"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000034"]
+            - [PSN, "2000"]
+        - name: AETH
+          fields:
+            - [Syndrome, "ACK (bits 6:5 = 00; credit count in 4:0)"]
+            - [MSN, "0x000000"]
+        - name: Payload
+          fields:
+            - [Bytes, "4096"]
+    chapter: /rx/multi-packet-reassembly
+
+  - caption: >-
+      READ_RESPONSE_LAST closes the message. The response itself is the
+      acknowledgement: the Replay Buffer entry retires and the timer disarms.
+    lit: [block-place-2]
+    travel: arrow-resp-last
+    packet:
+      label: "READ_RESPONSE_LAST  PSN 2001"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x0F  RC RDMA READ Response Last"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000034"]
+            - [PSN, "2001"]
+        - name: AETH
+          fields:
+            - [Syndrome, "ACK (bits 6:5 = 00; credit count in 4:0)"]
+            - [MSN, "0x000001"]
+        - name: Payload
+          fields:
+            - [Bytes, "4096"]
+    chapter: /overview/operation-catalog/rdma-read
+
+  - condition: "only if the Work Request was signaled"
+    caption: >-
+      The requester writes its completion. By the time the application sees
+      it, the data is already in local memory.
+    lit: [block-send-cqe]
+    chapter: /cq/cqe-generation

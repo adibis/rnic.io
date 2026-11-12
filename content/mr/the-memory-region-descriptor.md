@@ -6,6 +6,8 @@ publishDate: 2026-09-04
 draft: false
 description: "A registered memory region hands back two keys, not one -- and they are not two views of the same number. One unlocks local Work Requests against this process's own memory; the other is what a remote peer presents to touch it. This chapter is what's actually in the entry both of them point at."
 next: /mr/the-key-table
+metaDescription: "What an RDMA Memory Region entry holds, and why registration returns two keys: an lkey for local Work Requests and an rkey for remote peers."
+seoTitle: "The RDMA Memory Region Descriptor"
 ---
 
 This chapter starts with the Memory Region descriptor itself, field by field, before the next chapter covers the table structure holding every one of them.

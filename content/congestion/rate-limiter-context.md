@@ -6,6 +6,8 @@ publishDate: 2026-09-12
 draft: false
 description: "A Queue Pair's rate limiter doesn't track a rate. It tracks two -- a current one and a target one -- plus the one factor that decides how hard the current rate gets cut the next time congestion is reported, and the timer-and-counter pair that claws the current rate back toward the target when it isn't. Five fields, one algorithm, and a standard that specifies none of them."
 next: /congestion/the-rate-limiter-table
+metaDescription: "The five fields of a QP's DCQCN rate-limiter context: current rate, target rate, the alpha reaction factor, and the timer and byte counter behind recovery."
+seoTitle: "DCQCN Rate-Limiter Context Fields"
 ---
 
 [One Transaction, Start to Finish](/overview/one-transaction-start-to-finish) already named this chapter's subject in passing: before the adapter spends any further effort on a WQE, "the rate limiter decides whether this QP's turn to dispatch a packet has actually come, pacing *when* a WQE proceeds." This is where that decision's own state actually gets defined, field by field.

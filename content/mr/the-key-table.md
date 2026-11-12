@@ -7,6 +7,8 @@ draft: false
 description: "A QP number is a dense index handed out by the adapter itself. A key is neither -- it's an opaque 32-bit value a remote peer presents from across the wire, and the table it has to resolve against is built to fail cleanly on a wrong one rather than fail dangerously into someone else's memory."
 prev: /mr/the-memory-region-descriptor
 next: /mr/key-caching
+metaDescription: "The RNIC Key Table: how an opaque 32-bit lkey or rkey resolves to a Memory Region, built to fail cleanly on a wrong key rather than expose memory."
+seoTitle: "The RDMA Key Table: lkey and rkey"
 ---
 
 [The Memory Region Descriptor](/mr/the-memory-region-descriptor) covered what's inside one entry. This chapter is about the structure holding every entry, and how a presented key finds the right one.

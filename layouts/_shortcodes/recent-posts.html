@@ -1,0 +1,16 @@
+{{- /* The newest blog posts as a compact list, so the home page stays
+  current without being edited for each post. Optional "count" (default 3). */ -}}
+{{- $n := .Get "count" | default 3 -}}
+{{- with site.GetPage "/blog" -}}
+<ul class="rnic-home-posts not-prose">
+{{- range first $n .RegularPages.ByPublishDate.Reverse }}
+  <li>
+    <a href="{{ .RelPermalink }}">
+      <span class="rnic-home-post-title">{{ .Title }}</span>
+      <span class="rnic-home-post-desc">{{ or .Params.metaDescription .Description }}</span>
+    </a>
+    <time class="rnic-home-meta" datetime="{{ .PublishDate.Format "2006-01-02" }}">{{ .PublishDate.Format "Jan 2, 2006" }}</time>
+  </li>
+{{- end }}
+</ul>
+{{- end -}}

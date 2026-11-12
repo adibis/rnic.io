@@ -1,0 +1,207 @@
+title: "RDMA Write in three packets"
+diagram: flows/write-multi
+description: >-
+  A 12 KiB RDMA Write at a 4 KiB path MTU: WRITE_FIRST carries the RETH,
+  WRITE_MIDDLE and WRITE_LAST carry only payload and land through the
+  responder's reassembly context, and one ACK for the last PSN retires all
+  three packets on the requester.
+steps:
+  - caption: >-
+      The application posts one Work Request for 12 KiB. The path MTU is
+      4 KiB, so the message will leave as three packets.
+    lit: [block-post]
+    state:
+      label: "Both ends"
+      fields:
+        - [Responder expects PSN, "1000"]
+        - [Next byte goes to, "-"]
+        - [Bytes left, "-"]
+        - [Replay Buffer holds, "empty"]
+    chapter: /tx/the-wqe-and-the-send-queue-descriptor
+
+  - caption: >-
+      TX Packet Build gathers the source bytes under the WQE's lkey and cuts
+      them at the MTU. Only the first packet gets a RETH.
+    lit: [block-build]
+    state:
+      label: "Both ends"
+      fields:
+        - [Responder expects PSN, "1000"]
+        - [Next byte goes to, "-"]
+        - [Bytes left, "-"]
+        - [Replay Buffer holds, "empty"]
+    chapter: /tx/tx-packet-build
+
+  - caption: >-
+      Each packet gets a Replay Buffer entry as it leaves. The retry timer
+      watches only the oldest outstanding PSN, 1000.
+    lit: [block-replay]
+    state:
+      label: "Both ends"
+      fields:
+        - [Responder expects PSN, "1000"]
+        - [Next byte goes to, "-"]
+        - [Bytes left, "-"]
+        - [Replay Buffer holds, "1000 to 1002"]
+    chapter: /reliability/the-replay-buffer
+
+  - caption: >-
+      WRITE_FIRST carries the RETH: the target address, the rkey, and the
+      length of the whole message, not just of this packet.
+    travel: arrow-first
+    packet:
+      label: "WRITE_FIRST  PSN 1000"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x06  RC RDMA WRITE First"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000012"]
+            - [AckReq, "0"]
+            - [PSN, "1000"]
+        - name: RETH
+          fields:
+            - [VA, "0x00007F3A_C0001000"]
+            - [R_Key, "0x00002A04"]
+            - [DMA Length, "12288"]
+        - name: Payload
+          fields:
+            - [Bytes, "4096"]
+    state:
+      label: "Both ends"
+      fields:
+        - [Responder expects PSN, "1000"]
+        - [Next byte goes to, "-"]
+        - [Bytes left, "-"]
+        - [Replay Buffer holds, "1000 to 1002"]
+    chapter: /overview/operation-catalog/rdma-write
+
+  - caption: >-
+      The responder checks PSN 1000, then resolves the rkey. Because the RETH
+      states the full length, the permission and bounds check covers all
+      12 KiB at once.
+    lit: [block-rx-first]
+    state:
+      label: "Both ends"
+      fields:
+        - [Responder expects PSN, "1001"]
+        - [Next byte goes to, "-"]
+        - [Bytes left, "-"]
+        - [Replay Buffer holds, "1000 to 1002"]
+    chapter: /mr/permission-and-bounds-violations
+
+  - caption: >-
+      The first 4 KiB lands at the RETH address. For the rest of the message
+      the responder keeps two numbers: where the next byte goes, and how many
+      bytes are left.
+    lit: [block-ctx-open]
+    state:
+      label: "Both ends"
+      fields:
+        - [Responder expects PSN, "1001"]
+        - [Next byte goes to, "0x7F3A_C0002000"]
+        - [Bytes left, "8192"]
+        - [Replay Buffer holds, "1000 to 1002"]
+    chapter: /rx/multi-packet-reassembly
+
+  - predict: >-
+      WRITE_MIDDLE carries no address at all. How does the responder know
+      where its payload goes?
+    caption: >-
+      From the reassembly context. WRITE_MIDDLE is a BTH and payload, nothing
+      else; its bytes go where the context points, and the context advances.
+    lit: [block-ctx-mid]
+    travel: arrow-middle
+    packet:
+      label: "WRITE_MIDDLE  PSN 1001"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x07  RC RDMA WRITE Middle"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000012"]
+            - [AckReq, "0"]
+            - [PSN, "1001"]
+        - name: Payload
+          fields:
+            - [Bytes, "4096"]
+    state:
+      label: "Both ends"
+      fields:
+        - [Responder expects PSN, "1002"]
+        - [Next byte goes to, "0x7F3A_C0003000"]
+        - [Bytes left, "4096"]
+        - [Replay Buffer holds, "1000 to 1002"]
+    chapter: /rx/multi-packet-reassembly
+
+  - caption: >-
+      WRITE_LAST places the final 4 KiB and brings the count to zero, closing
+      the context. A plain WRITE consumes no Receive WQE and writes no CQE on
+      this side.
+    lit: [block-ctx-close]
+    travel: arrow-last
+    packet:
+      label: "WRITE_LAST  PSN 1002"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x08  RC RDMA WRITE Last"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000012"]
+            - [AckReq, "1"]
+            - [PSN, "1002"]
+        - name: Payload
+          fields:
+            - [Bytes, "4096"]
+    state:
+      label: "Both ends"
+      fields:
+        - [Responder expects PSN, "1003"]
+        - [Next byte goes to, "context closed"]
+        - [Bytes left, "0"]
+        - [Replay Buffer holds, "1000 to 1002"]
+    chapter: /rx/multi-packet-reassembly
+
+  - predict: >-
+      Three packets arrived. How many ACKs does the requester need?
+    caption: >-
+      One. ACKs are cumulative, so ACK 1002 confirms 1000 and 1001 as well.
+      All three Replay Buffer entries retire and the retry timer disarms.
+    lit: [block-ack-match]
+    travel: arrow-ack
+    packet:
+      label: "ACK  PSN 1002"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x11  RC Acknowledge"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000034"]
+            - [AckReq, "0"]
+            - [PSN, "1002"]
+        - name: AETH
+          fields:
+            - [Syndrome, "ACK (bits 6:5 = 00; credit count in 4:0)"]
+            - [MSN, "0x000001"]
+    state:
+      label: "Both ends"
+      fields:
+        - [Responder expects PSN, "1003"]
+        - [Next byte goes to, "context closed"]
+        - [Bytes left, "0"]
+        - [Replay Buffer holds, "empty"]
+    chapter: /reliability/message-completion-and-the-msn
+
+  - condition: "only if the Work Request was signaled"
+    caption: >-
+      MSN 1 says one whole message completed, so the WQE retires and a send
+      completion is written.
+    lit: [block-send-cqe]
+    state:
+      label: "Both ends"
+      fields:
+        - [Responder expects PSN, "1003"]
+        - [Next byte goes to, "context closed"]
+        - [Bytes left, "0"]
+        - [Replay Buffer holds, "empty"]
+    chapter: /reliability/message-completion-and-the-msn

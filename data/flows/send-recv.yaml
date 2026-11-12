@@ -1,0 +1,100 @@
+title: "SEND / RECV: Local and Remote Sequence"
+diagram: overview/04-send-recv-sequence
+description: >-
+  SEND/RECV sequence: the responder pre-posts a Receive WQE; the requester's
+  TX engine gathers the source buffer and stamps a PSN; the SEND crosses to
+  the responder, which checks the PSN, pops the Receive WQE at the head of
+  its RQ, places the payload, posts a receive CQE and ACKs; the ACK retires
+  the requester's Replay Buffer entry and a send CQE posts.
+steps:
+  - caption: >-
+      Before anything is sent, the responder's application posts a Receive
+      WQE naming a buffer. That WQE is where an incoming SEND will land.
+    lit: [block-rq-posted]
+    chapter: /rx/the-receive-queue-descriptor-and-ring
+
+  - caption: >-
+      The requester posts a SEND. It names no remote address: where the bytes
+      go was decided in advance, by the responder.
+    lit: [block-post-send]
+    chapter: /overview/operation-catalog/send
+
+  - caption: >-
+      The TX engine gathers the source buffer under the WQE's lkey and stamps
+      the next PSN.
+    lit: [block-tx]
+    chapter: /tx/tx-packet-build
+
+  - caption: >-
+      SEND_ONLY is a BTH and a payload, nothing more. The responder parses it
+      and compares its PSN with the one it expects.
+    lit: [block-rx]
+    travel: arrow-send
+    packet:
+      label: "SEND_ONLY  PSN 1000"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x04  RC SEND Only"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000012"]
+            - [AckReq, "1"]
+            - [PSN, "1000"]
+        - name: Payload
+          fields:
+            - [Bytes, "1024"]
+    chapter: /rx/psn-check-and-out-of-order-arrival
+
+  - caption: >-
+      Two things could stop it here. A PSN gap draws a sequence-error NAK; an
+      empty Receive Queue draws an RNR NAK. This time neither happens.
+    lit: [block-branches]
+    chapter: /reliability/the-retry-and-rnr-timeout-state-machines
+
+  - predict: >-
+      The packet carries no address. Where does its payload go?
+    caption: >-
+      Into the buffer named by the Receive WQE at the head of the RQ, taken
+      strictly in order. The DMA engine places the payload there.
+    lit: [block-pop-rq]
+    chapter: /rx/the-receive-queue-descriptor-and-ring
+
+  - caption: >-
+      A receive completion is written to the responder's CQ. A plain WRITE
+      would leave the responder's software unaware; a SEND always tells it.
+      The ACK is already crossing back; it does not wait for the completion.
+    lit: [block-recv-cqe]
+    travel: arrow-ack
+    token: [{label: "ACK  PSN 1000", wire: true}]
+    parallel:
+      - "Responder writes the receive CQE"
+      - "ACK for PSN 1000 crosses back"
+    chapter: /cq/cqe-generation
+
+  - caption: >-
+      The ACK for PSN 1000 retires the requester's Replay Buffer entry and
+      disarms the retry timer.
+    lit: [block-psn-match]
+    travel: arrow-ack
+    packet:
+      label: "ACK  PSN 1000"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x11  RC Acknowledge"]
+            - [P_Key, "0xFFFF"]
+            - [DestQP, "0x000034"]
+            - [AckReq, "0"]
+            - [PSN, "1000"]
+        - name: AETH
+          fields:
+            - [Syndrome, "ACK (bits 6:5 = 00; credit count in 4:0)"]
+            - [MSN, "0x000001"]
+    chapter: /reliability/the-replay-buffer
+
+  - condition: "only if the Work Request was signaled"
+    caption: >-
+      MSN 1 says one whole message completed, so the WQE retires and the send
+      completion posts.
+    lit: [block-send-cqe]
+    chapter: /reliability/message-completion-and-the-msn

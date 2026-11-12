@@ -43,5 +43,5 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <text x="430" y="246" font-size="9" font-weight="500" fill="#ce8d8d" text-anchor="middle">requester rebuilds N+2 through N+k from the Replay Buffer and retransmits every one</text>
 
 <text x="440" y="300" font-size="9" fill="#949ca8" text-anchor="middle">The cost is real, wasted bandwidth on packets that may not have needed resending -- the trade this book's</text>
-<text x="440" y="313" font-size="9" fill="#949ca8" text-anchor="middle">reliability engine makes against a per-QP reorder buffer sized for the rare case (Part 4.3's own design rationale).</text>
+<text x="440" y="313" font-size="9" fill="#949ca8" text-anchor="middle">reliability engine makes against a per-QP reorder buffer sized for the rare case (see PSN Check's design rationale).</text>
 </svg>

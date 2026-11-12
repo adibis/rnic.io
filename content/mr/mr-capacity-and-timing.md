@@ -6,6 +6,8 @@ publishDate: 2026-09-09
 draft: false
 description: "How many Memory Regions can a real chip hold registered at once isn't even a well-formed question on its own -- a registration's hard cost scales with how many pages it covers, not with whether it exists. This closing chapter asks what that actually bounds, and picks up Registering a Memory Region's open question about whether a key can ever resolve against a half-populated entry."
 prev: /mr/mid-transaction-deregistration
+metaDescription: "What limits how many Memory Regions an RNIC can hold: registration cost scales with pages, and can a key resolve against a half-written entry?"
+seoTitle: "RDMA Memory Region Capacity and Timing"
 ---
 
 ## Overview

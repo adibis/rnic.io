@@ -1,0 +1,153 @@
+title: "A fence strands the prefetch pool, then priority keeps QP1 waiting"
+diagram: flows/tx-pool
+description: >-
+  QP1 and QP2 share one 100-slot WQE prefetch pool and one TX scheduler
+  gate. QP1 arrives first and is granted every slot; its tenth WQE is fenced
+  behind an earlier READ, so the 90 WQEs behind it sit resident and
+  unusable, and QP2 gets only the 9 slots QP1 freed. When the READ's
+  response clears the fence, a strict-priority gate still services QP2
+  every turn, so QP1 stays idle for a different reason.
+steps:
+  - scene: The prefetch pool
+    caption: >-
+      QP1 posts 100 Work Requests. The tenth is fenced: it may not start
+      until an earlier READ, still outstanding, has its response.
+    lit: [block-sq1, block-read]
+    state:
+      label: "Pool and gate"
+      fields:
+        - [Free slots, "100"]
+        - [QP1 slots held, "0"]
+        - [QP1 slots usable, "0"]
+        - [QP2 slots held, "0"]
+        - [QP1 blocked by, "-"]
+    chapter: /tx/wqe-prefetch
+
+  - caption: >-
+      The pool is empty and nothing limits one QP's share, so QP1 is granted
+      all 100 slots and its WQEs are prefetched on-chip.
+    lit: [block-pool-done, block-pool-fence, block-pool-stuck]
+    travel: arrow-sq1-pool
+    token: "100 WQEs"
+    state:
+      label: "Pool and gate"
+      fields:
+        - [Free slots, "0"]
+        - [QP1 slots held, "100"]
+        - [QP1 slots usable, "100"]
+        - [QP2 slots held, "0"]
+        - [QP1 blocked by, "-"]
+    chapter: /tx/wqe-prefetch
+
+  - caption: >-
+      WQEs 1 to 9 issue through the gate and leave on the wire, freeing their
+      slots as they go.
+    lit: [block-pool-done, block-gate]
+    travel: arrow-qp1-gate
+    token: "WQEs 1-9"
+    state:
+      label: "Pool and gate"
+      fields:
+        - [Free slots, "9"]
+        - [QP1 slots held, "91"]
+        - [QP1 slots usable, "91"]
+        - [QP2 slots held, "0"]
+        - [QP1 blocked by, "-"]
+    chapter: /tx/multi-qp-tx-scheduling
+
+  - predict: >-
+      WQE 10 reaches its fence. WQEs 11 to 100 are already on-chip. Can they
+      go ahead of it?
+    caption: >-
+      No. A Send Queue issues strictly in order, so everything behind WQE 10
+      waits with it: 90 slots resident, prefetched, and doing nothing.
+    lit: [block-pool-fence, block-pool-stuck]
+    state:
+      label: "Pool and gate"
+      fields:
+        - [Free slots, "9"]
+        - [QP1 slots held, "91"]
+        - [QP1 slots usable, "0"]
+        - [QP2 slots held, "0"]
+        - [QP1 blocked by, "its own fence"]
+    chapter: /tx/single-qp-pipeline-stalls
+
+  - caption: >-
+      QP2 arrives with work of its own and finds only the 9 slots QP1 freed.
+      Nobody did anything wrong: the fence is legitimate, the request is
+      legitimate, and the problem is how the pool was handed out.
+    lit: [block-sq2, block-pool-done]
+    travel: arrow-sq2-pool
+    token: "9 WQEs"
+    state:
+      label: "Pool and gate"
+      fields:
+        - [Free slots, "0"]
+        - [QP1 slots held, "91"]
+        - [QP1 slots usable, "0"]
+        - [QP2 slots held, "9"]
+        - [QP1 blocked by, "its own fence"]
+    chapter: /tx/wqe-prefetch
+
+  - scene: At the gate
+    caption: >-
+      The gate favours QP2 and QP2 always has something ready, so QP2 is
+      serviced every turn. Unremarkable so far: QP1 has nothing eligible to
+      offer.
+    lit: [block-gate]
+    travel: arrow-qp2-gate
+    token: "QP2"
+    chapter: /tx/multi-qp-tx-scheduling
+
+  - caption: >-
+      The earlier READ's response arrives and QP1's fence clears. WQE 10
+      and the 90 behind it are eligible again.
+    lit: [block-read, block-pool-fence, block-pool-stuck]
+    travel: arrow-read-fence
+    token: "fence clears"
+    state:
+      label: "Pool and gate"
+      fields:
+        - [Free slots, "0"]
+        - [QP1 slots held, "91"]
+        - [QP1 slots usable, "91"]
+        - [QP2 slots held, "9"]
+        - [QP1 blocked by, "-"]
+    chapter: /tx/single-qp-pipeline-stalls
+
+  - predict: >-
+      QP1 has 91 ready WQEs. Does it send on the next turn?
+    caption: >-
+      Not under strict priority. QP2 is still ready and still favoured, so it
+      wins every turn and QP1 stays idle. Same symptom as before, different
+      cause: the fence explained QP1's wait before, the policy explains it
+      now.
+    lit: [block-gate]
+    travel: arrow-qp2-gate
+    token: "QP2"
+    state:
+      label: "Pool and gate"
+      fields:
+        - [Free slots, "0"]
+        - [QP1 slots held, "91"]
+        - [QP1 slots usable, "91"]
+        - [QP2 slots held, "9"]
+        - [QP1 blocked by, "the scheduling policy"]
+    chapter: /tx/multi-qp-tx-scheduling
+
+  - condition: "the gate is round-robin instead"
+    caption: >-
+      Round-robin does not share this failure: QP1 gets the next turn and
+      resumes, and QP2 is served on the turn after.
+    lit: [block-gate, block-policy]
+    travel: arrow-qp1-gate
+    token: "QP1"
+    state:
+      label: "Pool and gate"
+      fields:
+        - [Free slots, "0"]
+        - [QP1 slots held, "91"]
+        - [QP1 slots usable, "91"]
+        - [QP2 slots held, "9"]
+        - [QP1 blocked by, "-"]
+    chapter: /tx/multi-qp-tx-scheduling

@@ -7,6 +7,8 @@ draft: false
 description: "The RNIC's on-chip cache doesn't have an MTT-only section -- it's the exact same SRAM Queue Pair Management already showed you caching QP context. A memory-region-heavy workload and a QP-heavy workload are fighting over the same shelf space, and losing that fight is a confirmed cost on shipped hardware, not a hypothetical one."
 prev: /mr/the-key-table
 next: /mr/registering-a-memory-region
+metaDescription: "RNICs cache Memory Region translations in the same on-chip SRAM as QP context, so key-heavy and QP-heavy workloads compete for it, at a measured cost."
+seoTitle: "RDMA Key Caching (MTT and MPT)"
 ---
 
 ## Overview
@@ -22,6 +24,8 @@ The Key Cache is the on-chip working set of MPT/MTT entries sitting in front of 
 ## Block diagram
 
 ![One shared on-chip SRAM divided by dashed (not solid) separators into four resource-type clusters -- QPC, MTT/MPT, CQC, and EQC entries -- with the DMA Engine's Address Translation stage querying the MTT/MPT cluster, a hit returning directly, and a miss dropping to the DRAM/HBM-backed MR/Key Table with a dashed return path populating the cache line.](/images/mr/03-key-caching-block.svg)
+
+{{< flow "shared-cache" >}}
 
 ## Deep walkthrough
 

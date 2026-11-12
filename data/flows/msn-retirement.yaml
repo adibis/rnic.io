@@ -1,0 +1,188 @@
+title: "One ACK, MSN 4, and a READ still outstanding"
+diagram: flows/msn-retirement
+description: >-
+  A requester posts SEND, SEND, READ, SEND. The responder executes all four
+  and its MSN reaches 4, but the READ's response is lost on the way back. The
+  ACK carrying MSN 4 retires only the first two work requests: retirement
+  stops at the outstanding READ. Because that ACK's PSN lies past the READ,
+  the requester resends from the READ; once the response arrives, the READ
+  and the SEND behind it retire together.
+steps:
+  - caption: >-
+      Four work requests posted in order. Each gets a Send Sequence Number in
+      post order; the READ's 8 KiB response will need two PSNs, so it
+      reserves 102 and 103.
+    lit: [block-post]
+    state: &s0
+      label: "Requester WQEs and responder MSN"
+      fields:
+        - [SSN 1  SEND, "posted"]
+        - [SSN 2  SEND, "posted"]
+        - [SSN 3  READ, "posted"]
+        - [SSN 4  SEND, "posted"]
+        - [Replay Buffer, "-"]
+        - [Responder MSN, "0"]
+    chapter: /reliability/message-completion-and-the-msn
+
+  - caption: >-
+      All four leave back to back. Each gets a Replay Buffer entry as it
+      goes.
+    lit: [block-post]
+    travel: [arrow-p100, arrow-p101, arrow-p102, arrow-p104]
+    token: [{label: "PSN 100", wire: true}, {label: "PSN 101", wire: true}, {label: "READ 102", wire: true}, {label: "PSN 104", wire: true}]
+    parallel:
+      - "SEND PSN 100 in flight"
+      - "SEND PSN 101 in flight"
+      - "READ PSN 102 in flight"
+      - "SEND PSN 104 in flight"
+    state:
+      label: "Requester WQEs and responder MSN"
+      fields:
+        - [SSN 1  SEND, "sent"]
+        - [SSN 2  SEND, "sent"]
+        - [SSN 3  READ, "sent"]
+        - [SSN 4  SEND, "sent"]
+        - [Replay Buffer, "100, 101, 102-103, 104"]
+        - [Responder MSN, "0"]
+    chapter: /reliability/the-replay-buffer
+
+  - caption: >-
+      The responder executes them in PSN order and counts each completed
+      message once. This responder counts the READ when it validates the
+      request, before any data goes back: the early-increment option. MSN
+      reaches 4.
+    lit: [block-execute]
+    state: &s2
+      label: "Requester WQEs and responder MSN"
+      fields:
+        - [SSN 1  SEND, "sent"]
+        - [SSN 2  SEND, "sent"]
+        - [SSN 3  READ, "sent"]
+        - [SSN 4  SEND, "sent"]
+        - [Replay Buffer, "100, 101, 102-103, 104"]
+        - [Responder MSN, "4"]
+    chapter: /reliability/message-completion-and-the-msn
+
+  - caption: >-
+      The READ's two response packets go back and are lost in the fabric.
+      They carried the 8 KiB, and they were the READ's only acknowledgement.
+    lit: [block-execute]
+    travel: [arrow-rf-lost, arrow-rl-lost]
+    token: [{label: "RESP 102", wire: true}, {label: "RESP 103", wire: true}]
+    parallel:
+      - "READ_RESPONSE_FIRST, PSN 102, lost"
+      - "READ_RESPONSE_LAST, PSN 103, lost"
+    state: *s2
+    chapter: /reliability/go-back-n-retransmission
+
+  - caption: >-
+      The ACK for the last SEND gets through. Its AETH says the responder
+      has completed four messages.
+    lit: [block-walk]
+    travel: arrow-ack4
+    packet:
+      label: "ACK  PSN 104  MSN 4"
+      headers:
+        - name: BTH
+          fields:
+            - [OpCode, "0x11  RC Acknowledge"]
+            - [DestQP, "0x000034"]
+            - [PSN, "104"]
+        - name: AETH
+          fields:
+            - [Syndrome, "ACK (bits 6:5 = 00)"]
+            - [MSN, "4"]
+    state: *s2
+    chapter: /reliability/message-completion-and-the-msn
+
+  - predict: >-
+      MSN 4 covers SSN 1 to 4. How many work requests retire?
+    caption: >-
+      Two. The requester walks its WQEs oldest first and retires every one
+      MSN covers, but it may not pass a READ that has not had its response.
+      SSN 4 is covered and still has to wait behind SSN 3.
+    lit: [block-walk]
+    state:
+      label: "Requester WQEs and responder MSN"
+      fields:
+        - [SSN 1  SEND, "retired, CQE written"]
+        - [SSN 2  SEND, "retired, CQE written"]
+        - [SSN 3  READ, "waiting for its response"]
+        - [SSN 4  SEND, "covered by MSN, blocked"]
+        - [Replay Buffer, "102-103, 104"]
+        - [Responder MSN, "4"]
+    chapter: /reliability/message-completion-and-the-msn
+
+  - caption: >-
+      An ACK for PSN 104 means the responder got past the READ, so the
+      READ's response must have gone missing. Linux's soft-RoCE driver, for
+      one, treats this as a retry: go back to the READ and resend from
+      there, spending one retry like any loss.
+    lit: [block-implied]
+    state:
+      label: "Requester WQEs and responder MSN"
+      fields:
+        - [SSN 1  SEND, "retired, CQE written"]
+        - [SSN 2  SEND, "retired, CQE written"]
+        - [SSN 3  READ, "resend"]
+        - [SSN 4  SEND, "resend"]
+        - [Replay Buffer, "102-103, 104"]
+        - [Responder MSN, "4"]
+    chapter: /reliability/go-back-n-retransmission
+
+  - caption: >-
+      Go-back-N from 102: the READ request and the SEND behind it, rebuilt
+      from the Replay Buffer.
+    lit: [block-implied]
+    travel: [arrow-r102, arrow-r104]
+    token: [{label: "READ 102", wire: true}, {label: "PSN 104", wire: true}]
+    parallel:
+      - "READ PSN 102 in flight again"
+      - "SEND PSN 104 in flight again"
+    chapter: /reliability/go-back-n-retransmission
+
+  - caption: >-
+      Both PSNs are below the expected 105, so both are duplicates. The SEND
+      is not delivered twice, only acknowledged again. A READ has no bare
+      ACK to give, so the responder answers with the data itself; the
+      soft-RoCE responder replays it from the record it kept of the original
+      request. MSN stays at 4: duplicates are never counted.
+    lit: [block-dup]
+    state:
+      label: "Requester WQEs and responder MSN"
+      fields:
+        - [SSN 1  SEND, "retired, CQE written"]
+        - [SSN 2  SEND, "retired, CQE written"]
+        - [SSN 3  READ, "resent"]
+        - [SSN 4  SEND, "resent"]
+        - [Replay Buffer, "102-103, 104"]
+        - [Responder MSN, "4"]
+    chapter: /rx/psn-check-and-out-of-order-arrival
+
+  - caption: >-
+      This time the response gets through, followed by the repeated ACK for
+      104.
+    lit: [block-dup]
+    travel: [arrow-rf, arrow-rl, arrow-ack4b]
+    token: [{label: "RESP 102", wire: true}, {label: "RESP 103", wire: true}, {label: "ACK 104", wire: true}]
+    parallel:
+      - "READ_RESPONSE_FIRST, PSN 102, in flight"
+      - "READ_RESPONSE_LAST, PSN 103, in flight"
+      - "Repeated ACK for PSN 104, in flight"
+    chapter: /reliability/message-completion-and-the-msn
+
+  - caption: >-
+      The data lands, the READ retires, and the walk continues past it: SSN
+      4, already covered, retires immediately behind it. Two CQEs in one
+      burst, and nothing left in the Replay Buffer.
+    lit: [block-retire]
+    state:
+      label: "Requester WQEs and responder MSN"
+      fields:
+        - [SSN 1  SEND, "retired, CQE written"]
+        - [SSN 2  SEND, "retired, CQE written"]
+        - [SSN 3  READ, "retired, CQE written"]
+        - [SSN 4  SEND, "retired, CQE written"]
+        - [Replay Buffer, "-"]
+        - [Responder MSN, "4"]
+    chapter: /cq/cqe-generation

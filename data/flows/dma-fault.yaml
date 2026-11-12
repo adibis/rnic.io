@@ -1,0 +1,305 @@
+title: A scatter that pauses for a page, and one that aborts mid-buffer
+diagram: flows/dma-fault
+description: The same 24 KiB SEND is scattered into six pages twice. An On-Demand
+  Paging first touch pauses the transfer and it resumes from its saved address.
+  A host-memory failure aborts it, leaves the pages already written in place,
+  and completes the receive in error with no record of how far it got.
+play: Play both transfers
+steps:
+- scene: 'First touch: a pause'
+  caption: A 24 KiB SEND arrives and is scattered into a receive buffer spanning
+    six pages. The buffer is registered with On-Demand Paging, and page 3 has
+    never been touched, so it isn't mapped yet.
+  lit:
+  - block-dma
+  - block-page-1
+  - block-page-2
+  - block-page-3
+  - block-page-4
+  - block-page-5
+  - block-page-6
+  state:
+    label: Transfer
+    fields:
+    - - Page 1
+      - '-'
+    - - Page 2
+      - '-'
+    - - Page 3
+      - not mapped yet
+    - - Page 4
+      - '-'
+    - - Page 5
+      - '-'
+    - - Page 6
+      - '-'
+    - - Current address
+      - page 1
+    - - Bytes left
+      - 24 KiB
+    - - QP
+      - RTS
+  chapter: /dma/single-burst-fault-handling
+- caption: Pages 1 and 2 are written. The engine's in-flight state moves forward
+    with them.
+  lit:
+  - block-page-1
+  - block-page-2
+  travel: arrow-dma-mem
+  token: pages 1-2
+  state:
+    label: Transfer
+    fields:
+    - - Page 1
+      - written
+    - - Page 2
+      - written
+    - - Page 3
+      - not mapped yet
+    - - Page 4
+      - '-'
+    - - Page 5
+      - '-'
+    - - Page 6
+      - '-'
+    - - Current address
+      - page 3
+    - - Bytes left
+      - 16 KiB
+    - - QP
+      - RTS
+  chapter: /dma/in-flight-transfer-state
+- caption: The scatter reaches page 3 and finds no mapping. The transfer pauses
+    and hands the page to the OS's own page-fault handling.
+  lit:
+  - block-os
+  - block-page-3
+  travel: arrow-fault-os
+  token: page 3
+  state:
+    label: Transfer
+    fields:
+    - - Page 1
+      - written
+    - - Page 2
+      - written
+    - - Page 3
+      - being mapped
+    - - Page 4
+      - '-'
+    - - Page 5
+      - '-'
+    - - Page 6
+      - '-'
+    - - Current address
+      - page 3, paused
+    - - Bytes left
+      - 16 KiB
+    - - QP
+      - RTS
+  chapter: /mr/registering-a-memory-region
+- caption: The OS maps page 3 and the transfer is released.
+  lit:
+  - block-dma
+  - block-os
+  travel: arrow-os-dma
+  token: resume
+  state:
+    label: Transfer
+    fields:
+    - - Page 1
+      - written
+    - - Page 2
+      - written
+    - - Page 3
+      - mapped
+    - - Page 4
+      - '-'
+    - - Page 5
+      - '-'
+    - - Page 6
+      - '-'
+    - - Current address
+      - page 3
+    - - Bytes left
+      - 16 KiB
+    - - QP
+      - RTS
+  chapter: /dma/single-burst-fault-handling
+- predict: Does the scatter start again from page 1?
+  caption: No. Current address and bytes left say exactly where it stopped, so
+    it picks up at page 3 and writes pages 3 to 6.
+  lit:
+  - block-page-3
+  - block-page-4
+  - block-page-5
+  - block-page-6
+  travel: arrow-dma-mem
+  token: pages 3-6
+  state:
+    label: Transfer
+    fields:
+    - - Page 1
+      - written
+    - - Page 2
+      - written
+    - - Page 3
+      - written
+    - - Page 4
+      - written
+    - - Page 5
+      - written
+    - - Page 6
+      - written
+    - - Current address
+      - done
+    - - Bytes left
+      - '0'
+    - - QP
+      - RTS
+  chapter: /dma/in-flight-transfer-state
+- caption: 'The receive WQE completes with success. The first touch cost latency
+    and nothing else: no error and no error completion.'
+  lit:
+  - block-cq
+  travel: arrow-dma-cq
+  token: 'CQE: success'
+  state:
+    label: Transfer
+    fields:
+    - - Page 1
+      - written
+    - - Page 2
+      - written
+    - - Page 3
+      - written
+    - - Page 4
+      - written
+    - - Page 5
+      - written
+    - - Page 6
+      - written
+    - - Current address
+      - done
+    - - Bytes left
+      - '0'
+    - - QP
+      - RTS
+  chapter: /dma/single-burst-fault-handling
+- scene: 'Memory failure: an abort'
+  caption: The same SEND again, with every page already mapped. Pages 1 to 3 are
+    written.
+  lit:
+  - block-page-1
+  - block-page-2
+  - block-page-3
+  travel: arrow-dma-mem
+  token: pages 1-3
+  state:
+    label: Transfer
+    fresh: true
+    fields:
+    - - Page 1
+      - written
+    - - Page 2
+      - written
+    - - Page 3
+      - written
+    - - Page 4
+      - '-'
+    - - Page 5
+      - '-'
+    - - Page 6
+      - '-'
+    - - Current address
+      - page 4
+    - - Bytes left
+      - 12 KiB
+    - - QP
+      - RTS
+  chapter: /dma/single-burst-fault-handling
+- caption: 'The write to page 4 fails: an uncorrectable host-memory error. This
+    isn''t a missing mapping, so there is nothing to wait for and nothing to resume.'
+  lit:
+  - block-dma
+  - block-page-4
+  state:
+    label: Transfer
+    fields:
+    - - Page 1
+      - written
+    - - Page 2
+      - written
+    - - Page 3
+      - written
+    - - Page 4
+      - access failed
+    - - Page 5
+      - '-'
+    - - Page 6
+      - '-'
+    - - Current address
+      - page 4, failed
+    - - Bytes left
+      - 12 KiB
+    - - QP
+      - RTS
+  chapter: /dma/single-burst-fault-handling
+- predict: Pages 1 to 3 already hold this SEND's data. What happens to them?
+  caption: Nothing. No source this book found describes an undo, so the first
+    12 KiB stay where they landed. A partial transfer stays partial.
+  lit:
+  - block-page-1
+  - block-page-2
+  - block-page-3
+  state:
+    label: Transfer
+    fields:
+    - - Page 1
+      - written
+    - - Page 2
+      - written
+    - - Page 3
+      - written
+    - - Page 4
+      - access failed
+    - - Page 5
+      - not written
+    - - Page 6
+      - not written
+    - - Current address
+      - aborted
+    - - Bytes left
+      - 12 KiB unwritten
+    - - QP
+      - RTS
+  chapter: /dma/single-burst-fault-handling
+- caption: The receive WQE completes in error. If this counts as IBTA's Local
+    QP Error, as the chapter argues, the following WQEs are flushed and the QP
+    moves to ERROR. The CQE says the SEND failed, not how much of it landed.
+  lit:
+  - block-cq
+  travel: arrow-dma-cq
+  token: 'CQE: error'
+  state:
+    label: Transfer
+    fields:
+    - - Page 1
+      - written
+    - - Page 2
+      - written
+    - - Page 3
+      - written
+    - - Page 4
+      - access failed
+    - - Page 5
+      - not written
+    - - Page 6
+      - not written
+    - - Current address
+      - aborted
+    - - Bytes left
+      - 12 KiB unwritten
+    - - QP
+      - ERROR
+  chapter: /qp/single-qp-error-handling

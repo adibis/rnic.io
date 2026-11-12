@@ -6,6 +6,8 @@ publishDate: 2026-09-09
 draft: false
 description: "QP Context named four fields and stopped, deferring them to a part of the book that didn't exist yet. This is that part, and these are the fields -- plus the live state built on top of them that no field name alone can carry."
 next: /reliability/the-replay-buffer
+metaDescription: "The RDMA QP retry fields, ACK timeout, retry count, RNR retry and RNR timer, and the live state an RNIC builds on top of them."
+seoTitle: "RDMA Retry and Timeout State"
 ---
 
 ## Overview

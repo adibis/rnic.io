@@ -7,6 +7,8 @@ draft: false
 description: "A completion notification is a weaker promise than it sounds like. IBTA guarantees a QP's own requests execute in order -- it does not guarantee a completed write is actually visible in memory yet, a gap real enough that a later IBTA extension added an entire new operation just to close it. Separately: this engine's own concurrent-transfer capacity is a resource no QP-level attribute already covers."
 prev: /dma/the-scatter-path
 next: /dma/single-burst-fault-handling
+metaDescription: "Why an RDMA completion does not mean the data is visible in memory, how the FLUSH operation closes that gap, and how an RNIC tracks outstanding DMA."
+seoTitle: "RDMA Write Ordering, Visibility and FLUSH"
 ---
 
 ## Overview
@@ -32,6 +34,8 @@ Two independent questions share this chapter because they're both, at heart, abo
 
 > [!NOTE] Concept
 > Treat "completed" and "visible" as two separate claims about a write, not two words for the same fact. Ordinary completion promises the first. Only FLUSH promises the second.
+
+{{< flow "write-flush" >}}
 
 **An explicit ordering request between a Read and what follows it -- already named, not re-derived here.** [The WQE and the Send Queue Descriptor](/tx/the-wqe-and-the-send-queue-descriptor) already covers the mechanism that closes this exact gap: a *fence* request, carried as one of a Work Request's own flags, "holds this Work Request's own issue until every earlier RDMA read and atomic operation posted to the same Send Queue has completed" -- RDMAmojo's own documentation states the guarantee directly. That chapter's interface table already calibrates the standard's role precisely: "IBTA-V1 requires the ordering guarantee be expressible; this flag shape is architect's choice." This engine is simply what honors that flag once it reaches execution -- without it, a plain SEND or WRITE posted right after a READ has no *inherent* reason to wait for that READ's data to actually arrive, and this engine is free to run them concurrently. [Single-QP Pipeline Stalls](/tx/single-qp-pipeline-stalls) already covers what a fenced Work Request looks like from the stalled QP's own side, if a reader wants that half of the picture too.
 

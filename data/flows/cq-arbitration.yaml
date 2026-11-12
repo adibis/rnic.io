@@ -1,0 +1,208 @@
+title: "Two armed CQs on one vector, then a flush storm on one write path"
+diagram: flows/cq-arbitration
+play: "Play both gates"
+description: >-
+  Three Completion Queues share one interrupt vector. Two of them are armed
+  and get a CQE in the same moment, so the notify arbiter has to pick one;
+  round-robin alternates, strict priority can starve the loser. Then a
+  shared fault puts three QPs into ERROR at once and the write arbiter
+  decides how their flush CQEs interleave.
+steps:
+  - scene: "Three CQs, one vector"
+    caption: >-
+      Three CQs were created on vector 0. More CQs than vectors is the normal
+      case, not a misconfiguration. Software has armed A and B for their
+      next completion; C is polled and never armed.
+    lit: [block-cqa, block-cqb, block-cqc, block-vec]
+    state: &n0
+      label: "Notify side"
+      fields:
+        - [CQ A, "armed"]
+        - [CQ B, "armed"]
+        - [CQ C, "not armed"]
+        - [pending at the arbiter, "none"]
+        - [policy, "round-robin, next turn: A"]
+    chapter: /cq/creating-a-completion-queue
+
+  - scene: "A CQE nobody asked about"
+    caption: >-
+      A QP that reports to CQ C completes a request, and its CQE is written
+      there. C is not armed, so nothing goes to the notify arbiter. The CQE waits in the
+      ring for the next poll.
+    lit: [block-gen, block-cqc]
+    travel: arrow-gen-cqc
+    token: "CQE"
+    state: *n0
+    chapter: /cq/the-completion-queue
+
+  - scene: "Two at once"
+    caption: >-
+      CQEs land in A and B back to back. Both are armed, so each asks for a
+      notification, and both requests are pending when the arbiter next
+      decides. Arming is one-shot, so A and B are both disarmed now.
+    lit: [block-cqa, block-cqb, block-narb]
+    travel: [arrow-cqa-narb, arrow-cqb-narb]
+    token: ["CQ A", "CQ B"]
+    parallel:
+      - "CQ A: armed, CQE written, asks for an event"
+      - "CQ B: armed, CQE written, asks for an event"
+    state: &n1
+      label: "Notify side"
+      fields:
+        - [CQ A, "fired, not armed"]
+        - [CQ B, "fired, not armed"]
+        - [CQ C, "not armed"]
+        - [pending at the arbiter, "A, B"]
+        - [policy, "round-robin, next turn: A"]
+    chapter: /cq/event-and-multi-cq-arbitration
+
+  - predict: >-
+      Two requests, one interrupt line. Which CQ's event goes first?
+    caption: >-
+      Whichever the policy says; no standard decides it. Under round-robin
+      it is A's turn, so A goes, and the turn moves to B.
+    lit: [block-narb, block-vec]
+    travel: arrow-narb-vec
+    token: "CQ A"
+    state: &n2
+      label: "Notify side"
+      fields:
+        - [CQ A, "fired, not armed"]
+        - [CQ B, "fired, not armed"]
+        - [CQ C, "not armed"]
+        - [pending at the arbiter, "B"]
+        - [policy, "round-robin, next turn: B"]
+    chapter: /cq/event-and-multi-cq-arbitration
+
+  - caption: >-
+      The interrupt reaches the host. The event channel tells software which
+      CQ the event is for: A. Software polls A, drains it, and re-arms it.
+    lit: [block-vec, block-host]
+    travel: arrow-vec-host
+    token: "event: CQ A"
+    state: *n2
+    chapter: /cq/creating-a-completion-queue
+
+  - caption: >-
+      Next decision: B is the only request pending and it is B's turn
+      anyway. B's event goes out.
+    lit: [block-narb, block-vec, block-host]
+    travel: [arrow-narb-vec]
+    token: ["CQ B"]
+    state: &n3
+      label: "Notify side"
+      fields:
+        - [CQ A, "armed again"]
+        - [CQ B, "fired, not armed"]
+        - [CQ C, "not armed"]
+        - [pending at the arbiter, "none"]
+        - [policy, "round-robin, next turn: A"]
+
+  - scene: "Strict priority"
+    predict: >-
+      Same two CQs, but now A has strict priority over B, and A is busy:
+      every time software re-arms it, another CQE is already there. What
+      happens to B?
+    caption: >-
+      A and B are both pending again. Priority picks A.
+    lit: [block-cqa, block-cqb, block-narb, block-vec]
+    travel: arrow-narb-vec
+    token: "CQ A"
+    state: &n4
+      label: "Notify side"
+      fields:
+        - [CQ A, "fired, not armed"]
+        - [CQ B, "fired, not armed"]
+        - [CQ C, "not armed"]
+        - [pending at the arbiter, "B"]
+        - [policy, "strict priority, A over B"]
+    chapter: /cq/event-and-multi-cq-arbitration
+
+  - caption: >-
+      Before the arbiter decides again, software has handled A's event and
+      re-armed A, and A's next CQE has already fired it. A is pending again,
+      next to B.
+    lit: [block-cqa, block-narb]
+    travel: arrow-cqa-narb
+    token: "CQ A"
+    state: *n4
+
+  - caption: >-
+      And A wins again. B's event waits as long as A keeps a request
+      pending: the starvation risk Multi-QP TX Scheduling found for the same
+      policy. Round-robin would have served B here.
+    lit: [block-narb, block-vec]
+    travel: arrow-narb-vec
+    token: "CQ A"
+    state:
+      label: "Notify side"
+      fields:
+        - [CQ A, "fired, not armed"]
+        - [CQ B, "fired, not armed"]
+        - [CQ C, "not armed"]
+        - [pending at the arbiter, "B, still"]
+        - [policy, "strict priority, A over B"]
+    chapter: /tx/multi-qp-tx-scheduling
+
+  - scene: "A shared fault"
+    caption: >-
+      Now the write side. QPs 1, 2 and 3 share a Shared Receive Queue, and
+      it faults. All three go to ERROR at the same instant, and every WQE
+      they still hold has to be flushed out as a CQE. All three report to
+      CQ A.
+    lit: [block-qp1, block-qp2, block-qp3, block-warb]
+    travel: [arrow-qp1-warb, arrow-qp2-warb, arrow-qp3-warb]
+    token: ["3 to flush", "2 to flush", "2 to flush"]
+    parallel:
+      - "QP 1: three WQEs to flush"
+      - "QP 2: two WQEs to flush"
+      - "QP 3: two WQEs to flush"
+    state: &w0
+      label: "Write side"
+      fields:
+        - [waiting, "QP 1: 1a 1b 1c, QP 2: 2a 2b, QP 3: 3a 3b"]
+        - [CQ A ring, "empty"]
+        - [policy, "round-robin"]
+    chapter: /qp/single-qp-error-handling
+
+  - predict: >-
+      CQE Generation writes one CQE at a time. In what order do these seven
+      land in CQ A?
+    caption: >-
+      Round-robin takes one from each QP in turn: 1a, 2a, 3a, then 1b, 2b,
+      3b, then 1c.
+    lit: [block-warb, block-gen]
+    travel: arrow-warb-gen
+    token: "1a 2a 3a ..."
+    state: *w0
+    chapter: /cq/cqe-generation
+
+  - caption: >-
+      They reach CQ A in that order. Each QP's own flushes are still in
+      order, which is what CQE Generation requires; how the three QPs
+      interleave is the arbiter's choice. Priority for QP 1 would have
+      written 1a, 1b, 1c first.
+    lit: [block-gen, block-cqa]
+    travel: arrow-gen-cqa
+    token: "7 flush CQEs"
+    state:
+      label: "Write side"
+      fields:
+        - [waiting, "none"]
+        - [CQ A ring, "1a 2a 3a 1b 2b 3b 1c"]
+        - [policy, "round-robin"]
+    chapter: /cq/the-completion-queue
+
+  - caption: >-
+      Three QPs and seven CQEs are easy. A fault on a structure hundreds of
+      QPs share makes all of them eligible in the same instant, which is
+      when the choice of policy matters most. It is also the event CQ
+      Overflow's sizing rule is written for.
+    lit: [block-warb, block-gen, block-cqa]
+    state:
+      label: "Write side"
+      fields:
+        - [waiting, "none"]
+        - [CQ A ring, "1a 2a 3a 1b 2b 3b 1c"]
+        - [policy, "round-robin"]
+    chapter: /cq/cq-overflow

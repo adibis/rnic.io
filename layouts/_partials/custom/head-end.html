@@ -7,3 +7,55 @@
     --hx-font-sans: 'Literata', Georgia, Cambria, 'Noto Serif', 'Droid Serif', ui-serif, serif;
   }
 </style>
+{{- with resources.Get "css/svg-dark-palette.css" }}
+{{- $css := . | minify | fingerprint }}
+<link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}" />
+{{- end }}
+{{- with resources.Get "css/flow.css" }}
+{{- $css := . | minify | fingerprint }}
+<link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}" />
+{{- end }}
+{{- /* The player script goes in the head of any page that uses the flow
+     shortcode. Emitting it from the shortcode behind a once-per-page flag
+     breaks under hugo server, whose page store survives rebuilds. */ -}}
+{{- if .HasShortcode "flow" }}
+{{- with resources.Get "js/flow-player.js" }}
+{{- $js := . | minify | fingerprint }}
+<script src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>
+{{- end }}
+{{- end }}
+{{- /* Structured data, so search results can show the chapter's place in
+     the book as a breadcrumb trail and credit the author. Chapters are
+     TechArticles; Part landing pages are CollectionPages. */ -}}
+{{- if and (not .IsHome) (in (slice "page" "section") .Kind) }}
+{{- $crumbs := slice }}
+{{- range $i, $p := .Ancestors.Reverse }}
+  {{- if not $p.IsHome }}
+    {{- $crumbs = $crumbs | append $p }}
+  {{- end }}
+{{- end }}
+{{- $crumbs = $crumbs | append . }}
+{{- $items := slice }}
+{{- range $i, $p := $crumbs }}
+  {{- $items = $items | append (dict "@type" "ListItem" "position" (add $i 1) "name" ($p.LinkTitle) "item" $p.Permalink) }}
+{{- end }}
+{{- $author := dict "@type" "Person" "name" site.Params.author.name "url" "https://chipdv.io/" }}
+{{- $main := dict
+  "@context" "https://schema.org"
+  "@type" (cond (eq .Kind "section") "CollectionPage" (cond (eq .Section "blog") "BlogPosting" "TechArticle"))
+  "headline" (or .Params.seoTitle .Title)
+  "description" (or .Params.metaDescription .Description site.Params.description)
+  "url" .Permalink
+  "inLanguage" "en"
+  "author" $author
+  "publisher" $author
+  "image" (partial "og-image.html" .)
+  "isPartOf" (dict "@type" "WebSite" "name" "rnic.io" "url" site.BaseURL)
+}}
+{{- with .PublishDate }}{{ if not .IsZero }}{{ $main = merge $main (dict "datePublished" (.Format "2006-01-02")) }}{{ end }}{{ end }}
+{{- with .Lastmod }}{{ if not .IsZero }}{{ $main = merge $main (dict "dateModified" (.Format "2006-01-02")) }}{{ end }}{{ end }}
+<script type="application/ld+json">{{ $main | jsonify | safeJS }}</script>
+{{- if gt (len $items) 1 }}
+<script type="application/ld+json">{{ dict "@context" "https://schema.org" "@type" "BreadcrumbList" "itemListElement" $items | jsonify | safeJS }}</script>
+{{- end }}
+{{- end }}

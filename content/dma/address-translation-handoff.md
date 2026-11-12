@@ -7,6 +7,8 @@ draft: false
 description: "This chapter is short on purpose. Every hard question about how a key becomes a physical address already has an owner two Parts back -- this chapter's only job is naming exactly where in this engine's own flow that lookup gets called, and what this engine is and isn't allowed to assume about its answer."
 prev: /dma/target-selection
 next: /dma/the-gather-path
+metaDescription: "Where an RNIC's DMA engine asks the Key Cache to turn a key and virtual address into a physical one, and what it may assume about the answer."
+seoTitle: "DMA Address Translation Handoff in an RNIC"
 ---
 
 ## Overview
@@ -40,7 +42,7 @@ Neither address [Target Selection](/dma/target-selection) names is usable yet --
 **Where this connects.** A passing lookup hands a physical address forward into [The Gather Path](/dma/the-gather-path) or [The Scatter Path](/dma/the-scatter-path), whichever Target Selection's direction called for. Whether this engine holds that resolved address privately for a whole burst, or re-derives it from Key Cache more than once during a long transfer, is the open question [Mid-Transaction Burst Teardown](/dma/mid-transaction-burst-teardown) covers, not this chapter -- this chapter only names the single call that happens at least once, at the start.
 
 > [!CAUTION] Gotcha
-> "Physical address" here means this engine's own Key Cache's resolved endpoint -- not necessarily the last translation a byte passes through before it reaches DRAM. In any virtualized, SR-IOV, or PCIe-passthrough deployment, a system-level IOMMU or SMMU retranslates this address again, transparently to this engine by default. [System IOMMU / SMMU](/system-iommu/) covers that boundary; this chapter's own use of "physical address" stays accurate for what it describes, just scoped one layer short of the whole path.
+> "Physical address" here means this engine's own Key Cache's resolved endpoint -- not necessarily the last translation a byte passes through before it reaches DRAM. In any virtualized, SR-IOV, or PCIe-passthrough deployment, a system-level IOMMU or SMMU retranslates this address again, transparently to this engine by default. [System IOMMU / SMMU](/system-iommu/) covers that boundary, including what a miss in its own translation cache costs ([IOTLB Misses and the Latency This Engine Can't See](/system-iommu/iotlb-miss-latency)) and how a device can cache the second translation itself ([ATS: Caching a Translation Locally](/system-iommu/ats-local-caching)); this chapter's own use of "physical address" stays accurate for what it describes, just scoped one layer short of the whole path.
 
 ## Interface reference
 

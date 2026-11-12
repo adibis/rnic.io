@@ -1,0 +1,215 @@
+title: A flush burst overflows a shared Completion Queue
+diagram: flows/cq-overflow
+description: Three QPs share a Completion Queue sized below the sum of their outstanding
+  ceilings. One QP's error flush and another's completions fill it, a third QP's ordinary
+  completion then finds it full and is forced to ERROR under C9-218, and a fourth
+  QP on another CQ is untouched.
+play: Play the overflow
+steps:
+- scene: The burst
+  caption: 'CQ 1 is empty and the application has just polled it. Each QP has 4 Work
+    Requests outstanding. Their ceilings add to 12 and the CQ has room for 8: fine
+    at the usual completion rate, but not if they all complete at once.'
+  lit:
+  - block-app
+  state:
+    label: CQ 1 and its QPs
+    fields:
+    - - CQ 1 holds
+      - 0 of 8
+    - - QP A
+      - RTS, 4 outstanding
+    - - QP B
+      - RTS, 4 outstanding
+    - - QP C
+      - RTS, 4 outstanding
+    - - QP D
+      - RTS, CQ 2
+  chapter: /cq/cq-overflow
+- caption: 'QP A hits a remote access error and moves to ERROR. Its queue is flushed:
+    one error CQE for the faulting WR and a flush CQE for each WR behind it, whether
+    or not they were signaled.'
+  lit:
+  - block-qp-a
+  - block-cq-0
+  - block-cq-1
+  - block-cq-2
+  - block-cq-3
+  travel: arrow-a-cq
+  token: 4 CQEs
+  state:
+    label: CQ 1 and its QPs
+    fields:
+    - - CQ 1 holds
+      - 4 of 8
+    - - QP A
+      - ERROR, 0 outstanding
+    - - QP B
+      - RTS, 4 outstanding
+    - - QP C
+      - RTS, 4 outstanding
+    - - QP D
+      - RTS, CQ 2
+  chapter: /cq/cqe-generation
+- caption: QP B's four Work Requests complete normally, one after another, before
+    the application gets round to polling. Their CQEs take the last four slots. CQ
+    1 is full.
+  lit:
+  - block-qp-b
+  - block-cq-4
+  - block-cq-5
+  - block-cq-6
+  - block-cq-7
+  travel: arrow-b-cq
+  token: 4 CQEs
+  state:
+    label: CQ 1 and its QPs
+    fields:
+    - - CQ 1 holds
+      - 8 of 8, full
+    - - QP A
+      - ERROR, 0 outstanding
+    - - QP B
+      - RTS, 0 outstanding
+    - - QP C
+      - RTS, 4 outstanding
+    - - QP D
+      - RTS, CQ 2
+  chapter: /cq/the-completion-queue
+- predict: QP C finishes a Work Request. Where does its CQE go?
+  caption: Nowhere. The completion attempt finds CQ 1 full. QP C did nothing wrong,
+    but it is the QP whose completion couldn't be written.
+  lit:
+  - block-qp-c
+  - block-cq-0
+  - block-cq-1
+  - block-cq-2
+  - block-cq-3
+  - block-cq-4
+  - block-cq-5
+  - block-cq-6
+  - block-cq-7
+  travel: arrow-c-cq
+  token: CQE
+  state:
+    label: CQ 1 and its QPs
+    fields:
+    - - CQ 1 holds
+      - 8 of 8, full
+    - - QP A
+      - ERROR, 0 outstanding
+    - - QP B
+      - RTS, 0 outstanding
+    - - QP C
+      - RTS, 3 outstanding, 1 completing
+    - - QP D
+      - RTS, CQ 2
+  chapter: /cq/cq-overflow
+- caption: 'IBTA C9-218 (C9-225 on the responder side) is mandatory here: the affected
+    QP, QP C, moves to ERROR and an asynchronous error is raised. The WQE that tried
+    to complete, and every one after it, is left in an unknown state.'
+  lit:
+  - block-qp-c
+  - block-async
+  travel: arrow-async
+  token: 'QP C: ERROR'
+  state:
+    label: CQ 1 and its QPs
+    fields:
+    - - CQ 1 holds
+      - 8 of 8, full
+    - - QP A
+      - ERROR, 0 outstanding
+    - - QP B
+      - RTS, 0 outstanding
+    - - QP C
+      - ERROR, 4 in an unknown state
+    - - QP D
+      - RTS, CQ 2
+  chapter: /cq/cq-overflow
+- caption: 'QP C in ERROR flushes too, and its flush CQEs are aimed at the CQ that
+    just ran out of room. The standard says only "unknown". This book''s inference
+    from the ring: a producer that keeps writing overwrites CQEs the application hasn''t
+    read yet.'
+  lit:
+  - block-qp-c
+  - block-cq-0
+  - block-cq-1
+  - block-cq-2
+  - block-cq-3
+  - block-cq-4
+  - block-cq-5
+  - block-cq-6
+  - block-cq-7
+  travel: arrow-c-cq
+  token: flush CQEs
+  state:
+    label: CQ 1 and its QPs
+    fields:
+    - - CQ 1 holds
+      - 8 of 8, full
+    - - QP A
+      - ERROR, 0 outstanding
+    - - QP B
+      - RTS, 0 outstanding
+    - - QP C
+      - ERROR, 4 in an unknown state
+    - - QP D
+      - RTS, CQ 2
+  chapter: /qp/single-qp-error-handling
+- scene: What stays contained
+  caption: 'QP D reports to CQ 2 and completes normally: overflow of one CQ must not
+    reach a QP or CQ that isn''t party to it. QP B stays in RTS too, unless the implementation
+    treats the overflowed CQ itself as in error; then every QP on CQ 1 goes to ERROR.'
+  lit:
+  - block-qp-d
+  - block-cq2
+  - block-qp-b
+  travel: arrow-d-cq2
+  token: CQE
+  state:
+    label: CQ 1 and its QPs
+    fields:
+    - - CQ 1 holds
+      - 8 of 8, full
+    - - QP A
+      - ERROR, 0 outstanding
+    - - QP B
+      - RTS, or ERROR if CQ 1 is
+    - - QP C
+      - ERROR, 4 in an unknown state
+    - - QP D
+      - RTS, unaffected
+  chapter: /cq/cq-overflow
+- predict: What CQ 1 size would have made this burst harmless?
+  caption: Room for 12, the sum of every outstanding ceiling. Then QP A's whole flush,
+    all four of QP B's completions and all of QP C's work fit with nothing polled.
+    Size for every possible outstanding WR completing at once, because a flush is
+    exactly when they do.
+  lit:
+  - block-cq-0
+  - block-cq-1
+  - block-cq-2
+  - block-cq-3
+  - block-cq-4
+  - block-cq-5
+  - block-cq-6
+  - block-cq-7
+  - block-qp-a
+  - block-qp-b
+  - block-qp-c
+  state:
+    label: CQ 1 sized for the worst case
+    fresh: true
+    fields:
+    - - CQ 1 room
+      - 12 CQEs
+    - - QP A ceiling
+      - '4'
+    - - QP B ceiling
+      - '4'
+    - - QP C ceiling
+      - '4'
+    - - Worst case
+      - '12 CQEs at once: all fit'
+  chapter: /cq/cq-overflow

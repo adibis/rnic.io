@@ -41,7 +41,7 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <text x="455" y="184" font-size="7" fill="#949ca8" text-anchor="middle">priority</text>
 <line x1="485" y1="184" x2="485" y2="127" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="3,2" marker-end="url(#arrKE1)"/>
 <text x="485" y="196" font-size="6.5" fill="#94a3b8" text-anchor="middle">error state</text>
-<text x="485" y="205" font-size="6.5" fill="#94a3b8" text-anchor="middle">(Part 5)</text>
+<text x="485" y="205" font-size="6.5" fill="#94a3b8" text-anchor="middle">(Reliability Engine)</text>
 
 <line x1="415" y1="100" x2="320" y2="98" stroke="#ce8d8d" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrKE2)"/>
 

@@ -7,6 +7,8 @@ draft: false
 description: "Nothing else in this Part is fed by both sides of this engine's own pipeline at once. This chapter is the convergence point -- and the one place a real, asymmetric rule decides whether a completion gets written at all: every receive-side event does, unconditionally, while a send-side event only does if something actually asked for it."
 prev: /cq/creating-a-completion-queue
 next: /cq/cq-overflow
+metaDescription: "When an RNIC writes a completion: every receive-side event gets a CQE, while a send-side Work Request gets one only if it was signaled."
+seoTitle: "CQE Generation in an RDMA NIC"
 ---
 
 ## Overview

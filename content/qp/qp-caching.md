@@ -7,6 +7,8 @@ draft: false
 description: "A NIC will sell you far more queue pairs than it can actually keep fast. This chapter is about the gap between those two numbers, and the on-chip cache that decides which QPs live on the right side of it."
 prev: /qp/the-qp-table
 next: /qp/installing-a-qp
+metaDescription: "RNICs support far more Queue Pairs than they keep on chip. How the QP Cache works, what a miss costs over PCIe, and the working-set problem."
+seoTitle: "RDMA QP Caching"
 ---
 
 ## Overview
@@ -35,6 +37,10 @@ The QP Cache is the on-chip working set of QP contexts sitting in front of the Q
 **When a lookup misses.** A miss means the requested QPC isn't currently resident in the on-chip working set, and the same paper treats this as a routine condition at scale, not a hypothetical corner case: a shipped RNIC's cache-bounded QP working set means traffic touching enough QPs beyond that bound pays a PCIe round trip back to host memory to retrieve QP metadata, on tested hardware. That gap between what a real adapter can address and what its cache can actually hold resident is not a defect in one generation of silicon; it's the direct, structural consequence of on-chip SRAM being small and expensive, against a QP count that scales with however many connections an application layer decides to open. Whether that SRAM is dedicated to QP context alone or shared with other on-chip structures (address translation, per [Key Caching](/mr/key-caching), is one resource confirmed to share its own on-chip pool with other state) isn't something this specific paper documents for QP context -- this book doesn't extend that MR-side finding to the QP cache without its own source.
 
 **What happens after a miss.** A miss doesn't drop or corrupt the packet waiting on it — it stalls that packet's processing behind a fetch, at PCIe latency, against an on-chip hit's much cheaper cost. Enough concurrently active QPs beyond the cacheable working set, and enough of the traffic touching QPs outside that set, and the adapter spends more time fetching context than building packets — a structural consequence of a bounded working set, not a hypothetical one. What decides which QPC gets evicted to make room for an incoming one, and whether that decision is fixed in hardware or programmable, is [*Eviction Policy*](/qp/eviction-policy) and [*Hardware-Assisted Eviction Engines*](/qp/hardware-assisted-eviction-engines)'s entire subject; this chapter's job is establishing that the decision has to be made at all, and that getting it wrong carries a real cost.
+
+The walk below plays both cases on a four-line cache with five busy QPs, including the dirty write-back a miss can force before its fetch, and the cost of evicting a QP that is needed again a moment later.
+
+{{< flow "qp-cache-miss" >}}
 
 > [!TIP] Why
 > An RNIC could, in principle, skip caching entirely and hit the QP Table on every packet — simpler hardware, no working-set question to answer, no eviction policy to design. The cost of that choice is a DRAM or PCIe transaction sitting on the critical path of every single packet, at every port, all the time, rather than only on the packets touching a QP outside the current working set -- which is exactly the cost caching exists to avoid. The tradeoff a real implementation actually makes isn't "cache or don't" — it's how much scarce, expensive on-chip SRAM to spend on QP context specifically, against every other structure (address translation, buffering) competing for the same die area, knowing that whatever amount gets chosen, some real deployment will eventually run more concurrently-active QPs than it can hold.

@@ -7,6 +7,8 @@ draft: false
 description: "Every other eviction chapter in this book starts from a confirmed working set with confirmed pressure. This one starts from Caching's own open question -- and finds that if a working-set cache does exist here, the same three familiar candidates apply, fixed or programmable, exactly the way they already have three times before."
 prev: /congestion/multi-flow-cnp-arbitration
 next: /congestion/mid-transaction-rate-state-reset
+metaDescription: "If an RNIC caches per-QP rate-limiter state, which entry it evicts: LRU and the other familiar policies, fixed in silicon or programmable."
+seoTitle: "Rate-Limiter Cache Eviction Policy"
 ---
 
 ## Overview

@@ -7,6 +7,8 @@ draft: false
 description: "The QP Cache runs out of room the moment enough connections are active at once. Something has to leave to make space for the QP that just arrived, and which QP that is turns out to matter as much as the eviction itself."
 prev: /qp/multi-qp-error-arbitration
 next: /qp/hardware-assisted-eviction-engines
+metaDescription: "Which Queue Pair an RNIC's QP Cache evicts when connections outnumber cache lines: LRU and its alternatives, and why the choice matters."
+seoTitle: "QP Cache Eviction Policy"
 ---
 
 ## Overview

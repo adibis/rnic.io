@@ -7,6 +7,8 @@ draft: false
 description: "Three opcodes need bytes read out of local memory before this adapter can send anything: a SEND building its own message, a WRITE building the payload the far end will place, and an RDMA READ response gathering exactly what the requester asked for. All three walk the same path -- and the payload has to actually be in hand before Packet Build can assemble anything around it."
 prev: /dma/address-translation-handoff
 next: /dma/the-scatter-path
+metaDescription: "How an RNIC reads a payload out of local memory for a SEND, WRITE or READ response: walking the SGE list, one key lookup per segment, packet by packet."
+seoTitle: "The RDMA Gather Path"
 ---
 
 ## Overview
@@ -42,6 +44,10 @@ Gather is this engine's TX-side job: reading local memory, one already-translate
 > [!CAUTION] Gotcha
 > Don't assume every gather this engine ever runs is TX-only in the sense of "outgoing traffic this local software originated." An RDMA READ response is outgoing, from this side's port, and it's still a gather this side's own software never asked for -- it exists because a remote peer's request demanded it. "Gather" describes a direction of data movement, not a claim about who initiated the operation.
 
+The walk below gathers one 7,680-byte SEND from three buffers at a 4,096-byte path MTU. The first packet ends partway through the second buffer, and the cursor picks up from there for the next one.
+
+{{< flow "sge-gather" >}}
+
 **Where this connects.** A completed gather hands its assembled payload to [TX Packet Build](/tx/tx-packet-build), which wraps it in whatever header the opcode requires and computes ICRC over the result. What happens if a segment's own lookup fails partway through a multi-segment gather -- some bytes already fetched, the rest never will be -- is [Single-Burst Fault Handling](/dma/single-burst-fault-handling)'s question, not this chapter's.
 
 ## Interface reference
@@ -56,3 +62,4 @@ Gather is this engine's TX-side job: reading local memory, one already-translate
 ## References
 
 - No IBTA or IETF standard names a "gather path" as its own mechanism -- the opcode behavior above is derived from RETH and SGE-list semantics already covered field by field in [The Operation Catalog](/overview/operation-catalog) and [The WQE and the Send Queue Descriptor](/tx/the-wqe-and-the-send-queue-descriptor).
+- Linux kernel soft-RoCE driver, `drivers/infiniband/sw/rxe/` -- `rxe_req.c` sizes each packet as the smaller of the path MTU and the bytes left in the message, and `copy_data()` in `rxe_mr.c` fills it by walking the WQE's SGE list from a saved cursor (`cur_sge`, `sge_offset`, `resid`), looking up each SGE's `lkey` as the cursor reaches it. The walk's per-packet model follows this driver.

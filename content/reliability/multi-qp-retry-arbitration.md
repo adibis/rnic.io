@@ -7,6 +7,8 @@ draft: false
 description: "One QP's retransmission is a self-contained event. Many QPs losing packets to the same root cause at the same moment is a different problem entirely -- and on a shared fabric, that correlation is the common case, not the exception."
 prev: /reliability/go-back-n-retransmission
 next: /reliability/replay-buffer-capacity-and-backpressure
+metaDescription: "Many RDMA QPs losing packets to one cause at once: how their retries contend on a shared fabric, where correlated loss is the common case."
+seoTitle: "Multi-QP Retry Arbitration"
 ---
 
 ## Overview

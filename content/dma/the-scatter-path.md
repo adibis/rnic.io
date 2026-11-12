@@ -7,6 +7,8 @@ draft: false
 description: "Every arriving payload lands in memory this side can address directly -- the only question is who decided where. A RECEIVE lands where this side's own software already posted a buffer. A WRITE lands where the wire packet itself said to. This chapter is the mechanism RX Pipeline has been calling DMA writeback all along, given its own name and its own depth."
 prev: /dma/the-gather-path
 next: /dma/ordering-and-outstanding-dma-tracking
+metaDescription: "How an RNIC writes an arriving payload to memory: across the Receive WQE's SGE list for a SEND, or at the RETH address for an RDMA WRITE."
+seoTitle: "The RDMA Scatter Path"
 ---
 
 ## Overview
@@ -37,9 +39,13 @@ Scatter is this engine's RX-side job: writing an arriving payload into memory, o
 
 **RDMA READ response -- writing back into the request that asked for it.** The requester's own DMA engine scatters an arriving response payload into the local buffers its original request WQE named -- software-named, the same SGE list [Target Selection](/dma/target-selection) already pointed at. [In-Flight Transfer State](/dma/in-flight-transfer-state)'s completion tag is what makes this possible across a real network round trip: the request's own destination identity has to survive from the moment it was issued until whenever the response actually arrives, which could be many other packets later.
 
-**Atomics -- one word, not a list.** The pre-operation value an atomic's acknowledgement carries back -- [The Operation Catalog](/overview/operation-catalog) already names this precisely, ATMACK's "returns the pre-operation value," not the result of the operation -- lands in a single local buffer the original WQE named. No scatter-gather cursor applies; an atomic touches exactly one location on each side, never a multi-segment chain.
+**Atomics -- one word, not a list.** The pre-operation value an atomic's acknowledgement carries back -- [The Operation Catalog](/overview/operation-catalog/atomics) already names this precisely, ATMACK's "returns the pre-operation value," not the result of the operation -- lands in a single local buffer the original WQE named. No scatter-gather cursor applies; an atomic touches exactly one location on each side, never a multi-segment chain.
 
-**Where scattering sits relative to the sequence-number gate.** [PSN Check and Out-of-Order Arrival](/rx/psn-check-and-out-of-order-arrival) already establishes that a packet has to clear sequence-number ordering before its payload is safe to place at all -- an out-of-order arrival is held, not scattered early and reconciled later. This path never runs ahead of that gate; by the time this chapter's mechanism starts, the packet it's serving is already known to be the next one this QP's receive side expects.
+**Where scattering sits relative to the sequence-number gate.** [PSN Check and Out-of-Order Arrival](/rx/psn-check-and-out-of-order-arrival) already establishes that a packet has to clear sequence-number ordering before its payload is safe to place at all -- an out-of-order arrival is rejected and resent later, never scattered early and reconciled afterwards. This path never runs ahead of that gate; by the time this chapter's mechanism starts, the packet it's serving is already known to be the next one this QP's receive side expects.
+
+The walk below receives that same SEND into a Receive WQE with a 2 KiB and an 8 KiB buffer, so the first packet splits across both and the second resumes inside the larger one.
+
+{{< flow "sge-scatter" >}}
 
 **Where this connects.** A completed scatter is what [CQE Generation](/cq/cqe-generation) is waiting on before it can write a receive-side completion -- unconditionally, per that chapter's own asymmetric rule for receive-side events. What happens if a scatter can't complete -- the destination faults partway through a multi-segment write -- is [Single-Burst Fault Handling](/dma/single-burst-fault-handling)'s question, not this chapter's.
 
@@ -56,3 +62,4 @@ Scatter is this engine's RX-side job: writing an arriving payload into memory, o
 ## References
 
 - InfiniBand Trade Association, *InfiniBand™ Architecture Specification*, Volume 1 -- governs RETH, ATMACK, and the receive-completion semantics this chapter's scatter destinations are derived from, already cited in full in [The Operation Catalog](/overview/operation-catalog).
+- Linux kernel soft-RoCE driver, `drivers/infiniband/sw/rxe/` -- `rxe_resp.c` places a SEND's payload with the same `copy_data()` cursor walk over the Receive WQE's SGE list, checking local-write access per `lkey`; running out of SGEs returns `-ENOSPC`, which an RC QP answers with an invalid-request NAK rather than truncating.

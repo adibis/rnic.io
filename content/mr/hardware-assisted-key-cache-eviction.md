@@ -7,6 +7,8 @@ draft: false
 description: "Queue Pair Management asked what runs an eviction policy: fixed silicon, a programmable engine, or a trap to software. This chapter asks that question once, in one paragraph, and then asks a second one Queue Pair Management never had to: what runs a flush of the entire cache, and what does that flush cost the lookups it interrupts."
 prev: /mr/key-cache-eviction-policy
 next: /mr/mid-transaction-deregistration
+metaDescription: "What runs Key Cache eviction in an RNIC, fixed silicon, a programmable engine or software, and what a full-cache flush costs the lookups it interrupts."
+seoTitle: "Hardware-Assisted Key Cache Eviction"
 ---
 
 ## Overview

@@ -7,6 +7,8 @@ draft: false
 description: "Every other cache in this book answers capacity pressure by evicting something. This one can't -- evicting an unacknowledged entry doesn't cost a future re-fetch, it costs correctness. This chapter is what governs capacity instead."
 prev: /reliability/multi-qp-retry-arbitration
 next: /reliability/mid-transaction-reliability-reset
+metaDescription: "Why an RNIC cannot evict unacknowledged replay entries, and the backpressure it applies instead: a transmit gate that stalls a QP until ACKs return."
+seoTitle: "Replay Buffer Capacity and Backpressure"
 ---
 
 ## Overview
@@ -25,6 +27,8 @@ A QP Cache entry evicted under pressure costs a future re-fetch from the QP Tabl
 ## Block diagram
 
 ![A Send Queue about to post a new request compared against the Replay Buffer's currently available capacity for this QP: enough room admits the send and allocates an entry, insufficient room stalls the send at the TX pipeline rather than transmitting and risking an entry with nowhere to go, with no eviction path drawn anywhere in the diagram.](/images/reliability/08-replay-buffer-capacity-and-backpressure-block.svg)
+
+{{< flow "replay-gate" >}}
 
 ## Deep walkthrough
 

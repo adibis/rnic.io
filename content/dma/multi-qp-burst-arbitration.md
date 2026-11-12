@@ -7,6 +7,8 @@ draft: false
 description: "Ordering and Outstanding-DMA Tracking named the resource: a fixed number of transfers this engine can run at once, shared across every Queue Pair calling into it. This chapter is what happens the instant that capacity is already spoken for and one more QP's transfer needs a turn."
 prev: /dma/single-burst-fault-handling
 next: /dma/mid-transaction-burst-teardown
+metaDescription: "How an RNIC's DMA engine shares a fixed number of concurrent transfers among many Queue Pairs once that capacity is in use."
+seoTitle: "Multi-QP DMA Burst Arbitration"
 ---
 
 ## Overview

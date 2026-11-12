@@ -49,6 +49,6 @@ text { font-family: 'Tecnico Fino', 'IBM Plex Mono', ui-monospace, Menlo, monosp
 <text x="680" y="250" font-size="8.5" fill="#8f8dce" text-anchor="middle">remote CPU can be asleep --</text>
 <text x="680" y="262" font-size="8.5" fill="#8f8dce" text-anchor="middle">a WRITE/READ needs neither</text>
 
-<text x="450" y="300" font-size="9" fill="#949ca8" text-anchor="middle">Each row is a full Part of this book: kernel bypass into Parts 1 and 3, memory protection into Part 2,</text>
-<text x="450" y="313" font-size="9" fill="#949ca8" text-anchor="middle">reliable delivery into Part 5, and one-sided operations into the operation catalog next.</text>
+<text x="450" y="300" font-size="9" fill="#949ca8" text-anchor="middle">Each row grows into its own part of this book: kernel bypass into QP and TX, memory protection into MR,</text>
+<text x="450" y="313" font-size="9" fill="#949ca8" text-anchor="middle">reliable delivery into the Reliability Engine, and one-sided operations into the operation catalog next.</text>
 </svg>

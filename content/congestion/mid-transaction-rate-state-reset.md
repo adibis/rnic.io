@@ -6,6 +6,8 @@ publishDate: 2026-09-12
 draft: false
 description: "Mid-Transaction QP Reset named this resource directly, before this Part had a title: congestion/rate-limiter state, built the same table-plus-working-set-plus-eviction way the Replay Buffer is, and left for whenever Congestion Control Engine got written. It's written now, and the honest answer is the same one that chapter already gave -- this book still doesn't know."
 prev: /congestion/eviction-policy
+metaDescription: "What happens to a QP's DCQCN rate-limiter state and its pending timers when the QP is reset with traffic in flight, and what no public source settles."
+seoTitle: "Resetting Rate-Limiter State Mid-Transaction"
 ---
 
 ## Overview

@@ -7,6 +7,8 @@ draft: false
 description: "RoCEv1 could only run inside one Ethernet broadcast domain. RoCEv2 fixed that by wrapping the exact same transport headers in a real IP/UDP packet — and that one change put a header-construction datapath in the NIC that RoCEv1 hardware never needed."
 prev: /overview/what-is-rocev2
 next: /overview/operation-catalog
+metaDescription: "RoCEv1 vs RoCEv2: RoCEv2 wraps the same InfiniBand transport headers in IP and UDP so they route beyond one Ethernet domain, and what that adds to the NIC."
+seoTitle: "RoCEv1 vs RoCEv2"
 ---
 
 RoCEv1 was RDMA framed directly inside Ethernet: the same Base Transport Header, extended headers, and ICRC this book has already opened up, sitting immediately after an Ethernet header carrying EtherType `0x8915`. No IP header, no UDP header, nothing routable — two RoCEv1 endpoints have to sit in the same Ethernet broadcast domain, the same L2 segment or VLAN, because there is no layer above Ethernet for a router to act on. RoCEv2 keeps every one of those transport headers unchanged and wraps them in an actual IP and UDP header instead. That sounds like a small packaging change. It isn't — it's the difference between a NIC that only ever has to speak Ethernet and one that has to build and parse a full L3/L4 header on every single packet.
