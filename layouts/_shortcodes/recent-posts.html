@@ -1,9 +1,17 @@
-{{- /* The newest blog posts as a compact list, so the home page stays
-  current without being edited for each post. Optional "count" (default 3). */ -}}
+{{- /* The home page's "From the blog" section: the newest posts as a compact
+  list, so the page stays current without being edited for each post. The
+  whole section, heading included, is left out while nothing is published.
+  Optional "count" (default 3). */ -}}
 {{- $n := .Get "count" | default 3 -}}
 {{- with site.GetPage "/blog" -}}
-<ul class="rnic-home-posts not-prose">
-{{- range first $n .RegularPages.ByPublishDate.Reverse }}
+{{- with .RegularPages.ByPublishDate.Reverse -}}
+<section class="rnic-home-section rnic-home-last not-prose">
+<div class="rnic-home-label-row">
+<h2 class="rnic-home-label">From the blog</h2>
+<p class="rnic-home-sublabel"><a href="{{ "blog/" | relURL }}">All posts &rarr;</a></p>
+</div>
+<ul class="rnic-home-posts">
+{{- range first $n . }}
   <li>
     <a href="{{ .RelPermalink }}">
       <span class="rnic-home-post-title">{{ .Title }}</span>
@@ -13,4 +21,6 @@
   </li>
 {{- end }}
 </ul>
+</section>
+{{- end -}}
 {{- end -}}

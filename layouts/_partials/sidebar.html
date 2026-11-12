@@ -111,6 +111,8 @@
       {{- if or (eq $menuType "search") (eq $menuType "theme-toggle") (eq $menuType "language-switch") $isIconOnly -}}
         {{- continue -}}
       {{- end -}}
+      {{- /* Same rule as the navbar: no link to a section with nothing published. */ -}}
+      {{- with $menuItem.Page }}{{ if and (eq .Kind "section") (not .RegularPages) }}{{ continue }}{{ end }}{{ end -}}
 
       {{- $menuTitle := or (T $menuItem.Identifier) $menuItem.Name -}}
       {{- /* Dropdown parents mirror navbar behavior: render a labeled group of child links. */ -}}

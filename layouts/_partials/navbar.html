@@ -19,6 +19,9 @@
 {{- $tabs := slice -}}
 {{- $rightItems := slice -}}
 {{- range .Site.Menus.main -}}
+  {{- /* A section with nothing published yet (the blog before its first
+    post) would link to an empty list; leave it out until it has pages. */ -}}
+  {{- with .Page }}{{ if and (eq .Kind "section") (not .RegularPages) }}{{ continue }}{{ end }}{{ end -}}
   {{- if .Params.tab -}}
     {{- $tabs = $tabs | append . -}}
   {{- else -}}

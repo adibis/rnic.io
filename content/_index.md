@@ -55,11 +55,4 @@ metaDescription: "A datasheet-depth guide to RDMA NIC hardware: RoCEv2, Queue Pa
 </div>
 </section>
 
-<section class="rnic-home-section rnic-home-last not-prose">
-<div class="rnic-home-label-row">
-<h2 class="rnic-home-label">From the blog</h2>
-<p class="rnic-home-sublabel"><a href="blog/">All posts &rarr;</a></p>
-</div>
-
 {{< recent-posts >}}
-</section>
